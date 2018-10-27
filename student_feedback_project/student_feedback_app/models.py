@@ -2,7 +2,7 @@ from django.db import models
 
 class Student(models.Model):
 	username = models.CharField(max_length=40, primary_key=True)
-	usernameSlug = models.SlugField(max_length=50)
+	student_slug = models.SlugField(max_length=50)
 	password = models.CharField(max_length=40)
 	email = models.EmailField()
 	profile_picture = models.ImageField(null=True, blank=True)
@@ -16,7 +16,7 @@ class Class(models.Model):
 
 class Lecturer(models.Model):
 	username = models.CharField(max_length=40, primary_key=True)
-	usernameSlug = models.SlugField(max_length=50)
+	lecturer_slug = models.SlugField(max_length=50)
 	password = models.CharField(max_length=40)
 	email = models.EmailField()
 	profile_picture = models.ImageField(null=True, blank=True)
