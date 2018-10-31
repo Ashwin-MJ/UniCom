@@ -24,6 +24,7 @@ class Lecturer(models.Model):
 
 class Feedback(models.Model):
 	category = models.CharField(max_length=100)
+	message = models.CharField(max_length=300)
 	points = models.IntegerField(default=0)
 	lecturer = models.ForeignKey('student_feedback_app.Lecturer', on_delete=models.CASCADE)
 	student = models.ForeignKey('student_feedback_app.Student', on_delete=models.CASCADE)
