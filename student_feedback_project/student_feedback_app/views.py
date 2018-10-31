@@ -9,7 +9,7 @@ def login(request):
     return HttpResponse("This is the login/sign up page")
 
 def student_home(request):
-    return HttpResponse("This is the homepage for Student")
+    return render(request, 'student_feedback_app/student_home.html')
     
 def all_feedback(request):
     return HttpResponse("This page shows all of my feedback")
