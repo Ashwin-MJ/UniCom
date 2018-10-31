@@ -25,7 +25,11 @@ SECRET_KEY = '@nweq!(x++bqs#q$%#-=jix&34+v1lx3)&u=$4%b5o1g#(mncq'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+'studentfeedbackapp.herokuapp.com',
+'localhost',
+'127.0.0.1',
+]
 
 
 # Application definition
