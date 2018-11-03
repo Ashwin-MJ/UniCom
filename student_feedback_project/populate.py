@@ -129,6 +129,7 @@ def populate():
 	print("Students Added:")
 	for student in StudentProfile.objects.all():
 		print("Student Number: " + student.student_number)
+		print("\tStudent Email: " + student.student.email)
 		print("\tStudent Name: " + student.student.username)
 		print("\tStudent Slug: " + student.student_slug)
 		print("\tScore: " + str(student.score))
@@ -143,6 +144,7 @@ def populate():
 	print("Lecturers Added:")
 	for lecturer in LecturerProfile.objects.all():
 		print("Lecturer Number: " + lecturer.lecturer_number)
+		print("\tLecturer Email: " + lecturer.lecturer.email)
 		print("\tLecturer Name: " + lecturer.lecturer.username)
 		print("\tLecturer Slug: " + lecturer.lecturer_slug)
 		print("\tClasses: ")
