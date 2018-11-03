@@ -10,7 +10,7 @@ def login(request):
 
 def student_home(request):
     return render(request, 'student_feedback_app/student_home.html')
-    
+
 def all_feedback(request):
     return HttpResponse("This page shows all of my feedback")
 
@@ -31,3 +31,9 @@ def lecturer_view_student(request):
 
 def add_feedback(request):
     return HttpResponse("This page is to add feedback")
+
+def lecturer_all_classes(request):
+    return HttpResponse("This is for a lecturer to view all his classes")
+
+def create_class(request):
+    return HttpResponse("This is to create a class")
