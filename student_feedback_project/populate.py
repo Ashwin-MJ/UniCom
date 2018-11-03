@@ -23,7 +23,7 @@ def populate():
 	students = [
 		{"username": "Link",
 		"student_slug": "Link",
-		"student_ID": "1402789",
+		"student_nb": "1402789",
 		"password": "Zelda",
 		"email": "Link@sword.hy",
 		"score":0,
@@ -31,7 +31,7 @@ def populate():
 		},
 		{"username": "Harry Potter",
 		"student_slug": "Harry-Potter",
-		"student_ID": "1402001",
+		"student_nb": "1402001",
 		"password": "Ron",
 		"email": "Harry@quidditch.hw",
 		"score":0,
@@ -39,7 +39,7 @@ def populate():
 		},
 		{"username": "Donkey Kong",
 		"student_slug": "Donkey-Kong",
-		"student_ID": "1403389",
+		"student_nb": "1403389",
 		"password": "Diddy",
 		"email": "Donkey@kong.jng",
 		"score":0,
@@ -47,7 +47,7 @@ def populate():
 		},
 		{"username": "Sheik",
 		"student_slug": "Sheik",
-		"student_ID": "002489",
+		"student_nb": "002489",
 		"password": "teleport",
 		"email": "Sheik@hookshot.hy",
 		"score":0,
@@ -55,7 +55,7 @@ def populate():
 		},
 		{"username": "Navi",
 		"student_slug": "Navi",
-		"student_ID": "1402781",
+		"student_nb": "1402781",
 		"password": "Listen!",
 		"email": "Navi@listen.hy",
 		"score":0,
@@ -97,14 +97,13 @@ def populate():
 	
 	for presentClass in classes:
 		Class.objects.create(subject=presentClass.get("subject"),
-				lecturer=presentClass.get("lecturer"),
 				unique_code=presentClass.get("unique_code")
 				)	
 
 	for student in students:		
 		stud = Student.objects.create(username=student.get("username"),
 					student_slug=student.get("student_slug"),
-					student_ID=student.get("student_ID"),
+					student_nb=student.get("student_nb"),
 					password=student.get("password"),
 					email=student.get("email"),
 					score=student.get("score"),					
