@@ -4,140 +4,218 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE',
 
 import django
 django.setup()
-from student_feedback_app.models import Student, Class, Lecturer, Feedback
+from student_feedback_app.models import StudentProfile, Class, LecturerProfile, Feedback
+from django.template.defaultfilters import slugify
+from django.contrib.auth.models import User
+
 
 def populate():
-	print ('Populating Database...')
-	print ('--------------------\n')
 
-	
 	classes = [
 		{"subject": "Maths1Q",
-		"unique_code": "MAT1Q"},
+		"class_code": "MAT1Q"},
 		{"subject": "ArtHistory01",
-		"unique_code": "ARH01"},
+		"class_code": "ARH01"},
 		{"subject": "Polish01",
-		"unique_code": "POL01"}
+		"class_code": "POL01"}
 		]
 
 	students = [
-		{"username": "Link",
-		"student_slug": "Link",
-		"student_ID": "1402789",
+		{"name": "Link",
+		"student_number": "1402789",
 		"password": "Zelda",
 		"email": "Link@sword.hy",
 		"score":0,
-		"classes":[classes[0], classes[2]]
+		"classes":["MAT1Q", "POL01"]
 		},
-		{"username": "Harry Potter",
-		"student_slug": "Harry-Potter",
-		"student_ID": "1402001",
+		{"name": "Harry Potter",
+		"student_number": "1402001",
 		"password": "Ron",
 		"email": "Harry@quidditch.hw",
 		"score":0,
-		"classes":[classes[0], classes[1]]
+		"classes":["MAT1Q", "ARH01"]
 		},
-		{"username": "Donkey Kong",
-		"student_slug": "Donkey-Kong",
-		"student_ID": "1403389",
+		{"name": "Donkey Kong",
+		"student_number": "1403389",
 		"password": "Diddy",
 		"email": "Donkey@kong.jng",
 		"score":0,
-		"classes":[classes[0]]
+		"classes":["MAT1Q"]
 		},
-		{"username": "Sheik",
-		"student_slug": "Sheik",
-		"student_ID": "002489",
+		{"name": "Sheik",
+		"student_number": "002489",
 		"password": "teleport",
 		"email": "Sheik@hookshot.hy",
 		"score":0,
-		"classes":[classes[1]]
+		"classes":["ARH01"]
 		},
-		{"username": "Navi",
-		"student_slug": "Navi",
-		"student_ID": "1402781",
+		{"name": "Navi",
+		"student_number": "1402781",
 		"password": "Listen!",
 		"email": "Navi@listen.hy",
 		"score":0,
-		"classes":[classes[1], classes[2]]
+		"classes":["ARH01", "POL01"]
 		}]
 
 	lecturers = [
-		{"username": "Ganondorf",
-		"lecturer_slug": "Ganondorf",
+		{"name": "Ganondorf",
+		"lecturer_number": "00001",
 		"password": "Zelda",
-		"email": "Ganon@power.hy"
+		"email": "Ganon@power.hy",
+		"classes":["ARH01", "POL01"]
 		},
-		{"username": "Voldemort",
-		"lecturer_slug": "Voldemort",
+		{"name": "Voldemort",
+		"lecturer_number": "00002",
 		"password": "Riddle",
-		"email": "Voldy@death.hw"
-		}]		
-
+		"email": "Voldy@death.hw",
+		"classes":["MAT1Q"]
+		}]
 
 	feedback = [
-		{"category": "listening",
-		"message": "Good listening today",
+		{"feedback_id": 1,
+		"category": "listening",
 		"points": 4,
-		"lecturer": lecturers[0],
-		"student": students[4]},
-		{"category": "cooperation",
-		"message": "You did a good job helping Sheik in class today",
+		"lecturer": "00001",
+		"student": "1402789"},
+		{"feedback_id": 2,
+		"category": "cooperation",
 		"points": 3,
-		"lecturer": lecturers[1],
-		"student": students[0]},
-		{"category": "participation",
-		"message": "Excellent answer to my question today",
+		"lecturer": "00002",
+		"student": "002489"},
+		{"feedback_id": 3,
+		"category": "participation",
 		"points": 5,
-		"lecturer": lecturers[1],
-		"student": students[1]}
+		"lecturer": "00002",
+		"student": "1402781"}
 		]
-		
-#get_or_create instead of get might help for unique fields
-	
-	for presentClass in classes:
-		Class.objects.create(subject=presentClass.get("subject"),
-				lecturer=presentClass.get("lecturer"),
-				unique_code=presentClass.get("unique_code")
-				)	
 
-	for student in students:		
-		stud = Student.objects.create(username=student.get("username"),
-					student_slug=student.get("student_slug"),
-					student_ID=student.get("student_ID"),
-					password=student.get("password"),
-					email=student.get("email"),
-					score=student.get("score"),					
-					)
-		writtenClasses=student.get("classes")
-		for presentClass in writtenClasses:
-			stud.classes.add(Class.objects.filter(unique_code=presentClass.get("unique_code")))
-			
-	for lecturer in lecturers:		
-		lect=Lecturer.objects.create(username=lecturer.get("username"),
-					lecturer_slug=lecturer.get("lecturer_slug"),
-					password=lecturer.get("password"),
-					email=lecturer.get("email")
-					)
-		classes=student.get("classes")
-		for presentClass in classes:
-			lect.classes.add(Class.objects.filter(unique_code=presentClass.get("unique_code")))
 
 	for presentClass in classes:
-		lect = Lecturer.objects.filter(classes__in=presentClass).distinct()
-		stud = Student.objects.filter(classes__in=presentClass).distinct()
-		presentClass.student.add(stud)
-		presentClass.student.add(lect)
-	
+		cla = add_class(presentClass.get('subject'),presentClass.get('class_code'))
+
+	for student in students:
+		stud = add_student(student.get('name'),student.get('student_number'),student.get('email'),
+							student.get('password'),student.get('score'),student.get('classes'))
+
+	for lecturer in lecturers:
+		lect = add_lecturer(lecturer.get('name'),lecturer.get('lecturer_number'),
+							lecturer.get('password'),lecturer.get('email'),lecturer.get('classes'))
 
 	for someFeedback in feedback:
-		Feedback.objects.create(category=someFeedback.get("category"),
-					message=someFeedback.get("message"),
-					points=someFeedback.get("points"),
-					lecturer=Lecturer.objects.filter(username=someFeedback.get("lecturer").get("username")),
-					student=Student.objects.filter(username=someFeedback.get("student").get("username"))
-					)
+		feedback = add_feedback(someFeedback.get('feedback_id'),someFeedback.get('category'),someFeedback.get('points'),
+								someFeedback.get('lecturer'),someFeedback.get('student'))
 
-populate()
 
-#add profile_picture for students and lecturers?
+	print("Classes Added")
+	for each_class in Class.objects.all():
+		print("Subject: " + each_class.subject)
+		print("\tSubject_Slug: " + each_class.subject_slug)
+		print("\tClass_Code: " + each_class.class_code)
+		print("\tLecturer: " + each_class.lecturer.lecturer.username)
+		print("\tStudents: ")
+		for student in each_class.students.all():
+			print("\t\t" + student.student_number + " " + student.student.username)
+
+	print("-----------------")
+	print("Students Added:")
+	for student in StudentProfile.objects.all():
+		print("Student Number: " + student.student_number)
+		print("\tStudent Email: " + student.student.email)
+		print("\tStudent Name: " + student.student.username)
+		print("\tStudent Slug: " + student.student_slug)
+		print("\tScore: " + str(student.score))
+		print("\tClasses: ")
+		for each_class in student.classes.all():
+			print("\t\t" + each_class.subject)
+		print("\tFeedback: ")
+		for fb in student.feedback_set.all():
+			print("\t\t" + str(fb.points) + " points for " + fb.category + " from " + fb.lecturer.lecturer.username)
+
+	print("-----------------")
+	print("Lecturers Added:")
+	for lecturer in LecturerProfile.objects.all():
+		print("Lecturer Number: " + lecturer.lecturer_number)
+		print("\tLecturer Email: " + lecturer.lecturer.email)
+		print("\tLecturer Name: " + lecturer.lecturer.username)
+		print("\tLecturer Slug: " + lecturer.lecturer_slug)
+		print("\tClasses: ")
+		for each_class in lecturer.class_set.all():
+			print("\t\t" + each_class.subject)
+		print("\tFeedback Given:")
+		for fb in lecturer.feedback_set.all():
+			print("\t\t" + str(fb.points) + " points given to " + fb.student.student.username + " for " + fb.category)
+
+
+	print("-----------------")
+	print("Feedback Added:")
+	for fb in Feedback.objects.all():
+		print("Feedback ID: " + str(fb.feedback_id))
+		print("\tCategory: " + fb.category)
+		print("\tPoints Awarded: " + str(fb.points))
+		print("\tLecturer: " + fb.lecturer.lecturer.username)
+		print("\tStudent: " + fb.student.student.username)
+
+# Helper function to add a new class
+def add_class(subject,class_code):
+	cla = Class.objects.get_or_create(subject=subject,class_code=class_code)[0]
+	cla.save()
+	return cla
+
+# Helper function to add a new student
+def add_student(name,student_number,email,password,score,classes):
+	# First get the User model associated with the student
+	student = User.objects.get_or_create(username=name,email=email)[0]
+	student.set_password(password)
+	student.save()
+
+	# Get the StudentProfile for the student
+	student_prof = StudentProfile.objects.get_or_create(student=student,student_number=student_number)[0]
+	student_prof.score = score
+
+	for each_class in classes:
+		# For each of the student's classes, add that class to their list of classes
+		# But also add the student to the list of students for that class
+		cla = Class.objects.get(class_code=each_class)
+		student_prof.classes.add(cla)
+		cla.students.add(student_prof)
+
+	student_prof.save()
+	return student_prof
+
+# Helper function to add a new lecturer. Follows a similar pattern to add_student
+def add_lecturer(name,lecturer_number,password,email,classes):
+	lecturer = User.objects.get_or_create(username=name,email=email)[0]
+	lecturer.set_password(password)
+	lecturer.save()
+
+	lecturer_prof = LecturerProfile.objects.get_or_create(lecturer=lecturer,lecturer_number=lecturer_number)[0]
+
+	for each_class in classes:
+		cla = Class.objects.get(class_code=each_class)
+		cla.lecturer = lecturer_prof
+		cla.save()
+		#print(lecturer_prof.lecturer_number)
+
+	lecturer_prof.save()
+	return lecturer_prof
+
+# Helper function to add feedback
+def add_feedback(feedback_id,category,points,lecturer,student):
+	fb = Feedback.objects.get_or_create(feedback_id=feedback_id)[0]
+	fb.category = category
+	fb.points = points
+	fb.lecturer = LecturerProfile.objects.get(lecturer_number=lecturer)
+	stud = StudentProfile.objects.get(student_number=student)
+	fb.student = stud
+	stud.score += points
+	stud.save()
+	fb.save()
+	return fb
+
+
+
+
+if __name__ == '__main__':
+	print('Populating Database...')
+	print('--------------------\n')
+	populate()
