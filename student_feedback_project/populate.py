@@ -89,7 +89,6 @@ def populate():
 		"student": "1402781"}
 		]
 
-#get_or_create instead of get might help for unique fields
 
 	for presentClass in classes:
 		cla = add_class(presentClass.get('subject'),presentClass.get('class_code'))
@@ -101,14 +100,6 @@ def populate():
 	for lecturer in lecturers:
 		lect = add_lecturer(lecturer.get('name'),lecturer.get('lecturer_number'),
 							lecturer.get('password'),lecturer.get('email'),lecturer.get('classes'))
-
-
-	#for presentClass in classes:
-	#	lect = Lecturer.objects.filter(classes__in=presentClass).distinct()
-	#	stud = Student.objects.filter(classes__in=presentClass).distinct()
-	#	presentClass.student.add(stud)
-	#	presentClass.student.add(lect)
-
 
 	for someFeedback in feedback:
 		feedback = add_feedback(someFeedback.get('feedback_id'),someFeedback.get('category'),someFeedback.get('points'),
@@ -228,5 +219,3 @@ if __name__ == '__main__':
 	print('Populating Database...')
 	print('--------------------\n')
 	populate()
-
-#add profile_picture for students and lecturers?
