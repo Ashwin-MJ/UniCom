@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.template.defaultfilters import slugify
+from datetime import datetime
+from django.utils import timezone
 
 class StudentProfile(models.Model):
         student = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -45,6 +47,7 @@ class LecturerProfile(models.Model):
 
 class Feedback(models.Model):
         feedback_id = models.IntegerField(primary_key=True,default=0)
+        date_given = models.DateTimeField(default=timezone.now)
         category = models.CharField(max_length=100)
         points = models.IntegerField(default=0)
         lecturer = models.ForeignKey('LecturerProfile', on_delete=models.CASCADE, null=True, blank=True)

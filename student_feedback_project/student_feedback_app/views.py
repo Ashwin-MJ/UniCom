@@ -1,5 +1,8 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from student_feedback_app.models import Feedback
+from datetime import datetime, timedelta
+from django.utils import timezone
 
 # Create your views here.
 def index(request):
@@ -9,6 +12,12 @@ def login(request):
     return HttpResponse("This is the login/sign up page")
 
 def student_home(request):
+    context_dict = {}
+    #get feedback given in this month; use __gt for '>'
+    d = timezone.now().month
+    feedback = Feedback.objects.filter(date_given__month=d)
+    context_dict["feedback"] = feedback
+                                       
     return render(request, 'student_feedback_app/student_home.html')
     
 def all_feedback(request):

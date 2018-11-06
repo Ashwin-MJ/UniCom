@@ -7,6 +7,7 @@ django.setup()
 from student_feedback_app.models import StudentProfile, Class, LecturerProfile, Feedback
 from django.template.defaultfilters import slugify
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 
 def populate():
@@ -154,6 +155,7 @@ def populate():
 		print("\tPoints Awarded: " + str(fb.points))
 		print("\tLecturer: " + fb.lecturer.lecturer.username)
 		print("\tStudent: " + fb.student.student.username)
+		print("\tDate given: " + str(fb.date_given))
 
 # Helper function to add a new class
 def add_class(subject,class_code):
@@ -204,6 +206,7 @@ def add_feedback(feedback_id,category,points,lecturer,student):
 	fb = Feedback.objects.get_or_create(feedback_id=feedback_id)[0]
 	fb.category = category
 	fb.points = points
+	fb.date_given = timezone.now()
 	fb.lecturer = LecturerProfile.objects.get(lecturer_number=lecturer)
 	stud = StudentProfile.objects.get(student_number=student)
 	fb.student = stud

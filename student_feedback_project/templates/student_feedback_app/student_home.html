@@ -1,3 +1,25 @@
 {% extends 'student_feedback_app/base.html' %}
 
+{% block body_block %}
+	<div class="row">
+		<div class="col-sm-6 text-center" style="font-size: 10pt; border-right: 1px solid #fff;">
+			<h2 class="w3-sandybrown">Feedback</h2>
+			<div class="w3-container">
+				{% if feedback %}
+				<ul class="list-unstyled">
+					{% for fb in feedback %}
+					<li>
+						{{feedback.category}}
+					</li>
+					{% endfor %}
+				</ul>
+				{% else %}
+				<strong> No feedback to show </strong>
+				{% endif %}
+				<button type="button" class="btn btn-default" style="border-top:1pt;background-color:burlywood;width:100%;">Sort by score</button>
+			</div>
+		</div>
+	</div>
+{% endblock %}
+
 
