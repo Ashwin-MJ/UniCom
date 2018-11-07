@@ -1,0 +1,63 @@
+{% extends 'student_feedback_app/base.html' %}
+
+{% block title_block %}
+{{ class.subject }}
+{% endblock%}
+
+
+{% block body_block %}
+<div class="container">
+  <div class="card-deck">
+    <div class="card" style="width:40%; margin-left:25px; margin-top:25px;">
+      <h3 class="card-body text-center" style="padding-bottom:0px">Students</h3>
+      <div class="card-body" style="padding-top:0px">
+        {% for stud in students %}
+          <!--<div class="card">
+            <!-- fix student profile picture image
+            <div style="display:inline-block; width:45%; height:100%">
+
+              <img src="media/profile_pictures/default_image.jpg" />
+              </div>
+              -->
+            <div class="card" style="padding-left:10px; margin-top:10px">
+              <br style="clear:both;"/>
+              <b>{{ stud.student.username }}</b>
+              <p>
+                {{ stud.score }}
+              </p>
+              </div>
+            <!--</div> -->
+          {% endfor %}
+      </div>
+    </div>
+    <div class="card" style="width:40%; margin-left:25px; margin-top:25px;">
+      <h3 class="card-body text-center" style="padding-bottom:0px">Recent Feedback</h3>
+      <div class="card-body" style="padding-top:0px">
+        <p class="card-text"></p>
+        {% for fb in feedback %}
+        <div class="card" style="padding-left:10px; margin-top:10px">
+          <b>{{ fb.category }}</b>
+          <p>
+            {{ fb.message }}<br />
+            {{ fb.student.student.username }}<br />
+            {{ fb.points }}
+          </p>
+          </div>
+          {% endfor %}
+      </div>
+    </div>
+    <div class="card" style="width:40%; margin-left:25px; margin-top:25px;">
+      <h3 class="card-body text-center" style="padding-bottom:0px">Leaderboard</h3>
+      <div class="card-body text-center">
+        <p class="card-text">This will show the top X students of the class</p>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  Add Feedback
+  </div>
+
+{% endblock %}

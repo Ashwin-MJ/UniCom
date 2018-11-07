@@ -1,0 +1,48 @@
+{% extends 'student_feedback_app/base.html' %}
+
+{% block title_block %}
+My Classes<br />
+{{ lect.lecturer.username }}
+{% endblock%}
+
+<link rel="stylesheet" type="text/css" href="custom.css" />
+
+{% block body_block %}
+<div class="container">
+  <div class="card-deck">
+    <div class="card" style="width:40%; margin-left:25px; margin-top:25px;">
+      <h3 class="card-body text-center" style="padding-bottom:0px">My Classes</h3>
+      <div class="card-body" style="padding-top:0px">
+        {% for class in classes %}
+            <div class="card" style="padding-left:10px; margin-top:10px"">
+              <br style="clear:both;"/>
+              <b>{{ class.subject }}</b>
+              <p>
+                {{ class.class_code }}<br />
+                {{ class.lecturer.lecturer.username }}
+              </p>
+              </div>
+          {% endfor %}
+      </div>
+    </div>
+    <div class="card" style="width:40%; margin-left:25px; margin-top:25px;">
+      <h3 class="card-body text-center" style="padding-bottom:0px">Recent Feedback</h3>
+      <div class="card-body" style="padding-top:0px">
+        <p class="card-text"></p>
+        {% for fb in feedback %}
+        <div class="card" style="padding-left:10px; margin-top:10px"">
+          <b>{{ fb.category }}</b>
+          <p>
+            {{ fb.message }}<br />
+            {{ fb.student.student.username }}<br />
+            {{ fb.points }}
+          </p>
+          </div>
+          {% endfor %}
+      </div>
+    </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

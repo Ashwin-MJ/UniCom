@@ -14,11 +14,14 @@ def populate():
 
 	classes = [
 		{"subject": "Maths1Q",
-		"class_code": "MAT1Q"},
+		"class_code": "MAT1Q",
+		"class_description":"A base look at mathematical functions in the real world"},
 		{"subject": "ArtHistory01",
-		"class_code": "ARH01"},
+		"class_code": "ARH01",
+		"class_description":"A history of art between Middle Ages and High Renaissance periods"},
 		{"subject": "Polish01",
-		"class_code": "POL01"}
+		"class_code": "POL01",
+		"class_description":"An introductory class on the polish language"},
 		]
 
 	students = [
@@ -74,25 +77,31 @@ def populate():
 
 	feedback = [
 		{"feedback_id": 1,
+		"message": "Good job answering the question today!",
 		"category": "listening",
 		"points": 4,
 		"lecturer": "00001",
-		"student": "1402789"},
+		"student": "1402789",
+		"class_code" : "MAT1Q"},
 		{"feedback_id": 2,
+		"message": "You were very active in today's lesson!",
 		"category": "cooperation",
 		"points": 3,
 		"lecturer": "00002",
-		"student": "002489"},
+		"student": "1402001",
+		"class_code" : "MAT1Q"},
 		{"feedback_id": 3,
+		"message": "Great marks in todays quiz!",
 		"category": "participation",
 		"points": 5,
 		"lecturer": "00002",
-		"student": "1402781"}
+		"student": "1402781",
+		"class_code": "ARH01"}
 		]
 
 
 	for presentClass in classes:
-		cla = add_class(presentClass.get('subject'),presentClass.get('class_code'))
+		cla = add_class(presentClass.get('subject'),presentClass.get('class_code'), presentClass.get('class_description'))
 
 	for student in students:
 		stud = add_student(student.get('name'),student.get('student_number'),student.get('email'),
@@ -104,12 +113,14 @@ def populate():
 
 	for someFeedback in feedback:
 		feedback = add_feedback(someFeedback.get('feedback_id'),someFeedback.get('category'),someFeedback.get('points'),
-								someFeedback.get('lecturer'),someFeedback.get('student'))
+								someFeedback.get('lecturer'),someFeedback.get('student'),someFeedback.get('class_code'),
+								someFeedback.get('message'))
 
 
 	print("Classes Added")
 	for each_class in Class.objects.all():
 		print("Subject: " + each_class.subject)
+		print("\tClass Description: "+ each_class.class_description)
 		print("\tSubject_Slug: " + each_class.subject_slug)
 		print("\tClass_Code: " + each_class.class_code)
 		print("\tLecturer: " + each_class.lecturer.lecturer.username)
@@ -151,15 +162,17 @@ def populate():
 	print("Feedback Added:")
 	for fb in Feedback.objects.all():
 		print("Feedback ID: " + str(fb.feedback_id))
+		print("\tMessage: " + fb.message)
 		print("\tCategory: " + fb.category)
 		print("\tPoints Awarded: " + str(fb.points))
 		print("\tLecturer: " + fb.lecturer.lecturer.username)
 		print("\tStudent: " + fb.student.student.username)
 		print("\tDate given: " + str(fb.date_given))
+		print("\tClass: " + fb.which_class.subject)
 
 # Helper function to add a new class
-def add_class(subject,class_code):
-	cla = Class.objects.get_or_create(subject=subject,class_code=class_code)[0]
+def add_class(subject,class_code, class_description):
+	cla = Class.objects.get_or_create(subject=subject,class_code=class_code, class_description=class_description)[0]
 	cla.save()
 	return cla
 
@@ -202,11 +215,13 @@ def add_lecturer(name,lecturer_number,password,email,classes):
 	return lecturer_prof
 
 # Helper function to add feedback
-def add_feedback(feedback_id,category,points,lecturer,student):
+def add_feedback(feedback_id,category,points,lecturer,student,class_code,message):
 	fb = Feedback.objects.get_or_create(feedback_id=feedback_id)[0]
 	fb.category = category
 	fb.points = points
 	fb.date_given = timezone.now()
+	fb.message = message
+	fb.which_class = Class.objects.get(class_code=class_code)
 	fb.lecturer = LecturerProfile.objects.get(lecturer_number=lecturer)
 	stud = StudentProfile.objects.get(student_number=student)
 	fb.student = stud

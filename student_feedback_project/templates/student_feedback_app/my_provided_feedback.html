@@ -1,0 +1,30 @@
+{% extends 'student_feedback_app/base.html' %}
+
+{% block title_block %}
+My Provided Feedback <br />
+{{ lect.lecturer.username }}
+{% endblock%}
+
+
+{% block body_block %}
+
+<div class="container">
+    <div class="card" style="width:40%; margin-left:25px; margin-top:25px;">
+      <h3 class="card-body text-center" >Recent Feedback</h3>
+      <div class="card-body">
+        {% for fb in feedback %}
+        <div class="card" style="padding-left:10px">
+          <b>{{ fb.category }}</b>
+          <p>
+            {{ fb.message }}<br />
+            {{ fb.lecturer.lecturer.username }}<br />
+            {{ fb.student.student.username }}<br />
+            {{ fb.points }}
+          </p>
+
+          </div>
+          {% endfor %}
+      </div>
+</div>
+
+{% endblock %}
