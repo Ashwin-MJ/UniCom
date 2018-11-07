@@ -76,20 +76,26 @@ def populate():
 
 	feedback = [
 		{"feedback_id": 1,
+		"message": "Good job answering the question today!",
 		"category": "listening",
 		"points": 4,
 		"lecturer": "00001",
-		"student": "1402789"},
+		"student": "1402789",
+		"class_code" : "MAT1Q"},
 		{"feedback_id": 2,
+		"message": "You were very active in today's lesson!",
 		"category": "cooperation",
 		"points": 3,
 		"lecturer": "00002",
-		"student": "002489"},
+		"student": "1402001",
+		"class_code" : "MAT1Q"},
 		{"feedback_id": 3,
+		"message": "Great marks in todays quiz!",
 		"category": "participation",
 		"points": 5,
 		"lecturer": "00002",
-		"student": "1402781"}
+		"student": "1402781",
+		"class_code": "ARH01"}
 		]
 
 
@@ -106,7 +112,8 @@ def populate():
 
 	for someFeedback in feedback:
 		feedback = add_feedback(someFeedback.get('feedback_id'),someFeedback.get('category'),someFeedback.get('points'),
-								someFeedback.get('lecturer'),someFeedback.get('student'))
+								someFeedback.get('lecturer'),someFeedback.get('student'),someFeedback.get('class_code'),
+								someFeedback.get('message'))
 
 
 	print("Classes Added")
@@ -154,10 +161,12 @@ def populate():
 	print("Feedback Added:")
 	for fb in Feedback.objects.all():
 		print("Feedback ID: " + str(fb.feedback_id))
+		print("\tMessage: " + fb.message)
 		print("\tCategory: " + fb.category)
 		print("\tPoints Awarded: " + str(fb.points))
 		print("\tLecturer: " + fb.lecturer.lecturer.username)
 		print("\tStudent: " + fb.student.student.username)
+		print("\tClass: " + fb.which_class.subject)
 
 # Helper function to add a new class
 def add_class(subject,class_code, class_description):
@@ -204,10 +213,12 @@ def add_lecturer(name,lecturer_number,password,email,classes):
 	return lecturer_prof
 
 # Helper function to add feedback
-def add_feedback(feedback_id,category,points,lecturer,student):
+def add_feedback(feedback_id,category,points,lecturer,student,class_code,message):
 	fb = Feedback.objects.get_or_create(feedback_id=feedback_id)[0]
 	fb.category = category
 	fb.points = points
+	fb.message = message
+	fb.which_class = Class.objects.get(class_code=class_code)
 	fb.lecturer = LecturerProfile.objects.get(lecturer_number=lecturer)
 	stud = StudentProfile.objects.get(student_number=student)
 	fb.student = stud
