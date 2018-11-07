@@ -140,3 +140,6 @@ LOGIN_URL = '/accounts/login/'  # The page users are directed to if they are not
 MEDIA_DIR = os.path.join(BASE_DIR,'media')
 MEDIA_ROOT = MEDIA_DIR
 MEDIA_URL = '/media/'
+
+
+AUTH_USER_MODEL = "student_feedback_app.User"

@@ -6,7 +6,8 @@ import django
 django.setup()
 from student_feedback_app.models import StudentProfile, Class, LecturerProfile, Feedback
 from django.template.defaultfilters import slugify
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
+User = get_user_model()
 
 
 def populate():
@@ -125,15 +126,15 @@ def populate():
 		print("\tLecturer: " + each_class.lecturer.lecturer.username)
 		print("\tStudents: ")
 		for student in each_class.students.all():
-			print("\t\t" + student.student_number + " " + student.student.username)
+			print("\t\t" + student.student.id_number + " " + student.student.username)
 
 	print("-----------------")
 	print("Students Added:")
 	for student in StudentProfile.objects.all():
-		print("Student Number: " + student.student_number)
+		print("Student Number: " + student.student.id_number)
 		print("\tStudent Email: " + student.student.email)
 		print("\tStudent Name: " + student.student.username)
-		print("\tStudent Slug: " + student.student_slug)
+		print("\tStudent Slug: " + student.student.slug)
 		print("\tScore: " + str(student.score))
 		print("\tClasses: ")
 		for each_class in student.classes.all():
@@ -145,10 +146,10 @@ def populate():
 	print("-----------------")
 	print("Lecturers Added:")
 	for lecturer in LecturerProfile.objects.all():
-		print("Lecturer Number: " + lecturer.lecturer_number)
+		print("Lecturer Number: " + lecturer.lecturer.id_number)
 		print("\tLecturer Email: " + lecturer.lecturer.email)
 		print("\tLecturer Name: " + lecturer.lecturer.username)
-		print("\tLecturer Slug: " + lecturer.lecturer_slug)
+		print("\tLecturer Slug: " + lecturer.lecturer.slug)
 		print("\tClasses: ")
 		for each_class in lecturer.class_set.all():
 			print("\t\t" + each_class.subject)
@@ -179,10 +180,12 @@ def add_student(name,student_number,email,password,score,classes):
 	# First get the User model associated with the student
 	student = User.objects.get_or_create(username=name,email=email)[0]
 	student.set_password(password)
+	student.id_number = student_number
+	student.is_student = True
 	student.save()
 
 	# Get the StudentProfile for the student
-	student_prof = StudentProfile.objects.get_or_create(student=student,student_number=student_number)[0]
+	student_prof = StudentProfile.objects.get_or_create(student=student)[0]
 	student_prof.score = score
 
 	for each_class in classes:
@@ -199,9 +202,11 @@ def add_student(name,student_number,email,password,score,classes):
 def add_lecturer(name,lecturer_number,password,email,classes):
 	lecturer = User.objects.get_or_create(username=name,email=email)[0]
 	lecturer.set_password(password)
+	lecturer.id_number = lecturer_number
+	lecturer.is_lecturer = True
 	lecturer.save()
 
-	lecturer_prof = LecturerProfile.objects.get_or_create(lecturer=lecturer,lecturer_number=lecturer_number)[0]
+	lecturer_prof = LecturerProfile.objects.get_or_create(lecturer=lecturer)[0]
 
 	for each_class in classes:
 		cla = Class.objects.get(class_code=each_class)
@@ -219,8 +224,10 @@ def add_feedback(feedback_id,category,points,lecturer,student,class_code,message
 	fb.points = points
 	fb.message = message
 	fb.which_class = Class.objects.get(class_code=class_code)
-	fb.lecturer = LecturerProfile.objects.get(lecturer_number=lecturer)
-	stud = StudentProfile.objects.get(student_number=student)
+	lect_user = User.objects.get(id_number=lecturer)
+	fb.lecturer = LecturerProfile.objects.get(lecturer=lect_user)
+	student_user = User.objects.get(id_number=student)
+	stud = StudentProfile.objects.get(student=student_user)
 	fb.student = stud
 	stud.score += points
 	stud.save()
