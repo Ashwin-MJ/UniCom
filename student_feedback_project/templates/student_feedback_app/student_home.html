@@ -9,7 +9,13 @@
 				<ul class="list-unstyled" id="fb-list">
 					{% for fb in feedback %}
 					<li>
+						{{fb.which_class.class_code}}
+						{{fb.student.student.username}}
+						{{fb.message}}
+						{{fb.date_given}}
+						{{fb.category}}
 						{{ fb.points }}
+						{{fb.lecturer.lecturer.username}}
 					</li>
 					{% endfor %}
 				</ul>

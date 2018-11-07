@@ -56,4 +56,4 @@ class Feedback(models.Model):
         lecturer = models.ForeignKey('LecturerProfile', on_delete=models.CASCADE, null=True, blank=True)
         student = models.ForeignKey('StudentProfile', on_delete=models.CASCADE, null=True, blank=True)
         which_class = models.ForeignKey('Class', on_delete=models.CASCADE, null=True, blank=True)
-        datetime = models.DateTimeField(default=timezone.now, blank=False)
+
