@@ -9,7 +9,7 @@ Create a new class
 <h1> Create a new class</h1>
 
 <div>
-    <form id="" method="post" action="/lecturer_class/">
+    <form id="" method="post" action="/lecturer/classes/">
         {% csrf_token %}
         {% for hidden in form.hidden_fields %}
             {{ hidden }}
