@@ -12,4 +12,7 @@ urlpatterns = [
     re_path(r'^lecturer/(?P<subject>[\w\-]+)/$', views.lecturer_class, name='lecturer_class'),
     re_path(r'^lecturer/(?P<student_slug>[\w\-]+)/$', views.lecturer_view_student, name='lecturer_view_student'),
     re_path(r'^lecturer/(?P<student_slug>[\w\-]+)/add-feedback/$', views.add_feedback, name='add_feedback'),
+    re_path(r'^create_class/$', views.create_class, name='create_class'),
+    # re_path(r'^student_feedback_app/class_created/$', views.class_created, name='class_created'),
+
 ]

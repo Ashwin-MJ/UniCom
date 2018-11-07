@@ -19,6 +19,7 @@ class StudentProfile(models.Model):
 
 class Class(models.Model):
         subject = models.CharField(max_length=40)
+        class_description = models.CharField(max_length=200, default="")
         subject_slug = models.SlugField(max_length=50, default='empty_slug')
         students = models.ManyToManyField('StudentProfile')#, null=True, blank=True)
         lecturer = models.ForeignKey('LecturerProfile', on_delete=models.CASCADE, null=True, blank=True)
@@ -35,6 +36,7 @@ class LecturerProfile(models.Model):
         # in this.
         lecturer_number = models.CharField(max_length=20, primary_key=True)
         lecturer_slug = models.SlugField(max_length=50)
+        Classes = models.ManyToManyField('Class')
         profile_picture = models.ImageField(null=True, blank=True)
         # Can access lecturers classes using LecturerProfile.class_set.all()
         # Can access lecturers feedback using LectureProfile.feedback_set.all()
@@ -49,3 +51,4 @@ class Feedback(models.Model):
         points = models.IntegerField(default=0)
         lecturer = models.ForeignKey('LecturerProfile', on_delete=models.CASCADE, null=True, blank=True)
         student = models.ForeignKey('StudentProfile', on_delete=models.CASCADE, null=True, blank=True)
+
