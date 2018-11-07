@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 from django.contrib.auth.models import User
 from django.template.defaultfilters import slugify
 
@@ -9,7 +10,7 @@ class StudentProfile(models.Model):
         # in this.
         student_slug = models.SlugField(max_length=50)
         student_number = models.CharField(max_length=20, primary_key=True)
-        profile_picture = models.ImageField(null=True, blank=True)
+        profile_picture = models.ImageField(upload_to='profile_pictures', default="profile_pictures/default_image.jpg", blank=True)
         score = models.IntegerField(default=0)
         classes = models.ManyToManyField('Class')
 
@@ -35,7 +36,7 @@ class LecturerProfile(models.Model):
         # in this.
         lecturer_number = models.CharField(max_length=20, primary_key=True)
         lecturer_slug = models.SlugField(max_length=50)
-        profile_picture = models.ImageField(null=True, blank=True)
+        profile_picture = models.ImageField(upload_to='profile_pictures', default="profile_pictures/default_image.jpg", blank=True)
         # Can access lecturers classes using LecturerProfile.class_set.all()
         # Can access lecturers feedback using LectureProfile.feedback_set.all()
 
@@ -45,7 +46,10 @@ class LecturerProfile(models.Model):
 
 class Feedback(models.Model):
         feedback_id = models.IntegerField(primary_key=True,default=0)
+        message = models.CharField(max_length=200,default="No message")
         category = models.CharField(max_length=100)
         points = models.IntegerField(default=0)
         lecturer = models.ForeignKey('LecturerProfile', on_delete=models.CASCADE, null=True, blank=True)
         student = models.ForeignKey('StudentProfile', on_delete=models.CASCADE, null=True, blank=True)
+        which_class = models.ForeignKey('Class', on_delete=models.CASCADE, null=True, blank=True)
+        datetime = models.DateTimeField(default=timezone.now, blank=False)
