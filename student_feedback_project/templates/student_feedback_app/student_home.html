@@ -3,31 +3,70 @@
 {% block body_block %}
 	<div class="row">
 		<div class="col-sm-6 text-center" style="font-size: 10pt; border-right: 1px solid #fff;">
-			<h2 class="w3-sandybrown">Feedback</h2>
 			<div class="w3-container">
-				{% if feedback %}
-				<ul class="list-unstyled" id="fb-list">
-					{% for fb in feedback %}
-					<li>
-						{{fb.which_class.class_code}}
-						{{fb.student.student.username}}
-						{{fb.message}}
-						{{fb.date_given}}
-						{{fb.category}}
-						{{ fb.points }}
-						{{fb.lecturer.lecturer.username}}
-					</li>
-					{% endfor %}
-				</ul>
-				{% else %}
-				<strong> No feedback to show </strong>
-				{% endif %}
-				<button onclick="sortByPoints()" type="button" class="btn btn-default">Sort by points</button>
+				<div class="card" style="width:40%; margin-left:25px; margin-top:25px;">
+		      <h3 class="card-body text-center" style="padding-bottom:0px">Recent Feedback</h3>
+		      <div class="card-body" style="padding-top:0px">
+		        <p class="card-text"></p>
+								{% if feedback %}
+								<ul class="list-unstyled" id="fb-list">
+									{% for fb in feedback %}
+									<div class="card"  id="fb-element" style="padding-left:10px; margin-top:10px">
+										{{fb.which_class.class_code}}
+										{{fb.student.student.username}}
+										{{fb.message}}
+										{{fb.date_given}}
+										{{fb.category}}
+										{{fb.lecturer.lecturer.username}}
+										<div id="points">{{fb.points}}</div>
+									</div>
+									{% endfor %}
+
+								</ul>
+								{% else %}
+								<strong> No feedback to show </strong>
+								{% endif %}
+						<button onclick="sortByPoints()" type="button" class="btn btn-default">Sort by points</button>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
-	{% block js-link %}
+
+	<script>
+function sortByPoints(){
+		var list, i, switching, b, shouldSwitch;
+	  list = document.getElementById("fb-list");
+	  switching = true;
+	  while (switching) {
+	    switching = false;
+	    b = list.getElementsByClassName("card");
+	    for (i = 0; i < (b.length - 1); i++) {
+	      //start by saying there should be no switching:
+	      shouldSwitch = false;
+	      /*check if the next item should
+	      switch place with the current item:*/
+
+	      if (Number(b[i].innerHTML) > Number(b[i + 1].innerHTML)) {
+	        /*if next item is numerically
+	        lower than current item, mark as a switch
+	        and break the loop:*/
+	        shouldSwitch = true;
+	        break;
+	      }
+	    }
+	    if (shouldSwitch) {
+	      /*If a switch has been marked, make the switch
+	      and mark the switch as done:*/
+	      b[i].parentNode.insertBefore(b[i + 1], b[i]);
+	      switching = true;
+	    }
+	  }
+	}
+</script>
+
+<!--	{% block js-link %}
 		<script src="/static/js/student_home.js"></script>
-	{% endblock %}
+	{% endblock %}-->
 
 {% endblock %}

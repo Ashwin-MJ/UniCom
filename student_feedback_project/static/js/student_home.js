@@ -1,14 +1,10 @@
 	function sortByPoints(){
 		var list, i, switching, b, shouldSwitch;
-	  list = document.getElementById("fb-list");
+	  list = document.getElementsByClassName("card");
 	  switching = true;
-	  /*Make a loop that will continue until
-	  no switching has been done:*/
 	  while (switching) {
-	    //start by saying: no switching is done:
 	    switching = false;
-	    b = list.getElementsByTagName("LI");
-	    //Loop through all list-items:
+	    b = list.getElementById("points");
 	    for (i = 0; i < (b.length - 1); i++) {
 	      //start by saying there should be no switching:
 	      shouldSwitch = false;
