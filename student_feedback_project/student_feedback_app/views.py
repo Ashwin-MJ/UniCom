@@ -16,9 +16,8 @@ def student_home(request):
     #get feedback given in this month; use __gt for '>'
     d = timezone.now().month
     feedback = Feedback.objects.filter(date_given__month=d)
-    context_dict["feedback"] = feedback
-                                       
-    return render(request, 'student_feedback_app/student_home.html')
+    context_dict["feedback"] = Feedback.objects.all()                                     
+    return render(request, 'student_feedback_app/student_home.html', 			context=context_dict)
     
 def all_feedback(request):
     return HttpResponse("This page shows all of my feedback")

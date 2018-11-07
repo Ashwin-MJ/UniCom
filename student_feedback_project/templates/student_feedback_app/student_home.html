@@ -6,20 +6,22 @@
 			<h2 class="w3-sandybrown">Feedback</h2>
 			<div class="w3-container">
 				{% if feedback %}
-				<ul class="list-unstyled">
+				<ul class="list-unstyled" id="fb-list">
 					{% for fb in feedback %}
 					<li>
-						{{feedback.category}}
+						{{ fb.points }}
 					</li>
 					{% endfor %}
 				</ul>
 				{% else %}
 				<strong> No feedback to show </strong>
 				{% endif %}
-				<button type="button" class="btn btn-default" style="border-top:1pt;background-color:burlywood;width:100%;">Sort by score</button>
+				<button onclick="sortByPoints()" type="button" class="btn btn-default">Sort by points</button>
 			</div>
 		</div>
 	</div>
+	{% block js-link %}
+		<script src="/static/js/student_home.js"></script>
+	{% endblock %}
+
 {% endblock %}
-
-

@@ -38,7 +38,7 @@
       height: 100px;
       background-color: teal!important;
     ">
-      
+
       <div class "container">
         <a class="navbar-brand" href="#">Uni-Com</a>
       </div>
@@ -75,13 +75,14 @@
 
     <!-- Page Content -->
 	{% block body_block %}
-	
 	{% endblock %}
+
 
     <!-- Bootstrap core JavaScript -->
     <script src="vendor/jquery/jquery.min.js"></script>
     <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
+    {% block js-link %}		
+    {% endblock %}
   </body>
 
 </html>
