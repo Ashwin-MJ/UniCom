@@ -1,13 +1,16 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from .models import LecturerProfile,Feedback,Class,StudentProfile
+from .forms import *
 
 # Create your views here.
 def index(request):
     return HttpResponse("This is the homepage")
 
+
 def login(request):
     return HttpResponse("This is the login/sign up page")
+
 
 def student_home(request):
     return render(request, 'student_feedback_app/student_home.html')
@@ -15,8 +18,10 @@ def student_home(request):
 def all_feedback(request):
     return HttpResponse("This page shows all of my feedback")
 
+
 def my_classes(request):
     return HttpResponse("This page shows all of my classes")
+
 
 def lecturer_home(request):
     return HttpResponse("This is the homepage for Lecturer")
@@ -55,6 +60,8 @@ def lecturer_class(request,subject_slug):
 
     return render(request,'student_feedback_app/lecturer_class.html',context_dict)
 
+
+
 def lecturer_view_student(request):
     return HttpResponse("This page is to view a student's page from a Lecturer's perspective")
 
@@ -88,4 +95,20 @@ def lecturer_all_classes(request,lecturer_number):
     return render(request,'student_feedback_app/lecturer_classes.html',context_dict)
 
 def create_class(request):
-    return HttpResponse("This is to create a class")
+    form = classForm()
+    if request.method == 'POST':
+        form = classForm(request.POST)
+        if form.is_valid():
+            if request.POST.get("create_class"):
+                subject = Class.objects.get_or_create(class_name=form.cleaned_data["class_name"],
+                                                      class_description=form.cleaned_data["class_description"])
+                LecturerProfile.Classes.add(subject)
+
+
+            form.save(commit=True)
+            return index(request)
+        else:
+            print(form.errors)
+    return render(request, 'student_feedback_app/create_class.html', {'form': form})
+
+

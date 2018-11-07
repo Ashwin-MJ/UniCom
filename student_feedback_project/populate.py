@@ -13,11 +13,14 @@ def populate():
 
 	classes = [
 		{"subject": "Maths1Q",
-		"class_code": "MAT1Q"},
+		"class_code": "MAT1Q",
+		"class_description":"A base look at mathematical functions in the real world"},
 		{"subject": "ArtHistory01",
-		"class_code": "ARH01"},
+		"class_code": "ARH01",
+		"class_description":"A history of art between Middle Ages and High Renaissance periods"},
 		{"subject": "Polish01",
-		"class_code": "POL01"}
+		"class_code": "POL01",
+		"class_description":"An introductory class on the polish language"},
 		]
 
 	students = [
@@ -97,7 +100,7 @@ def populate():
 
 
 	for presentClass in classes:
-		cla = add_class(presentClass.get('subject'),presentClass.get('class_code'))
+		cla = add_class(presentClass.get('subject'),presentClass.get('class_code'), presentClass.get('class_description'))
 
 	for student in students:
 		stud = add_student(student.get('name'),student.get('student_number'),student.get('email'),
@@ -116,6 +119,7 @@ def populate():
 	print("Classes Added")
 	for each_class in Class.objects.all():
 		print("Subject: " + each_class.subject)
+		print("\tClass Description: "+ each_class.class_description)
 		print("\tSubject_Slug: " + each_class.subject_slug)
 		print("\tClass_Code: " + each_class.class_code)
 		print("\tLecturer: " + each_class.lecturer.lecturer.username)
@@ -165,8 +169,8 @@ def populate():
 		print("\tClass: " + fb.which_class.subject)
 
 # Helper function to add a new class
-def add_class(subject,class_code):
-	cla = Class.objects.get_or_create(subject=subject,class_code=class_code)[0]
+def add_class(subject,class_code, class_description):
+	cla = Class.objects.get_or_create(subject=subject,class_code=class_code, class_description=class_description)[0]
 	cla.save()
 	return cla
 

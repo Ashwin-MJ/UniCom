@@ -20,6 +20,7 @@ class StudentProfile(models.Model):
 
 class Class(models.Model):
         subject = models.CharField(max_length=40)
+        class_description = models.CharField(max_length=200, default="")
         subject_slug = models.SlugField(max_length=50, default='empty_slug')
         students = models.ManyToManyField('StudentProfile')#, null=True, blank=True)
         lecturer = models.ForeignKey('LecturerProfile', on_delete=models.CASCADE, null=True, blank=True)
