@@ -1,28 +1,56 @@
 {% extends 'student_feedback_app/base.html' %}
 
 {% block title_block %}
-Create a new class
+Create a Class<br />
+{{ lecturer.lecturer.username }}
 {% endblock %}
 
-
 {% block body_block %}
-<h1> Create a new class</h1>
-
 <div>
-    <form id="" method="post" action="/lecturer/classes/">
+    <form id="" method="post" action="">
         {% csrf_token %}
         {% for hidden in form.hidden_fields %}
             {{ hidden }}
         {% endfor %}
-        {% for field in form.visible_fields %}
-                    <br>
-                    {{ field.errors }}
-                    {{ field.help_text }}
-                    {{ field }}
-        {% endfor %}
-        <br>
+
+        <div class="container">
+            <div class="card" style="idth:40%; margin-left:25px; margin-top:25px;">
+                <h3 class="card-body text-center" >Create a Class</h3>
+                <div class="card-body">
+                    {% for field in form.visible_fields %}
+
+                        <br />
+                        {{ field.errors }}
+                        {{ field.help_text }}
+                        {{ field }}
+                    {% endfor %}
+
+                </div>
+            </div>
+        </div>
+
     <input type="submit" name="submit" value="Create Class" /> </form>
 
 </div>
-
 {% endblock %}
+
+
+        <!--<div class="card" style="padding-left:10px">-->
+            <!--<h5 class="card-body text-left"> {{field.help_text}}</h5>-->
+            <!--{{field}}-->
+
+        <!--</div>-->
+          <!--{% endfor %}}-->
+          <!--<div>-->
+              <!--<h3> Submit </h3>-->
+              <!--<input type="submit" name="submit" value="create"/>-->
+
+          <!--</div>-->
+      <!--</div>-->
+    <!--</div>-->
+<!--</div>-->
+<!--</form>-->
+
+
+
+

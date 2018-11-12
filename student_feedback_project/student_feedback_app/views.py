@@ -1,7 +1,14 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from .models import LecturerProfile,Feedback,Class,StudentProfile,User
+from .models import *
 from .forms import *
+import string
+import random
+
+
+def class_code_generator(size = 7, chars= string.ascii_uppercase + string.digits):
+    return ''.join(random.choice(chars) for _ in range(size))
+
 
 # Create your views here.
 def index(request):
@@ -101,23 +108,113 @@ def lecturer_all_classes(request):
     return render(request,'student_feedback_app/lecturer_classes.html',context_dict)
 
 def create_class(request):
-    context_dict = {}
-    if request.user.is_lecturer:
-        form = classForm()
-        if request.method == 'POST':
-            form = classForm(request.POST)
-            if form.is_valid():
-                if request.POST.get("create_class"):
-                    lecturer = LecturerProfile.objects.get(lecturer=request.user)
-                    subject = Class.objects.get_or_create(class_name=form.cleaned_data["class_name"],
-                                                          class_description=form.cleaned_data["class_description"],
-                                                          lecturer=lecturer)
-                    #LecturerProfile.Classes.add(subject)
-                form.save(commit=True)
-                return index(request)
-            else:
-                print(form.errors)
-    else:
+
+    contextDict = {}
+    if not request.user.is_lecturer:
         return HttpResponse("You are not allowed here")
 
-    return render(request, 'student_feedback_app/create_class.html', {'form':form})
+
+    try:
+        lect = LecturerProfile.objects.get(lecturer=request.user)
+        contextDict["lecturer"] = lect
+        print("")
+        print("about to check is POST")
+        if request.method == 'POST':
+            form = classForm(request.POST)
+            print("")
+            print("about to check is valid")
+            if form.is_valid():
+                newClass = form.save(commit=False)
+
+                newClass.lecturer = lect
+                newClass.save()
+
+                return lecturer_all_classes(request)
+
+            else:
+                print("")
+                print("wasnt valid")
+                print(form.errors)
+
+        else:
+            print("")
+            print("Wasnt POST")
+            form = classForm()
+
+        contextDict["form"] = form
+        return render(request, 'student_feedback_app/create_class.html', contextDict)
+
+
+    except:
+        return HttpResponse("something went wrong")
+
+
+
+
+
+
+    # if request.method == "POST":
+    #     form = classForm(request.POST)
+    #
+    #     # Getting the profile of the user to see whether they are a tutor or not
+    #
+    #     profile = User.objects.get(user=request.user)
+    #
+    #     if form.is_valid():
+    #         # If the user is a student then they cannot create a lab and course and they can only be
+    #         # enrolled in 1 lab per course, whereas a tutor can be in as many labs as they want
+    #         # and can create labs and courses
+    #
+    #
+    #         newClass = Class.objects.get_or_create(subject=form.cleaned_data["subject"],
+    #                                                class_description=form.cleaned_data["class_description"],
+    #                                                lecturer=User.id_number,
+    #                                                class_code=class_code_generator())
+    #
+    #         User.add(newClass)
+    #
+    #         newClass.save()
+    #
+    #         return render(request, "lecturer/classes", contextDict)
+    #
+    # contextDict["form"] = form
+    # return render(request, "student_feedback_app/create_class.html", contextDict)
+
+    # if request.user.is_lecturer:
+    #
+    #     print(" ")
+    #     print("user is lecturer")
+    #     form = classForm()
+    #     print(request.method)
+    #     if request.method == 'GET':
+    #         print("")
+    #         print("request method equals post")
+    #         form = classForm(request.POST)
+    #         if form.is_valid():
+    #
+    #             lecturer = LecturerProfile.objects.get(lecturer=request.user)
+    #             subject = Class.objects.get_or_create(subject=form.cleaned_data["subject"],
+    #                                                   class_description=form.cleaned_data["class_description"],
+    #                                                   lecturer=lecturer,
+    #                                                   class_code=class_code_generator())
+    #             Class.add
+    #             form.save(commit=True)
+    #             return index(request)
+    #         else:
+    #             print("")
+    #             print(form.errors)
+    #
+    #     else:
+    #         print("")
+    #         print("request method fail")
+    # else:
+    #     return HttpResponse("You are not allowed here")
+    #
+    # return render(request, 'student_feedback_app/create_class.html', {'form':form})
+
+
+
+
+
+
+
