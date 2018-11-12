@@ -1,16 +1,15 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse,HttpResponseRedirect
 from .models import LecturerProfile,Feedback,Class,StudentProfile,User
-from .forms import *
+from .forms import classForm,FeedbackForm
+from django.shortcuts import render_to_response
+from django.template import RequestContext
+
+import datetime
 
 # Create your views here.
 def index(request):
     return HttpResponse("This is the homepage")
-
-
-def login(request):
-    return HttpResponse("This is the login/sign up page")
-
 
 def student_home(request):
     return render(request, 'student_feedback_app/student_home.html')
@@ -22,9 +21,21 @@ def all_feedback(request):
 def my_classes(request):
     return HttpResponse("This page shows all of my classes")
 
-
 def lecturer_home(request):
-    return HttpResponse("This is the homepage for Lecturer")
+    context_dict = {}
+    if request.user.is_lecturer:
+        try:
+            lect = LecturerProfile.objects.get(lecturer=request.user)
+            fb = lect.feedback_set.all().order_by('-datetime')
+            classes = lect.class_set.all()
+            context_dict['lecturer'] = lect
+            context_dict['classes'] = classes
+            context_dict['feedback'] = fb
+        except:
+            return HttpResponse('Something has gone wrong')
+    else:
+        return HttpResponse("You are not allowed here")
+    return render(request,'student_feedback_app/lecturer_home.html',context_dict)
 
 def my_provided_feedback(request):
     context_dict = {}
@@ -64,26 +75,63 @@ def lecturer_class(request,subject_slug):
     return render(request,'student_feedback_app/lecturer_class.html',context_dict)
 
 
-def lecturer_view_student(request):
-    return HttpResponse("This page is to view a student's page from a Lecturer's perspective")
-
-def add_feedback(request,student_number):
+def lecturer_view_student(request,student_number):
     context_dict = {}
     if request.user.is_lecturer:
-        lect = LecturerProfile.objects.get(lecturer=request.user)
         try:
+            lect = LecturerProfile.objects.get(lecturer=request.user)
             stud_user = User.objects.get(id_number=student_number)
             stud = StudentProfile.objects.get(student=stud_user)
             fb = stud.feedback_set.all()
+            classes = stud.classes.all()
+            context_dict['lecturer'] = lect
             context_dict['student'] = stud
             context_dict['feedback'] = fb
+            context_dict['classes'] = classes
         except:
-            context_dict['student'] = None
-            context_dict['feedback'] = None
-            return HttpResponse("Couldn't find the student")
+            return HttpResponse("Student does not exist")
     else:
-        return HttpResponse("you are not allowed here")
+        return HttpResponse("You are not allowed here")
+    return render(request,'student_feedback_app/lecturer_view_student.html',context_dict)
 
+def add_feedback(request,subject_slug,student_number):
+    if not request.user.is_lecturer:
+        return HttpResponse("you are not allowed here")
+    context_dict = {}
+    try:
+        lect = LecturerProfile.objects.get(lecturer=request.user)
+        stud_user = User.objects.get(id_number=student_number)
+        stud = StudentProfile.objects.get(student=stud_user)
+        fb = stud.feedback_set.all()
+        context_dict['lecturer'] = lect
+        context_dict['student'] = stud
+        context_dict['feedback'] = fb
+        cla = Class.objects.get(subject_slug=subject_slug)
+        context_dict['class'] = cla
+
+        context = RequestContext(request)
+        if request.method == 'POST':
+            form = FeedbackForm(request.POST)
+            if form.is_valid():
+                new_fb = form.save(commit=False)
+                new_fb.student = stud
+                stud.score += new_fb.points
+                new_fb.lecturer = lect
+                new_fb.which_class = cla
+                new_fb.datetime = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                stud.save()
+                new_fb.save()
+                return my_provided_feedback(request)
+            else:
+                print(form.errors)
+        else:
+            form = FeedbackForm()
+        context_dict['form'] = form
+        return render(request,'student_feedback_app/add_feedback.html',context_dict)
+    except:
+        context_dict['student'] = None
+        context_dict['feedback'] = None
+        return HttpResponse("Couldn't find the student")
     return render(request,'student_feedback_app/add_feedback.html',context_dict)
 
 def lecturer_all_classes(request):

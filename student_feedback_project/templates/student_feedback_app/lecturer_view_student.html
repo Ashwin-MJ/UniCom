@@ -1,0 +1,56 @@
+{% extends 'student_feedback_app/base.html' %}
+
+{% block title_block %}
+{{ student.student.username }}<br />
+{{ lecturer.lecturer.username }}
+{% endblock%}
+
+
+{% block body_block %}
+<div style = "width:100%; display: table;">
+  <div style = "display: table-row;">
+    <div  style = "display: table-cell;">
+      <div class="card" style="margin-left:25px; margin-top:25px;
+                                margin-right:25px; margin-bottom:25px;">
+        <h3 class="card-body text-center">{{ student.student.username }}'s Classes</h3>
+        <div class="card-body" style="padding-top:0px">
+          {% for class in classes %}
+              <a style="text-decoration: none; color: black" href="{% url 'lecturer_class' class.subject_slug%}">
+                <div class="card" style="padding-left:10px; margin-top:10px">
+                  <br style="clear:both;"/>
+                  <b>{{ class.subject }}</b>
+                  <p>
+                    <em>{{ class.class_description }}</em>
+                  </p>
+                  </div>
+                </a>
+            {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="height: 80px; margin-left:25px; margin-top:25px;
+                              margin-right:25px; margin-bottom:25px;">
+      <h3 class="card-body text-left">{{ student.student.username }}'s Current Score: {{ student.score }}</h3>
+    </div>
+    <div class="card" style="margin-left:25px; margin-top:25px;
+                              margin-right:25px; margin-bottom:25px;">
+      <h5 class="card-body text-left" style="padding-bottom:0px">Recent Feedback for Student</h5>
+      <div class="card-body" style="padding-top:0px">
+        <p class="card-text"></p>
+        {% for fb in feedback %}
+        <div class="card" style="padding-left:10px; ">
+          <b>{{ fb.category }}</b>
+          <p>
+            {{ fb.message }}<br />
+            {{ fb.points }}
+          </p>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+    </div>
+  </div>
+
+
+{% endblock %}
