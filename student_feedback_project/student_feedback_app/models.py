@@ -22,24 +22,25 @@ class User(AbstractUser):
 class StudentProfile(models.Model):
     student = models.OneToOneField(User, on_delete=models.CASCADE,primary_key=True)
     score = models.IntegerField(default=0)
-    classes = models.ManyToManyField('Class')
+    courses = models.ManyToManyField('Course')
 
-class Class(models.Model):
+class Course(models.Model):
     subject = models.CharField("Subject", max_length=40,)
-    class_description = models.CharField(max_length=200, default="")
+    course_description = models.CharField(max_length=200, default="")
     subject_slug = models.SlugField(max_length=50, default='empty_slug')
     students = models.ManyToManyField('StudentProfile')#, null=True, blank=True)
     lecturer = models.ForeignKey('LecturerProfile', on_delete=models.CASCADE, null=True, blank=True)
-    class_code = models.CharField(max_length=20, primary_key=True)
-    class_token = models.CharField(max_length=7, default = "")
+    course_code = models.CharField(max_length=20, primary_key=True)
+    course_token = models.CharField(max_length=7, default = "")
+
     def save(self, *args, **kwargs):
-        self.subject_slug = slugify(self.class_code)
-        super(Class, self).save(*args, **kwargs)
+        self.subject_slug = slugify(self.course_code)
+        super(Course, self).save(*args, **kwargs)
 
 
 class LecturerProfile(models.Model):
     lecturer = models.OneToOneField(User, on_delete=models.CASCADE,primary_key=True)
-    # Can access lecturers classes using LecturerProfile.class_set.all()
+    # Can access lecturers courses using LecturerProfile.course_set.all()
     # Can access lecturers feedback using LectureProfile.feedback_set.all()
 
 class Feedback(models.Model):
@@ -48,8 +49,8 @@ class Feedback(models.Model):
     points = models.IntegerField(default=0)
     lecturer = models.ForeignKey('LecturerProfile', on_delete=models.CASCADE, null=True, blank=True)
     student = models.ForeignKey('StudentProfile', on_delete=models.CASCADE, null=True, blank=True)
-    which_class = models.ForeignKey('Class', on_delete=models.CASCADE, null=True, blank=True)
-    datetime = models.DateTimeField(default=timezone.now, blank=False)
+    which_course = models.ForeignKey('Course', on_delete=models.CASCADE, null=True, blank=True)
+    datetime_given = models.DateTimeField(default=timezone.now, blank=False)
 
     category = models.ForeignKey('Category', on_delete=models.CASCADE, null=True, blank=True)
 
