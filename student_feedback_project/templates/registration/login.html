@@ -1,14 +1,25 @@
 {% extends "student_feedback_app/base.html" %}
 
+{% block title_block %}
+Log in
+{% endblock %}
+
 {% block body_block %}
-<h1>Login</h1>
-        <form method="post" action=".">
-                {% csrf_token %}
-                {{ form.as_p }}
+<div>
+  <form id="login_form" method="post" action="">
+    {% csrf_token %}
 
-                <input type="submit" value="Log in" />
-                <input type="hidden" name="next" value="{% url 'lecturer_home' %}" />
-                </form>
-
+    <div class="container">
+      <div class="card" style="width:40%; margin-left:25px; margin-top:25px; align-items:center">
+        <h3 class="card-body text-center">Log In</h3>
+        <div class="card-body">
+          {{ form.as_p }}
+        </div>
+        <input type="submit" value="Log in" style="width:50%;"/>
+        <input type="hidden" name="next" value="{% url 'lecturer_home' %}" />
         <p>Not  a member? <a href="{% url 'registration_register' %}">Register</a>!</p>
+      </div>
+    </div>
+  </form>
+</div>
 {% endblock %}
