@@ -1,7 +1,7 @@
 import os
 os.environ.setdefault('DJANGO_SETTINGS_MODULE',
 			'student_feedback_project.settings')
-
+from student_feedback_app.additional import *
 import django
 django.setup()
 from student_feedback_app.models import StudentProfile, Class, LecturerProfile, Feedback, Category
@@ -123,6 +123,7 @@ def populate():
 		print("\tClass Description: "+ each_class.class_description)
 		print("\tSubject_Slug: " + each_class.subject_slug)
 		print("\tClass_Code: " + each_class.class_code)
+		print("\tClass_token: "+ each_class.class_token)
 		print("\tLecturer: " + each_class.lecturer.lecturer.username)
 		print("\tStudents: ")
 		for student in each_class.students.all():
@@ -172,6 +173,7 @@ def populate():
 # Helper function to add a new class
 def add_class(subject,class_code, class_description):
 	cla = Class.objects.get_or_create(subject=subject,class_code=class_code, class_description=class_description)[0]
+	cla.class_token = class_code_generator()
 	cla.save()
 	return cla
 

@@ -1,10 +1,9 @@
 from django.shortcuts import render
 from django.http import HttpResponse,HttpResponseRedirect
 from .models import LecturerProfile,Feedback,Class,StudentProfile,User
-from .forms import classForm,FeedbackForm
+from .forms import ClassForm,FeedbackForm
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-
 import datetime
 
 # Create your views here.
@@ -149,23 +148,34 @@ def lecturer_all_classes(request):
     return render(request,'student_feedback_app/lecturer_classes.html',context_dict)
 
 def create_class(request):
-    context_dict = {}
-    if request.user.is_lecturer:
-        form = classForm()
-        if request.method == 'POST':
-            form = classForm(request.POST)
-            if form.is_valid():
-                if request.POST.get("create_class"):
-                    lecturer = LecturerProfile.objects.get(lecturer=request.user)
-                    subject = Class.objects.get_or_create(class_name=form.cleaned_data["class_name"],
-                                                          class_description=form.cleaned_data["class_description"],
-                                                          lecturer=lecturer)
-                    #LecturerProfile.Classes.add(subject)
-                form.save(commit=True)
-                return index(request)
-            else:
-                print(form.errors)
-    else:
+
+    contextDict = {}
+    if not request.user.is_lecturer:
         return HttpResponse("You are not allowed here")
 
-    return render(request, 'student_feedback_app/create_class.html', {'form':form})
+
+    try:
+        lect = LecturerProfile.objects.get(lecturer=request.user)
+        contextDict["lecturer"] = lect
+
+        if request.method == 'POST':
+            form = ClassForm(request.POST)
+            if form.is_valid():
+                newClass = form.save(commit=False)
+                newClass.lecturer = lect
+                newClass.save()
+                return lecturer_all_classes(request)
+
+            else:
+
+                print(form.errors)
+
+        else:
+            form = ClassForm()
+
+        contextDict["form"] = form
+        return render(request, 'student_feedback_app/create_class.html', contextDict)
+
+
+    except:
+        return HttpResponse("something went wrong")
