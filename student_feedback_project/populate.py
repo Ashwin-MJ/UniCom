@@ -4,7 +4,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE',
 from student_feedback_app.additional import *
 import django
 django.setup()
-from student_feedback_app.models import StudentProfile, Class, LecturerProfile, Feedback
+from student_feedback_app.models import StudentProfile, Class, LecturerProfile, Feedback, Category
 from django.template.defaultfilters import slugify
 from django.contrib.auth import get_user_model
 User = get_user_model()
@@ -78,21 +78,21 @@ def populate():
 	feedback = [
 		{"feedback_id": 1,
 		"message": "Good job answering the question today!",
-		"category": "listening",
+		"category": "Listening",
 		"points": 4,
 		"lecturer": "00001",
 		"student": "1402789",
 		"class_code" : "MAT1Q"},
 		{"feedback_id": 2,
 		"message": "You were very active in today's lesson!",
-		"category": "cooperation",
+		"category": "Cooperation",
 		"points": 3,
 		"lecturer": "00002",
 		"student": "1402001",
 		"class_code" : "MAT1Q"},
 		{"feedback_id": 3,
 		"message": "Great marks in todays quiz!",
-		"category": "participation",
+		"category": "Participation",
 		"points": 5,
 		"lecturer": "00002",
 		"student": "1402781",
@@ -142,7 +142,7 @@ def populate():
 			print("\t\t" + each_class.subject)
 		print("\tFeedback: ")
 		for fb in student.feedback_set.all():
-			print("\t\t" + str(fb.points) + " points for " + fb.category + " from " + fb.lecturer.lecturer.username)
+			print("\t\t" + str(fb.points) + " points for " + fb.category.name + " from " + fb.lecturer.lecturer.username)
 
 	print("-----------------")
 	print("Lecturers Added:")
@@ -156,7 +156,7 @@ def populate():
 			print("\t\t" + each_class.subject)
 		print("\tFeedback Given:")
 		for fb in lecturer.feedback_set.all():
-			print("\t\t" + str(fb.points) + " points given to " + fb.student.student.username + " for " + fb.category)
+			print("\t\t" + str(fb.points) + " points given to " + fb.student.student.username + " for " + fb.category.name)
 
 
 	print("-----------------")
@@ -164,7 +164,7 @@ def populate():
 	for fb in Feedback.objects.all():
 		print("Feedback ID: " + str(fb.feedback_id))
 		print("\tMessage: " + fb.message)
-		print("\tCategory: " + fb.category)
+		print("\tCategory: " + fb.category.name)
 		print("\tPoints Awarded: " + str(fb.points))
 		print("\tLecturer: " + fb.lecturer.lecturer.username)
 		print("\tStudent: " + fb.student.student.username)
@@ -196,6 +196,7 @@ def add_student(name,student_number,email,password,score,classes):
 		cla = Class.objects.get(class_code=each_class)
 		student_prof.classes.add(cla)
 		cla.students.add(student_prof)
+		cla.save()
 
 	student_prof.save()
 	return student_prof
@@ -222,7 +223,7 @@ def add_lecturer(name,lecturer_number,password,email,classes):
 # Helper function to add feedback
 def add_feedback(feedback_id,category,points,lecturer,student,class_code,message):
 	fb = Feedback.objects.get_or_create(feedback_id=feedback_id)[0]
-	fb.category = category
+	fb.category = Category.objects.get_or_create(name=category)[0]
 	fb.points = points
 	fb.message = message
 	fb.which_class = Class.objects.get(class_code=class_code)

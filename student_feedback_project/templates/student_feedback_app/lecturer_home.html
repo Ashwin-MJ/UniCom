@@ -1,11 +1,10 @@
 {% extends 'student_feedback_app/base.html' %}
 
 {% block title_block %}
-My Classes<br />
-{{ lect.lecturer.username }}
+Home Page<br />
+{{ lecturer.lecturer.username }}
 {% endblock%}
 
-<link rel="stylesheet" type="text/css" href="custom.css" />
 
 {% block body_block %}
 <div class="container">
@@ -23,7 +22,7 @@ My Classes<br />
                   Students: {{ class.students.all|length }}
                 </p>
                 </div>
-            </a>
+              </a>
           {% endfor %}
       </div>
     </div>
@@ -32,15 +31,12 @@ My Classes<br />
       <div class="card-body" style="padding-top:0px">
         <p class="card-text"></p>
         {% for fb in feedback %}
-        <div class="card" style="padding-left:10px; margin-top:10px"">
+        <div class="card" style="padding-left:10px; margin-top:10px">
           <b>{{ fb.category }}</b>
           <p>
             {{ fb.message }}<br />
-            <a style="text-decoration: none; color: black" href="{% url 'lecturer_view_student' fb.student.student.id_number%}">
-              <em>{{fb.student.student.username}}</em>
-            </a><br />
-            {{ fb.points }}<br />
-            {{ fb.datetime }}
+            {{ fb.student.student.username }}<br />
+            {{ fb.points }}
           </p>
           </div>
           {% endfor %}
