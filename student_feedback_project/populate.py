@@ -1,13 +1,16 @@
 import os
 os.environ.setdefault('DJANGO_SETTINGS_MODULE',
 			'student_feedback_project.settings')
-
+from student_feedback_app.additional import *
 import django
 django.setup()
-from student_feedback_app.models import StudentProfile, Class, LecturerProfile, Feedback
+from student_feedback_app.models import StudentProfile, Class, LecturerProfile, Feedback, Category
 from django.template.defaultfilters import slugify
 from django.contrib.auth.models import User
 from django.utils import timezone
+from django.contrib.auth import get_user_model
+User = get_user_model()
+
 
 
 def populate():
@@ -78,21 +81,21 @@ def populate():
 	feedback = [
 		{"feedback_id": 1,
 		"message": "Good job answering the question today!",
-		"category": "listening",
+		"category": "Listening",
 		"points": 4,
 		"lecturer": "00001",
 		"student": "1402789",
 		"class_code" : "MAT1Q"},
 		{"feedback_id": 2,
 		"message": "You were very active in today's lesson!",
-		"category": "cooperation",
+		"category": "Cooperation",
 		"points": 3,
 		"lecturer": "00002",
 		"student": "1402001",
 		"class_code" : "MAT1Q"},
 		{"feedback_id": 3,
 		"message": "Great marks in todays quiz!",
-		"category": "participation",
+		"category": "Participation",
 		"points": 5,
 		"lecturer": "00002",
 		"student": "1402781",
@@ -123,39 +126,40 @@ def populate():
 		print("\tClass Description: "+ each_class.class_description)
 		print("\tSubject_Slug: " + each_class.subject_slug)
 		print("\tClass_Code: " + each_class.class_code)
+		print("\tClass_token: "+ each_class.class_token)
 		print("\tLecturer: " + each_class.lecturer.lecturer.username)
 		print("\tStudents: ")
 		for student in each_class.students.all():
-			print("\t\t" + student.student_number + " " + student.student.username)
+			print("\t\t" + student.student.id_number + " " + student.student.username)
 
 	print("-----------------")
 	print("Students Added:")
 	for student in StudentProfile.objects.all():
-		print("Student Number: " + student.student_number)
+		print("Student Number: " + student.student.id_number)
 		print("\tStudent Email: " + student.student.email)
 		print("\tStudent Name: " + student.student.username)
-		print("\tStudent Slug: " + student.student_slug)
+		print("\tStudent Slug: " + student.student.slug)
 		print("\tScore: " + str(student.score))
 		print("\tClasses: ")
 		for each_class in student.classes.all():
 			print("\t\t" + each_class.subject)
 		print("\tFeedback: ")
 		for fb in student.feedback_set.all():
-			print("\t\t" + str(fb.points) + " points for " + fb.category + " from " + fb.lecturer.lecturer.username)
+			print("\t\t" + str(fb.points) + " points for " + fb.category.name + " from " + fb.lecturer.lecturer.username)
 
 	print("-----------------")
 	print("Lecturers Added:")
 	for lecturer in LecturerProfile.objects.all():
-		print("Lecturer Number: " + lecturer.lecturer_number)
+		print("Lecturer Number: " + lecturer.lecturer.id_number)
 		print("\tLecturer Email: " + lecturer.lecturer.email)
 		print("\tLecturer Name: " + lecturer.lecturer.username)
-		print("\tLecturer Slug: " + lecturer.lecturer_slug)
+		print("\tLecturer Slug: " + lecturer.lecturer.slug)
 		print("\tClasses: ")
 		for each_class in lecturer.class_set.all():
 			print("\t\t" + each_class.subject)
 		print("\tFeedback Given:")
 		for fb in lecturer.feedback_set.all():
-			print("\t\t" + str(fb.points) + " points given to " + fb.student.student.username + " for " + fb.category)
+			print("\t\t" + str(fb.points) + " points given to " + fb.student.student.username + " for " + fb.category.name)
 
 
 	print("-----------------")
@@ -163,7 +167,7 @@ def populate():
 	for fb in Feedback.objects.all():
 		print("Feedback ID: " + str(fb.feedback_id))
 		print("\tMessage: " + fb.message)
-		print("\tCategory: " + fb.category)
+		print("\tCategory: " + fb.category.name)
 		print("\tPoints Awarded: " + str(fb.points))
 		print("\tLecturer: " + fb.lecturer.lecturer.username)
 		print("\tStudent: " + fb.student.student.username)
@@ -173,6 +177,7 @@ def populate():
 # Helper function to add a new class
 def add_class(subject,class_code, class_description):
 	cla = Class.objects.get_or_create(subject=subject,class_code=class_code, class_description=class_description)[0]
+	cla.class_token = class_code_generator()
 	cla.save()
 	return cla
 
@@ -181,10 +186,12 @@ def add_student(name,student_number,email,password,score,classes):
 	# First get the User model associated with the student
 	student = User.objects.get_or_create(username=name,email=email)[0]
 	student.set_password(password)
+	student.id_number = student_number
+	student.is_student = True
 	student.save()
 
 	# Get the StudentProfile for the student
-	student_prof = StudentProfile.objects.get_or_create(student=student,student_number=student_number)[0]
+	student_prof = StudentProfile.objects.get_or_create(student=student)[0]
 	student_prof.score = score
 
 	for each_class in classes:
@@ -193,6 +200,7 @@ def add_student(name,student_number,email,password,score,classes):
 		cla = Class.objects.get(class_code=each_class)
 		student_prof.classes.add(cla)
 		cla.students.add(student_prof)
+		cla.save()
 
 	student_prof.save()
 	return student_prof
@@ -201,9 +209,11 @@ def add_student(name,student_number,email,password,score,classes):
 def add_lecturer(name,lecturer_number,password,email,classes):
 	lecturer = User.objects.get_or_create(username=name,email=email)[0]
 	lecturer.set_password(password)
+	lecturer.id_number = lecturer_number
+	lecturer.is_lecturer = True
 	lecturer.save()
 
-	lecturer_prof = LecturerProfile.objects.get_or_create(lecturer=lecturer,lecturer_number=lecturer_number)[0]
+	lecturer_prof = LecturerProfile.objects.get_or_create(lecturer=lecturer)[0]
 
 	for each_class in classes:
 		cla = Class.objects.get(class_code=each_class)
@@ -217,13 +227,15 @@ def add_lecturer(name,lecturer_number,password,email,classes):
 # Helper function to add feedback
 def add_feedback(feedback_id,category,points,lecturer,student,class_code,message):
 	fb = Feedback.objects.get_or_create(feedback_id=feedback_id)[0]
-	fb.category = category
+	fb.category = Category.objects.get_or_create(name=category)[0]
 	fb.points = points
 	fb.date_given = timezone.now()
 	fb.message = message
 	fb.which_class = Class.objects.get(class_code=class_code)
-	fb.lecturer = LecturerProfile.objects.get(lecturer_number=lecturer)
-	stud = StudentProfile.objects.get(student_number=student)
+	lect_user = User.objects.get(id_number=lecturer)
+	fb.lecturer = LecturerProfile.objects.get(lecturer=lect_user)
+	student_user = User.objects.get(id_number=student)
+	stud = StudentProfile.objects.get(student=student_user)
 	fb.student = stud
 	stud.score += points
 	stud.save()
