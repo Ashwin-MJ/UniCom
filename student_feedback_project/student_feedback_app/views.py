@@ -2,12 +2,6 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from .models import *
 from .forms import *
-import string
-import random
-
-
-def class_code_generator(size = 7, chars= string.ascii_uppercase + string.digits):
-    return ''.join(random.choice(chars) for _ in range(size))
 
 
 # Create your views here.
@@ -117,28 +111,20 @@ def create_class(request):
     try:
         lect = LecturerProfile.objects.get(lecturer=request.user)
         contextDict["lecturer"] = lect
-        print("")
-        print("about to check is POST")
+
         if request.method == 'POST':
             form = classForm(request.POST)
-            print("")
-            print("about to check is valid")
             if form.is_valid():
                 newClass = form.save(commit=False)
-
                 newClass.lecturer = lect
                 newClass.save()
-
                 return lecturer_all_classes(request)
 
             else:
-                print("")
-                print("wasnt valid")
+
                 print(form.errors)
 
         else:
-            print("")
-            print("Wasnt POST")
             form = classForm()
 
         contextDict["form"] = form

@@ -14,42 +14,31 @@ Create a Class<br />
         {% endfor %}
 
         <div class="container">
-            <div class="card" style="idth:40%; margin-left:25px; margin-top:25px;">
+            <div class="card" style="width:40%; margin-left:25px; margin-top:25px;">
                 <h3 class="card-body text-center" >Create a Class</h3>
                 <div class="card-body">
-                    {% for field in form.visible_fields %}
+                {% for field in form.visible_fields %}
+                    <div class="card" style="padding-left:10px">
 
-                        <br />
-                        {{ field.errors }}
-                        {{ field.help_text }}
-                        {{ field }}
+                    {{ field.errors }}<br />
+                    {{ field.help_text }}<br />
+                    {{ field }}<br />
+                    </div>
                     {% endfor %}
+                    <input type="submit" name="submit" value="Create Class" /> </form>
 
                 </div>
+
             </div>
+
         </div>
 
-    <input type="submit" name="submit" value="Create Class" /> </form>
 
 </div>
 {% endblock %}
 
 
-        <!--<div class="card" style="padding-left:10px">-->
-            <!--<h5 class="card-body text-left"> {{field.help_text}}</h5>-->
-            <!--{{field}}-->
 
-        <!--</div>-->
-          <!--{% endfor %}}-->
-          <!--<div>-->
-              <!--<h3> Submit </h3>-->
-              <!--<input type="submit" name="submit" value="create"/>-->
-
-          <!--</div>-->
-      <!--</div>-->
-    <!--</div>-->
-<!--</div>-->
-<!--</form>-->
 
 
 

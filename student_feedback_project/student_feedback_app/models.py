@@ -29,7 +29,7 @@ class Class(models.Model):
         students = models.ManyToManyField('StudentProfile')#, null=True, blank=True)
         lecturer = models.ForeignKey('LecturerProfile', on_delete=models.CASCADE, null=True, blank=True)
         class_code = models.CharField(max_length=20, primary_key=True)
-
+        class_token = models.CharField(max_length=7, default = "")
         def save(self, *args, **kwargs):
             self.subject_slug = slugify(self.class_code)
             super(Class, self).save(*args, **kwargs)
