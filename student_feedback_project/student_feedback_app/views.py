@@ -22,7 +22,7 @@ def my_courses(request):
 
 def lecturer_home(request):
     context_dict = {}
-    if request.user.is_lecturer:
+    if request.user.is_authenticated and request.user.is_lecturer:
         try:
             lect = LecturerProfile.objects.get(lecturer=request.user)
             fb = lect.feedback_set.all().order_by('-datetime_given')
@@ -31,26 +31,29 @@ def lecturer_home(request):
             context_dict['courses'] = courses
             context_dict['feedback'] = fb
         except:
-            return HttpResponse('Something has gone wrong')
+            context_dict['error'] = "error"
+            return render(request,'student_feedback_app/error_page.html', context_dict)
     else:
-        return HttpResponse("You are not allowed here")
+        context_dict['error'] = "auth"
+        return render(request,'student_feedback_app/error_page.html', context_dict)
     return render(request,'student_feedback_app/lecturer_home.html',context_dict)
 
 def my_provided_feedback(request):
     context_dict = {}
-    if request.user.is_lecturer:
+    if request.user.is_authenticated and request.user.is_lecturer:
         lect = LecturerProfile.objects.get(lecturer=request.user)
         fb = lect.feedback_set.all()
         context_dict['lect'] = lect
         context_dict['feedback'] = fb
     else:
-        return HttpResponse("you are not allowed here")
+        context_dict['error'] = "auth"
+        return render(request,'student_feedback_app/error_page.html', context_dict)
 
     return render(request,'student_feedback_app/my_provided_feedback.html',context_dict)
 
 def lecturer_course(request,subject_slug):
     context_dict = {}
-    if request.user.is_lecturer:
+    if request.user.is_authenticated and request.user.is_lecturer:
         try:
             course = Course.objects.get(subject_slug=subject_slug)
             lect = course.lecturer
@@ -67,16 +70,18 @@ def lecturer_course(request,subject_slug):
             context_dict['lect'] = None
             context_dict['students'] = None
             context_dict['feedback'] = None
-            return HttpResponse("course does not exist")
+            context_dict['error'] = "no_course"
+            return render(request,'student_feedback_app/error_page.html', context_dict)
     else:
-        return HttpResponse("you are not allowed here")
+        context_dict['error'] = "auth"
+        return render(request,'student_feedback_app/error_page.html', context_dict)
 
     return render(request,'student_feedback_app/lecturer_course.html',context_dict)
 
 
 def lecturer_view_student(request,student_number):
     context_dict = {}
-    if request.user.is_lecturer:
+    if request.user.is_authenticated and request.user.is_lecturer:
         try:
             lect = LecturerProfile.objects.get(lecturer=request.user)
             stud_user = User.objects.get(id_number=student_number)
@@ -88,14 +93,17 @@ def lecturer_view_student(request,student_number):
             context_dict['feedback'] = fb
             context_dict['courses'] = courses
         except:
-            return HttpResponse("Student does not exist")
+            context_dict['error'] = "no_student"
+            return render(request,'student_feedback_app/error_page.html', context_dict)
     else:
-        return HttpResponse("You are not allowed here")
+        context_dict['error'] = "auth"
+        return render(request,'student_feedback_app/error_page.html', context_dict)
     return render(request,'student_feedback_app/lecturer_view_student.html',context_dict)
 
 def add_feedback(request,subject_slug,student_number):
-    if not request.user.is_lecturer:
-        return HttpResponse("you are not allowed here")
+    if not request.user.is_authenticated or not request.user.is_lecturer:
+        context_dict['error'] = "auth"
+        return render(request,'student_feedback_app/error_page.html', context_dict)
     context_dict = {}
     try:
         lect = LecturerProfile.objects.get(lecturer=request.user)
@@ -130,12 +138,13 @@ def add_feedback(request,subject_slug,student_number):
     except:
         context_dict['student'] = None
         context_dict['feedback'] = None
-        return HttpResponse("Couldn't find the student")
+        context_dict['error'] = "no_student"
+        return render(request,'student_feedback_app/error_page.html', context_dict)
     return render(request,'student_feedback_app/add_feedback.html',context_dict)
 
 def lecturer_all_courses(request):
     context_dict = {}
-    if request.user.is_lecturer:
+    if request.user.is_authenticated and request.user.is_lecturer:
         lect = LecturerProfile.objects.get(lecturer=request.user)
         courses = lect.course_set.all()
         fb = lect.feedback_set.all()
@@ -143,15 +152,17 @@ def lecturer_all_courses(request):
         context_dict['courses'] = courses
         context_dict['feedback'] = fb
     else:
-        return HttpResponse("You are not allowed here")
+        context_dict['error'] = "auth"
+        return render(request,'student_feedback_app/error_page.html', context_dict)
 
     return render(request,'student_feedback_app/lecturer_courses.html',context_dict)
 
 def create_course(request):
 
     contextDict = {}
-    if not request.user.is_lecturer:
-        return HttpResponse("You are not allowed here")
+    if not request.user.is_authenticated or not request.user.is_lecturer:
+        context_dict['error'] = "auth"
+        return render(request,'student_feedback_app/error_page.html', context_dict)
 
 
     try:
@@ -178,4 +189,5 @@ def create_course(request):
 
 
     except:
-        return HttpResponse("something went wrong")
+        context_dict['error'] = "error"
+        return render(request,'student_feedback_app/error_page.html', context_dict)

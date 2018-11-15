@@ -1,0 +1,49 @@
+{% extends 'student_feedback_app/base.html' %}
+
+{% block title_block %}
+Error page
+{% endblock%}
+
+
+{% block body_block %}
+
+{% if error == "auth" %}
+	
+	<div class="container">
+	  <div class="row">
+		<div class="col-sm">
+		</div>
+		<div class="col-sm">
+			{% if user.is_authenticated %}
+			{% else %}
+				You are not logged in </br>
+				</br>
+				Please <a class="nav-link" href="{% url 'auth_login' %}">Login</a> or <a class="nav-link" href="{% url 'registration_register' %}">Register</a> 
+			{% endif %}
+
+			{% if user.is_student %}
+				As a student you are not allowed here </br>
+				Go to <a class="nav-link" href="{% url 'student_home' %}">Homepage</a>
+			{% endif %}
+		</div>
+		<div class="col-sm">
+		</div>
+	  </div>
+	</div>
+
+{% endif %}
+
+
+{% if error == "error" %}
+	Something went wrong </br>
+{% endif %}
+
+{% if error == "no_course" %}
+	The course you are trying to access does not exist </br>
+{% endif %}
+
+{% if error == "no_student" %}
+	The student you are trying to access does not exist </br>
+{% endif %}
+
+{% endblock %}
