@@ -22,7 +22,7 @@ def my_courses(request):
 
 def lecturer_home(request):
     context_dict = {}
-    if request.user.is_lecturer:
+    if request.user.is_authenticated and request.user.is_lecturer:
         try:
             lect = LecturerProfile.objects.get(lecturer=request.user)
             fb = lect.feedback_set.all().order_by('-datetime_given')
@@ -33,24 +33,24 @@ def lecturer_home(request):
         except:
             return HttpResponse('Something has gone wrong')
     else:
-        return HttpResponse("You are not allowed here")
+        return render(request,'student_feedback_app/blocked_access.html')
     return render(request,'student_feedback_app/lecturer_home.html',context_dict)
 
 def my_provided_feedback(request):
     context_dict = {}
-    if request.user.is_lecturer:
+    if request.user.is_authenticated and request.user.is_lecturer:
         lect = LecturerProfile.objects.get(lecturer=request.user)
         fb = lect.feedback_set.all()
         context_dict['lect'] = lect
         context_dict['feedback'] = fb
     else:
-        return HttpResponse("you are not allowed here")
+        return render(request,'student_feedback_app/blocked_access.html')
 
     return render(request,'student_feedback_app/my_provided_feedback.html',context_dict)
 
 def lecturer_course(request,subject_slug):
     context_dict = {}
-    if request.user.is_lecturer:
+    if request.user.is_authenticated and request.user.is_lecturer:
         try:
             course = Course.objects.get(subject_slug=subject_slug)
             lect = course.lecturer
@@ -69,14 +69,14 @@ def lecturer_course(request,subject_slug):
             context_dict['feedback'] = None
             return HttpResponse("course does not exist")
     else:
-        return HttpResponse("you are not allowed here")
+        return render(request,'student_feedback_app/blocked_access.html')
 
     return render(request,'student_feedback_app/lecturer_course.html',context_dict)
 
 
 def lecturer_view_student(request,student_number):
     context_dict = {}
-    if request.user.is_lecturer:
+    if request.user.is_authenticated and request.user.is_lecturer:
         try:
             lect = LecturerProfile.objects.get(lecturer=request.user)
             stud_user = User.objects.get(id_number=student_number)
@@ -90,12 +90,12 @@ def lecturer_view_student(request,student_number):
         except:
             return HttpResponse("Student does not exist")
     else:
-        return HttpResponse("You are not allowed here")
+        return render(request,'student_feedback_app/blocked_access.html')
     return render(request,'student_feedback_app/lecturer_view_student.html',context_dict)
 
 def add_feedback(request,subject_slug,student_number):
-    if not request.user.is_lecturer:
-        return HttpResponse("you are not allowed here")
+    if not request.user.is_authenticated or not request.user.is_lecturer:
+        return render(request,'student_feedback_app/blocked_access.html')
     context_dict = {}
     try:
         lect = LecturerProfile.objects.get(lecturer=request.user)
@@ -135,7 +135,7 @@ def add_feedback(request,subject_slug,student_number):
 
 def lecturer_all_courses(request):
     context_dict = {}
-    if request.user.is_lecturer:
+    if request.user.is_authenticated and request.user.is_lecturer:
         lect = LecturerProfile.objects.get(lecturer=request.user)
         courses = lect.course_set.all()
         fb = lect.feedback_set.all()
@@ -143,15 +143,15 @@ def lecturer_all_courses(request):
         context_dict['courses'] = courses
         context_dict['feedback'] = fb
     else:
-        return HttpResponse("You are not allowed here")
+        return render(request,'student_feedback_app/blocked_access.html')
 
     return render(request,'student_feedback_app/lecturer_courses.html',context_dict)
 
 def create_course(request):
 
     contextDict = {}
-    if not request.user.is_lecturer:
-        return HttpResponse("You are not allowed here")
+    if not request.user.is_authenticated or not request.user.is_lecturer:
+        return render(request,'student_feedback_app/blocked_access.html')
 
 
     try:
