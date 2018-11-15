@@ -31,9 +31,11 @@ def lecturer_home(request):
             context_dict['courses'] = courses
             context_dict['feedback'] = fb
         except:
-            return HttpResponse('Something has gone wrong')
+            context_dict['error'] = "error"
+            return render(request,'student_feedback_app/error_page.html', context_dict)
     else:
-        return render(request,'student_feedback_app/blocked_access.html')
+        context_dict['error'] = "auth"
+        return render(request,'student_feedback_app/error_page.html', context_dict)
     return render(request,'student_feedback_app/lecturer_home.html',context_dict)
 
 def my_provided_feedback(request):
@@ -44,7 +46,8 @@ def my_provided_feedback(request):
         context_dict['lect'] = lect
         context_dict['feedback'] = fb
     else:
-        return render(request,'student_feedback_app/blocked_access.html')
+        context_dict['error'] = "auth"
+        return render(request,'student_feedback_app/error_page.html', context_dict)
 
     return render(request,'student_feedback_app/my_provided_feedback.html',context_dict)
 
@@ -67,9 +70,11 @@ def lecturer_course(request,subject_slug):
             context_dict['lect'] = None
             context_dict['students'] = None
             context_dict['feedback'] = None
-            return HttpResponse("course does not exist")
+            context_dict['error'] = "no_course"
+            return render(request,'student_feedback_app/error_page.html', context_dict)
     else:
-        return render(request,'student_feedback_app/blocked_access.html')
+        context_dict['error'] = "auth"
+        return render(request,'student_feedback_app/error_page.html', context_dict)
 
     return render(request,'student_feedback_app/lecturer_course.html',context_dict)
 
@@ -88,14 +93,17 @@ def lecturer_view_student(request,student_number):
             context_dict['feedback'] = fb
             context_dict['courses'] = courses
         except:
-            return HttpResponse("Student does not exist")
+            context_dict['error'] = "no_student"
+            return render(request,'student_feedback_app/error_page.html', context_dict)
     else:
-        return render(request,'student_feedback_app/blocked_access.html')
+        context_dict['error'] = "auth"
+        return render(request,'student_feedback_app/error_page.html', context_dict)
     return render(request,'student_feedback_app/lecturer_view_student.html',context_dict)
 
 def add_feedback(request,subject_slug,student_number):
     if not request.user.is_authenticated or not request.user.is_lecturer:
-        return render(request,'student_feedback_app/blocked_access.html')
+        context_dict['error'] = "auth"
+        return render(request,'student_feedback_app/error_page.html', context_dict)
     context_dict = {}
     try:
         lect = LecturerProfile.objects.get(lecturer=request.user)
@@ -130,7 +138,8 @@ def add_feedback(request,subject_slug,student_number):
     except:
         context_dict['student'] = None
         context_dict['feedback'] = None
-        return HttpResponse("Couldn't find the student")
+        context_dict['error'] = "no_student"
+        return render(request,'student_feedback_app/error_page.html', context_dict)
     return render(request,'student_feedback_app/add_feedback.html',context_dict)
 
 def lecturer_all_courses(request):
@@ -143,7 +152,8 @@ def lecturer_all_courses(request):
         context_dict['courses'] = courses
         context_dict['feedback'] = fb
     else:
-        return render(request,'student_feedback_app/blocked_access.html')
+        context_dict['error'] = "auth"
+        return render(request,'student_feedback_app/error_page.html', context_dict)
 
     return render(request,'student_feedback_app/lecturer_courses.html',context_dict)
 
@@ -151,7 +161,8 @@ def create_course(request):
 
     contextDict = {}
     if not request.user.is_authenticated or not request.user.is_lecturer:
-        return render(request,'student_feedback_app/blocked_access.html')
+        context_dict['error'] = "auth"
+        return render(request,'student_feedback_app/error_page.html', context_dict)
 
 
     try:
@@ -178,4 +189,5 @@ def create_course(request):
 
 
     except:
-        return HttpResponse("something went wrong")
+        context_dict['error'] = "error"
+        return render(request,'student_feedback_app/error_page.html', context_dict)
