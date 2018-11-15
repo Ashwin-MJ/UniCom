@@ -9,17 +9,19 @@ My Provided Feedback <br />
 {% block body_block %}
 
 <div class="container">
-    <div class="card" style="width:40%; margin-left:25px; margin-top:25px;">
-      <h3 class="card-body text-center" >Recent Feedback</h3>
+    <div class="card" style="width:50%;margin-left:25px; margin-top:25px;">
+      <h3 class="card-body text-center">Recent Feedback</h3>
       <div class="card-body">
         {% for fb in feedback %}
         <div class="card" style="padding-left:10px">
           <b>{{ fb.category }}</b>
           <p>
             {{ fb.message }}<br />
-            {{ fb.lecturer.lecturer.username }}<br />
-            {{ fb.student.student.username }}<br />
-            {{ fb.points }}
+            <a style="text-decoration: none; color: black" href="{% url 'lecturer_view_student' fb.student.student.id_number%}">
+              <em>{{fb.student.student.username}}</em>
+            </a><br />
+            {{ fb.points }}<br />
+            {{ fb.datetime }}
           </p>
 
           </div>

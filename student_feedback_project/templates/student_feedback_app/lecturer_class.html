@@ -19,13 +19,15 @@
               <img src="media/profile_pictures/default_image.jpg" />
               </div>
               -->
-            <div class="card" style="padding-left:10px; margin-top:10px">
-              <br style="clear:both;"/>
-              <b>{{ stud.student.username }}</b>
-              <p>
-                {{ stud.score }}
-              </p>
-              </div>
+            <a style="text-decoration: none; color: black" href="{% url 'add_feedback' class.subject_slug  stud.student.id_number %}">
+              <div class="card" style="padding-left:10px; margin-top:10px">
+                <br style="clear:both;"/>
+                <b>{{ stud.student.username }}</b>
+                <p>
+                  {{ stud.score }}
+                </p>
+                </div>
+              </a>
             <!--</div> -->
           {% endfor %}
       </div>
@@ -40,7 +42,8 @@
           <p>
             {{ fb.message }}<br />
             {{ fb.student.student.username }}<br />
-            {{ fb.points }}
+            {{ fb.points }}<br />
+            {{ fb.datetime }}
           </p>
         </div>
         {% endfor %}
@@ -55,9 +58,5 @@
     </div>
   </div>
 </div>
-
-<div class="container">
-  Add Feedback
-  </div>
 
 {% endblock %}

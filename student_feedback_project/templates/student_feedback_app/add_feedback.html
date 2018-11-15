@@ -1,51 +1,47 @@
 {% extends 'student_feedback_app/base.html' %}
 
 {% block title_block %}
-Add Feedback
+Add Feedback<br />
+{{ lecturer.lecturer.username }}
 {% endblock%}
 
 
 {% block body_block %}
+<form id="fb_form" method="post" action="">
+  {% csrf_token %}
+  {% for hidden in form.hidden_fields %}
+    {{ hidden }}
+  {% endfor %}
 <div style = "width:100%; display: table;">
   <div style = "display: table-row;">
     <div  style = "display: table-cell;">
       <div class="card" style="height: 80px; margin-left:25px; margin-top:25px;
                                 margin-right:25px; margin-bottom:25px;">
-        <h3 class="card-body text-left">Adding Feedback for {{ student.student.username }}</h3>
+        <h3 class="card-body text-left">
+          Adding Feedback for
+          <a style="text-decoration: none; color: black" href="{% url 'lecturer_view_student' student.student.id_number%}">
+            <em>{{student.student.username}}</em>
+          </a>
+        </h3>
       </div>
+      {% for field in form.visible_fields %}
+      {{ field.errors }}
       <div class="card" style="height: 125px; margin-left:25px; margin-top:25px;
                                 margin-right:25px; margin-bottom:25px;">
-        <h5 class="card-body text-left">Personalised Feedback</h5>
-        <input type="text" name="custom message" style="margin-left:25px; margin-right:25px; margin-bottom:25px">
-      </div>
-      <div class="card" style="height: 200px; margin-left:25px; margin-top:25px;
-                                margin-right:25px; margin-bottom:25px;">
-        <h3 class="card-body text-left">Category</h3>
-
-        <div style="width:100%; display:table;">
-          <div style="display: table-row">
-              <div style="display: table-cell; ">
-                <button class="btn bg-primary text-white" type="button">Listening</button>
-                </div>
-                <div style="display: table-cell; ">
-                  <button class="btn bg-primary text-white" type="button">Listening</button>
-                  </div>
-            </div>
-          <div style="display: table-row">
-            <div style="display: table-cell; ">
-              <button class="btn bg-primary text-white" type="button">Listening</button>
-              </div>
-              <div style="display: table-cell; ">
-                <button class="btn bg-primary text-white" type="button">Listening</button>
-                </div>
-            </div>
-          </div>
-      </div>
-      <div class="card" style="height: 125px; margin-left:25px; margin-top:25px;
+        <h5 class="card-body text-left">{{ field.help_text }}</h5>
+        {% if field.help_text == 'Points' %}
+        <div class="card" style="width:25%; margin-left:25px; align-self:center;
                                   margin-right:25px; margin-bottom:25px;">
-          <h3 class="card-body text-left">Score: </h3>
-          <input type="text" name="custom message" style="margin-left:25px; margin-right:25px; margin-bottom:25px">
-        </div>
+          {{ field }}
+          </div>
+        {% else %}
+        <div class="card" style="margin-left:25px;
+                                  margin-right:25px; margin-bottom:25px;">
+          {{ field }}
+          </div>
+        {% endif %}
+      </div>
+      {% endfor %}
     </div>
 
     <div class="card" style="height: 80px; margin-left:25px; margin-top:25px;
@@ -71,11 +67,11 @@ Add Feedback
     <div class="card" style="height: 125px; margin-left:25px; margin-top:25px;
                                 margin-right:25px; margin-bottom:25px;">
         <h3 class="card-body text-left">Submit: </h3>
-        <input type="button"
+        <input type='submit' name='submit' value='Submit Feedback' style='width:35%; align-self: center;'/>
       </div>
     </div>
   </div>
-  </div>
-</div>
+
+</form>
 
 {% endblock %}

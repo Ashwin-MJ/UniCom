@@ -20,5 +20,4 @@ from student_feedback_app import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     re_path(r'^', include('student_feedback_app.urls')),
-    re_path(r'^accounts/', include('registration.backends.simple.urls')),
 ]
