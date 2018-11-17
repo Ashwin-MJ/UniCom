@@ -1,7 +1,7 @@
 {% extends 'student_feedback_app/base.html' %}
 
 {% block title_block %}
-{{ lect.lecturer.username }}'s<br />
+{{ stud.student.username }}'s<br />
 Courses
 {% endblock%}
 
@@ -14,10 +14,11 @@ Courses
       <h3 class="card-body text-center" style="padding-bottom:0px">My Courses</h3>
       <div class="card-body" style="padding-top:0px">
         {% for course in courses %}
-            <a style="text-decoration: none; color: black" href="{% url 'lecturer_course' course.subject_slug%}">
+            <a style="text-decoration: none; color: black" href="{% url 'student_course' course.subject_slug%}">
               <div class="card" style="padding-left:10px; margin-top:10px">
                 <br style="clear:both;"/>
                 <b>{{ course.subject }}</b>
+                <b> Score: {{course.stud.score}}</b>
                 <p>
                   <em>{{ course.course_description }}</em><br />
                   Students: {{ course.students.all|length }}
@@ -27,8 +28,11 @@ Courses
           {% endfor %}
       </div>
     </div>
+
+
+
     <div class="card" style="width:40%; margin-left:25px; margin-top:25px;">
-      <h3 class="card-body text-center" style="padding-bottom:0px">Recent Feedback Given</h3>
+      <h3 class="card-body text-center" style="padding-bottom:0px">Recent Feedback</h3>
       <div class="card-body" style="padding-top:0px">
         <p class="card-text"></p>
         {% for fb in feedback %}
@@ -47,15 +51,16 @@ Courses
       </div>
     </div>
 
-  <div class="card" style="width:40%; margin-left:25px; margin-top:25px;">
-      <h3 class="card-body text-center" style="padding-bottom:0px">My Top Students</h3>
+        <div class="card" style="width:40%; margin-left:25px; margin-top:25px;">
+      <h3 class="card-body text-center" style="padding-bottom:0px">Add a class</h3>
       <div class="card-body" style="padding-top:0px">
         <p class="card-text"></p>
-        Functionality to be made
+          <b>Functionality to be made</b>
+          </div>
       </div>
     </div>
 
-    </div>
+
   </div>
 </div>
 

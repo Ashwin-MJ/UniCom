@@ -10,15 +10,90 @@ import datetime
 def index(request):
     return HttpResponse("This is the homepage")
 
+
+
 def student_home(request):
-    return render(request, 'student_feedback_app/student_home.html')
+    context_dict={}
+    if request.user.is_authenticated and request.user.is_student:
+        try:
+            stud = StudentProfile.objects.get(student=request.user)
+            fb = stud.feedback_set.all().order_by('-datetime_given')
+            courses=stud.course_set.all()
+            context_dict['student'] = stud
+            context_dict['courses'] = courses
+            context_dict['feedback'] = fb
+        except:
+            context_dict['error'] = "error"
+            return  render(request, 'student_feedback_app/error_page.html', context_dict)
+    else:
+        context_dict['error'] = "auth"
+        return render(request, 'student_feedback_app/error_page.html', context_dict)
+    return render(request, 'student_feedback_app/student_home.html', context_dict)
+
+
+
 
 def all_feedback(request):
-    return HttpResponse("This page shows all of my feedback")
+    context_dict = {}
+    if request.user.is_authenticated and request.user.is_student:
+        stud= StudentProfile.objects.get(student=request.user)
+        fb = stud.feedback_set.all()
+        context_dict['stud'] = stud
+        context_dict['feedback'] = fb
+    else:
+        context_dict['error'] = "auth"
+        return render(request,'student_feedback_app/error_page.html', context_dict)
+
+    return render(request,'student_feedback_app/all_feedback.html',context_dict)
 
 
-def my_courses(request):
-    return HttpResponse("This page shows all of my courses")
+def student_all_courses(request):
+    context_dict = {}
+    if request.user.is_authenticated and request.user.is_student:
+        stud = StudentProfile.objects.get(student=request.user)
+        courses = stud.course_set.all()
+        fb = stud.feedback_set.all()
+        context_dict['stud'] = stud
+        context_dict['courses'] = courses
+        context_dict['feedback'] = fb
+    else:
+        context_dict['error'] = "auth"
+        return render(request,'student_feedback_app/error_page.html', context_dict)
+    return render(request,'student_feedback_app/student_courses.html',context_dict)
+
+
+def student_course(request, subject_slug):
+    context_dict = {}
+    if request.user.is_authenticated and request.user.is_student:
+        try:
+            course = Course.objects.get(subject_slug=subject_slug)
+            stud = StudentProfile.objects.get(student=request.user)
+            print(stud.score)
+            lect = course.lecturer
+            students = course.students.all()
+            top_students = students.order_by('-score')
+            context_dict['course'] = course
+            context_dict['lect'] = lect
+            context_dict['students'] = students
+            # Add top students for each course. This requires editing models to store course in feedback
+            fb = course.feedback_set.all().order_by('-datetime_given')
+            context_dict['feedback'] = fb
+        except:
+            context_dict['course'] = None
+            context_dict['lect'] = None
+            context_dict['students'] = None
+            context_dict['feedback'] = None
+            context_dict['error'] = "no_course"
+            return render(request, 'student_feedback_app/error_page.html', context_dict)
+    else:
+        context_dict['error'] = "auth"
+        return render(request, 'student_feedback_app/error_page.html', context_dict)
+
+    return render(request, 'student_feedback_app/student_course.html', context_dict)
+
+
+
+
 
 def lecturer_home(request):
     context_dict = {}

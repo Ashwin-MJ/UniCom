@@ -1,0 +1,57 @@
+{% extends 'student_feedback_app/base.html' %}
+
+{% block title_block %}
+{{ stud.student.username }}'s<br />
+Feedback
+{% endblock%}
+
+
+{% block body_block %}
+
+<div class="container">
+    <div class="card-deck">
+        <div class="card" style="width:50%;margin-left:25px; margin-top:25px;">
+          <h3 class="card-body text-center">My feedback</h3>
+          <div class="card-body">
+            {% for fb in feedback %}
+            <div class="card" style="padding-left:10px">
+
+                <b>{{ fb.category }}</b>
+              <p>
+                {{ fb.message }}<br />
+                  <b> From: </b>
+                  <em>{{fb.lecturer.lecturer.username}}</em>
+                </a><br />
+                  <b>Points awarded: </b>
+                {{ fb.points }}<br />
+                {{ fb.datetime_given }}
+              </p>
+            </div>
+              {% endfor %}
+          </div>
+        </div>
+
+
+        <div class="card" style="width:50%;margin-left:25px; margin-top:25px;">
+        <h3 class="card-body text-center">My Top Attributes</h3>
+            <div class="card-body">
+                <div class="card" style="padding-left:10px">
+                    Functionality to be made
+                </div>
+           </div>
+        </div>
+
+        <div class="card" style="width:50%;margin-left:25px; margin-top:25px;">
+        <h3 class="card-body text-center">Areas To Improve</h3>
+            <div class="card-body">
+                <div class="card" style="padding-left:10px">
+                    Functionality to be made
+                </div>
+           </div>
+        </div>
+
+    </div>
+</div>
+
+
+{% endblock %}
