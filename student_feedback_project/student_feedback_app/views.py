@@ -183,3 +183,21 @@ def create_course(request):
     except:
         context_dict['error'] = "error"
         return render(request,'student_feedback_app/error_page.html', context_dict)
+
+class CategoryAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        if not self.request.user.is_authenticated or not self.request.user.is_lecturer:
+            return Category.objects.none()
+
+        query_set = Category.objects.all()
+
+        category = self.forwarded.get('category', None)
+
+        if self.q:
+            query_set = query_set.filter(name__istartswith=self.q)
+            return query_set
+
+        if category:
+            query_set = Message.objects.filter(category=category)
+
+        return query_set

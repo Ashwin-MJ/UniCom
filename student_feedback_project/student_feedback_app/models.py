@@ -51,7 +51,7 @@ class Feedback(models.Model):
     student = models.ForeignKey('StudentProfile', on_delete=models.CASCADE, null=True, blank=True)
     which_course = models.ForeignKey('Course', on_delete=models.CASCADE, null=True, blank=True)
     datetime_given = models.DateTimeField(default=timezone.now, blank=False)
-    optional_message = models.CharField(max_length=200,default="No message")
+    optional_message = models.CharField(max_length=200,default="")
     category = models.ForeignKey('Category', on_delete=models.CASCADE, null=True, blank=True)
 
 class Category(models.Model):

@@ -14,17 +14,22 @@ class CourseForm(forms.ModelForm):
         fields = ('subject', 'course_code', 'course_description',)
 
 
-class FeedbackForm(forms.ModelForm):
-    optional_message = forms.CharField(max_length=200, help_text="Optional Message")
-    points = forms.IntegerField(max_value=5,min_value=0, help_text="Points")
-    category = forms.ModelChoiceField(queryset=Category.objects.all(),
-                                        widget=autocomplete.ModelSelect2(
-                                            'category_autocomplete'
-                                        ),
-                                        help_text="Category"
-                                    )
-    pre_defined_message = forms.ModelChoiceField(queryset=Message.objects.all(), help_text="Pre Defined Message")
+class FeedbackForm(autocomplete.FutureModelForm):
+    optional_message = forms.CharField(max_length=200, required=False)
+    #points = forms.IntegerField(max_value=5,min_value=0)
+    #category = forms.ModelChoiceField(queryset=Category.objects.all())
+    #pre_defined_message = forms.ModelChoiceField(queryset=Message.objects.get(category=self.category))
 
     class Meta:
         model = Feedback
         fields = ('category', 'pre_defined_message','optional_message','points')
+        widgets = {
+            'pre_defined_message': autocomplete.ModelSelect2(url='category_autocomplete',forward=['category']),
+            'category': autocomplete.ModelSelect2(url='category_autocomplete')
+        }
+        help_texts = {
+            'pre_defined_message': "Select a Message",
+            'category': 'Category',
+            'optional_message': "Optional Message",
+            'points': "Points"
+        }
