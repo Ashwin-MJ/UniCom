@@ -1,10 +1,12 @@
 from django.shortcuts import render
 from django.http import HttpResponse,HttpResponseRedirect
-from .models import LecturerProfile,Feedback,Course,StudentProfile,User
+from .models import LecturerProfile,Feedback,Course,StudentProfile,User,Category,Message
 from .forms import CourseForm,FeedbackForm
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+from dal import autocomplete
 import datetime
+from django.views.generic import CreateView
 
 # Create your views here.
 def index(request):
@@ -158,17 +160,13 @@ def lecturer_all_courses(request):
     return render(request,'student_feedback_app/lecturer_courses.html',context_dict)
 
 def create_course(request):
-
     contextDict = {}
     if not request.user.is_authenticated or not request.user.is_lecturer:
         context_dict['error'] = "auth"
         return render(request,'student_feedback_app/error_page.html', context_dict)
-
-
     try:
         lect = LecturerProfile.objects.get(lecturer=request.user)
         contextDict["lecturer"] = lect
-
         if request.method == 'POST':
             form = CourseForm(request.POST)
             if form.is_valid():
@@ -176,18 +174,12 @@ def create_course(request):
                 newCourse.lecturer = lect
                 newCourse.save()
                 return lecturer_all_courses(request)
-
             else:
-
                 print(form.errors)
-
         else:
             form = CourseForm()
-
         contextDict["form"] = form
         return render(request, 'student_feedback_app/create_course.html', contextDict)
-
-
     except:
         context_dict['error'] = "error"
         return render(request,'student_feedback_app/error_page.html', context_dict)

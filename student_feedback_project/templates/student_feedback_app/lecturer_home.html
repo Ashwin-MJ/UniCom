@@ -34,7 +34,10 @@ Home Page<br />
         <div class="card" style="padding-left:10px; margin-top:10px">
           <b>{{ fb.category }}</b>
           <p>
-            {{ fb.message }}<br />
+            {{ fb.pre_defined_message.text }}<br />
+            {% if fb.optional_message %}
+              {{ fb.optional_message }}<br />
+            {% endif %}
             {{ fb.student.student.username }}<br />
             {{ fb.points }}
           </p>

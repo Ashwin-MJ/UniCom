@@ -1,4 +1,5 @@
 {% extends 'student_feedback_app/base.html' %}
+{% load static %}
 
 {% block title_block %}
 Add Feedback<br />
@@ -57,7 +58,10 @@ Add Feedback<br />
         <div class="card" style="padding-left:10px; ">
           <b>{{ fb.category }}</b>
           <p>
-            {{ fb.message }}<br />
+            {{ fb.pre_defined_message.text }}<br />
+            {% if fb.optional_message %}
+              {{ fb.optional_message }}<br />
+            {% endif %}
             {{ fb.points }}
           </p>
           </div>
@@ -73,5 +77,10 @@ Add Feedback<br />
   </div>
 
 </form>
+{% endblock %}
 
+{% block footer %}
+<script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
+
+{{ form.media }}
 {% endblock %}
