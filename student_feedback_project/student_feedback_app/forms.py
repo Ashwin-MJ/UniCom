@@ -15,8 +15,8 @@ class CourseForm(forms.ModelForm):
 
 
 class FeedbackForm(autocomplete.FutureModelForm):
-    optional_message = forms.CharField(max_length=200, required=False)
-    #points = forms.IntegerField(max_value=5,min_value=0)
+    optional_message = forms.CharField(max_length=200, required=False, help_text="Optional Message")
+    points = forms.IntegerField(max_value=5,min_value=0, help_text="Points")
     #category = forms.ModelChoiceField(queryset=Category.objects.all())
     #pre_defined_message = forms.ModelChoiceField(queryset=Message.objects.get(category=self.category))
 
@@ -24,12 +24,10 @@ class FeedbackForm(autocomplete.FutureModelForm):
         model = Feedback
         fields = ('category', 'pre_defined_message','optional_message','points')
         widgets = {
-            'pre_defined_message': autocomplete.ModelSelect2(url='category_autocomplete',forward=['category']),
+            'pre_defined_message': autocomplete.ModelSelect2(url='message_autocomplete',forward=['category']),
             'category': autocomplete.ModelSelect2(url='category_autocomplete')
         }
         help_texts = {
             'pre_defined_message': "Select a Message",
-            'category': 'Category',
-            'optional_message': "Optional Message",
-            'points': "Points"
+            'category': 'Category'
         }

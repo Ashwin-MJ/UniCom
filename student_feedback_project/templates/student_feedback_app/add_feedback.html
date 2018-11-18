@@ -35,6 +35,10 @@ Add Feedback<br />
                                   margin-right:25px; margin-bottom:25px;">
           {{ field }}
           </div>
+        {% elif field.help_text == 'Select a Message' or field.help_text == 'Category' %}
+        <div style="align-self:center; margin-bottom:25px;">
+          {{ field }}
+          </div>
         {% else %}
         <div class="card" style="margin-left:25px;
                                   margin-right:25px; margin-bottom:25px;">

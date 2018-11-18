@@ -6,7 +6,7 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from dal import autocomplete
 import datetime
-from django.views.generic import CreateView
+from django import http
 
 # Create your views here.
 def index(request):
@@ -201,3 +201,93 @@ class CategoryAutocomplete(autocomplete.Select2QuerySetView):
             query_set = Message.objects.filter(category=category)
 
         return query_set
+
+    def get_create_option(self,context,q):
+        create_option = []
+        display_create_option = False
+        if self.create_field and q:
+            page_obj = context.get('page_obj', None)
+            if page_obj is None or page_obj.number == 1:
+                display_create_option = True
+
+            # Don't offer to create a new option if a
+            # case-insensitive) identical one already exists
+            existing_options = (self.get_result_label(result).lower()
+                                for result in context['object_list'])
+            if q.lower() in existing_options:
+                display_create_option = False
+
+        if display_create_option and self.has_add_permission(self.request):
+            create_option = [{
+                'id': q,
+                'text': ('Create a new category: "%(new_value)s"') % {'new_value': q},
+                'create_id': True,
+            }]
+        return create_option
+
+    def has_add_permission(self, request):
+        if self.request.user.is_authenticated and self.request.user.is_lecturer:
+            return True
+        else:
+            return False
+
+class MessageAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        if not self.request.user.is_authenticated or not self.request.user.is_lecturer:
+            return Message.objects.none()
+
+        query_set = Message.objects.all()
+
+        category = self.forwarded.get('category', None)
+
+        if category:
+            query_set = Message.objects.filter(category=category)
+
+        return query_set
+
+    def get_create_option(self,context,q):
+        create_option = []
+        display_create_option = False
+        if self.create_field and q:
+            page_obj = context.get('page_obj', None)
+            if page_obj is None or page_obj.number == 1:
+                display_create_option = True
+
+            # Don't offer to create a new option if a
+            # case-insensitive) identical one already exists
+            existing_options = (self.get_result_label(result).lower()
+                                for result in context['object_list'])
+            if q.lower() in existing_options:
+                display_create_option = False
+
+        if display_create_option and self.has_add_permission(self.request):
+            category = self.forwarded.get('category',None)
+            cat = Category.objects.get(name=category)
+
+            create_option = [{
+                'id': q,
+                'text': ('Create a new message: "%(new_value)s"') % {'new_value': q},
+                'category': category,
+                'create_id': True,
+            }]
+
+        return create_option
+
+    def render_to_response(self, context):
+        q = self.request.GET.get('q', None)
+
+        create_option = self.get_create_option(context, q)
+
+        return http.JsonResponse(
+            {
+                'results': self.get_results(context) + create_option,
+                'pagination': {
+                    'more': self.has_more(context)
+                }
+            })
+
+    def has_add_permission(self, request):
+        if self.request.user.is_authenticated and self.request.user.is_lecturer:
+            return True
+        else:
+            return False
