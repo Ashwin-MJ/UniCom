@@ -123,6 +123,8 @@ def add_feedback(request,subject_slug,student_number):
             form = FeedbackForm(request.POST)
             if form.is_valid():
                 new_fb = form.save(commit=False)
+                new_fb.pre_defined_message.category = Category.objects.get(name=new_fb.category)
+                new_fb.pre_defined_message.save()
                 new_fb.student = stud
                 stud.score += new_fb.points
                 new_fb.lecturer = lect
