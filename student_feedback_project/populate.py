@@ -4,7 +4,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE',
 from student_feedback_app.additional import *
 import django
 django.setup()
-from student_feedback_app.models import StudentProfile, Course, LecturerProfile, Feedback, Category
+from student_feedback_app.models import StudentProfile, Course, LecturerProfile, Feedback, Category, Message
 from django.template.defaultfilters import slugify
 from django.contrib.auth import get_user_model
 User = get_user_model()
@@ -77,26 +77,55 @@ def populate():
 
 	feedback = [
 		{"feedback_id": 1,
-		"message": "Good job answering the question today!",
 		"category": "Listening",
 		"points": 4,
 		"lecturer": "00001",
 		"student": "1402789",
-		"course_code" : "MAT1Q"},
+		"course_code" : "MAT1Q",
+		"pre_defined_message": "Good job answering the question today!",
+		"optional_message": ""},
 		{"feedback_id": 2,
-		"message": "You were very active in today's lesson!",
 		"category": "Cooperation",
 		"points": 3,
 		"lecturer": "00002",
 		"student": "1402001",
-		"course_code" : "MAT1Q"},
+		"course_code" : "MAT1Q",
+		"pre_defined_message": "Excellent team work today!",
+		"optional_message": "I noticed how you helped Link complete his work."},
 		{"feedback_id": 3,
 		"message": "Great marks in todays quiz!",
 		"category": "Participation",
 		"points": 5,
 		"lecturer": "00002",
 		"student": "1402781",
-		"course_code": "ARH01"}
+		"course_code": "ARH01",
+		"pre_defined_message": "Very good question today. I'm sure you helped a lot of students by asking it!",
+		"optional_message": "If you require further clarification, feel free to drop by my office."}
+		]
+
+	categories = [
+		{"name" : "Listening"},
+		{"name" : "Cooperation"},
+		{"name" : "Participation"}
+		]
+
+	saved_messages = [
+		{"category" : "Listening",
+		"text": "Good job answering the question today!"},
+		{"category" : "Listening",
+		"text": "I could tell that you were very attentive in class today!"},
+		{"category" : "Listening",
+		"text": "Thank you for noticing my error in today's class!"},
+		{"category" : "Cooperation",
+		"text": "Thank you for assisting your classmate in answering their question!"},
+		{"category" : "Cooperation",
+		"text": "Excellent team work today!"},
+		{"category" : "Participation",
+		"text": "Great marks in todays quiz!"},
+		{"category" : "Participation",
+		"text": "You made excellent points in todays discussion!"},
+		{"category" : "Participation",
+		"text": "Very good question today. I'm sure you helped a lot of students by asking it!"}
 		]
 
 
@@ -111,10 +140,16 @@ def populate():
 		lect = add_lecturer(lecturer.get('name'),lecturer.get('lecturer_number'),
 							lecturer.get('password'),lecturer.get('email'),lecturer.get('courses'))
 
+	for category in categories:
+		cat = add_category(category.get("name"))
+
+	for message in saved_messages:
+		mess = add_message(message.get('category'),message.get('text'))
+
 	for someFeedback in feedback:
 		feedback = add_feedback(someFeedback.get('feedback_id'),someFeedback.get('category'),someFeedback.get('points'),
 								someFeedback.get('lecturer'),someFeedback.get('student'),someFeedback.get('course_code'),
-								someFeedback.get('message'))
+								someFeedback.get('pre_defined_message'), someFeedback.get('optional_message'))
 
 
 	print("Courses Added")
@@ -163,7 +198,8 @@ def populate():
 	print("Feedback Added:")
 	for fb in Feedback.objects.all():
 		print("Feedback ID: " + str(fb.feedback_id))
-		print("\tMessage: " + fb.message)
+		print("\tPre Defined Message: " + fb.pre_defined_message.text)
+		print("\tOptional Message: " + fb.optional_message)
 		print("\tCategory: " + fb.category.name)
 		print("\tPoints Awarded: " + str(fb.points))
 		print("\tLecturer: " + fb.lecturer.lecturer.username)
@@ -215,17 +251,17 @@ def add_lecturer(name,lecturer_number,password,email,courses):
 		course = Course.objects.get(course_code=each_course)
 		course.lecturer = lecturer_prof
 		course.save()
-		#print(lecturer_prof.lecturer_number)
 
 	lecturer_prof.save()
 	return lecturer_prof
 
 # Helper function to add feedback
-def add_feedback(feedback_id,category,points,lecturer,student,course_code,message):
+def add_feedback(feedback_id,category,points,lecturer,student,course_code,pre_defined_message,optional_message):
 	fb = Feedback.objects.get_or_create(feedback_id=feedback_id)[0]
-	fb.category = Category.objects.get_or_create(name=category)[0]
+	fb.category = Category.objects.get(name=category)
+	fb.pre_defined_message = Message.objects.get(text=pre_defined_message)
 	fb.points = points
-	fb.message = message
+	fb.optional_message = optional_message
 	fb.which_course = Course.objects.get(course_code=course_code)
 	lect_user = User.objects.get(id_number=lecturer)
 	fb.lecturer = LecturerProfile.objects.get(lecturer=lect_user)
@@ -236,6 +272,19 @@ def add_feedback(feedback_id,category,points,lecturer,student,course_code,messag
 	stud.save()
 	fb.save()
 	return fb
+
+# Helper function to add Category
+def add_category(name):
+	cat = Category.objects.get_or_create(name=name)[0]
+	cat.save()
+
+# Helper function to add pre defined message
+def add_message(category,text):
+	cat = Category.objects.get(name=category)
+	mess = Message.objects.get_or_create(category=cat,text=text)[0]
+	mess.save()
+	cat.save()
+	return mess
 
 
 

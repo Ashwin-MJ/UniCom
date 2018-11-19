@@ -1,5 +1,6 @@
+from dal import autocomplete
 from django import forms
-from .models import Course,Feedback,User,Category
+from .models import Course,Feedback,User,Category,Message
 import datetime
 
 class CourseForm(forms.ModelForm):
@@ -13,11 +14,20 @@ class CourseForm(forms.ModelForm):
         fields = ('subject', 'course_code', 'course_description',)
 
 
-class FeedbackForm(forms.ModelForm):
-    message = forms.CharField(max_length=200, help_text="Message")
+class FeedbackForm(autocomplete.FutureModelForm):
+    optional_message = forms.CharField(max_length=200, required=False, help_text="Optional Message")
     points = forms.IntegerField(max_value=5,min_value=0, help_text="Points")
-    category = forms.ModelChoiceField(queryset=Category.objects.all(), help_text="Category")
+    #category = forms.ModelChoiceField(queryset=Category.objects.all())
+    #pre_defined_message = forms.ModelChoiceField(queryset=Message.objects.get(category=self.category))
 
     class Meta:
         model = Feedback
-        fields = ('message','category', 'points')
+        fields = ('category', 'pre_defined_message','optional_message','points')
+        widgets = {
+            'pre_defined_message': autocomplete.ModelSelect2(url='message_autocomplete',forward=['category']),
+            'category': autocomplete.ModelSelect2(url='category_autocomplete')
+        }
+        help_texts = {
+            'pre_defined_message': "Select a Message",
+            'category': 'Category'
+        }

@@ -1,10 +1,12 @@
 from django.shortcuts import render
 from django.http import HttpResponse,HttpResponseRedirect
-from .models import LecturerProfile,Feedback,Course,StudentProfile,User
+from .models import LecturerProfile,Feedback,Course,StudentProfile,User,Category,Message
 from .forms import CourseForm,FeedbackForm
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+from dal import autocomplete
 import datetime
+from django import http
 
 # Create your views here.
 def index(request):
@@ -196,6 +198,8 @@ def add_feedback(request,subject_slug,student_number):
             form = FeedbackForm(request.POST)
             if form.is_valid():
                 new_fb = form.save(commit=False)
+                new_fb.pre_defined_message.category = Category.objects.get(name=new_fb.category)
+                new_fb.pre_defined_message.save()
                 new_fb.student = stud
                 stud.score += new_fb.points
                 new_fb.lecturer = lect
@@ -233,17 +237,13 @@ def lecturer_all_courses(request):
     return render(request,'student_feedback_app/lecturer_courses.html',context_dict)
 
 def create_course(request):
-
     contextDict = {}
     if not request.user.is_authenticated or not request.user.is_lecturer:
         context_dict['error'] = "auth"
         return render(request,'student_feedback_app/error_page.html', context_dict)
-
-
     try:
         lect = LecturerProfile.objects.get(lecturer=request.user)
         contextDict["lecturer"] = lect
-
         if request.method == 'POST':
             form = CourseForm(request.POST)
             if form.is_valid():
@@ -251,18 +251,120 @@ def create_course(request):
                 newCourse.lecturer = lect
                 newCourse.save()
                 return lecturer_all_courses(request)
-
             else:
-
                 print(form.errors)
-
         else:
             form = CourseForm()
-
         contextDict["form"] = form
         return render(request, 'student_feedback_app/create_course.html', contextDict)
-
-
     except:
         context_dict['error'] = "error"
         return render(request,'student_feedback_app/error_page.html', context_dict)
+
+class CategoryAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        if not self.request.user.is_authenticated or not self.request.user.is_lecturer:
+            return Category.objects.none()
+
+        query_set = Category.objects.all()
+
+        category = self.forwarded.get('category', None)
+
+        if self.q:
+            query_set = query_set.filter(name__istartswith=self.q)
+            return query_set
+
+        if category:
+            query_set = Message.objects.filter(category=category)
+
+        return query_set
+
+    def get_create_option(self,context,q):
+        create_option = []
+        display_create_option = False
+        if self.create_field and q:
+            page_obj = context.get('page_obj', None)
+            if page_obj is None or page_obj.number == 1:
+                display_create_option = True
+
+            # Don't offer to create a new option if a
+            # case-insensitive) identical one already exists
+            existing_options = (self.get_result_label(result).lower()
+                                for result in context['object_list'])
+            if q.lower() in existing_options:
+                display_create_option = False
+
+        if display_create_option and self.has_add_permission(self.request):
+            create_option = [{
+                'id': q,
+                'text': ('Create a new category: "%(new_value)s"') % {'new_value': q},
+                'create_id': True,
+            }]
+        return create_option
+
+    def has_add_permission(self, request):
+        if self.request.user.is_authenticated and self.request.user.is_lecturer:
+            return True
+        else:
+            return False
+
+class MessageAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        if not self.request.user.is_authenticated or not self.request.user.is_lecturer:
+            return Message.objects.none()
+
+        query_set = Message.objects.all()
+
+        category = self.forwarded.get('category', None)
+
+        if category:
+            query_set = Message.objects.filter(category=category)
+
+        return query_set
+
+    def get_create_option(self,context,q):
+        create_option = []
+        display_create_option = False
+        if self.create_field and q:
+            page_obj = context.get('page_obj', None)
+            if page_obj is None or page_obj.number == 1:
+                display_create_option = True
+
+            # Don't offer to create a new option if a
+            # case-insensitive) identical one already exists
+            existing_options = (self.get_result_label(result).lower()
+                                for result in context['object_list'])
+            if q.lower() in existing_options:
+                display_create_option = False
+
+        if display_create_option and self.has_add_permission(self.request):
+            category = self.forwarded.get('category',None)
+            cat = Category.objects.get(name=category)
+
+            create_option = [{
+                'id': q,
+                'text': ('Create a new message: "%(new_value)s"') % {'new_value': q},
+                'category': category,
+                'create_id': True,
+            }]
+
+        return create_option
+
+    def render_to_response(self, context):
+        q = self.request.GET.get('q', None)
+
+        create_option = self.get_create_option(context, q)
+
+        return http.JsonResponse(
+            {
+                'results': self.get_results(context) + create_option,
+                'pagination': {
+                    'more': self.has_more(context)
+                }
+            })
+
+    def has_add_permission(self, request):
+        if self.request.user.is_authenticated and self.request.user.is_lecturer:
+            return True
+        else:
+            return False
