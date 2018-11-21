@@ -9,7 +9,7 @@ from student_feedback_app.views import CategoryAutocomplete, MessageAutocomplete
 urlpatterns = [
     re_path(r'^$', views.index, name='index'),
     re_path(r'^student/home/$', views.student_home, name='student_home'),
-    re_path(r'^student/all-feedback/$', views.all_feedback, name='all_feedback'),
+    re_path(r'^student/all-feedback/$', views.student_all_feedback, name='student_all_feedback'),
     re_path(r'^student/courses/(?P<subject_slug>[\w\-]+)/$', views.student_course, name='student_course'),
     re_path(r'^student/courses/$', views.student_all_courses, name='student_all_courses'),
     re_path(r'^lecturer/home/$', views.lecturer_home, name='lecturer_home'),

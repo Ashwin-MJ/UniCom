@@ -7,43 +7,91 @@ Error page
 
 {% block body_block %}
 
+<div class="container">
 {% if error == "auth" %}
-	
-	<div class="container">
-	  <div class="row">
-		<div class="col-sm">
-		</div>
-		<div class="col-sm">
-			{% if user.is_authenticated %}
-			{% else %}
-				You are not logged in </br>
-				</br>
-				Please <a class="nav-link" href="{% url 'auth_login' %}">Login</a> or <a class="nav-link" href="{% url 'registration_register' %}">Register</a> 
+		{% if not user.is_authenticated %}
+		<div class="col-sm card" style="width:50%;margin-left:25px; margin-top:25px;">
+      <h3 class="card-body text-center">You are not logged in</h3>
+			Please log in or register
+			<div class="card-body">
+				<a class="nav-link" href="{% url 'auth_login' %}">
+        <div class="card" style="width:50%; padding-left:10px">
+						Login
+          </div>
+				</a>
+				<a class="nav-link" href="{% url 'registration_register' %}">
+        <div class="card" style="width:50%; padding-left:10px">
+						Register
+          </div>
+				</a>
+      </div>
 			{% endif %}
-
 			{% if user.is_student %}
-				As a student you are not allowed here </br>
-				Go to <a class="nav-link" href="{% url 'student_home' %}">Homepage</a>
+			<div class="col-sm card" style="width:50%;margin-left:25px; margin-top:25px;padding">
+				<h3 class="card-body text-center">Access denied</h3>
+				As a student you are not allowed to access this page
+				<a class="nav-link" href="{% url 'student_home' %}">
+				<div class="card" style="width:50%; padding-left:10px">
+						Return to home page
+					</div>
+				</a>
+			</div>
 			{% endif %}
-		</div>
-		<div class="col-sm">
-		</div>
-	  </div>
+			{% if user.is_lecturer %}
+			<div class="col-sm card" style="width:50%;margin-left:25px; margin-top:25px;padding">
+				<h3 class="card-body text-center">Access denied</h3>
+				As a lecturer you are not allowed to access this page
+				<a class="nav-link" href="{% url 'lecturer_home' %}">
+				<div class="card" style="width:50%; padding-left:10px">
+						Return to home page
+					</div>
+				</a>
+			</div>
+			{% endif %}
 	</div>
-
 {% endif %}
 
 
 {% if error == "error" %}
-	Something went wrong </br>
+<div class="container">
+	<div class="col-sm card" style="width:50%;margin-left:25px; margin-top:25px;">
+		<h3 class="card-body text-center">Something went wrong</h3>
+		Please try returning to the page you were just on
+	</div>
+</div>
 {% endif %}
 
 {% if error == "no_course" %}
-	The course you are trying to access does not exist </br>
+<div class="container">
+	<div class="col-sm card" style="width:50%;margin-left:25px; margin-top:25px;padding">
+		<h3 class="card-body text-center">Course does not exist</h3>
+		Try creating a new class or check if the course name entered is correct
+		<a class="nav-link" href="{% url 'create_course' %}">
+		<div class="card" style="width:50%; padding-left:10px">
+				Create course
+			</div>
+		</a>
+		<a class="nav-link" href="{% url 'lecturer_home' %}">
+		<div class="card" style="width:50%; padding-left:10px">
+				Return to home page
+			</div>
+		</a>
+	</div>
+</div>
 {% endif %}
 
 {% if error == "no_student" %}
-	The student you are trying to access does not exist </br>
+<div class="container">
+	<div class="col-sm card" style="width:50%;margin-left:25px; margin-top:25px;padding">
+		<h3 class="card-body text-center">Student does not exist</h3>
+		Check if the student number entered is correct
+		<a class="nav-link" href="{% url 'lecturer_home' %}">
+		<div class="card" style="width:50%; padding-left:10px">
+				Return to home page
+			</div>
+		</a>
+	</div>
+</div>
 {% endif %}
 
 {% endblock %}

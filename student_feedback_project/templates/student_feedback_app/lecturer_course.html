@@ -1,37 +1,37 @@
 {% extends 'student_feedback_app/base.html' %}
 
 {% block title_block %}
-{{ course.subject }}
+{{ course.subject }}<br />
+Course Token: {{ course.course_token}}
 {% endblock%}
 
 
 {% block body_block %}
 <div class="container">
-  <div class="card-deck">
-    <div class="card" style="width:40%; margin-left:25px; margin-top:25px;">
-      <h3 class="card-body text-center" style="padding-bottom:0px">Students</h3>
-      <div class="card-body" style="padding-top:0px">
-        {% for stud in students %}
-          <!--<div class="card">
-            <!-- fix student profile picture image
-            <div style="display:inline-block; width:45%; height:100%">
+  <div class="card-deck" style="margin-bottom:25px">
+      <div class="card" style="width:40%; margin-left:25px; margin-top:25px;">
+        <h3 class="card-body text-center" style="padding-bottom:0px">Students</h3>
+        <div class="card-body" style="padding-top:0px">
+          {% for stud in students %}
+            <!--<div class="card">
+              <!-- fix student profile picture image
+              <div style="display:inline-block; width:45%; height:100%">
 
-              <img src="media/profile_pictures/default_image.jpg" />
-              </div>
-              -->
-            <a style="text-decoration: none; color: black" href="{% url 'add_feedback' course.subject_slug  stud.student.id_number %}">
-              <div class="card" style="padding-left:10px; margin-top:10px">
-                <br style="clear:both;"/>
-                <b>{{ stud.student.username }}</b>
-                <p>
-                  {{ stud.score }}
-                </p>
+                <img src="media/profile_pictures/default_image.jpg" />
                 </div>
-              </a>
-            <!--</div> -->
-          {% endfor %}
+                -->
+              <a style="text-decoration: none; color: black" href="{% url 'add_feedback' course.subject_slug  stud.student.id_number %}">
+                <div class="card" style="padding-left:10px; margin-top:10px">
+                  <b>{{ stud.student.username }}</b>
+                  <p>
+                    {{ stud.score }}
+                  </p>
+                  </div>
+                </a>
+              <!--</div> -->
+            {% endfor %}
+        </div>
       </div>
-    </div>
     <div class="card" style="width:40%; margin-left:25px; margin-top:25px;">
       <h3 class="card-body text-center" style="padding-bottom:0px">Recent Feedback Given</h3>
       <div class="card-body" style="padding-top:0px">

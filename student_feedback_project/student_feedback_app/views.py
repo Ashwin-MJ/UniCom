@@ -10,9 +10,7 @@ from django import http
 
 # Create your views here.
 def index(request):
-    return HttpResponse("This is the homepage")
-
-
+    return render(request, 'student_feedback_app/index.html')
 
 def student_home(request):
     context_dict={}
@@ -32,10 +30,7 @@ def student_home(request):
         return render(request, 'student_feedback_app/error_page.html', context_dict)
     return render(request, 'student_feedback_app/student_home.html', context_dict)
 
-
-
-
-def all_feedback(request):
+def student_all_feedback(request):
     context_dict = {}
     if request.user.is_authenticated and request.user.is_student:
         stud= StudentProfile.objects.get(student=request.user)
@@ -46,7 +41,7 @@ def all_feedback(request):
         context_dict['error'] = "auth"
         return render(request,'student_feedback_app/error_page.html', context_dict)
 
-    return render(request,'student_feedback_app/all_feedback.html',context_dict)
+    return render(request,'student_feedback_app/student_all_feedback.html',context_dict)
 
 
 def student_all_courses(request):
@@ -92,10 +87,6 @@ def student_course(request, subject_slug):
         return render(request, 'student_feedback_app/error_page.html', context_dict)
 
     return render(request, 'student_feedback_app/student_course.html', context_dict)
-
-
-
-
 
 def lecturer_home(request):
     context_dict = {}
