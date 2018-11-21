@@ -15,13 +15,14 @@ Feedback
           <div class="card-body">
             {% for fb in feedback %}
             <div class="card" style="padding-left:10px">
-
                 <b>{{ fb.category }}</b>
               <p>
-                {{ fb.message }}<br />
+                {{ fb.pre_defined_message.text }}<br />
+                  {% if fb.optional_message %}
+                    <em>{{ fb.optional_message }}</em><br />
+                  {% endif %}
                   <b> From: </b>
-                  <em>{{fb.lecturer.lecturer.username}}</em>
-                </a><br />
+                  {{fb.lecturer.lecturer.username}}<br />
                   <b>Points awarded: </b>
                 {{ fb.points }}<br />
                 {{ fb.datetime_given }}
