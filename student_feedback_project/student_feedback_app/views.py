@@ -30,9 +30,6 @@ def student_home(request):
         return render(request, 'student_feedback_app/error_page.html', context_dict)
     return render(request, 'student_feedback_app/student_home.html', context_dict)
 
-
-
-
 def student_all_feedback(request):
     context_dict = {}
     if request.user.is_authenticated and request.user.is_student:
