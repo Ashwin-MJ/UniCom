@@ -45,25 +45,13 @@ class LecturerProfile(models.Model):
     # Can access lecturers feedback using LectureProfile.feedback_set.all()
 
 class Feedback(models.Model):
-<<<<<<< HEAD
-        feedback_id = models.IntegerField(primary_key=True,default=0)
-        date_given = models.DateTimeField(default=timezone.now)
-        message = models.CharField(max_length=200,default="No message")
-        category = models.CharField(max_length=100)
-        points = models.IntegerField(default=0)
-        lecturer = models.ForeignKey('LecturerProfile', on_delete=models.CASCADE, null=True, blank=True)
-        student = models.ForeignKey('StudentProfile', on_delete=models.CASCADE, null=True, blank=True)
-        which_class = models.ForeignKey('Class', on_delete=models.CASCADE, null=True, blank=True)
-
-=======
+    date_given = models.DateTimeField(default=timezone.now)
     feedback_id = models.IntegerField(primary_key=True,default=0)
     message = models.CharField(max_length=200,default="No message")
     points = models.IntegerField(default=0)
     lecturer = models.ForeignKey('LecturerProfile', on_delete=models.CASCADE, null=True, blank=True)
     student = models.ForeignKey('StudentProfile', on_delete=models.CASCADE, null=True, blank=True)
     which_class = models.ForeignKey('Class', on_delete=models.CASCADE, null=True, blank=True)
-    datetime = models.DateTimeField(default=timezone.now, blank=False)
-
     category = models.ForeignKey('Category', on_delete=models.CASCADE, null=True, blank=True)
 
 class Category(models.Model):
@@ -71,4 +59,4 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
->>>>>>> 99a46b62d3d15fb888ecaa6268c581e491952b28
+

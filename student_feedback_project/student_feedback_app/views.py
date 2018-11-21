@@ -1,19 +1,13 @@
 from django.shortcuts import render
-<<<<<<< HEAD
-from django.http import HttpResponse
 from student_feedback_app.models import Feedback
 from datetime import datetime, timedelta
 from django.utils import timezone
-from .models import LecturerProfile,Feedback,Class,StudentProfile
 from .forms import *
-=======
 from django.http import HttpResponse,HttpResponseRedirect
 from .models import LecturerProfile,Feedback,Class,StudentProfile,User
-from .forms import ClassForm,FeedbackForm
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-import datetime
->>>>>>> 99a46b62d3d15fb888ecaa6268c581e491952b28
+
 
 
 # Create your views here.
@@ -164,14 +158,14 @@ def lecturer_all_classes(request):
 
 def create_class(request):
 
-    contextDict = {}
+    context_dict = {}
     if not request.user.is_lecturer:
         return HttpResponse("You are not allowed here")
 
 
     try:
         lect = LecturerProfile.objects.get(lecturer=request.user)
-        contextDict["lecturer"] = lect
+        context_dict["lecturer"] = lect
 
         if request.method == 'POST':
             form = ClassForm(request.POST)
@@ -188,9 +182,14 @@ def create_class(request):
         else:
             form = ClassForm()
 
-        contextDict["form"] = form
-        return render(request, 'student_feedback_app/create_class.html', contextDict)
-
-
+        context_dict["form"] = form
+        return render(request, 'student_feedback_app/create_class.html', context_dict)
     except:
         return HttpResponse("something went wrong")
+
+def sort_btn(request):
+    context_dict = {}
+    if request.GET.get('sort-btn'):
+        fb = Feedback.objects.all().order_by('points')
+        context_dict['Feedback'] = fb
+    return render_to_response(request, 'student_feedback_app/student_home.html', context_dict) 
