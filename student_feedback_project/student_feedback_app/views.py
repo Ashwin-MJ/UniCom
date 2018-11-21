@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse,HttpResponseRedirect
 from .models import LecturerProfile,Feedback,Course,StudentProfile,User,Category,Message
-from .forms import CourseForm,FeedbackForm
+from .forms import CourseForm,FeedbackForm, addCourseForm
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from dal import autocomplete
@@ -18,7 +18,7 @@ def student_home(request):
         try:
             stud = StudentProfile.objects.get(student=request.user)
             fb = stud.feedback_set.all().order_by('-datetime_given')
-            courses=stud.course_set.all()
+            courses=stud.courses.all()
             context_dict['student'] = stud
             context_dict['courses'] = courses
             context_dict['feedback'] = fb
@@ -41,18 +41,36 @@ def student_all_feedback(request):
         context_dict['error'] = "auth"
         return render(request,'student_feedback_app/error_page.html', context_dict)
 
-    return render(request,'student_feedback_app/student_all_feedback.html',context_dict)
+    return render(request,'student_feedback_app/all_feedback.html',context_dict)
 
 
 def student_all_courses(request):
     context_dict = {}
     if request.user.is_authenticated and request.user.is_student:
         stud = StudentProfile.objects.get(student=request.user)
-        courses = stud.course_set.all()
+        courses = stud.courses.all()
         fb = stud.feedback_set.all()
         context_dict['stud'] = stud
         context_dict['courses'] = courses
         context_dict['feedback'] = fb
+        if(request.method == 'POST'):
+            form = addCourseForm(request.POST)
+            stud = StudentProfile.objects.get(student = request.user)
+            if(form.is_valid()):
+                try:
+                    course = Course.objects.get(course_token=form.cleaned_data["course_token"] )
+                    stud.courses.add(course)
+                    stud.save()
+                    return student_home(request)
+                except:
+                    context_dict['error'] = "no_course"
+                    return render(request, 'student_feedback_app/error_page.html', context_dict)
+            else:
+                print(form.errors)
+        else:
+            form = addCourseForm()
+        context_dict["form"] = form
+        return render(request, 'student_feedback_app/student_courses.html', context_dict)
     else:
         context_dict['error'] = "auth"
         return render(request,'student_feedback_app/error_page.html', context_dict)

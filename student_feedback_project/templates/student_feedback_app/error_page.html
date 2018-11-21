@@ -66,6 +66,7 @@ Error page
 	<div class="col-sm card" style="width:50%;margin-left:25px; margin-top:25px;padding">
 		<h3 class="card-body text-center">Course does not exist</h3>
 		Try creating a new class or check if the course name entered is correct
+		{% if user.is_lecturer %}
 		<a class="nav-link" href="{% url 'create_course' %}">
 		<div class="card" style="width:50%; padding-left:10px">
 				Create course
@@ -76,6 +77,13 @@ Error page
 				Return to home page
 			</div>
 		</a>
+		{% else %}
+		<a class="nav-link" href="{% url 'student_home' %}">
+		<div class="card" style="width:50%; padding-left:10px">
+				Return to home page
+			</div>
+		</a>
+		{% endif %}
 	</div>
 </div>
 {% endif %}

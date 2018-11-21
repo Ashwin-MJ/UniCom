@@ -1,7 +1,6 @@
 from dal import autocomplete
 from django import forms
-from .models import Course,Feedback,User,Category,Message
-import datetime
+from .models import Course,Feedback
 
 class CourseForm(forms.ModelForm):
     subject = forms.CharField(max_length=40, help_text="Course Name", required=False)
@@ -31,3 +30,12 @@ class FeedbackForm(autocomplete.FutureModelForm):
             'pre_defined_message': "Select a Message",
             'category': 'Category'
         }
+
+
+
+class addCourseForm(forms.ModelForm):
+    course_token = forms.CharField(max_length= 7, help_text="Provided Course Token", required=True)
+
+    class Meta:
+        model = Course
+        fields = ('course_token',)
