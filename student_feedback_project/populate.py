@@ -1,12 +1,13 @@
 import os
 os.environ.setdefault('DJANGO_SETTINGS_MODULE',
 			'student_feedback_project.settings')
-from student_feedback_app.additional import *
 import django
 django.setup()
 from student_feedback_app.models import StudentProfile, Course, LecturerProfile, Feedback, Category, Message
 from django.template.defaultfilters import slugify
 from django.contrib.auth import get_user_model
+from student_feedback_app.additional import *
+
 User = get_user_model()
 
 
