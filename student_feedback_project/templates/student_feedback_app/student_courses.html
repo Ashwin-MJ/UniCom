@@ -39,10 +39,7 @@ Courses
         <div class="card" style="padding-left:10px; margin-top:10px"">
           <b>{{ fb.category }}</b>
           <p>
-            {{ fb.pre_defined_message.text }}<br />
-              {% if fb.optional_message %}
-                <em>{{ fb.optional_message }}</em><br />
-              {% endif %}
+            {{ fb.message }}<br />
             <a style="text-decoration: none; color: black" href="{% url 'lecturer_view_student' fb.student.student.id_number%}">
               <em>{{fb.student.student.username}}</em>
             </a><br />
@@ -54,12 +51,26 @@ Courses
       </div>
     </div>
 
-        <div class="card" style="width:40%; margin-left:25px; margin-top:25px;">
-      <h3 class="card-body text-center" style="padding-bottom:0px">Add a class</h3>
-      <div class="card-body" style="padding-top:0px">
-        <p class="card-text"></p>
-          <b>Functionality to be made</b>
-          </div>
+      <div class="card" style="width:40%; height: 300px; margin-left:25px; margin-top:25px;">
+        <h3 class="card-body text-center" style="padding-bottom:0px">Add a class</h3>
+        <div class="card-body" style="padding-top:0px">
+          <form id="" method="post" action="">
+            {% csrf_token %}
+            {% for hidden in form.hidden_fields %}
+            {{ hidden }}
+            {% endfor %}
+          <p class="card-text"></p>
+
+            {% for field in form.visible_fields %}
+                <div class="card" style="padding-left:10px">
+
+                {{ field.errors }}<br />
+                {{ field.help_text }}<br />
+                {{ field }}<br />
+                </div>
+            {% endfor %}
+        </div>
+            <input type="submit" name="submit" value="Join Class" /> </form>
       </div>
     </div>
 
