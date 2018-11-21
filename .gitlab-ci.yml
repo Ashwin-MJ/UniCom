@@ -5,3 +5,8 @@ build:
   artifacts:
     paths:
       - "*.pdf"
+test:
+  script:
+    - cd student_feedback_project
+    - pip3 install -r requirements.txt
+    - python3 manage.py test student_feedback_app
