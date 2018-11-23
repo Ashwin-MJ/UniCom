@@ -29,8 +29,6 @@ Courses
       </div>
     </div>
 
-
-
     <div class="card" style="width:40%; margin-left:25px; margin-top:25px;">
       <h3 class="card-body text-center" style="padding-bottom:0px">Recent Feedback</h3>
       <div class="card-body" style="padding-top:0px">
@@ -39,7 +37,10 @@ Courses
         <div class="card" style="padding-left:10px; margin-top:10px"">
           <b>{{ fb.category }}</b>
           <p>
-            {{ fb.message }}<br />
+            {{ fb.pre_defined_message.text }}<br />
+              {% if fb.optional_message %}
+                <em>{{ fb.optional_message }}</em><br />
+              {% endif %}
             <a style="text-decoration: none; color: black" href="{% url 'lecturer_view_student' fb.student.student.id_number%}">
               <em>{{fb.student.student.username}}</em>
             </a><br />

@@ -1,4 +1,5 @@
 {% extends 'student_feedback_app/base.html' %}
+{% load static %}
 
 {% block title_block %}
 {{ course.subject }}<br />
@@ -11,26 +12,20 @@ Course Token: {{ course.course_token}}
   <div class="card-deck" style="margin-bottom:25px">
       <div class="card" style="width:40%; margin-left:25px; margin-top:25px;">
         <h3 class="card-body text-center" style="padding-bottom:0px">Students</h3>
-        <div class="card-body" style="padding-top:0px">
+        <div id="all_students" class="card-body" style="padding-top:0px">
           {% for stud in students %}
-            <!--<div class="card">
-              <!-- fix student profile picture image
-              <div style="display:inline-block; width:45%; height:100%">
-
-                <img src="media/profile_pictures/default_image.jpg" />
+            <!-- <a style="text-decoration: none; color: black" href="{% url 'add_feedback' course.subject_slug  stud.student.id_number %}"
+                type="hidden" id="myVar" name="variable" value="{{ variable }}"> -->
+              <div id="{{ stud.student.id_number }}" class="card students" style="padding-left:10px; margin-top:10px">
+                <b>{{ stud.student.username }}</b>
+                <p>
+                  {{ stud.score }}
+                </p>
                 </div>
-                -->
-              <a style="text-decoration: none; color: black" href="{% url 'add_feedback' course.subject_slug  stud.student.id_number %}">
-                <div class="card" style="padding-left:10px; margin-top:10px">
-                  <b>{{ stud.student.username }}</b>
-                  <p>
-                    {{ stud.score }}
-                  </p>
-                  </div>
-                </a>
-              <!--</div> -->
+              <!-- </a> -->
             {% endfor %}
         </div>
+        <input type="submit" value="Group Feedback">
       </div>
     <div class="card" style="width:40%; margin-left:25px; margin-top:25px;">
       <h3 class="card-body text-center" style="padding-bottom:0px">Recent Feedback Given</h3>
@@ -61,5 +56,10 @@ Course Token: {{ course.course_token}}
     </div>
   </div>
 </div>
-
 {% endblock %}
+
+{% block footer %}
+
+<script type="text/javascript" src="{% static 'javascript/group_select.js' %}"> </script>
+
+{% endblock%}
