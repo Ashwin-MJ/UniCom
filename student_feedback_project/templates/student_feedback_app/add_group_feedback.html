@@ -15,10 +15,15 @@ Add Feedback
       <div class="card" style="margin-left:25px; margin-top:25px;
                                 margin-right:25px; margin-bottom:25px;">
         <h3 class="card-body text-left">
-          Adding Group Feedback for
-            <em id="all_students">NONE</em>
+          Adding Group Feedback for:
+          <div style="padding-left: 25px">
+            {% for student in students %}
+            <li>
+                {{ student.student.username }}
+            </li>
+            {% endfor %}
+            </div>
         </h3>
-        <input type="submit" value="view students">
     </div>
   </div>
   <div class="card" style="height: 80px; margin-left:25px; margin-top:25px;
@@ -40,10 +45,6 @@ Add Feedback
 
 {% block footer %}
 <script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
-<script type="text/javascript">
-  document.getElementById("all_students").innerHTML = JSON.parse(localStorage.myArray);
-
-</script>
 
 {{ form.media }}
 {% endblock %}

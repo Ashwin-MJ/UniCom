@@ -10,8 +10,6 @@ $('#add-group-feedback').click(function(){
       res.push($(this).attr('id'))
     }
   })
-  if( !window.localStorage) alert("Sorry, you're using an ancient browser");
-  else {
-    localStorage.myArray = JSON.stringify(res);
-  }
+  var jsonText = JSON.stringify(res);
+  document.cookie = jsonText;
 })

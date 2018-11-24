@@ -14,22 +14,19 @@ Course Token: {{ course.course_token}}
         <h3 class="card-body text-center" style="padding-bottom:0px">Students</h3>
         <div id="all_students" class="card-body" style="padding-top:0px">
           {% for stud in students %}
-            <!-- <a style="text-decoration: none; color: black" href="{% url 'add_feedback' course.subject_slug  stud.student.id_number %}"
-                type="hidden" id="myVar" name="variable" value="{{ variable }}"> -->
               <div id="{{ stud.student.id_number }}" class="card students" style="padding-left:10px; margin-top:10px">
                 <b>{{ stud.student.username }}</b>
                 <p>
                   {{ stud.score }}
                 </p>
                 </div>
-              <!-- </a> -->
             {% endfor %}
         </div>
-        <a style="text-decoration: none; color: black" href="{% url 'add_group_feedback' course.subject_slug%}">
-          <div id="add-group-feedback" class="card" style="padding-left:10px; margin-top:10px">
-              Add Group Feedback
-            </div>
-          </a>
+        <form method='post' action="{% url 'add_group_feedback' course.subject_slug %}" id="group-feedback-form">
+          {% csrf_token%}
+          <input type="hidden" />
+          <button type="submit" id="add-group-feedback">Add Group Feedback</button>
+          </form>
       </div>
     <div class="card" style="width:40%; margin-left:25px; margin-top:25px;">
       <h3 class="card-body text-center" style="padding-bottom:0px">Recent Feedback Given</h3>
@@ -64,6 +61,6 @@ Course Token: {{ course.course_token}}
 
 {% block footer %}
 
-<script type="text/javascript" src="{% static 'javascript/group_select.js' %}"> </script>
+<script type="text/javascript" src="{% static 'javascript/group_select.js' %}" ></script>
 
 {% endblock%}
