@@ -10,8 +10,13 @@ $('#add-group-feedback').click(function(){
       res.push($(this).attr('id'))
     }
   })
-  var jsonText = JSON.stringify(res);
-  var cookieText = "students=" + jsonText + ';'
-  document.cookie = cookieText;
-  alert(cookieText)
+  if(res.length < 2){
+    alert("Please select at least 2 students to provide group feedback.")
+  }
+  else{
+    var jsonText = JSON.stringify(res);
+    var cookieText = "students=" + jsonText + ';'
+    document.cookie = cookieText;
+  }
+
 })

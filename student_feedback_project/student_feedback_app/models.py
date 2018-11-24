@@ -2,6 +2,7 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import AbstractUser
 from django.template.defaultfilters import slugify
+import datetime
 
 
 class User(AbstractUser):
@@ -53,6 +54,9 @@ class Feedback(models.Model):
     datetime_given = models.DateTimeField(default=timezone.now, blank=False)
     optional_message = models.CharField(max_length=200,default="")
     category = models.ForeignKey('Category', on_delete=models.CASCADE, null=True, blank=True)
+
+    def is_recent(self):
+        return timezone.now() - self.datetime_given < datetime.timedelta(minutes=5)
 
 class Category(models.Model):
     name = models.CharField(max_length=20, default="Empty",primary_key=True)

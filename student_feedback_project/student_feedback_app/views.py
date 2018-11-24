@@ -239,7 +239,6 @@ def add_group_feedback(request,subject_slug):
 
     try:
         students_string = request.COOKIES.get("students")
-        print(students_string)
 
         students_list = json.loads(students_string)
         stud_profiles = []
@@ -276,6 +275,7 @@ def add_group_feedback(request,subject_slug):
                     created_fb.save()
             else:
                 print(form.errors)
+            request.COOKIES["students"] = ""
             return my_provided_feedback(request)
         else:
             form = FeedbackForm()
