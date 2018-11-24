@@ -1,0 +1,49 @@
+{% extends 'student_feedback_app/base.html' %}
+{% load static %}
+
+{% block title_block %}
+{{ lecturer.lecturer.username }}'s<br />
+Add Feedback
+{% endblock%}
+
+
+{% block body_block %}
+
+<div style="width:100%; display: table;">
+  <div style="display: table-row;">
+    <div style="display:table-cell">
+      <div class="card" style="margin-left:25px; margin-top:25px;
+                                margin-right:25px; margin-bottom:25px;">
+        <h3 class="card-body text-left">
+          Adding Group Feedback for
+            <em id="all_students">NONE</em>
+        </h3>
+        <input type="submit" value="view students">
+    </div>
+  </div>
+  <div class="card" style="height: 80px; margin-left:25px; margin-top:25px;
+                            margin-right:25px; margin-bottom:25px;">
+    <h3 class="card-body text-left">{{ student.student.username }}'s Current Score: {{ student.score }}</h3>
+  </div>
+  <div class="card" style="margin-left:25px; margin-top:25px;
+                            margin-right:25px; margin-bottom:25px;">
+    <h5 class="card-body text-left" style="padding-bottom:0px">Recent Feedback for Student</h5>
+  </div>
+  <div class="card" style="height: 125px; margin-left:25px; margin-top:25px;
+                              margin-right:25px; margin-bottom:25px;">
+      <h3 class="card-body text-left">Submit: </h3>
+      <input type='submit' name='submit' value='Submit Feedback' style='width:35%; align-self: center;'/>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block footer %}
+<script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
+<script type="text/javascript">
+  document.getElementById("all_students").innerHTML = JSON.parse(localStorage.myArray);
+
+</script>
+
+{{ form.media }}
+{% endblock %}

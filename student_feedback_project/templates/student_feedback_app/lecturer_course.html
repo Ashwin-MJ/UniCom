@@ -25,7 +25,11 @@ Course Token: {{ course.course_token}}
               <!-- </a> -->
             {% endfor %}
         </div>
-        <input type="submit" value="Group Feedback">
+        <a style="text-decoration: none; color: black" href="{% url 'add_group_feedback' course.subject_slug%}">
+          <div id="add-group-feedback" class="card" style="padding-left:10px; margin-top:10px">
+              Add Group Feedback
+            </div>
+          </a>
       </div>
     <div class="card" style="width:40%; margin-left:25px; margin-top:25px;">
       <h3 class="card-body text-center" style="padding-bottom:0px">Recent Feedback Given</h3>

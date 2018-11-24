@@ -230,6 +230,65 @@ def add_feedback(request,subject_slug,student_number):
         return render(request,'student_feedback_app/error_page.html', context_dict)
     return render(request,'student_feedback_app/add_feedback.html',context_dict)
 
+def add_group_feedback(request,subject_slug):
+    if not request.user.is_authenticated or not request.user.is_lecturer:
+        context_dict['error'] = "auth"
+        return render(request,'student_feedback_app/error_page.html', context_dict)
+    context_dict = {}
+
+    try:
+        lect = LecturerProfile.objects.get(lecturer=request.user)
+        context_dict['lecturer'] = lect
+        course = Course.objects.get(subject_slug=subject_slug)
+        context_dict['course'] = course
+
+    except:
+        context_dict['student'] = None
+        context_dict['feedback'] = None
+        context_dict['error'] = "no_student"
+        return render(request,'student_feedback_app/error_page.html', context_dict)
+
+    return render(request,'student_feedback_app/add_group_feedback.html',context_dict)
+    # try:
+    #     lect = LecturerProfile.objects.get(lecturer=request.user)
+    #     students = JSON
+    #     stud_user = User.objects.get(id_number=student_number)
+    #     stud = StudentProfile.objects.get(student=stud_user)
+    #     fb = stud.feedback_set.all()
+    #     context_dict['lecturer'] = lect
+    #     context_dict['student'] = stud
+    #     context_dict['feedback'] = fb
+    #     course = Course.objects.get(subject_slug=subject_slug)
+    #     context_dict['course'] = course
+    #
+    #     context = RequestContext(request)
+    #     if request.method == 'POST':
+    #         form = FeedbackForm(request.POST)
+    #         if form.is_valid():
+    #             new_fb = form.save(commit=False)
+    #             new_fb.pre_defined_message.category = Category.objects.get(name=new_fb.category)
+    #             new_fb.pre_defined_message.save()
+    #             new_fb.student = stud
+    #             stud.score += new_fb.points
+    #             new_fb.lecturer = lect
+    #             new_fb.which_course = course
+    #             new_fb.datetime_given = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    #             stud.save()
+    #             new_fb.save()
+    #             return my_provided_feedback(request)
+    #         else:
+    #             print(form.errors)
+    #     else:
+    #         form = FeedbackForm()
+    #     context_dict['form'] = form
+    #     return render(request,'student_feedback_app/add_feedback.html',context_dict)
+    # except:
+    #     context_dict['student'] = None
+    #     context_dict['feedback'] = None
+    #     context_dict['error'] = "no_student"
+    #     return render(request,'student_feedback_app/error_page.html', context_dict)
+    # return render(request,'student_feedback_app/add_feedback.html',context_dict)
+
 def lecturer_all_courses(request):
     context_dict = {}
     if request.user.is_authenticated and request.user.is_lecturer:

@@ -3,12 +3,15 @@ $('.students').click(function(e) {
   $(this).toggleClass(addclass);
 });
 
-$(':submit').click(function(){
+$('#add-group-feedback').click(function(){
   var res=[];
   $('.students').each(function(){
     if($(this).hasClass('color')){
       res.push($(this).attr('id'))
     }
   })
-  alert(res)
+  if( !window.localStorage) alert("Sorry, you're using an ancient browser");
+  else {
+    localStorage.myArray = JSON.stringify(res);
+  }
 })

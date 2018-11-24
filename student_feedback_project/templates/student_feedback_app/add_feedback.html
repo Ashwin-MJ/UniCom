@@ -13,9 +13,9 @@ Add Feedback
   {% for hidden in form.hidden_fields %}
     {{ hidden }}
   {% endfor %}
-<div style = "width:100%; display: table;">
-  <div style = "display: table-row;">
-    <div  style = "display: table-cell;">
+<div style="width:100%; display: table;">
+  <div style="display: table-row;">
+    <div style="display: table-cell;">
       <div class="card" style="height: 80px; margin-left:25px; margin-top:25px;
                                 margin-right:25px; margin-bottom:25px;">
         <h3 class="card-body text-left">
@@ -34,16 +34,16 @@ Add Feedback
         <div class="card" style="width:25%; margin-left:25px; align-self:center;
                                   margin-right:25px; margin-bottom:25px;">
           {{ field }}
-          </div>
+        </div>
         {% elif field.help_text == 'Select a Message' or field.help_text == 'Category' %}
         <div style="align-self:center; margin-bottom:25px;">
           {{ field }}
-          </div>
+        </div>
         {% else %}
         <div class="card" style="margin-left:25px;
                                   margin-right:25px; margin-bottom:25px;">
           {{ field }}
-          </div>
+        </div>
         {% endif %}
       </div>
       {% endfor %}
@@ -76,9 +76,9 @@ Add Feedback
                                 margin-right:25px; margin-bottom:25px;">
         <h3 class="card-body text-left">Submit: </h3>
         <input type='submit' name='submit' value='Submit Feedback' style='width:35%; align-self: center;'/>
-      </div>
     </div>
   </div>
+</div>
 
 </form>
 {% endblock %}
