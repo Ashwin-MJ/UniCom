@@ -11,5 +11,7 @@ $('#add-group-feedback').click(function(){
     }
   })
   var jsonText = JSON.stringify(res);
-  document.cookie = jsonText;
+  var cookieText = "students=" + jsonText + ';'
+  document.cookie = cookieText;
+  alert(cookieText)
 })

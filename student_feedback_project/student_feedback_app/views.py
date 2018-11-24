@@ -237,8 +237,10 @@ def add_group_feedback(request,subject_slug):
         return render(request,'student_feedback_app/error_page.html', context_dict)
     context_dict = {}
 
-    if request.method == 'POST':
-        students_string = request.COOKIES.get("")
+    try:
+        students_string = request.COOKIES.get("students")
+        print(students_string)
+
         students_list = json.loads(students_string)
         stud_profiles = []
 
@@ -247,11 +249,42 @@ def add_group_feedback(request,subject_slug):
             stud_profiles.append(StudentProfile.objects.get(student=stud_user))
 
         context_dict['students'] = stud_profiles
-        context_dict['lecturer'] = LecturerProfile.objects.get(lecturer=request.user)
-        context_dict['subject'] = Course.objects.get(subject_slug=subject_slug)
+        lect = LecturerProfile.objects.get(lecturer=request.user)
+        context_dict['lecturer'] = lect
+        course = Course.objects.get(subject_slug=subject_slug)
+        context_dict['subject'] = course
+
+        display_page = False
+
+        context = RequestContext(request)
+        if request.method == 'POST':
+            form = FeedbackForm(request.POST)
+            if form.is_valid():
+                for student in stud_profiles:
+                    new_fb = form.save(commit=False)
+                    created_fb = Feedback(student=student)
+                    created_fb.pre_defined_message = new_fb.pre_defined_message
+                    created_fb.pre_defined_message.category = Category.objects.get(name=new_fb.category)
+                    created_fb.pre_defined_message.save()
+                    created_fb.category = created_fb.pre_defined_message.category
+                    student.score += new_fb.points
+                    created_fb.lecturer = lect
+                    created_fb.which_course = course
+                    created_fb.points = new_fb.points
+                    created_fb.datetime_given = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                    student.save()
+                    created_fb.pk = None
+                    created_fb.save()
+            else:
+                print(form.errors)
+            return my_provided_feedback(request)
+        else:
+            form = FeedbackForm()
+        context_dict['form'] = form
+
         return render(request,'student_feedback_app/add_group_feedback.html',context_dict)
-        
-    else:
+
+    except:
         context_dict['error'] = "error"
         return render(request,'student_feedback_app/error_page.html', context_dict)
 
