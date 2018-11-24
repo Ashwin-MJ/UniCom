@@ -129,7 +129,7 @@ def my_provided_feedback(request):
     context_dict = {}
     if request.user.is_authenticated and request.user.is_lecturer:
         lect = LecturerProfile.objects.get(lecturer=request.user)
-        fb = lect.feedback_set.all()
+        fb = lect.feedback_set.all().order_by('-datetime_given')
         context_dict['lect'] = lect
         context_dict['feedback'] = fb
     else:
@@ -254,8 +254,6 @@ def add_group_feedback(request,subject_slug):
         course = Course.objects.get(subject_slug=subject_slug)
         context_dict['subject'] = course
 
-        display_page = False
-
         context = RequestContext(request)
         if request.method == 'POST':
             form = FeedbackForm(request.POST)
@@ -271,6 +269,7 @@ def add_group_feedback(request,subject_slug):
                     created_fb.lecturer = lect
                     created_fb.which_course = course
                     created_fb.points = new_fb.points
+                    created_fb.optional_message = new_fb.optional_message
                     created_fb.datetime_given = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                     student.save()
                     created_fb.pk = None
@@ -295,7 +294,7 @@ def lecturer_all_courses(request):
     if request.user.is_authenticated and request.user.is_lecturer:
         lect = LecturerProfile.objects.get(lecturer=request.user)
         courses = lect.course_set.all()
-        fb = lect.feedback_set.all()
+        fb = lect.feedback_set.all().order_by('-datetime_given')
         context_dict['lect'] = lect
         context_dict['courses'] = courses
         context_dict['feedback'] = fb

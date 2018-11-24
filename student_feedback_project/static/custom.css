@@ -22,3 +22,8 @@
   color: blue;
   background-color: inherit;
 }
+
+.scroll {
+  max-height: 80vh;
+  overflow-y: scroll;
+}
