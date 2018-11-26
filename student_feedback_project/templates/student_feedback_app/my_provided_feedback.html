@@ -1,4 +1,5 @@
 {% extends 'student_feedback_app/base.html' %}
+{% load static %}
 
 {% block title_block %}
 {{ lect.lecturer.username }}'s<br />
@@ -13,7 +14,11 @@ Provided Feedback
       <h3 class="card-body text-center">Recent Feedback</h3>
       <div class="card-body">
         {% for fb in feedback %}
-        <div class="card" style="padding-left:10px">
+        {% if fb.is_recent %}
+        <div class="card recent" style="padding-left:10px; margin-top:10px">
+        {% else %}
+        <div class="card" style="padding-left:10px; margin-top:10px">
+        {% endif %}
           <b>{{ fb.category }}</b>
           <p>
             {{ fb.pre_defined_message.text }}<br />
@@ -26,7 +31,6 @@ Provided Feedback
             {{ fb.points }}<br />
             {{ fb.datetime_given }}
           </p>
-
           </div>
           {% endfor %}
       </div>

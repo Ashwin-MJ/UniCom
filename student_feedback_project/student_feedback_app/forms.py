@@ -32,7 +32,6 @@ class FeedbackForm(autocomplete.FutureModelForm):
         }
 
 
-
 class addCourseForm(forms.ModelForm):
     course_token = forms.CharField(max_length= 7, help_text="Provided Course Token", required=True)
 

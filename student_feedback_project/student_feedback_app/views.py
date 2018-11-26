@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponse,HttpResponseRedirect
+from django.http import HttpResponse,HttpResponseRedirect, JsonResponse
 from .models import LecturerProfile,Feedback,Course,StudentProfile,User,Category,Message
 from .forms import CourseForm,FeedbackForm, addCourseForm
 from django.shortcuts import render_to_response
@@ -7,6 +7,7 @@ from django.template import RequestContext
 from dal import autocomplete
 import datetime
 from django import http
+import json
 
 # Create your views here.
 def index(request):
@@ -128,7 +129,7 @@ def my_provided_feedback(request):
     context_dict = {}
     if request.user.is_authenticated and request.user.is_lecturer:
         lect = LecturerProfile.objects.get(lecturer=request.user)
-        fb = lect.feedback_set.all()
+        fb = lect.feedback_set.all().order_by('-datetime_given')
         context_dict['lect'] = lect
         context_dict['feedback'] = fb
     else:
@@ -230,12 +231,70 @@ def add_feedback(request,subject_slug,student_number):
         return render(request,'student_feedback_app/error_page.html', context_dict)
     return render(request,'student_feedback_app/add_feedback.html',context_dict)
 
+def add_group_feedback(request,subject_slug):
+    if not request.user.is_authenticated or not request.user.is_lecturer:
+        context_dict['error'] = "auth"
+        return render(request,'student_feedback_app/error_page.html', context_dict)
+    context_dict = {}
+
+    try:
+        students_string = request.COOKIES.get("students")
+
+        students_list = json.loads(students_string)
+        stud_profiles = []
+
+        for student_id in students_list:
+            stud_user = User.objects.get(id_number=student_id)
+            stud_profiles.append(StudentProfile.objects.get(student=stud_user))
+
+        context_dict['students'] = stud_profiles
+        lect = LecturerProfile.objects.get(lecturer=request.user)
+        context_dict['lecturer'] = lect
+        course = Course.objects.get(subject_slug=subject_slug)
+        context_dict['subject'] = course
+
+        context = RequestContext(request)
+        if request.method == 'POST':
+            form = FeedbackForm(request.POST)
+            if form.is_valid():
+                for student in stud_profiles:
+                    new_fb = form.save(commit=False)
+                    created_fb = Feedback(student=student)
+                    created_fb.pre_defined_message = new_fb.pre_defined_message
+                    created_fb.pre_defined_message.category = Category.objects.get(name=new_fb.category)
+                    created_fb.pre_defined_message.save()
+                    created_fb.category = created_fb.pre_defined_message.category
+                    student.score += new_fb.points
+                    created_fb.lecturer = lect
+                    created_fb.which_course = course
+                    created_fb.points = new_fb.points
+                    created_fb.optional_message = new_fb.optional_message
+                    created_fb.datetime_given = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                    student.save()
+                    created_fb.pk = None
+                    created_fb.save()
+            else:
+                print(form.errors)
+            request.COOKIES["students"] = ""
+            return my_provided_feedback(request)
+        else:
+            form = FeedbackForm()
+        context_dict['form'] = form
+
+        return render(request,'student_feedback_app/add_group_feedback.html',context_dict)
+
+    except:
+        context_dict['error'] = "error"
+        return render(request,'student_feedback_app/error_page.html', context_dict)
+
+    return render(request,'student_feedback_app/add_group_feedback.html',context_dict)
+
 def lecturer_all_courses(request):
     context_dict = {}
     if request.user.is_authenticated and request.user.is_lecturer:
         lect = LecturerProfile.objects.get(lecturer=request.user)
         courses = lect.course_set.all()
-        fb = lect.feedback_set.all()
+        fb = lect.feedback_set.all().order_by('-datetime_given')
         context_dict['lect'] = lect
         context_dict['courses'] = courses
         context_dict['feedback'] = fb
