@@ -1,7 +1,7 @@
 {% extends 'student_feedback_app/base.html' %}
 
 {% block title_block %}
-My Classes<br />
+My Courses<br />
 {{ lect.lecturer.username }}
 {% endblock%}
 
@@ -11,16 +11,16 @@ My Classes<br />
 <div class="container">
   <div class="card-deck">
     <div class="card" style="width:40%; margin-left:25px; margin-top:25px;">
-      <h3 class="card-body text-center" style="padding-bottom:0px">My Classes</h3>
+      <h3 class="card-body text-center" style="padding-bottom:0px">My Courses</h3>
       <div class="card-body" style="padding-top:0px">
-        {% for class in classes %}
-            <a style="text-decoration: none; color: black" href="{% url 'lecturer_class' class.subject_slug%}">
+        {% for course in courses %}
+            <a style="text-decoration: none; color: black" href="{% url 'lecturer_course' course.subject_slug%}">
               <div class="card" style="padding-left:10px; margin-top:10px">
                 <br style="clear:both;"/>
-                <b>{{ class.subject }}</b>
+                <b>{{ course.subject }}</b>
                 <p>
-                  <em>{{ class.class_description }}</em><br />
-                  Students: {{ class.students.all|length }}
+                  <em>{{ course.course_description }}</em><br />
+                  Students: {{ course.students.all|length }}
                 </p>
                 </div>
             </a>

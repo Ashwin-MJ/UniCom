@@ -1,29 +1,19 @@
-	function sortByPoints(){
-		var list, i, switching, b, shouldSwitch;
-	  list = document.getElementsByClassName("card");
-	  switching = true;
-	  while (switching) {
-	    switching = false;
-	    b = list.getElementById("points");
-	    for (i = 0; i < (b.length - 1); i++) {
-	      //start by saying there should be no switching:
-	      shouldSwitch = false;
-	      /*check if the next item should
-	      switch place with the current item:*/
-
-	      if (Number(b[i].innerHTML) > Number(b[i + 1].innerHTML)) {
-	        /*if next item is numerically
-	        lower than current item, mark as a switch
-	        and break the loop:*/
-	        shouldSwitch = true;
-	        break;
-	      }
-	    }
-	    if (shouldSwitch) {
-	      /*If a switch has been marked, make the switch
-	      and mark the switch as done:*/
-	      b[i].parentNode.insertBefore(b[i + 1], b[i]);
-	      switching = true;
-	    }
-	  }
+	function sort_by_points(){
+		httpGetAsync("http://127.0.0.1:8000/GET/", null);
+		
 	}	
+
+	
+	function httpGetAsync(theUrl, callback)
+{
+    var httpRequest = new XMLHttpRequest();
+    httpRequest.onreadystatechange = function() { 
+        if (httpRequest.readyState == 4 && httpRequest.status == 200)
+			var data = httpRequest.responseText;
+			if(callback){
+				callback(data);
+			}
+    }
+    httpRequest.open("GET", theUrl, true); // true for asynchronous 
+    httpRequest.send(null);
+}

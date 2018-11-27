@@ -1,0 +1,38 @@
+{% extends 'student_feedback_app/base.html' %}
+
+{% block title_block %}
+Create a Course<br />
+{{ lecturer.lecturer.username }}
+{% endblock %}
+
+{% block body_block %}
+<div>
+    <form id="" method="post" action="">
+        {% csrf_token %}
+        {% for hidden in form.hidden_fields %}
+            {{ hidden }}
+        {% endfor %}
+
+        <div class="container">
+            <div class="card" style="width:40%; margin-left:25px; margin-top:25px;">
+                <h3 class="card-body text-center" >Create a Course</h3>
+                <div class="card-body">
+                {% for field in form.visible_fields %}
+                    <div class="card" style="padding-left:10px">
+
+                    {{ field.errors }}<br />
+                    {{ field.help_text }}<br />
+                    {{ field }}<br />
+                    </div>
+                    {% endfor %}
+                    <input type="submit" name="submit" value="Create Course" /> </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+</div>
+{% endblock %}

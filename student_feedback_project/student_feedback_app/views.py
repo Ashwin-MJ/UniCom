@@ -1,4 +1,7 @@
 from django.shortcuts import render
+from rest_framework.views import APIView
+from student_feedback_app.serializers import FeedbackSerializer
+from rest_framework import generics
 from student_feedback_app.models import Feedback
 from datetime import datetime, timedelta
 from django.utils import timezone
@@ -34,7 +37,7 @@ def lecturer_home(request):
     if request.user.is_lecturer:
         try:
             lect = LecturerProfile.objects.get(lecturer=request.user)
-            fb = lect.feedback_set.all().order_by('-datetime')
+            fb = lect.feedback_set.all().order_by('-date_given')
             classes = lect.class_set.all()
             context_dict['lecturer'] = lect
             context_dict['classes'] = classes
@@ -69,7 +72,7 @@ def lecturer_class(request,subject_slug):
             context_dict['lect'] = lect
             context_dict['students'] = students
             # Add top students for each class. This requires editing models to store class in feedback
-            fb = cla.feedback_set.all().order_by('-datetime')
+            fb = cla.feedback_set.all().order_by('-date_given')
             context_dict['feedback'] = fb
         except:
             context_dict['class'] = None
@@ -126,7 +129,7 @@ def add_feedback(request,subject_slug,student_number):
                 stud.score += new_fb.points
                 new_fb.lecturer = lect
                 new_fb.which_class = cla
-                new_fb.datetime = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                new_fb.date_given = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 stud.save()
                 new_fb.save()
                 return my_provided_feedback(request)
@@ -187,9 +190,8 @@ def create_class(request):
     except:
         return HttpResponse("something went wrong")
 
-def sort_btn(request):
-    context_dict = {}
-    if request.GET.get('sort-btn'):
-        fb = Feedback.objects.all().order_by('points')
-        context_dict['Feedback'] = fb
-    return render_to_response(request, 'student_feedback_app/student_home.html', context_dict) 
+class FeedbackList(generics.ListAPIView):
+    queryset = Feedback.objects.all().order_by('points')
+    serializer_class = FeedbackSerializer
+
+

@@ -1,7 +1,7 @@
 {% extends 'student_feedback_app/base.html' %}
 
 {% block title_block %}
-{{ class.subject }}
+{{ course.subject }}
 {% endblock%}
 
 
@@ -19,7 +19,7 @@
               <img src="media/profile_pictures/default_image.jpg" />
               </div>
               -->
-            <a style="text-decoration: none; color: black" href="{% url 'add_feedback' class.subject_slug  stud.student.id_number %}">
+            <a style="text-decoration: none; color: black" href="{% url 'add_feedback' course.subject_slug  stud.student.id_number %}">
               <div class="card" style="padding-left:10px; margin-top:10px">
                 <br style="clear:both;"/>
                 <b>{{ stud.student.username }}</b>
@@ -45,14 +45,14 @@
             {{ fb.points }}<br />
             {{ fb.date_given }}
           </p>
-        </div>
-        {% endfor %}
+          </div>
+          {% endfor %}
       </div>
     </div>
     <div class="card" style="width:40%; margin-left:25px; margin-top:25px;">
       <h3 class="card-body text-center" style="padding-bottom:0px">Leaderboard</h3>
       <div class="card-body text-center">
-        <p class="card-text">This will show the top X students of the class</p>
+        <p class="card-text">This will show the top X students of the course</p>
 
       </div>
     </div>
