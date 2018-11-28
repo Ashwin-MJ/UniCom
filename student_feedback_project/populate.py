@@ -6,7 +6,6 @@ django.setup()
 from student_feedback_app.models import StudentProfile, Course, LecturerProfile, Feedback, Category, Message
 from django.template.defaultfilters import slugify
 from django.contrib.auth import get_user_model
-from student_feedback_app.additional import *
 
 User = get_user_model()
 
@@ -210,7 +209,6 @@ def populate():
 # Helper function to add a new course
 def add_course(subject,course_code, course_description):
 	course = Course.objects.get_or_create(subject=subject,course_code=course_code, course_description=course_description)[0]
-	course.course_token = course_code_generator()
 	course.save()
 	return course
 

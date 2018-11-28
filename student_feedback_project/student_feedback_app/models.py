@@ -3,7 +3,7 @@ from django.utils import timezone
 from django.contrib.auth.models import AbstractUser
 from django.template.defaultfilters import slugify
 import datetime
-
+import random, string
 
 class User(AbstractUser):
     # The default AbstractUser model provided by Django is used as this will be ideal for
@@ -36,8 +36,20 @@ class Course(models.Model):
 
     def save(self, *args, **kwargs):
         self.subject_slug = slugify(self.course_code)
+        self.course_token = self.token_gen()
         super(Course, self).save(*args, **kwargs)
 
+    def token_gen(self):
+        size = 7
+        chars = string.ascii_uppercase + string.digits
+        cT = ''.join(random.choice(chars) for _ in range(size))
+        # checking all other courses
+        for course in Course.objects.all():
+            # Checking if the course token on already existing course is the same as new one
+            if cT == course.course_token:
+                cT = self.token_gen()
+
+        return cT
 
 class LecturerProfile(models.Model):
     lecturer = models.OneToOneField(User, on_delete=models.CASCADE,primary_key=True)
