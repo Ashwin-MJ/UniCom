@@ -22,4 +22,4 @@ Has this issue been completed in the time expected?
 If not, state the reason for delay
 
 <h2>Which Issue does this close?</h2>
-Closes Issue #
+Closes #
