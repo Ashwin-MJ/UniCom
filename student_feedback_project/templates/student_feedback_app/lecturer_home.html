@@ -1,5 +1,7 @@
 {% extends 'student_feedback_app/base.html' %}
 
+{% load staticfiles %}
+
 {% block title_block %}
 Home Page<br />
 {{ lecturer.lecturer.username }}
@@ -42,8 +44,15 @@ Home Page<br />
           {% endfor %}
       </div>
     </div>
+	
     </div>
+	<button onclick="sort()" type="button" class="btn btn-primary">Sort</button>
+	<p id="demo"></p>
   </div>
 </div>
+{% endblock %}
 
+
+{% block js-link %}		
+	<script type="text/javascript" src="{% static 'js/lecturer_home.js' %}"></script>
 {% endblock %}
