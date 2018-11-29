@@ -11,7 +11,7 @@ import json
 
 # Create your views here.
 def index(request):
-    return render(request, 'student_feedback_app/index.html')
+    return HttpResponseRedirect('/accounts/login/')
 
 def student_home(request):
     context_dict={}
