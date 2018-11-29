@@ -1,12 +1,15 @@
 {% extends 'student_feedback_app/base.html' %}
 
-{% block title_block %}
+{% block title%}
+Error
+{% endblock %}
+
+{% block current_page %}
 Error page
 {% endblock%}
 
 
 {% block body_block %}
-
 <div class="container">
 {% if error == "auth" %}
 		{% if not user.is_authenticated %}
