@@ -1,5 +1,4 @@
 from student_feedback_app.models import Course
-from student_feedback_app.token_gen import *
 from django.test import TestCase
 
 class CourseTestCase(TestCase):
@@ -8,8 +7,7 @@ class CourseTestCase(TestCase):
     def setUp(self):
         course = Course(subject="Systems Programming 3",
                         course_description="Introduction to Systems Programming using C and C++",
-                        course_code="SP3",
-                        course_token=course_code_generator())
+                        course_code="SP3",)
         course.save()
 
     # Ensure all test methods begin with test_..... otherwise they will not run
@@ -18,4 +16,16 @@ class CourseTestCase(TestCase):
 
 
         systems = Course.objects.get(course_code="SP3")
-        self.assertEqual(systems.subject_slug, "sp3")
+        self.assertEqual(len(systems.course_token), 7)
+
+
+    def test_create_course_that_exists(self):
+        flag = False
+        try:
+            new_course = Course(course_code = 'SP3',)
+            course.save()
+
+        except:
+            flag = True
+
+        self.assertEqual(flag, True)
