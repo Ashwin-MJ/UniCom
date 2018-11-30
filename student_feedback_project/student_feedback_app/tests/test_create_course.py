@@ -14,7 +14,6 @@ class CourseTestCase(TestCase):
     def test_course_token_correct_format(self):
         # The slug for the above course should be sp3
 
-
         systems = Course.objects.get(course_code="SP3")
         self.assertEqual(len(systems.course_token), 7)
 
@@ -28,4 +27,4 @@ class CourseTestCase(TestCase):
         except:
             flag = True
 
-        self.assertEqual(flag, True)
+        self.assertTrue(flag)
