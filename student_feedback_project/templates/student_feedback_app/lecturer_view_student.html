@@ -1,6 +1,10 @@
 {% extends 'student_feedback_app/base.html' %}
 
-{% block title_block %}
+{% block title%}
+Vewing {{ student.student.username }}
+{% endblock %}
+
+{% block current_page %}
 Currently viewing <br />
 {{ student.student.username }}
 {% endblock%}

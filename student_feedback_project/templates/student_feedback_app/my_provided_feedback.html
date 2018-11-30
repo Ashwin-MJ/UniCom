@@ -1,7 +1,11 @@
 {% extends 'student_feedback_app/base.html' %}
 {% load static %}
 
-{% block title_block %}
+{% block title%}
+My Provided Feedback
+{% endblock %}
+
+{% block current_page %}
 {{ lect.lecturer.username }}'s<br />
 Provided Feedback
 {% endblock%}

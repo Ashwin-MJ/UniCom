@@ -1,7 +1,11 @@
 {% extends 'student_feedback_app/base.html' %}
 {% load static %}
 
-{% block title_block %}
+{% block title%}
+{{ course.subject }}
+{% endblock %}
+
+{% block current_page %}
 {{ course.subject }}<br />
 Course Token: {{ course.course_token}}
 {% endblock%}
