@@ -91,6 +91,21 @@ class IndividualFeedbackTestCase(TestCase):
         # is not saved in the database
         self.assertFalse(fb_form.is_valid())
 
+    def test_feedback_saved_for_student(self):
+        fb = Feedback(optional_message="You made excellent points about ...",
+                        category=Category.objects.get(name="Speaking"),
+                        points=5,
+                        pre_defined_message=Message.objects.get(text="Good speech today!"),
+                        student=StudentProfile.objects.get(student=User.objects.get(id_number="1234")),
+                        lecturer=LecturerProfile.objects.get(lecturer=User.objects.get(id_number="5678")),
+                        which_course=Course.objects.get(course_code="SP3"))
+        fb.save()
+        stud = StudentProfile.objects.get(student=User.objects.get(id_number="1234"))
+
+        self.assertEqual(len(stud.feedback_set.all()),1)
+        self.assertEqual(stud.feedback_set.all()[0].optional_message, "You made excellent points about ...")
+
+
 #class GroupFeedbackTestCase(TestCase):
 
 #    def test_feedback_created(self):
