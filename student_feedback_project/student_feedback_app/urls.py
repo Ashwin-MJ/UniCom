@@ -21,6 +21,7 @@ urlpatterns = [
             name='add_group_feedback'),
     re_path(r'^lecturer/(?P<subject_slug>[\w\-]+)/(?P<student_number>[\w\-]+)/add-feedback/$', views.add_feedback,
             name='add_feedback'),
+    re_path(r'^accounts/register/$', views.register, name='register'),
     re_path(r'^accounts/', include('registration.backends.simple.urls')),
     re_path(r'^lecturer/view-student/(?P<student_number>[\w\-]+)/$', views.lecturer_view_student, name='lecturer_view_student'),
     re_path(r'^category-autocomplete/$', CategoryAutocomplete.as_view(model=Category,create_field='name'), name='category_autocomplete'),

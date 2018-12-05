@@ -2,6 +2,10 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import AbstractUser
 from django.template.defaultfilters import slugify
+
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
 import datetime
 import random, string
 
@@ -11,13 +15,27 @@ class User(AbstractUser):
     # in this. Fields below are added to this provided model to allow customisation.
     slug = models.SlugField(max_length=50)
     profile_picture = models.ImageField(upload_to='profile_pictures', default="profile_pictures/default_image.jpg", blank=True)
-    id_number = models.CharField(max_length=20)
+    id_number = models.CharField(max_length=20,  unique=True)
     is_student = models.BooleanField(default=False)
     is_lecturer = models.BooleanField(default=False)
 
+    USERNAME_FIELD = 'id_number'
+    REQUIRED_FIELDS = ['username', 'email']
+    
     def save(self, *args, **kwargs):
         self.slug = slugify(self.username)
         super(User, self).save(*args, **kwargs)
+
+@receiver(post_save, sender=User)
+def update_user_profile(sender, instance, created, **kwargs):
+    if created:
+        if instance.is_lecturer:
+            LecturerProfile.objects.create(lecturer=instance)
+            instance.lecturerprofile.save()
+        else :
+            instance.is_student = 1
+            StudentProfile.objects.create(student=instance)
+            instance.studentprofile.save()
 
 
 class StudentProfile(models.Model):

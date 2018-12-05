@@ -1,6 +1,10 @@
 from dal import autocomplete
 from django import forms
-from .models import Course,Feedback
+
+from .models import Course,Feedback,User,Category,Message
+import datetime
+from django.contrib.auth.forms import UserCreationForm#,AuthenticationForm
+
 
 class CourseForm(forms.ModelForm):
     subject = forms.CharField(max_length=40, help_text="Course Name", required=False)
@@ -29,6 +33,13 @@ class FeedbackForm(autocomplete.FutureModelForm):
             'category': 'Category'
         }
 
+class RegisterForm(UserCreationForm):
+    is_lecturer = forms.ChoiceField(choices=[(1,'lecturer'),
+         (0,'student')], widget=forms.RadioSelect(), label='Sign up as:')
+    is_student = forms.BooleanField(widget=forms.HiddenInput(), required=False)
+    class Meta:
+        model = User
+        fields = ('id_number', 'username', 'email', 'password1', 'password2', 'is_lecturer', 'is_student')
 
 class addCourseForm(forms.ModelForm):
     course_token = forms.CharField(max_length= 7, help_text="Provided Course Token", required=True)
