@@ -18,6 +18,7 @@ Log in
         <h3 class="card-body text-center">Log In</h3>
         <div class="card-body">
           {{ form.as_p }}
+          {{ error.as_p }}
         </div>
         <input type="submit" value="Log in" style="width:50%;"/>
         <input type="hidden" name="next" value="{% url 'lecturer_home' %}" />

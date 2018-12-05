@@ -1,12 +1,15 @@
 from django.shortcuts import render
 from django.http import HttpResponse,HttpResponseRedirect, JsonResponse
 from .models import LecturerProfile,Feedback,Course,StudentProfile,User,Category,Message
-from .forms import CourseForm,FeedbackForm, addCourseForm
+from .forms import CourseForm,FeedbackForm,RegisterForm,addCourseForm
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from dal import autocomplete
 import datetime
 from django import http
+from django.contrib.auth import authenticate
+from django.shortcuts import redirect
+from django.contrib.auth import login
 import json
 
 # Create your views here.
@@ -437,3 +440,17 @@ class MessageAutocomplete(autocomplete.Select2QuerySetView):
             return True
         else:
             return False
+            
+def register(request):
+    if request.method == 'POST':
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            if user.is_lecturer:
+                return redirect('lecturer_home')
+            else:
+                return redirect('student_home')
+    else:
+        form = RegisterForm()
+    return render(request, 'registration/registration_form.html', {'form': form})
