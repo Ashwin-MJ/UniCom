@@ -242,6 +242,7 @@ def add_lecturer(name,lecturer_number,password,email,courses):
 	lecturer.set_password(password)
 	lecturer.id_number = lecturer_number
 	lecturer.is_lecturer = True
+	lecturer.is_student = False
 	lecturer.save()
 
 	lecturer_prof = LecturerProfile.objects.get_or_create(lecturer=lecturer)[0]
