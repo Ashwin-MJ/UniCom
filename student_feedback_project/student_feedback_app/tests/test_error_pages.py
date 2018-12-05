@@ -18,8 +18,9 @@ class StudentHomeErrorTestCase(TestCase):
 
     def test_exception_error_page(self):
         c = Client()
-        print(c.login(username='Ike', password='ikepass'))
+        c.login(username='Ike', password='ikepass')
         response = c.get('/student/home/')
+        #print(response.content)
         #print(response.context)
 
 
