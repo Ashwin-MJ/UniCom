@@ -124,6 +124,8 @@ def lecturer_home(request):
         except:
             context_dict['error'] = "error"
             return render(request,'student_feedback_app/error_page.html', context_dict)
+    elif request.user.is_authenticated and request.user.is_student:
+        return redirect('student_home')
     else:
         context_dict['error'] = "auth"
         return render(request,'student_feedback_app/error_page.html', context_dict)

@@ -33,7 +33,8 @@ def update_user_profile(sender, instance, created, **kwargs):
             LecturerProfile.objects.create(lecturer=instance)
             instance.lecturerprofile.save()
         else :
-            instance.is_student = 1
+            instance.is_student = True
+            instance.save()
             StudentProfile.objects.create(student=instance)
             instance.studentprofile.save()
 
