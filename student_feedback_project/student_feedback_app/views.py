@@ -61,6 +61,7 @@ def student_all_courses(request):
                 try:
                     course = Course.objects.get(course_token=form.cleaned_data["course_token"] )
                     stud.courses.add(course)
+                    course.students.add(stud)
                     stud.save()
                     return student_home(request)
                 except:
