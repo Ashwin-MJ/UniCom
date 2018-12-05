@@ -36,7 +36,7 @@ def student_all_feedback(request):
     if request.user.is_authenticated and request.user.is_student:
         stud= StudentProfile.objects.get(student=request.user)
         fb = stud.feedback_set.all()
-        context_dict['stud'] = stud
+        context_dict['student'] = stud
         context_dict['feedback'] = fb
     else:
         context_dict['error'] = "auth"
