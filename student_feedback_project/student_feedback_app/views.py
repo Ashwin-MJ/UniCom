@@ -189,7 +189,7 @@ def create_class(request):
     except:
         return HttpResponse("something went wrong")
 
-class FeedbackList(generics.ListAPIView):
+class FeedbackSortedByPoints(generics.ListAPIView):
     queryset = Feedback.objects.all().order_by('points')
     serializer_class = FeedbackSerializer
 

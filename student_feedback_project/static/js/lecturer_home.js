@@ -19,15 +19,15 @@ function fetchStud(lect_id, categories){
 	httpRequest.onreadystatechange = function(){
 		if (this.readyState == 4 && this.status == 200) {
 			var students = JSON.parse(this.responseText);			
-			fetch(lect_id, categories, students);
+			pointsSort(lect_id, categories, students);
 		}
 	};	
 	httpRequest.open("GET", Url, true);
 	httpRequest.send();	
 }
 
-function fetch(lect_id, categories, students){	
-	const Url = "http://127.0.0.1:8000/FeedbackList";	
+function pointsSort(lect_id, categories, students){	
+	const Url = "http://127.0.0.1:8000/FeedbackSortedByPoints";	
 	var httpRequest = new XMLHttpRequest();
 	httpRequest.onreadystatechange = function(){
 		if (this.readyState == 4 && this.status == 200) {			
@@ -81,7 +81,7 @@ function show(sortedFb){
 
 
 
-/*
+/* DATA SENT THROUGH FROM FEEDBACKLIST
 [
 {
 "date_given":"2018-11-27T15:00:35.211142Z",

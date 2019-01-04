@@ -15,7 +15,7 @@ urlpatterns = [
     re_path(r'^lecturer/(?P<subject_slug>[\w\-]+)/(?P<student_number>[\w\-]+)/add-feedback/$', views.add_feedback, name='add_feedback'),
     re_path(r'^accounts/', include('registration.backends.simple.urls')),
     re_path(r'^lecturer/(?P<student_number>[\w\-]+)/$', views.lecturer_view_student, name='lecturer_view_student'),
-    re_path(r'^FeedbackList/$', views.FeedbackList.as_view()),
+    re_path(r'^FeedbackSortedByPoints/$', views.FeedbackSortedByPoints.as_view()),
     re_path(r'^CategoryList/$', views.CategoryList.as_view()),
     re_path(r'^Feedback_with_categoryList/$', views.Feedback_with_categoryList.as_view()),
     re_path(r'^Feedback_with_studentList/$', views.Feedback_with_studentList.as_view()),
