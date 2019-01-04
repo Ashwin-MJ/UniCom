@@ -1,13 +1,13 @@
 from django.shortcuts import render
 from rest_framework.views import APIView
-from student_feedback_app.serializers import FeedbackSerializer
+from student_feedback_app.serializers import *
 from rest_framework import generics
 from student_feedback_app.models import Feedback
 from datetime import datetime, timedelta
 from django.utils import timezone
 from .forms import *
 from django.http import HttpResponse,HttpResponseRedirect
-from .models import LecturerProfile,Feedback,Class,StudentProfile,User
+from .models import LecturerProfile,Feedback,Class,StudentProfile,User,Feedback_with_category,Feedback_with_student
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 
@@ -192,5 +192,17 @@ def create_class(request):
 class FeedbackList(generics.ListAPIView):
     queryset = Feedback.objects.all().order_by('points')
     serializer_class = FeedbackSerializer
+
+class CategoryList(generics.ListAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+
+class Feedback_with_categoryList(generics.ListAPIView):
+    queryset = Feedback_with_category.objects.all()
+    serializer_class = Feedback_with_categorySerializer
+
+class Feedback_with_studentList(generics.ListAPIView):
+    queryset = Feedback_with_student.objects.all()
+    serializer_class = Feedback_with_studentSerializer
 
 

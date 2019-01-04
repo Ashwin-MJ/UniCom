@@ -1,17 +1,61 @@
+"use strict";
+
 function sort(lect_id){
-	const Url = "http://127.0.0.1:8000/FeedbackList/";	
+	const Url = "http://127.0.0.1:8000/Feedback_with_categoryList/";	
 	var httpRequest = new XMLHttpRequest();
 	httpRequest.onreadystatechange = function(){
 		if (this.readyState == 4 && this.status == 200) {
-			var data = JSON.parse(this.responseText);		
-			var lecturer_id = lect_id + 5;
-			var i;
-			for(i=0; i<data.length; i++){
-				if(data[i].lecturer != lecturer_id){
-					delete data[i];
+			var categories = JSON.parse(this.responseText);			
+			fetchStud(lect_id, categories);
+		}
+	};	
+	httpRequest.open("GET", Url, true);
+	httpRequest.send();	
+}
+
+function fetchStud(lect_id, categories){
+	const Url = "http://127.0.0.1:8000/Feedback_with_studentList/";	
+	var httpRequest = new XMLHttpRequest();
+	httpRequest.onreadystatechange = function(){
+		if (this.readyState == 4 && this.status == 200) {
+			var students = JSON.parse(this.responseText);			
+			fetch(lect_id, categories, students);
+		}
+	};	
+	httpRequest.open("GET", Url, true);
+	httpRequest.send();	
+}
+
+function fetch(lect_id, categories, students){	
+	const Url = "http://127.0.0.1:8000/FeedbackList";	
+	var httpRequest = new XMLHttpRequest();
+	httpRequest.onreadystatechange = function(){
+		if (this.readyState == 4 && this.status == 200) {			
+			var sortedFb = JSON.parse(this.responseText);
+			
+			var lecturer_id = lect_id + 5;			
+			for(var i=0; i<sortedFb.length; i++){
+				if(sortedFb[i].lecturer != lecturer_id){
+					sortedFb.splice(i,1);
 				}
-			}
-			alert(data);
+			}				
+			for(var fb of sortedFb){
+				var fb_id = fb["category"];
+				
+				for(var cat of categories){
+					if(cat["feedback_id"] == fb_id){
+						fb["category"] = cat["categoryName"];
+					}
+				}
+				
+				for(var stud of students){
+					if(stud["feedback_id"] == fb_id){
+						fb["student"] = stud["studentName"];
+					}
+				}				
+			}			
+			
+			show(sortedFb);
 		}
 	};
 	
@@ -20,6 +64,24 @@ function sort(lect_id){
 }
 
 
+function show(sortedFb){
+	var mytext = '<p class="card-text"></p>';	
+        for (var fb of sortedFb){
+        mytext = mytext + '<div class="card" style="padding-left:10px; margin-top:10px">'
+          + "<b>" + fb["category"] + "</b>"
+          + "<p>"
+          + fb["message"] + "<br />"
+		  + fb["student"] + "<br />"
+          + fb["points"]
+          + "</p>"
+          + "</div>";
+		}
+	document.getElementById("fb-list").innerHTML = mytext;
+}
+
+
+
+/*
 [
 {
 "date_given":"2018-11-27T15:00:35.211142Z",
@@ -51,5 +113,7 @@ function sort(lect_id){
 "points":4,
 "lecturer":6,
 "student":1,
-"which_class":"MAT1Q","category":1
+"which_class":"MAT1Q",
+"category":1
 },
+*/

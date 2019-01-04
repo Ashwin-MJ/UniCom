@@ -10,7 +10,7 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 from django.contrib.auth import get_user_model
 User = get_user_model()
-
+from django.db import connection
 
 
 def populate():
@@ -119,6 +119,9 @@ def populate():
 								someFeedback.get('lecturer'),someFeedback.get('student'),someFeedback.get('class_code'),
 								someFeedback.get('message'))
 
+	create_view_fb_cat()
+	create_view_fb_stud()
+
 
 	print("Classes Added")
 	for each_class in Class.objects.all():
@@ -173,6 +176,27 @@ def populate():
 		print("\tStudent: " + fb.student.student.username)
 		print("\tDate given: " + str(fb.date_given))
 		print("\tClass: " + fb.which_class.subject)
+
+	print("-----------------")
+	print("Views Added:")
+	print("Feedback_with_category")
+	print("Feedback_with_student")
+	
+       
+# function to add the view feedback with category
+def create_view_fb_cat():
+    with connection.cursor() as cursor:
+        cursor.execute("CREATE VIEW student_feedback_app_feedback_with_category \
+                        as select fb.*, ca.name categoryName from student_feedback_app_feedback fb \
+                        INNER JOIN student_feedback_app_category ca ON fb.category_id = ca.id;")
+
+# function to add the view feedback with student
+def create_view_fb_stud():
+    with connection.cursor() as cursor:
+        cursor.execute("CREATE VIEW student_feedback_app_feedback_with_student \
+                        as select fb.*, stud.username studentName from student_feedback_app_feedback fb \
+                        INNER JOIN student_feedback_app_user stud ON fb.student_id = stud.id;")
+
 
 # Helper function to add a new class
 def add_class(subject,class_code, class_description):
