@@ -23,7 +23,7 @@ class User(AbstractUser):
 
     USERNAME_FIELD = 'id_number'
     REQUIRED_FIELDS = ['username', 'email']
-    
+
     def save(self, *args, **kwargs):
         self.slug = slugify(self.username)
         super(User, self).save(*args, **kwargs)
@@ -131,12 +131,8 @@ class Feedback_with_class(models.Model):
     points = models.IntegerField(default=0)
     lecturer = models.ForeignKey('LecturerProfile', on_delete=models.CASCADE, null=True, blank=True)
     student = models.ForeignKey('StudentProfile', on_delete=models.CASCADE, null=True, blank=True)
-    which_class = models.ForeignKey('Class', on_delete=models.CASCADE, null=True, blank=True)
+    which_class = models.ForeignKey('Course', on_delete=models.CASCADE, null=True, blank=True)
     category = models.ForeignKey('Category', on_delete=models.CASCADE, null=True, blank=True)
     class Meta:
         managed = False
         db_table = "student_feedback_app_feedback_with_class"
-    
-
-
-

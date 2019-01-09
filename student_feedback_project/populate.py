@@ -152,14 +152,11 @@ def populate():
 	for someFeedback in feedback:
 		feedback = add_feedback(someFeedback.get('feedback_id'),someFeedback.get('category'),someFeedback.get('points'),
                         someFeedback.get('lecturer'),someFeedback.get('student'),someFeedback.get('course_code'),
-			someFeedback.get('pre_defined_message'), someFeedback.get('optional_message'))
+						someFeedback.get('pre_defined_message'), someFeedback.get('optional_message'))
 
 	create_view_fb_cat()
 	create_view_fb_stud()
 	create_view_fb_class()
-
-								
-
 
 	print("Courses Added")
 	for each_course in Course.objects.all():
@@ -220,7 +217,7 @@ def populate():
 	print("Feedback_with_category")
 	print("Feedback_with_student")
 	print("Feedback_with_class")
-       
+
 # function to add the view feedback with category
 def create_view_fb_cat():
     with connection.cursor() as cursor:
@@ -246,7 +243,7 @@ def create_view_fb_class():
 
 #for now you have to run populate.py after deleting the database so the views only generate once
 
-		
+
 
 # Helper function to add a new course
 def add_course(subject,course_code, course_description):

@@ -1,5 +1,5 @@
 {% extends 'student_feedback_app/base.html' %}
-
+{% load static %}
 
 {% block title%}
 My Homepage
@@ -77,13 +77,17 @@ Home Page
           </div>
 
           {% endfor %}
-      </div>
-	<button onclick="getCats({{ lecturer.lecturer.id_number }}, 'points')" type="button" class="btn btn-primary">Sort by points</button>
-	</br>
-	<button onclick="getCats({{ lecturer.lecturer.id_number }}, 'date')" type="button" class="btn btn-primary">Sort by date</button>
-    </br>
-	<button onclick="getCats({{ lecturer.lecturer.id_number }}, 'class')" type="button" class="btn btn-primary">Sort by class</button>
-    </div>
+        </div>
+
+        <div class="button" style="padding-bottom:0px; padding-top:10px;">
+          <button onclick="getCats({{ lecturer.lecturer.id_number }}, 'points')" type="button" class="btn btn-primary">Sort by points</button>
+          <button onclick="getCats({{ lecturer.lecturer.id_number }}, 'date')" type="button" class="btn btn-primary">Sort by date</button>
+          <button onclick="getCats({{ lecturer.lecturer.id_number }}, 'class')" type="button" class="btn btn-primary">Sort by class</button>
+        </div>
+
+
+       </div>
+
     </div>
   </div>
 </div>
