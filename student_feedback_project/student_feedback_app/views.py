@@ -49,7 +49,7 @@ def student_all_feedback(request):
         context_dict['error'] = "auth"
         return render(request,'student_feedback_app/error_page.html', context_dict)
 
-    return render(request,'student_feedback_app/all_feedback.html',context_dict)
+    return render(request,'student_feedback_app/student_all_feedback.html',context_dict)
 
 
 def student_all_courses(request):
@@ -472,7 +472,7 @@ class MessageAutocomplete(autocomplete.Select2QuerySetView):
             return True
         else:
             return False
-            
+
 def register(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST)

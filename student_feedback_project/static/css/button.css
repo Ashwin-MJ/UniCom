@@ -1,0 +1,49 @@
+.button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding-bottom: 10px;
+}
+
+.btn-material {
+  display: inline-block;
+  position: relative;
+  cursor: pointer;
+  height: 35px;
+  background-color: #424242;
+  color: white;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: 'Dosis', sans-serif;
+  letter-spacing: 1px;
+  text-align: center;
+  text-transform: uppercase;
+  vertical-align: middle;
+  border-radius: 15px;
+  transition: all .3s ease-out;
+
+}
+.btn-material:hover {
+  box-shadow: 0 4px 10px 0px rgba(0,0,0,0.225);
+}
+
+.btn-ripple {
+  display: inline-block;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  vertical-align: middle;
+  user-select: none;
+  z-index: 1;
+  transition: background 0.8s;
+}
+
+.btn-ripple:hover {
+  background: teal radial-gradient(circle, transparent 1%, teal 1%) center/15000%;
+}
+.btn-ripple:active {
+  background-color: #6eb9f7;
+  background-size: 100%;
+  transition: background 0s;
+}

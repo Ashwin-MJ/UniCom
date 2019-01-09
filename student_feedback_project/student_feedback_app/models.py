@@ -21,7 +21,7 @@ class User(AbstractUser):
 
     USERNAME_FIELD = 'id_number'
     REQUIRED_FIELDS = ['username', 'email']
-    
+
     def save(self, *args, **kwargs):
         self.slug = slugify(self.username)
         super(User, self).save(*args, **kwargs)
@@ -134,7 +134,4 @@ class Feedback_with_course(models.Model):
     class Meta:
         managed = False
         db_table = "student_feedback_app_feedback_with_course"
-    
-
-
 

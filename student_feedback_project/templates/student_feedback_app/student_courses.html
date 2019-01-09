@@ -9,78 +9,63 @@ My Courses
 Courses
 {% endblock%}
 
-<link rel="stylesheet" type="text/css" href="custom.css" />
-
 {% block body_block %}
 <div class="container">
   <div class="card-deck">
-    <div class="card scroll" style="width:40%; margin-left:25px; margin-top:25px;">
-      <h3 class="card-body text-center" style="padding-bottom:0px">My Courses</h3>
-      <div class="card-body" style="padding-top:0px">
+    <div class="card scroll">
+      <h3 class="card-body text-center custom-card-title">My Courses</h3>
+      <div class="card-body">
         {% for course in courses %}
             <a style="text-decoration: none; color: black" href="{% url 'student_course' course.subject_slug%}">
-              <div class="card" style="padding-left:10px; margin-top:10px">
-                <br style="clear:both;"/>
-                <b>{{ course.subject }}</b>
-                <b> Score: {{course.stud.score}}</b>
-                <p>
-                  <em>{{ course.course_description }}</em><br />
-                  Students: {{ course.students.all|length }}
-                </p>
+              <div class="card custom-card">
+                <b class="card-sub-heading">{{ course.subject }}</b>
+
+                <div class="row" style="padding-bottom:1%">
+                  <div class="column left">
+                    <div class="border">
+                      <div class="course-info">
+                        {{ course.course_description }}<br />
+                        <footer>
+                          {{course.lecturer.lecturer.username}}
+                          </footer>
+                          <br />
+                        </div>
+                    </div>
+                  </div>
+                  <div class="column right-number">
+                    {{ stud.score }}
+                    </div>
+                  </div>
                 </div>
             </a>
           {% endfor %}
       </div>
     </div>
 
-    <div class="card scroll" style="width:40%; margin-left:25px; margin-top:25px;">
-      <h3 class="card-body text-center" style="padding-bottom:0px">Recent Feedback</h3>
-      <div class="card-body" style="padding-top:0px">
-        <p class="card-text"></p>
-        {% for fb in feedback %}
-        <div class="card" style="padding-left:10px; margin-top:10px"">
-          <b>{{ fb.category }}</b>
-          <p>
-            {{ fb.pre_defined_message.text }}<br />
-              {% if fb.optional_message %}
-                <em>{{ fb.optional_message }}</em><br />
-              {% endif %}
-            <a style="text-decoration: none; color: black" href="{% url 'lecturer_view_student' fb.student.student.id_number%}">
-              <em>{{fb.student.student.username}}</em>
-            </a><br />
-            {{ fb.points }}<br />
-            {{ fb.datetime_given }}
-          </p>
-          </div>
+    <div class="card" style="height: 300px; margin-top:25px;">
+      <h3 class="card-body text-center custom-card-title">Add a Course</h3>
+      <div class="card-body">
+        <form id="" method="post" action="">
+          {% csrf_token %}
+          {% for hidden in form.hidden_fields %}
+          {{ hidden }}
           {% endfor %}
-      </div>
+
+          {% for field in form.visible_fields %}
+            <div class="card custom-card">
+              {{ field.errors }}<br />
+              {{ field.help_text }}<br />
+              {{ field }}<br />
+            </div>
+          {% endfor %}
+          <br />
+          <div class="button">
+            <input class="btn btn-material btn-ripple" type="submit" name="submit" value="Join Course" />
+          </div>
+      </form>
     </div>
-
-      <div class="card" style="width:40%; height: 300px; margin-left:25px; margin-top:25px;">
-        <h3 class="card-body text-center" style="padding-bottom:0px">Add a course</h3>
-        <div class="card-body" style="padding-top:0px">
-          <form id="" method="post" action="">
-            {% csrf_token %}
-            {% for hidden in form.hidden_fields %}
-            {{ hidden }}
-            {% endfor %}
-          <p class="card-text"></p>
-
-            {% for field in form.visible_fields %}
-                <div class="card" style="padding-left:10px">
-
-                {{ field.errors }}<br />
-                {{ field.help_text }}<br />
-                {{ field }}<br />
-                </div>
-            {% endfor %}
-        </div>
-            <input type="submit" name="submit" value="Join Course" /> </form>
-      </div>
-    </div>
-
-
   </div>
+
 </div>
 
 {% endblock %}

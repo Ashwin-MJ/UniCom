@@ -7,9 +7,9 @@ from django.contrib.auth.forms import UserCreationForm#,AuthenticationForm
 
 
 class CourseForm(forms.ModelForm):
-    subject = forms.CharField(max_length=40, help_text="Course Name", required=False)
+    subject = forms.CharField(max_length=40, help_text="Course Name", required=True)
     course_code = forms.CharField(max_length=20, help_text= 'Course Code', required=True)
-    course_description = forms.CharField(max_length=200, required=False, help_text="Course Description")
+    course_description = forms.CharField(max_length=200, required=True, help_text="Course Description")
     slug = forms.CharField(widget=forms.HiddenInput(), required=False)
 
     class Meta:
@@ -19,7 +19,7 @@ class CourseForm(forms.ModelForm):
 
 class FeedbackForm(autocomplete.FutureModelForm):
     optional_message = forms.CharField(max_length=200, required=False, help_text="Optional Message")
-    points = forms.IntegerField(max_value=5,min_value=0, help_text="Points")
+    points = forms.IntegerField(max_value=5,min_value=0, help_text="Points", required=True)
 
     class Meta:
         model = Feedback
@@ -32,6 +32,7 @@ class FeedbackForm(autocomplete.FutureModelForm):
             'pre_defined_message': "Select a Message",
             'category': 'Category'
         }
+
 
 class RegisterForm(UserCreationForm):
     is_lecturer = forms.ChoiceField(choices=[(1,'lecturer'),

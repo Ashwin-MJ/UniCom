@@ -5,7 +5,7 @@ My Feedback
 {% endblock %}
 
 {% block current_page %}
-{{ stud.student.username }}'s<br />
+{{ student.student.username }}'s<br />
 Feedback
 {% endblock%}
 
@@ -14,42 +14,55 @@ Feedback
 
 <div class="container">
     <div class="card-deck">
-        <div class="card" style="width:50%;margin-left:25px; margin-top:25px;">
-          <h3 class="card-body text-center">My feedback</h3>
-          <div class="card-body">
-            {% for fb in feedback %}
-            <div class="card" style="padding-left:10px">
-                <b>{{ fb.category }}</b>
-              <p>
-                {{ fb.pre_defined_message.text }}<br />
-                  {% if fb.optional_message %}
-                    <em>{{ fb.optional_message }}</em><br />
-                  {% endif %}
-                  <b> From: </b>
-                  {{fb.lecturer.lecturer.username}}<br />
-                  <b>Points awarded: </b>
-                {{ fb.points }}<br />
-                {{ fb.datetime_given }}
-              </p>
+
+      <div class="card scroll">
+        <h3 class="card-body text-center custom-card-title">Recent Feedback</h3>
+        <div class="card-body">
+          {% for fb in feedback %}
+          {% if fb.is_recent %}
+          <div class="card recent custom-card">
+          {% else %}
+          <div class="card custom-card">
+          {% endif %}
+            <b class="card-sub-heading">{{ fb.category }}</b>
+            <div class="row" style="padding-bottom:1%">
+              <div class="column left">
+                <div class="border">
+                  <blockquote class="quote">
+                    {{ fb.pre_defined_message.text }}<br />
+                    {% if fb.optional_message %}
+                    <em>"{{ fb.optional_message }}"</em>
+                    {% endif %}
+                    <footer>{{fb.lecturer.lecturer.username}}</footer>
+                  </blockquote>
+                </div>
+                Course:<em> {{fb.which_course.subject}}</em><br />
+                <i class="material-icons" style="font-size:70%;">calendar_today</i> {{ fb.datetime_given }}
+              </div>
+              <div class="column right-number">
+                {{ fb.points }}
+                </div>
+              </div>
             </div>
-              {% endfor %}
-          </div>
+
+            {% endfor %}
         </div>
+      </div>
 
 
-        <div class="card" style="width:50%;margin-left:25px; margin-top:25px;">
-        <h3 class="card-body text-center">My Top Attributes</h3>
+        <div class="card scroll">
+        <h3 class="card-body text-center custom-card-title">My Top Attributes</h3>
             <div class="card-body">
-                <div class="card" style="padding-left:10px">
+                <div class="card custom-card">
                     Functionality to be made
                 </div>
            </div>
         </div>
 
-        <div class="card" style="width:50%;margin-left:25px; margin-top:25px;">
-        <h3 class="card-body text-center">Areas To Improve</h3>
+        <div class="card scroll">
+        <h3 class="card-body text-center custom-card-title">Areas To Improve</h3>
             <div class="card-body">
-                <div class="card" style="padding-left:10px">
+                <div class="card custom-card">
                     Functionality to be made
                 </div>
            </div>
