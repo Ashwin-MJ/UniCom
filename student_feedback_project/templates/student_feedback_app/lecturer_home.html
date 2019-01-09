@@ -1,5 +1,5 @@
 {% extends 'student_feedback_app/base.html' %}
-
+{% load staticfiles %}
 
 {% block title%}
 My Homepage
@@ -58,7 +58,7 @@ Home Page
 	</br>
 	<button onclick="getCats({{ lecturer.lecturer.id_number }}, 'date')" type="button" class="btn btn-primary">Sort by date</button>
     </br>
-	<button onclick="getCats({{ lecturer.lecturer.id_number }}, 'class')" type="button" class="btn btn-primary">Sort by class</button>
+	<button onclick="getCats({{ lecturer.lecturer.id_number }}, 'course')" type="button" class="btn btn-primary">Sort by course</button>
     </div>	
     </div>
 	

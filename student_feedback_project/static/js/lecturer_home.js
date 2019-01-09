@@ -35,8 +35,8 @@ function sort(lect_id, categories, students, param){
 		case "date":
 			var Url = "http://127.0.0.1:8000/FeedbackSortedByDate";
 			break;
-		case "class":
-			var Url = "http://127.0.0.1:8000/FeedbackSortedByClass";
+		case "course":
+			var Url = "http://127.0.0.1:8000/FeedbackSortedByCourse";
 			break;
 		default:
 		break

@@ -27,7 +27,7 @@ urlpatterns = [
     re_path(r'^accounts/', include('registration.backends.simple.urls')),
     re_path(r'^FeedbackSortedByPoints/$', views.FeedbackSortedByPoints.as_view()),
     re_path(r'^FeedbackSortedByDate/$', views.FeedbackSortedByDate.as_view()),
-    re_path(r'^FeedbackSortedByClass/$', views.FeedbackSortedByClass.as_view()),
+    re_path(r'^FeedbackSortedByCourse/$', views.FeedbackSortedByCourse.as_view()),
     re_path(r'^CategoryList/$', views.CategoryList.as_view()),
     re_path(r'^Feedback_with_categoryList/$', views.Feedback_with_categoryList.as_view()),
     re_path(r'^Feedback_with_studentList/$', views.Feedback_with_studentList.as_view()),

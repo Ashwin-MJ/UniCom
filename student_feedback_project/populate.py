@@ -156,7 +156,7 @@ def populate():
 
 	create_view_fb_cat()
 	create_view_fb_stud()
-	create_view_fb_class()
+	create_view_fb_course()
 
 								
 
@@ -219,7 +219,7 @@ def populate():
 	print("Views Added:")
 	print("Feedback_with_category")
 	print("Feedback_with_student")
-	print("Feedback_with_class")
+	print("Feedback_with_course")
        
 # function to add the view feedback with category
 def create_view_fb_cat():
@@ -235,12 +235,12 @@ def create_view_fb_stud():
                         as select fb.*, stud.username studentName from student_feedback_app_feedback fb \
                         INNER JOIN student_feedback_app_user stud ON fb.student_id = stud.id;")
 
-# function to add the view feedback with class
-def create_view_fb_class():
+# function to add the view feedback with course
+def create_view_fb_course():
     with connection.cursor() as cursor:
-        cursor.execute("CREATE VIEW student_feedback_app_feedback_with_class \
-                        as select fb.*, cla.subject className from student_feedback_app_feedback fb \
-                        INNER JOIN student_feedback_app_class cla ON fb.which_class_id = cla.class_code;")
+        cursor.execute("CREATE VIEW student_feedback_app_feedback_with_course \
+                        as select fb.*, course.subject courseName from student_feedback_app_feedback fb \
+                        INNER JOIN student_feedback_app_course course ON fb.which_course_id = course.course_code;")
 
 #to add new view: make function and execute line, add model in models.py, test in DB browser SQLite
 

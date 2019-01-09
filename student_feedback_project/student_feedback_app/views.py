@@ -392,11 +392,11 @@ class FeedbackSortedByPoints(generics.ListAPIView):
     serializer_class = FeedbackSerializer
 
 class FeedbackSortedByDate(generics.ListAPIView):
-    queryset = Feedback.objects.all().order_by('-date_given')
+    queryset = Feedback.objects.all().order_by('-datetime_given')
     serializer_class = FeedbackSerializer
 
-class FeedbackSortedByClass(generics.ListAPIView):  
-    queryset = Feedback_with_class.objects.all().order_by('className')
+class FeedbackSortedByCourse(generics.ListAPIView):  
+    queryset = Feedback_with_course.objects.all().order_by('courseName')
     serializer_class = FeedbackSerializer
 
 class CategoryList(generics.ListAPIView):
