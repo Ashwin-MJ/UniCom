@@ -10,6 +10,7 @@ Error page
 
 
 {% block body_block %}
+
 <div class="container">
 {% if error == "auth" %}
 		{% if not user.is_authenticated %}
@@ -56,6 +57,7 @@ Error page
 
 
 {% if error == "error" %}
+
 <div class="container">
 	<div class="col-sm card" style="width:50%;margin-left:25px; margin-top:25px;">
 		<h3 class="card-body text-center">Something went wrong</h3>

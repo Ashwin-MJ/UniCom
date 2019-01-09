@@ -1,5 +1,6 @@
 {% extends 'student_feedback_app/base.html' %}
 
+
 {% block title%}
 My Homepage
 {% endblock %}
@@ -7,6 +8,7 @@ My Homepage
 {% block current_page %}
 {{ lecturer.lecturer.username }}'s<br />
 Home Page
+
 {% endblock%}
 
 
@@ -32,7 +34,7 @@ Home Page
     </div>
     <div class="card scroll" style="width:40%; margin-left:25px; margin-top:25px;">
       <h3 class="card-body text-center" style="padding-bottom:0px">Recent Feedback</h3>
-      <div class="card-body" style="padding-top:0px">
+      <div class="card-body" style="padding-top:0px" id="fb-list">
         <p class="card-text"></p>
         {% for fb in feedback %}
         {% if fb.is_recent %}
@@ -52,9 +54,20 @@ Home Page
           </div>
           {% endfor %}
       </div>
+	<button onclick="getCats({{ lecturer.lecturer.id_number }}, 'points')" type="button" class="btn btn-primary">Sort by points</button>
+	</br>
+	<button onclick="getCats({{ lecturer.lecturer.id_number }}, 'date')" type="button" class="btn btn-primary">Sort by date</button>
+    </br>
+	<button onclick="getCats({{ lecturer.lecturer.id_number }}, 'class')" type="button" class="btn btn-primary">Sort by class</button>
+    </div>	
     </div>
-    </div>
+	
+	<p id="demo"></p>
   </div>
 </div>
+{% endblock %}
 
+
+{% block js-link %}		
+	<script type="text/javascript" src="{% static 'js/lecturer_home.js' %}"></script>
 {% endblock %}

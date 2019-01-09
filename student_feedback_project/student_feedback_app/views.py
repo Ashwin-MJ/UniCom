@@ -1,9 +1,13 @@
 from django.shortcuts import render
-from django.http import HttpResponse,HttpResponseRedirect, JsonResponse
-from .models import LecturerProfile,Feedback,Course,StudentProfile,User,Category,Message
-from .forms import CourseForm,FeedbackForm,RegisterForm,addCourseForm
+from rest_framework.views import APIView
+from student_feedback_app.serializers import *
+from rest_framework import generics
+from student_feedback_app.models import Feedback
+from .forms import *
+from .models import *
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+from django.http import HttpResponse,HttpResponseRedirect, JsonResponse
 from dal import autocomplete
 import datetime
 from django import http
@@ -382,6 +386,32 @@ class CategoryAutocomplete(autocomplete.Select2QuerySetView):
         else:
             return False
 
+
+class FeedbackSortedByPoints(generics.ListAPIView):
+    queryset = Feedback.objects.all().order_by('points')
+    serializer_class = FeedbackSerializer
+
+class FeedbackSortedByDate(generics.ListAPIView):
+    queryset = Feedback.objects.all().order_by('-date_given')
+    serializer_class = FeedbackSerializer
+
+class FeedbackSortedByClass(generics.ListAPIView):  
+    queryset = Feedback_with_class.objects.all().order_by('className')
+    serializer_class = FeedbackSerializer
+
+class CategoryList(generics.ListAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+
+class Feedback_with_categoryList(generics.ListAPIView):
+    queryset = Feedback_with_category.objects.all()
+    serializer_class = Feedback_with_categorySerializer
+
+class Feedback_with_studentList(generics.ListAPIView):
+    queryset = Feedback_with_student.objects.all()
+    serializer_class = Feedback_with_studentSerializer
+
+
 class MessageAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
         if not self.request.user.is_authenticated or not self.request.user.is_lecturer:
@@ -456,3 +486,4 @@ def register(request):
     else:
         form = RegisterForm()
     return render(request, 'registration/registration_form.html', {'form': form})
+
