@@ -40,7 +40,7 @@ ALLOWED_HOSTS = [
 
 INSTALLED_APPS = [
     'dal', # Django Autocomplete Light
-    'dal_select2', 
+    'dal_select2',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'student_feedback_app',
+    'widget_tweaks',
 ]
 
 MIDDLEWARE = [

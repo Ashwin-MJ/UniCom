@@ -9,22 +9,25 @@ Log in
 {% endblock %}
 
 {% block body_block %}
-<div>
+<div class="container">
   <form id="login_form" method="post" action="">
     {% csrf_token %}
 
     <div class="container">
-      <div class="card" style="width:40%; margin-left:25px; margin-top:25px; align-items:center">
-        <h3 class="card-body text-center">Log In</h3>
-        <div class="card-body">
-          {{ form.as_p }}
-          {{ error.as_p }}
-        </div>
-        <input type="submit" value="Log in" style="width:50%;"/>
-        <input type="hidden" name="next" value="{% url 'lecturer_home' %}" />
-        <p>Not  a member? <a href="{% url 'registration_register' %}">Register</a>!</p>
+      <div class="card" style="margin-top:25px; align-items:center;">
+        <h3 class="card-body text-center custom-card-title">Log In</h3>
+        <form id="login_form" method="post" action="">
+          {% csrf_token %}
+          <div class="card-body">
+            {{ form.as_p }}
+            {{ error.as_p }}
+          </div>
+          <input class="btn btn-material btn-ripple" type="submit" value="Log in" style="width:50%;"/>
+          <input type="hidden" name="next" value="{% url 'lecturer_home' %}" />
+          <p>Not  a member? <a href="{% url 'registration_register' %}">Register</a>!</p>
+        </form>
       </div>
     </div>
-  </form>
+
 </div>
 {% endblock %}

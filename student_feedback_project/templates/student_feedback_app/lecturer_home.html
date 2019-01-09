@@ -13,46 +13,69 @@ Home Page
 {% block body_block %}
 <div class="container">
   <div class="card-deck">
-    <div class="card scroll" style="width:40%; margin-left:25px; margin-top:25px;">
-      <h3 class="card-body text-center" style="padding-bottom:0px">My Courses</h3>
-      <div class="card-body" style="padding-top:0px">
+
+    <div class="card scroll">
+      <h3 class="card-body text-center custom-card-title">My Courses</h3>
+      <div class="card-body">
         {% for course in courses %}
             <a style="text-decoration: none; color: black" href="{% url 'lecturer_course' course.subject_slug%}">
-              <div class="card" style="padding-left:10px; margin-top:10px">
-                <br style="clear:both;"/>
-                <b>{{ course.subject }}</b>
-                <p>
-                  <em>{{ course.course_description }}</em><br />
-                  Students: {{ course.students.all|length }}
-                </p>
+              <div class="card custom-card">
+                <b class="card-sub-heading">{{ course.subject }}</b>
+
+                <div class="row" style="padding-bottom:1%">
+                  <div class="column left">
+                    <div class="border">
+                      <div class="course-info">
+                        {{ course.course_description }}<br />
+                        <footer>
+                          Add a footer here?
+                          </footer>
+                          <br />
+                        </div>
+                    </div>
+                  </div>
+                  <div class="column right-number">
+                    {{ course.students.all|length }}
+                    </div>
+                  </div>
                 </div>
-              </a>
+            </a>
           {% endfor %}
       </div>
     </div>
-    <div class="card scroll" style="width:40%; margin-left:25px; margin-top:25px;">
-      <h3 class="card-body text-center" style="padding-bottom:0px">Recent Feedback</h3>
-      <div class="card-body" style="padding-top:0px">
-        <p class="card-text"></p>
+
+    <div class="card scroll">
+      <h3 class="card-body text-center custom-card-title">Recent Feedback</h3>
+      <div class="card-body" >
         {% for fb in feedback %}
         {% if fb.is_recent %}
-        <div class="card recent" style="padding-left:10px; margin-top:10px">
+        <div class="card recent custom-card">
         {% else %}
-        <div class="card" style="padding-left:10px; margin-top:10px">
+        <div class="card custom-card">
         {% endif %}
-          <b>{{ fb.category }}</b>
-          <p>
-            {{ fb.pre_defined_message.text }}<br />
-            {% if fb.optional_message %}
-              {{ fb.optional_message }}<br />
-            {% endif %}
-            {{ fb.student.student.username }}<br />
-            {{ fb.points }}
-          </p>
+          <b class="card-sub-heading">{{ fb.category }}</b>
+          <div class="row" style="padding-bottom:1%">
+            <div class="column left">
+              <div class="border">
+                <blockquote class="quote">
+                  {{ fb.pre_defined_message.text }}<br />
+                  {% if fb.optional_message %}
+                  <em>"{{ fb.optional_message }}"</em>
+                  {% endif %}
+                  <footer>{{fb.student.student.username}}</footer>
+                </blockquote>
+              </div>
+              Course:<em> {{fb.which_course.subject}}</em><br />
+              <i class="material-icons" style="font-size:70%;">calendar_today</i> {{ fb.datetime_given }}
+            </div>
+            <div class="column right-number">
+              {{ fb.points }}
+              </div>
+            </div>
           </div>
+
           {% endfor %}
       </div>
-    </div>
     </div>
   </div>
 </div>

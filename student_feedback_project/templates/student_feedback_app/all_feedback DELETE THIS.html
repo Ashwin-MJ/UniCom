@@ -2,26 +2,26 @@
 {% load static %}
 
 {% block title%}
-My Provided Feedback
+All Feedback
 {% endblock %}
 
 {% block current_page %}
-{{ lect.lecturer.username }}'s<br />
-Provided Feedback
+{{ student.student.username }}'s<br />
+Feedback
 {% endblock%}
 
 
 {% block body_block %}
 
 <div class="container">
-  <div class="card scroll">
+  <div class="card scroll" style="width:50%">
     <h3 class="card-body text-center custom-card-title">Recent Feedback</h3>
     <div class="card-body">
       {% for fb in feedback %}
       {% if fb.is_recent %}
-      <div class="card recent custom-card">
+      <div class="card recent" style="padding-left:10px; margin-top:10px">
       {% else %}
-      <div class="card custom-card">
+      <div class="card" style="margin-top:10px" id="feedback_card">
       {% endif %}
         <b class="card-sub-heading">{{ fb.category }}</b>
         <div class="row" style="padding-bottom:1%">
@@ -32,7 +32,7 @@ Provided Feedback
                 {% if fb.optional_message %}
                 <em>"{{ fb.optional_message }}"</em>
                 {% endif %}
-                <footer>{{fb.student.student.username}}</footer>
+                <footer>{{fb.lecturer.lecturer.username}}</footer>
               </blockquote>
             </div>
             Course:<em> {{fb.which_course.subject}}</em><br />
@@ -46,7 +46,6 @@ Provided Feedback
 
         {% endfor %}
     </div>
-  </div>
 </div>
 
 {% endblock %}
