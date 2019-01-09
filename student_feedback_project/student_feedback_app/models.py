@@ -73,6 +73,20 @@ class Feedback_with_student(models.Model):
     class Meta:
         managed = False
         db_table = "student_feedback_app_feedback_with_student"
+
+class Feedback_with_class(models.Model):
+    className = models.CharField(max_length=200,default="No class")
+    date_given = models.DateTimeField(default=timezone.now)
+    feedback_id = models.IntegerField(primary_key=True,default=0)
+    message = models.CharField(max_length=200,default="No message")
+    points = models.IntegerField(default=0)
+    lecturer = models.ForeignKey('LecturerProfile', on_delete=models.CASCADE, null=True, blank=True)
+    student = models.ForeignKey('StudentProfile', on_delete=models.CASCADE, null=True, blank=True)
+    which_class = models.ForeignKey('Class', on_delete=models.CASCADE, null=True, blank=True)
+    category = models.ForeignKey('Category', on_delete=models.CASCADE, null=True, blank=True)
+    class Meta:
+        managed = False
+        db_table = "student_feedback_app_feedback_with_class"
     
 
 

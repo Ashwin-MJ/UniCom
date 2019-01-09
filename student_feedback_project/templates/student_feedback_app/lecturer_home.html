@@ -43,10 +43,14 @@ Home Page<br />
           </div>
           {% endfor %}
       </div>
+	<button onclick="getCats({{ lecturer.lecturer.id_number }}, 'points')" type="button" class="btn btn-primary">Sort by points</button>
+	</br>
+	<button onclick="getCats({{ lecturer.lecturer.id_number }}, 'date')" type="button" class="btn btn-primary">Sort by date</button>
+    </br>
+	<button onclick="getCats({{ lecturer.lecturer.id_number }}, 'class')" type="button" class="btn btn-primary">Sort by class</button>
+    </div>	
     </div>
 	
-    </div>
-	<button onclick="sort({{ lecturer.lecturer.id_number }})" type="button" class="btn btn-primary">Sort</button>
 	<p id="demo"></p>
   </div>
 </div>

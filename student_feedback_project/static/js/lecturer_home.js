@@ -1,44 +1,60 @@
 "use strict";
 
-function sort(lect_id){
+function getCats(lect_id, param){
 	const Url = "http://127.0.0.1:8000/Feedback_with_categoryList/";	
 	var httpRequest = new XMLHttpRequest();
 	httpRequest.onreadystatechange = function(){
 		if (this.readyState == 4 && this.status == 200) {
 			var categories = JSON.parse(this.responseText);			
-			fetchStud(lect_id, categories);
+			fetchStud(lect_id, categories, param);
 		}
 	};	
 	httpRequest.open("GET", Url, true);
 	httpRequest.send();	
 }
 
-function fetchStud(lect_id, categories){
+function fetchStud(lect_id, categories, param){
 	const Url = "http://127.0.0.1:8000/Feedback_with_studentList/";	
 	var httpRequest = new XMLHttpRequest();
 	httpRequest.onreadystatechange = function(){
 		if (this.readyState == 4 && this.status == 200) {
-			var students = JSON.parse(this.responseText);			
-			pointsSort(lect_id, categories, students);
+			var students = JSON.parse(this.responseText);	
+			sort(lect_id, categories, students, param);
+
 		}
 	};	
 	httpRequest.open("GET", Url, true);
 	httpRequest.send();	
 }
 
-function pointsSort(lect_id, categories, students){	
-	const Url = "http://127.0.0.1:8000/FeedbackSortedByPoints";	
+function sort(lect_id, categories, students, param){	
+	switch(param){
+		case "points":
+			var Url = "http://127.0.0.1:8000/FeedbackSortedByPoints";
+			break;
+		case "date":
+			var Url = "http://127.0.0.1:8000/FeedbackSortedByDate";
+			break;
+		case "class":
+			var Url = "http://127.0.0.1:8000/FeedbackSortedByClass";
+			break;
+		default:
+		break
+	}		
 	var httpRequest = new XMLHttpRequest();
 	httpRequest.onreadystatechange = function(){
 		if (this.readyState == 4 && this.status == 200) {			
 			var sortedFb = JSON.parse(this.responseText);
 			
+			//make lecturer id the one in the database then remove fb that is not from this lecturer
 			var lecturer_id = lect_id + 5;			
 			for(var i=0; i<sortedFb.length; i++){
 				if(sortedFb[i].lecturer != lecturer_id){
 					sortedFb.splice(i,1);
 				}
-			}				
+			}
+			
+			//for every feedback replace the number given by JSON for category and student to the name
 			for(var fb of sortedFb){
 				var fb_id = fb["category"];
 				
@@ -55,10 +71,11 @@ function pointsSort(lect_id, categories, students){
 				}				
 			}			
 			
+			
+			//place this parsed data into the page
 			show(sortedFb);
 		}
-	};
-	
+	};	
 	httpRequest.open("GET", Url, true);
 	httpRequest.send();
 }
@@ -81,7 +98,7 @@ function show(sortedFb){
 
 
 
-/* DATA SENT THROUGH FROM FEEDBACKLIST
+/* DATA SENT THROUGH FROM SERVER
 [
 {
 "date_given":"2018-11-27T15:00:35.211142Z",

@@ -121,7 +121,7 @@ def populate():
 
 	create_view_fb_cat()
 	create_view_fb_stud()
-
+	create_view_fb_class()
 
 	print("Classes Added")
 	for each_class in Class.objects.all():
@@ -181,7 +181,7 @@ def populate():
 	print("Views Added:")
 	print("Feedback_with_category")
 	print("Feedback_with_student")
-	
+	print("Feedback_with_class")
        
 # function to add the view feedback with category
 def create_view_fb_cat():
@@ -197,6 +197,16 @@ def create_view_fb_stud():
                         as select fb.*, stud.username studentName from student_feedback_app_feedback fb \
                         INNER JOIN student_feedback_app_user stud ON fb.student_id = stud.id;")
 
+# function to add the view feedback with class
+def create_view_fb_class():
+    with connection.cursor() as cursor:
+        cursor.execute("CREATE VIEW student_feedback_app_feedback_with_class \
+                        as select fb.*, cla.subject className from student_feedback_app_feedback fb \
+                        INNER JOIN student_feedback_app_class cla ON fb.which_class_id = cla.class_code;")
+
+#to add new view: make function and execute line, add model in models.py, test in DB browser SQLite
+
+#for now you have to run populate.py after deleting the database so the views only generate once
 
 # Helper function to add a new class
 def add_class(subject,class_code, class_description):

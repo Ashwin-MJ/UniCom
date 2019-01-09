@@ -193,6 +193,14 @@ class FeedbackSortedByPoints(generics.ListAPIView):
     queryset = Feedback.objects.all().order_by('points')
     serializer_class = FeedbackSerializer
 
+class FeedbackSortedByDate(generics.ListAPIView):
+    queryset = Feedback.objects.all().order_by('-date_given')
+    serializer_class = FeedbackSerializer
+
+class FeedbackSortedByClass(generics.ListAPIView):  
+    queryset = Feedback_with_class.objects.all().order_by('className')
+    serializer_class = FeedbackSerializer
+
 class CategoryList(generics.ListAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
