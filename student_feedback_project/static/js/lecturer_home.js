@@ -1,6 +1,18 @@
 "use strict";
 
 function getCats(lect_id, param){
+	var Url = "http://127.0.0.1:8000/FeedbackSortedByPoints"
+	var httpRequest = new XMLHttpRequest();
+	httpRequest.onreadystatechange = function(){
+		if (this.readyState == 4 && this.status == 200) {			
+			var sortedFb = JSON.parse(this.responseText);
+		}
+	}
+	httpRequest.open("GET", Url, true);
+	httpRequest.send();
+}
+
+function getCatsa(lect_id, param){
 	const Url = "http://127.0.0.1:8000/Feedback_with_categoryList/";	
 	var httpRequest = new XMLHttpRequest();
 	httpRequest.onreadystatechange = function(){
@@ -13,13 +25,13 @@ function getCats(lect_id, param){
 	httpRequest.send();	
 }
 
-function fetchStud(lect_id, categories, param){
+function fetchStud(lect_id, param){
 	const Url = "http://127.0.0.1:8000/Feedback_with_studentList/";	
 	var httpRequest = new XMLHttpRequest();
 	httpRequest.onreadystatechange = function(){
 		if (this.readyState == 4 && this.status == 200) {
 			var students = JSON.parse(this.responseText);	
-			sort(lect_id, categories, students, param);
+			sort(lect_id, students, param);
 
 		}
 	};	
@@ -27,7 +39,7 @@ function fetchStud(lect_id, categories, param){
 	httpRequest.send();	
 }
 
-function sort(lect_id, categories, students, param){	
+function sort(lect_id, students, param){	
 	switch(param){
 		case "points":
 			var Url = "http://127.0.0.1:8000/FeedbackSortedByPoints";
@@ -54,19 +66,13 @@ function sort(lect_id, categories, students, param){
 				}
 			}
 			
-			//for every feedback replace the number given by JSON for category and student to the name
+			//for every feedback replace the id number given by JSON for student to the name
 			for(var fb of sortedFb){
-				var fb_id = fb["category"];
-				
-				for(var cat of categories){
-					if(cat["feedback_id"] == fb_id){
-						fb["category"] = cat["categoryName"];
-					}
-				}
+				var fb_id = fb["student_id"];				
 				
 				for(var stud of students){
 					if(stud["feedback_id"] == fb_id){
-						fb["student"] = stud["studentName"];
+						fb["student_id"] = stud["studentName"];
 					}
 				}				
 			}			
@@ -85,10 +91,10 @@ function show(sortedFb){
 	var mytext = '<p class="card-text"></p>';	
         for (var fb of sortedFb){
         mytext = mytext + '<div class="card" style="padding-left:10px; margin-top:10px">'
-          + "<b>" + fb["category"] + "</b>"
+          + "<b>" + fb["category_id"] + "</b>"
           + "<p>"
           + fb["message"] + "<br />"
-		  + fb["student"] + "<br />"
+		  + fb["student_id"] + "<br />"
           + fb["points"]
           + "</p>"
           + "</div>";
