@@ -2,6 +2,8 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import AbstractUser
 from django.template.defaultfilters import slugify
+from datetime import datetime
+from django.utils import timezone
 
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -76,6 +78,7 @@ class LecturerProfile(models.Model):
     # Can access lecturers feedback using LectureProfile.feedback_set.all()
 
 class Feedback(models.Model):
+    date_given = models.DateTimeField(default=timezone.now)
     feedback_id = models.IntegerField(primary_key=True,default=0)
     pre_defined_message = models.ForeignKey('Message',on_delete=models.CASCADE,null=True,blank=True) # Selected from a pre defined list depending on selected category
     points = models.IntegerField(default=0)
@@ -105,3 +108,35 @@ class Message(models.Model):
 
     def __str__(self):
         return self.text
+
+class Feedback_with_category(models.Model):
+    categoryName = models.CharField(max_length=200,default="No category")
+    feedback_id = models.IntegerField(primary_key=True,default=0)
+    class Meta:
+        managed = False
+        db_table = "student_feedback_app_feedback_with_category"
+
+class Feedback_with_student(models.Model):
+    studentName = models.CharField(max_length=200,default="No student")
+    feedback_id = models.IntegerField(primary_key=True,default=0)
+    class Meta:
+        managed = False
+        db_table = "student_feedback_app_feedback_with_student"
+
+class Feedback_with_class(models.Model):
+    className = models.CharField(max_length=200,default="No class")
+    date_given = models.DateTimeField(default=timezone.now)
+    feedback_id = models.IntegerField(primary_key=True,default=0)
+    message = models.CharField(max_length=200,default="No message")
+    points = models.IntegerField(default=0)
+    lecturer = models.ForeignKey('LecturerProfile', on_delete=models.CASCADE, null=True, blank=True)
+    student = models.ForeignKey('StudentProfile', on_delete=models.CASCADE, null=True, blank=True)
+    which_class = models.ForeignKey('Class', on_delete=models.CASCADE, null=True, blank=True)
+    category = models.ForeignKey('Category', on_delete=models.CASCADE, null=True, blank=True)
+    class Meta:
+        managed = False
+        db_table = "student_feedback_app_feedback_with_class"
+    
+
+
+
