@@ -1,7 +1,28 @@
 {% extends "student_feedback_app/base.html" %}
 
+{% block title%}
+Log Out
+{% endblock %}
+
+{% block current_page %}
+Logged Out
+{% endblock %}
 
 {% block body_block %}
-<h1>Logged Out</h1>
-        <p>You are now logged out.</p>
+<div>
+  <form id="login_form" method="post" action="">
+    {% csrf_token %}
+
+    <div class="container">
+      <div class="col-sm card" style="width:50%; margin-left:25px; margin-top:25px;">
+        <h3 class="card-body text-center">Logged Out</h3>
+        You are now logged out.
+        <a class="nav-link" href="{% url 'auth_login' %}">
+    		<div class="card" style="width:50%; padding-left:10px">
+    				Login
+    			</div>
+    		</a>
+    </div>
+  </form>
+</div>
 {% endblock %}

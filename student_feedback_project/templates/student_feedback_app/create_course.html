@@ -1,8 +1,12 @@
 {% extends 'student_feedback_app/base.html' %}
 
-{% block title_block %}
-Create a Course<br />
-{{ lecturer.lecturer.username }}
+{% block title%}
+Create a Course
+{% endblock %}
+
+{% block current_page %}
+{{ lecturer.lecturer.username }}<br />
+Create a Course
 {% endblock %}
 
 {% block body_block %}

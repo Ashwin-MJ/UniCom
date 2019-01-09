@@ -2,19 +2,19 @@
 {% load static %}
 
 {% block title%}
-My Provided Feedback
+All Feedback
 {% endblock %}
 
 {% block current_page %}
-{{ lect.lecturer.username }}'s<br />
-Provided Feedback
+{{ student.student.username }}'s<br />
+My Feedback
 {% endblock%}
 
 
 {% block body_block %}
 
 <div class="container">
-    <div class="card" style="width:50%;margin-left:25px; margin-top:25px;">
+    <div class="card scroll" style="width:50%;margin-left:25px; margin-top:25px;">
       <h3 class="card-body text-center">Recent Feedback</h3>
       <div class="card-body">
         {% for fb in feedback %}
@@ -29,9 +29,9 @@ Provided Feedback
             {% if fb.optional_message %}
               {{ fb.optional_message }}<br />
             {% endif %}
-            <a style="text-decoration: none; color: black" href="{% url 'lecturer_view_student' fb.student.student.id_number%}">
-              <em>{{fb.student.student.username}}</em>
-            </a><br />
+
+            From: <em>{{fb.lecturer.lecturer.username}}</em><br />
+            Course: <em>{{fb.which_course.subject}}</em><br />
             {{ fb.points }}<br />
             {{ fb.datetime_given }}
           </p>

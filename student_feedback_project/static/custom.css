@@ -22,3 +22,22 @@
   color: blue;
   background-color: inherit;
 }
+
+.scroll {
+  max-height: 80vh;
+  overflow-y: scroll;
+}
+
+.recent {
+  background-color: teal!important;
+}
+
+.recent b {
+  color: white;
+}
+.recent p {
+  color: white;
+}
+.recent em {
+  color: white;
+}

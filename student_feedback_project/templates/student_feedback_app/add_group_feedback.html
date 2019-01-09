@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block title%}
-Add Feedback for {{ student.student.username }}
+Add Group Feedback
 {% endblock %}
 
 {% block current_page %}
@@ -17,17 +17,21 @@ Add Feedback
   {% for hidden in form.hidden_fields %}
     {{ hidden }}
   {% endfor %}
-<div style="width:100%; display: table;">
-  <div style="display: table-row;">
-    <div style="display: table-cell;">
-      <div class="card" style="height: 80px; margin-left:25px; margin-top:25px;
-                                margin-right:25px; margin-bottom:25px;">
-        <h3 class="card-body text-left">
-          Adding Feedback for
-          <a style="text-decoration: none; color: black" href="{% url 'lecturer_view_student' student.student.id_number%}">
-            <em>{{student.student.username}}</em>
-          </a>
-        </h3>
+  <div style="width:100%; display: table;">
+    <div style="display: table-row;">
+      <div style="display:table-cell">
+        <div class="card" style="margin-left:25px; margin-top:25px;
+                                  margin-right:25px; margin-bottom:25px;">
+          <h3 class="card-body text-left">
+            Adding Group Feedback for:
+            <div style="padding-left: 25px">
+              {% for student in students %}
+              <li>
+                  {{ student.student.username }}
+              </li>
+              {% endfor %}
+              </div>
+          </h3>
       </div>
       {% for field in form.visible_fields %}
       {{ field.errors }}
@@ -52,17 +56,17 @@ Add Feedback
       </div>
       {% endfor %}
     </div>
-
+    {% for student in students %}
     <div class="card" style="height: 80px; margin-left:25px; margin-top:25px;
                               margin-right:25px; margin-bottom:25px;">
       <h3 class="card-body text-left">{{ student.student.username }}'s Current Score: {{ student.score }}</h3>
     </div>
     <div class="card" style="margin-left:25px; margin-top:25px;
                               margin-right:25px; margin-bottom:25px;">
-      <h5 class="card-body text-left" style="padding-bottom:0px">Recent Feedback for Student</h5>
+      <h5 class="card-body text-left" style="padding-bottom:0px">Recent Feedback for {{ student.student.username }}</h5>
       <div class="card-body" style="padding-top:0px">
         <p class="card-text"></p>
-        {% for fb in feedback %}
+        {% for fb in student.feedback_set.all %}
         <div class="card" style="padding-left:10px; ">
           <b>{{ fb.category }}</b>
           <p>
@@ -76,15 +80,15 @@ Add Feedback
         {% endfor %}
       </div>
     </div>
+    {% endfor %}
     <div class="card" style="height: 125px; margin-left:25px; margin-top:25px;
                                 margin-right:25px; margin-bottom:25px;">
         <h3 class="card-body text-left">Submit: </h3>
         <input type='submit' name='submit' value='Submit Feedback' style='width:35%; align-self: center;'/>
     </div>
   </div>
-</div>
-
 </form>
+
 {% endblock %}
 
 {% block footer %}

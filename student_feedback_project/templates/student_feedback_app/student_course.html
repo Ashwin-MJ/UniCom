@@ -1,7 +1,11 @@
 {% extends 'student_feedback_app/base.html' %}
 
-{% block title_block %}
-{{ class.subject }}
+{% block title%}
+{{ course.subject }}
+{% endblock %}
+
+{% block current_page %}
+{{ course.subject }}
 {% endblock%}
 
 
@@ -9,27 +13,23 @@
 <div class="container">
   <div class="card-deck">
     <div class="card" style="width:40%; margin-left:25px; margin-top:25px;">
-      <h3 class="card-body text-center" style="padding-bottom:0px">Students</h3>
+      <h3 class="card-body text-center" style="padding-bottom:0px">Course Info</h3>
       <div class="card-body" style="padding-top:0px">
-        {% for stud in students %}
-          <!--<div class="card">
-            <!-- fix student profile picture image
-            <div style="display:inline-block; width:45%; height:100%">
-
-              <img src="media/profile_pictures/default_image.jpg" />
-              </div>
-              -->
-            <a style="text-decoration: none; color: black" href="{% url 'add_feedback' class.subject_slug  stud.student.id_number %}">
-              <div class="card" style="padding-left:10px; margin-top:10px">
-                <br style="clear:both;"/>
-                <b>{{ stud.student.username }}</b>
-                <p>
-                  {{ stud.score }}
-                </p>
-                </div>
-              </a>
-            <!--</div> -->
-          {% endfor %}
+          <div class="card" style="padding-left:10px; margin-top:10px">
+            <br style="clear:both;"/>
+              <b>Lecturer:</b>
+              {{lect.lecturer }}
+          </div>
+          <div class="card" style="padding-left:10px; margin-top:10px">
+            <br style="clear:both;"/>
+              <b>Course Description:</b>
+              {{course.course_description }}
+          </div>
+          <div class="card" style="padding-left:10px; margin-top:10px">
+            <br style="clear:both;"/>
+              <b>Current score: </b>
+              {{stud.score}}
+          </div>
       </div>
     </div>
     <div class="card" style="width:40%; margin-left:25px; margin-top:25px;">
@@ -40,10 +40,13 @@
         <div class="card" style="padding-left:10px; margin-top:10px">
           <b>{{ fb.category }}</b>
           <p>
-            {{ fb.message }}<br />
+            {{ fb.pre_defined_message.text }}<br />
+              {% if fb.optional_message %}
+                <em>{{ fb.optional_message }}</em><br />
+              {% endif %}
             {{ fb.student.student.username }}<br />
             {{ fb.points }}<br />
-            {{ fb.date_given }}
+            {{ fb.datetime_given }}
           </p>
         </div>
         {% endfor %}
@@ -52,7 +55,7 @@
     <div class="card" style="width:40%; margin-left:25px; margin-top:25px;">
       <h3 class="card-body text-center" style="padding-bottom:0px">Leaderboard</h3>
       <div class="card-body text-center">
-        <p class="card-text">This will show the top X students of the class</p>
+        <p class="card-text">This will show the top X students of the course</p>
 
       </div>
     </div>

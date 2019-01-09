@@ -5,7 +5,7 @@ My Courses
 {% endblock %}
 
 {% block current_page %}
-{{ lect.lecturer.username }}'s<br />
+{{ stud.student.username }}'s<br />
 Courses
 {% endblock%}
 
@@ -17,14 +17,12 @@ Courses
     <div class="card scroll" style="width:40%; margin-left:25px; margin-top:25px;">
       <h3 class="card-body text-center" style="padding-bottom:0px">My Courses</h3>
       <div class="card-body" style="padding-top:0px">
-        <form id="group-feedback-form" action="{% url 'create_course'  %}" >
-          <button class="button" style="text-align: center; width: 300px" type="submit">Create Course</button>
-        </form>
         {% for course in courses %}
-            <a style="text-decoration: none; color: black" href="{% url 'lecturer_course' course.subject_slug%}">
+            <a style="text-decoration: none; color: black" href="{% url 'student_course' course.subject_slug%}">
               <div class="card" style="padding-left:10px; margin-top:10px">
                 <br style="clear:both;"/>
                 <b>{{ course.subject }}</b>
+                <b> Score: {{course.stud.score}}</b>
                 <p>
                   <em>{{ course.course_description }}</em><br />
                   Students: {{ course.students.all|length }}
@@ -33,25 +31,20 @@ Courses
             </a>
           {% endfor %}
       </div>
-
-
     </div>
+
     <div class="card scroll" style="width:40%; margin-left:25px; margin-top:25px;">
-      <h3 class="card-body text-center" style="padding-bottom:0px">Recent Feedback Given</h3>
+      <h3 class="card-body text-center" style="padding-bottom:0px">Recent Feedback</h3>
       <div class="card-body" style="padding-top:0px">
         <p class="card-text"></p>
         {% for fb in feedback %}
-        {% if fb.is_recent %}
-        <div class="card recent" style="padding-left:10px; margin-top:10px">
-        {% else %}
-        <div class="card" style="padding-left:10px; margin-top:10px">
-        {% endif %}
+        <div class="card" style="padding-left:10px; margin-top:10px"">
           <b>{{ fb.category }}</b>
           <p>
             {{ fb.pre_defined_message.text }}<br />
-            {% if fb.optional_message %}
-              {{ fb.optional_message }}<br />
-            {% endif %}
+              {% if fb.optional_message %}
+                <em>{{ fb.optional_message }}</em><br />
+              {% endif %}
             <a style="text-decoration: none; color: black" href="{% url 'lecturer_view_student' fb.student.student.id_number%}">
               <em>{{fb.student.student.username}}</em>
             </a><br />
@@ -63,15 +56,30 @@ Courses
       </div>
     </div>
 
-  <div class="card scroll" style="width:40%; margin-left:25px; margin-top:25px;">
-      <h3 class="card-body text-center" style="padding-bottom:0px">My Top Students</h3>
-      <div class="card-body" style="padding-top:0px">
-        <p class="card-text"></p>
-        Functionality to be made
+      <div class="card" style="width:40%; height: 300px; margin-left:25px; margin-top:25px;">
+        <h3 class="card-body text-center" style="padding-bottom:0px">Add a course</h3>
+        <div class="card-body" style="padding-top:0px">
+          <form id="" method="post" action="">
+            {% csrf_token %}
+            {% for hidden in form.hidden_fields %}
+            {{ hidden }}
+            {% endfor %}
+          <p class="card-text"></p>
+
+            {% for field in form.visible_fields %}
+                <div class="card" style="padding-left:10px">
+
+                {{ field.errors }}<br />
+                {{ field.help_text }}<br />
+                {{ field }}<br />
+                </div>
+            {% endfor %}
+        </div>
+            <input type="submit" name="submit" value="Join Course" /> </form>
       </div>
     </div>
 
-    </div>
+
   </div>
 </div>
 
