@@ -16,9 +16,10 @@ Home Page
 <div class="container">
   <div class="card-deck">
 
-    <div class="card scroll">
+    <div class="card scroll-bg">
       <h3 class="card-body text-center custom-card-title">My Courses</h3>
-      <div class="card-body">
+      <hr />
+      <div class="card-body scroll">
         {% for course in courses %}
             <a style="text-decoration: none; color: black" href="{% url 'lecturer_course' course.subject_slug%}">
               <div class="card custom-card">
@@ -46,9 +47,10 @@ Home Page
       </div>
     </div>
 
-    <div class="card scroll">
+    <div class="card scroll-bg">
       <h3 class="card-body text-center custom-card-title">Recent Feedback</h3>
-      <div class="card-body" >
+      <hr />
+      <div class="card-body scroll" >
         {% for fb in feedback %}
         {% if fb.is_recent %}
         <div class="card recent custom-card">

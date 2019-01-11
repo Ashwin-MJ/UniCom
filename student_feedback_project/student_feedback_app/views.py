@@ -158,9 +158,13 @@ def lecturer_course(request,subject_slug):
             top_students = students.order_by('-score')
             context_dict['course'] = course
             context_dict['lect'] = lect
-            context_dict['students'] = students
+            context_dict['students_with_score'] = {}
             # Add top students for each course. This requires editing models to store course in feedback
             fb = course.feedback_set.all().order_by('-datetime_given')
+            # context_dict['students_with_score'] = []
+            for stud in students:
+                context_dict['students_with_score'][stud] = stud.get_score(course.subject)
+            
             context_dict['feedback'] = fb
         except:
             context_dict['course'] = None
@@ -395,7 +399,7 @@ class FeedbackSortedByDate(generics.ListAPIView):
     queryset = Feedback.objects.all().order_by('-date_given')
     serializer_class = FeedbackSerializer
 
-class FeedbackSortedByClass(generics.ListAPIView):  
+class FeedbackSortedByClass(generics.ListAPIView):
     queryset = Feedback_with_class.objects.all().order_by('className')
     serializer_class = FeedbackSerializer
 
@@ -486,4 +490,3 @@ def register(request):
     else:
         form = RegisterForm()
     return render(request, 'registration/registration_form.html', {'form': form})
-

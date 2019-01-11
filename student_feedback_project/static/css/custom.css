@@ -29,8 +29,13 @@ body{
 .scroll {
   max-height: 80vh;
   overflow-y: scroll;
+  padding-top:0px;
+}
+
+.scroll-bg {
   margin-top: 25px;
   margin-bottom:25px!important;
+  max-height:80vh;
 }
 
 .recent {

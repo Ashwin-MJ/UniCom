@@ -46,6 +46,13 @@ class StudentProfile(models.Model):
     score = models.IntegerField(default=0)
     courses = models.ManyToManyField('Course')
 
+    def get_score(self,course):
+        score = 0
+        for fb in self.feedback_set.all():
+            if fb.which_course.subject == course:
+                score += fb.points
+        return score
+
 class Course(models.Model):
     subject = models.CharField("Subject", max_length=40,)
     course_description = models.CharField(max_length=200, default="")

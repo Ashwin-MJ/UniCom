@@ -12,9 +12,10 @@ Courses
 {% block body_block %}
 <div class="container">
   <div class="card-deck">
-    <div class="card scroll">
+    <div class="card scroll-bg">
       <h3 class="card-body text-center custom-card-title">My Courses</h3>
-      <div class="card-body">
+      <hr />
+      <div class="card-body scroll">
         {% for course in courses %}
             <a style="text-decoration: none; color: black" href="{% url 'student_course' course.subject_slug%}">
               <div class="card custom-card">

@@ -14,9 +14,10 @@ Home Page
 <div class="container">
   <div class="card-deck">
 
-    <div class="card scroll">
+    <div class="card scroll-bg">
       <h3 class="card-body text-center custom-card-title">Recent Feedback</h3>
-      <div class="card-body">
+      <hr />
+      <div class="card-body scroll">
         {% for fb in feedback %}
         {% if fb.is_recent %}
         <div class="card custom-card recent">

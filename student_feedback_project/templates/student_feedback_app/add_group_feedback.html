@@ -104,9 +104,9 @@ Add Feedback
             <div class="card custom-card-top-bottom">
               <h3 class="card-body text-left" id="title">Current Score: {{ student.score }}</h3>
             </div>
-            <div class="card scroll">
+            <div class="card scroll-bg">
               <h5 class="card-body text-left custom-card-title" style="padding-bottom:0px">Recent Feedback for {{ student.student.username }}</h5>
-              <div class="card-body" style="padding-top:0px">
+              <div class="card-body scroll">
                 <p class="card-text"></p>
                 {% for fb in student.feedback_set.all %}
                 {% if fb.is_recent %}
@@ -142,11 +142,8 @@ Add Feedback
         </div>
       </div>
     </div>
-
   </div>
 </div>
-
-
 {% endblock %}
 
 {% block footer %}
