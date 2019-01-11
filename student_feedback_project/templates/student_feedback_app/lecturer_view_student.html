@@ -86,50 +86,7 @@ Currently viewing <br />
 
         </div>
       </div>
-      <!-- <div class="card">
-        <div class="card custom-card">
-          <h3 class="card-body text-center custom-card-title">Current Score: {{ student.score }}</h3>
-        </div>
 
-        <div class="card-body">
-
-
-          <div class="card scroll-bg">
-            <h5 class="card-body text-left custom-card-title">Recent Feedback for {{ student.student.username }}</h5>
-            <div class="card-body" style="padding-top:0px">
-              <p class="card-text"></p>
-              {% for fb in student.feedback_set.all %}
-              {% if fb.is_recent %}
-              <div class="card recent" style="padding-left:10px; margin-top:10px">
-              {% else %}
-              <div class="card" style="padding-left:10px; margin-top:10px">
-              {% endif %}
-                <b class="card-sub-heading">{{ fb.category }}</b>
-                <div class="row" style="padding-bottom:1%">
-                  <div class="column left">
-                    <div class="border">
-                      <blockquote class="quote">
-                        {{ fb.pre_defined_message.text }}<br />
-                        {% if fb.optional_message %}
-                        <em>"{{ fb.optional_message }}"</em>
-                        {% endif %}
-                        <footer>{{fb.lecturer.lecturer.username}}</footer>
-                      </blockquote>
-                    </div>
-                    Course:<em> {{fb.which_course.subject}}</em><br />
-                    <i class="material-icons" style="font-size:70%;">calendar_today</i> {{ fb.datetime_given }}
-                  </div>
-                  <div class="column right-number">
-                    {{ fb.points }}
-                    </div>
-                  </div>
-                </div>
-              {% endfor %}
-            </div>
-          </div>
-        </div>
-
-        </div> -->
     </div>
   </div>
 {% endblock %}
