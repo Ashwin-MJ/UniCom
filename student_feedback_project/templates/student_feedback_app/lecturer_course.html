@@ -86,13 +86,33 @@
         </div>
       </div>
 
-    <div class="card scroll-bg">
-      <h3 class="card-body text-center custom-card-title">Leaderboard</h3>
-      <div class="card-body text-center">
-        <p class="card-text">This will show the top X students of the course</p>
+      <div class="card scroll-bg">
+        <h3 class="card-body text-center custom-card-title">Leaderboard</h3>
+        <hr />
+        <div class="card-body scroll">
+          {% for stud,score in sorted_students %}
+          <div class="card custom-card">
+            <div class="row">
+              <div class="column left">
+                <b class="card-sub-heading">{{ stud.student.username }}</b>
+                <div class="card-sub-heading">
+                  {{ score }}
+                  </div>
+                </div>
+              <div class="column right">
+                <a href="{% url 'lecturer_view_student' stud.student.id_number%}">
+                  <img class="picture" src="{{stud.student.profile_picture.url}}"/>
+                </a>
+                </div>
 
+              </div>
+            </div>
+            <br />
+            {% endfor %}
+        </div>
       </div>
-    </div>
+
+
   </div>
 </div>
 {% endblock %}

@@ -155,22 +155,29 @@ def lecturer_course(request,subject_slug):
             course = Course.objects.get(subject_slug=subject_slug)
             lect = course.lecturer
             students = course.students.all()
-            top_students = students.order_by('-score')
             context_dict['course'] = course
             context_dict['lect'] = lect
             context_dict['students_with_score'] = {}
-            # Add top students for each course. This requires editing models to store course in feedback
+
             fb = course.feedback_set.all().order_by('-datetime_given')
-            # context_dict['students_with_score'] = []
+
             for stud in students:
                 context_dict['students_with_score'][stud] = stud.get_score(course.subject)
-            
+
+            temp_dict = context_dict['students_with_score']
+            # The dictionary stored in the 'students_with_score' in the context dictionary has
+            # each student as key and their score for this course as value
+            # To get leaderboard, simply sort this dictionary by value and reverse
+            temp_dict = [(k, temp_dict[k]) for k in sorted(temp_dict, key=temp_dict.get, reverse=True)]
+            context_dict['sorted_students'] = temp_dict
+            # Note that context_dict['sorted_students'] is saved as an array with format:
+            # [(<StudentProfile: StudentProfile object (X)>, Y),
+            #   (<StudentProfile: StudentProfile object (X)>, Y),
+            #   ...
+            #   ]
+            # This is important in the template
             context_dict['feedback'] = fb
         except:
-            context_dict['course'] = None
-            context_dict['lect'] = None
-            context_dict['students'] = None
-            context_dict['feedback'] = None
             context_dict['error'] = "no_course"
             return render(request,'student_feedback_app/error_page.html', context_dict)
     else:
