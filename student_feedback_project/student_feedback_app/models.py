@@ -116,7 +116,7 @@ class Feedback_with_category(models.Model):
 
 class Feedback_with_student(models.Model):
     studentName = models.CharField(max_length=200,default="No student")
-    feedback_id = models.IntegerField(primary_key=True,default=0)
+    student_id = models.IntegerField(primary_key=True,default=0)
     class Meta:
         managed = False
         db_table = "student_feedback_app_feedback_with_student"
@@ -125,11 +125,13 @@ class Feedback_with_course(models.Model):
     courseName = models.CharField(max_length=200,default="No course")
     date_given = models.DateTimeField(default=timezone.now)
     feedback_id = models.IntegerField(primary_key=True,default=0)
-    message = models.CharField(max_length=200,default="No message")
+    pre_defined_message_id = models.CharField(max_length=200,default="No message")
     points = models.IntegerField(default=0)
     lecturer = models.ForeignKey('LecturerProfile', on_delete=models.CASCADE, null=True, blank=True)
     student = models.ForeignKey('StudentProfile', on_delete=models.CASCADE, null=True, blank=True)
     which_course = models.ForeignKey('Course', on_delete=models.CASCADE, null=True, blank=True)
+    datetime_given = models.DateTimeField(default=timezone.now, blank=False)
+    optional_message = models.CharField(max_length=200,default="")
     category = models.ForeignKey('Category', on_delete=models.CASCADE, null=True, blank=True)
     class Meta:
         managed = False

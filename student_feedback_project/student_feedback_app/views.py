@@ -4,7 +4,7 @@ from student_feedback_app.serializers import *
 from rest_framework import generics
 from student_feedback_app.models import Feedback
 from .forms import *
-from .models import *
+from student_feedback_app.models import *
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.http import HttpResponse,HttpResponseRedirect, JsonResponse
@@ -388,16 +388,16 @@ class CategoryAutocomplete(autocomplete.Select2QuerySetView):
 
 
 class FeedbackSortedByPoints(generics.ListAPIView):
-    queryset = Feedback.objects.all().order_by('points')
-    serializer_class = FeedbackSerializer
+    queryset = Feedback_with_course.objects.all().order_by('points')
+    serializer_class = Feedback_with_courseSerializer
 
 class FeedbackSortedByDate(generics.ListAPIView):
-    queryset = Feedback.objects.all().order_by('-datetime_given')
-    serializer_class = FeedbackSerializer
+    queryset = Feedback_with_course.objects.all().order_by('-datetime_given')
+    serializer_class = Feedback_with_courseSerializer
 
 class FeedbackSortedByCourse(generics.ListAPIView):  
     queryset = Feedback_with_course.objects.all().order_by('courseName')
-    serializer_class = FeedbackSerializer
+    serializer_class = Feedback_with_courseSerializer
 
 class CategoryList(generics.ListAPIView):
     queryset = Category.objects.all()

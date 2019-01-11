@@ -1,13 +1,13 @@
 from rest_framework import serializers
 from student_feedback_app.models import *
 
-class FeedbackSerializer(serializers.ModelSerializer):
+class Feedback_with_courseSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Feedback
-        fields = ('date_given', 'feedback_id', 'pre_defined_message',
-                  'points', 'lecturer_id', 'student_id',
-                  'which_course_id', 'datetime_given', 'optional_message',
-                  'category_id')
+        model = Feedback_with_course
+        fields = ('courseName', 'date_given', 'feedback_id', 'pre_defined_message_id',
+                  'points', 'lecturer', 'student',
+                  'which_course', 'datetime_given', 'optional_message',
+                  'category')
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -22,4 +22,4 @@ class Feedback_with_categorySerializer(serializers.ModelSerializer):
 class Feedback_with_studentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Feedback_with_student
-        fields = ('studentName', 'feedback_id')
+        fields = ('studentName', 'student_id')

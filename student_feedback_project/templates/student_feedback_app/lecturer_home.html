@@ -50,7 +50,7 @@ Home Page
 
     <div class="card scroll">
       <h3 class="card-body text-center custom-card-title">Recent Feedback</h3>
-      <div class="card-body" >
+      <div class="card-body" id="fb-list" >
         {% for fb in feedback %}
         {% if fb.is_recent %}
         <div class="card recent custom-card">
@@ -84,8 +84,8 @@ Home Page
 
         <div class="button" style="padding-bottom:0px; padding-top:10px;">
           <button onclick="fetchStud({{ lecturer.lecturer.id_number }}, 'points')" type="button" class="btn btn-primary">Sort by points</button>
-          <button onclick="getCats({{ lecturer.lecturer.id_number }}, 'date')" type="button" class="btn btn-primary">Sort by date</button>
-          <button onclick="getCats({{ lecturer.lecturer.id_number }}, 'course')" type="button" class="btn btn-primary">Sort by course</button>
+          <button onclick="fetchStud({{ lecturer.lecturer.id_number }}, 'date')" type="button" class="btn btn-primary">Sort by date</button>
+          <button onclick="fetchStud({{ lecturer.lecturer.id_number }}, 'course')" type="button" class="btn btn-primary">Sort by course</button>
         </div>
        </div>
 
