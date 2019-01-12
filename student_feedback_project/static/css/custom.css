@@ -85,4 +85,14 @@ body{
 .picture {
   border-radius: 50%;
   max-width: 50px;
+  border: 1px solid teal;
+}
+
+hr {
+  display:block;
+  border:none;
+  color:white;
+  height:1px;
+  background:black;
+  background: -webkit-gradient(radial, 50% 50%, 0, 50% 50%, 175, from(#000), to(#fff));
 }
