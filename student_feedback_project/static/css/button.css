@@ -47,3 +47,9 @@
   background-size: 100%;
   transition: background 0s;
 }
+
+.custom-radio-button {
+  padding: 10px;
+  list-style: none;
+  font-size: 150%;
+}
