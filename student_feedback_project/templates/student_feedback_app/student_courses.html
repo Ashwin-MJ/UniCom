@@ -16,7 +16,7 @@ Courses
       <h3 class="card-body text-center custom-card-title">My Courses</h3>
       <hr />
       <div class="card-body scroll">
-        {% for course in courses %}
+        {% for course,score in courses.items %}
             <a style="text-decoration: none; color: black" href="{% url 'student_course' course.subject_slug%}">
               <div class="card custom-card">
                 <b class="card-sub-heading">{{ course.subject }}</b>
@@ -34,7 +34,7 @@ Courses
                     </div>
                   </div>
                   <div class="column right-number">
-                    {{ stud.score }}
+                    {{ score }}
                     </div>
                   </div>
                 </div>
@@ -54,9 +54,9 @@ Courses
 
           {% for field in form.visible_fields %}
             <div class="card custom-card">
-              {{ field.errors }}<br />
-              {{ field.help_text }}<br />
-              {{ field }}<br />
+              {{ field.errors }}
+              <h3 class="text-left" id="title">{{ field.help_text }}:</h3>
+              {{ field }}
             </div>
           {% endfor %}
           <br />
