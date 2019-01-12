@@ -27,6 +27,14 @@
   text-align: center;
 }
 
+.left-category {
+  width:70%;
+  padding-left: 3%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .right-number {
   width: 30%;
   display: flex;
@@ -35,6 +43,17 @@
   font-size: 400%;
   padding-right: 3%;
   margin-bottom: 1rem;
+  font-family: 'Dosis', sans-serif;
+  color: teal;
+}
+
+.right-number-category {
+  width: 30%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 200%;
+  padding-right: 3%;
   font-family: 'Dosis', sans-serif;
   color: teal;
 }

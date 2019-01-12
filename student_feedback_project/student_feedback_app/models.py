@@ -46,12 +46,28 @@ class StudentProfile(models.Model):
     score = models.IntegerField(default=0)
     courses = models.ManyToManyField('Course')
 
-    def get_score(self,course):
+    def get_score_for_course(self,course):
         score = 0
         for fb in self.feedback_set.all():
             if fb.which_course.subject == course:
                 score += fb.points
         return score
+
+    def get_top_attributes(self):
+        scores = {}
+        for fb in self.feedback_set.all():
+            if fb.category not in scores:
+                scores[fb.category] = fb.points
+            else:
+                scores[fb.category] += fb.points
+
+        scores = [(k, scores[k]) for k in sorted(scores, key=scores.get, reverse=True)]
+        return scores
+
+    def get_weaknesses(self):
+        scores = self.get_top_attributes()
+        scores.reverse()
+        return scores
 
 class Course(models.Model):
     subject = models.CharField("Subject", max_length=40,)

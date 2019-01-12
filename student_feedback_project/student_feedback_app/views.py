@@ -42,9 +42,11 @@ def student_all_feedback(request):
     context_dict = {}
     if request.user.is_authenticated and request.user.is_student:
         stud= StudentProfile.objects.get(student=request.user)
-        fb = stud.feedback_set.all()
+        fb = stud.feedback_set.all().order_by('-datetime_given')
         context_dict['student'] = stud
         context_dict['feedback'] = fb
+        context_dict['top_attributes'] = stud.get_top_attributes()
+        context_dict['to_improve'] = stud.get_weaknesses()
     else:
         context_dict['error'] = "auth"
         return render(request,'student_feedback_app/error_page.html', context_dict)
@@ -162,7 +164,7 @@ def lecturer_course(request,subject_slug):
             fb = course.feedback_set.all().order_by('-datetime_given')
 
             for stud in students:
-                context_dict['students_with_score'][stud] = stud.get_score(course.subject)
+                context_dict['students_with_score'][stud] = stud.get_score_for_course(course.subject)
 
             temp_dict = context_dict['students_with_score']
             # The dictionary stored in the 'students_with_score' in the context dictionary has
