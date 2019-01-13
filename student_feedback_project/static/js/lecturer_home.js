@@ -1,13 +1,12 @@
 "use strict";
 
-
-function fetchStud(lect_id, param){
+function fetchStud(fb_keep, sort_param, keep_param){
 	const Url = "http://127.0.0.1:8000/Feedback_with_studentList/";	
 	var httpRequest = new XMLHttpRequest();
 	httpRequest.onreadystatechange = function(){
 		if (this.readyState == 4 && this.status == 200) {
 			var students = JSON.parse(this.responseText);	
-			sort(lect_id, students, param);
+			sort(fb_keep, students, sort_param, keep_param);
 
 		}
 	};	
@@ -15,8 +14,8 @@ function fetchStud(lect_id, param){
 	httpRequest.send();	
 }
 
-function sort(lect_id, students, param){	
-	switch(param){
+function sort(fb_keep, students, sort_param, keep_param){	
+	switch(sort_param){
 		case "points":
 			var Url = "http://127.0.0.1:8000/FeedbackSortedByPoints";
 			break;
@@ -33,9 +32,9 @@ function sort(lect_id, students, param){
 	httpRequest.onreadystatechange = function(){
 		if (this.readyState == 4 && this.status == 200) {			
 			var sortedFb = JSON.parse(this.responseText);
-			
+//add switch statment for fb_keep on keep_param			
 			//make lecturer id the one in the database then remove fb that is not from this lecturer
-			var lecturer_id = lect_id + 5;			
+			var lecturer_id = fb_keep + 5;			
 			for(var i=0; i<sortedFb.length; i++){
 				if(sortedFb[i].lecturer != lecturer_id){
 					sortedFb.splice(i,1);

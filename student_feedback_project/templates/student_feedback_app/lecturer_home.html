@@ -81,7 +81,7 @@ Home Page
           {% endfor %}
 
         </div>
-
+		
         <div class="button" style="padding-bottom:0px; padding-top:10px;">
           <button onclick="fetchStud({{ lecturer.lecturer.id_number }}, 'points')" type="button" class="btn btn-primary">Sort by points</button>
           <button onclick="fetchStud({{ lecturer.lecturer.id_number }}, 'date')" type="button" class="btn btn-primary">Sort by date</button>
@@ -94,7 +94,3 @@ Home Page
 </div>
 {% endblock %}
 
-
-{% block js-link %}
-	<script type="text/javascript" src="{% static 'js/lecturer_home.js' %}"></script>
-{% endblock %}

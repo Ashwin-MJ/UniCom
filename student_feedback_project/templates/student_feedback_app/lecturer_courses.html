@@ -1,11 +1,13 @@
 {% extends 'student_feedback_app/base.html' %}
 
+{% load static %}
+
 {% block title%}
 My Courses
 {% endblock %}
 
 {% block current_page %}
-{{ lect.lecturer.username }}'s<br />
+{{ lecturer.lecturer.username }}'s<br />
 Courses
 {% endblock%}
 
@@ -52,7 +54,7 @@ Courses
 
     <div class="card scroll">
       <h3 class="card-body text-center custom-card-title">Recent Feedback</h3>
-      <div class="card-body">
+      <div class="card-body" id="fb-list">
         {% for fb in feedback %}
         {% if fb.is_recent %}
         <div class="card recent custom-card">
@@ -82,6 +84,11 @@ Courses
 
           {% endfor %}
       </div>
+	  <div class="button" style="padding-bottom:0px; padding-top:10px;">
+          <button onclick="fetchStud({{ lecturer.lecturer.id_number }}, 'points')" type="button" class="btn btn-primary">Sort by points</button>
+          <button onclick="fetchStud({{ lecturer.lecturer.id_number }}, 'date')" type="button" class="btn btn-primary">Sort by date</button>
+          <button onclick="fetchStud({{ lecturer.lecturer.id_number }}, 'course')" type="button" class="btn btn-primary">Sort by course</button>
+        </div>
     </div>
 
   <div class="card scroll">

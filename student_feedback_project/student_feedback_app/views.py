@@ -140,7 +140,7 @@ def my_provided_feedback(request):
     if request.user.is_authenticated and request.user.is_lecturer:
         lect = LecturerProfile.objects.get(lecturer=request.user)
         fb = lect.feedback_set.all().order_by('-datetime_given')
-        context_dict['lect'] = lect
+        context_dict['lecturer'] = lect
         context_dict['feedback'] = fb
     else:
         context_dict['error'] = "auth"
@@ -157,14 +157,14 @@ def lecturer_course(request,subject_slug):
             students = course.students.all()
             top_students = students.order_by('-score')
             context_dict['course'] = course
-            context_dict['lect'] = lect
+            context_dict['lecturer'] = lect
             context_dict['students'] = students
             # Add top students for each course. This requires editing models to store course in feedback
             fb = course.feedback_set.all().order_by('-datetime_given')
             context_dict['feedback'] = fb
         except:
             context_dict['course'] = None
-            context_dict['lect'] = None
+            context_dict['lecturer'] = None
             context_dict['students'] = None
             context_dict['feedback'] = None
             context_dict['error'] = "no_course"
@@ -305,7 +305,7 @@ def lecturer_all_courses(request):
         lect = LecturerProfile.objects.get(lecturer=request.user)
         courses = lect.course_set.all()
         fb = lect.feedback_set.all().order_by('-datetime_given')
-        context_dict['lect'] = lect
+        context_dict['lecturer'] = lect
         context_dict['courses'] = courses
         context_dict['feedback'] = fb
     else:
