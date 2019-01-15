@@ -11,6 +11,77 @@ Home Page
 
 
 {% block body_block %}
+
+<script>
+
+
+ window.onload = function () {
+     {% autoescape off %}
+     catData = {{feedbackData}}
+     {% endautoescape %}
+
+     data1 = []
+     for(var cat in catData){
+         dataPoints1 = []
+         for(var i=0; i < catData[cat].length; i++){
+             dataPoints1.push({x: new Date(catData[cat][i][1]), y: catData[cat][i][0]})
+             console.log(dataPoints1)
+
+         }
+
+         data1.push({
+             type: "line",
+             name: cat,
+             color: "#"+((1<<24)*Math.random()|0).toString(16),
+             showInLegend: true,
+             axisYIndex: 1,
+             dataPoints: dataPoints1
+         })
+     }
+
+	var chart = new CanvasJS.Chart("chartContainer", {
+	title:{
+		text: "Category Scores"
+	},
+	axisY:[{
+		title: "Points",
+		lineColor: "#c24642",
+		tickColor: "#C24642",
+		labelFontColor: "#C24642",
+		titleFontColor: "#C24642",
+
+		},
+	],
+
+
+	toolTip: {
+		shared: true
+	},
+	legend: {
+		cursor: "pointer",
+		itemclick: toggleDataSeries
+	},
+
+
+
+
+	data: data1
+});
+chart.render();
+
+function toggleDataSeries(e) {
+	if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+		e.dataSeries.visible = false;
+	} else {
+		e.dataSeries.visible = true;
+	}
+	e.chart.render();
+}
+
+}
+
+</script>
+
 <div class="container">
   <div class="card-deck">
 
@@ -58,7 +129,8 @@ Home Page
           {{student.score}}<br />
         </div>
         <div class="card custom-card">
-          <b> Graph functionality to be made </b>
+          <div id="chartContainer" style="height: 300px; width: 100%;"></div>
+<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
         </div>
       </div>
     </div>

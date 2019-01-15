@@ -22,14 +22,23 @@ def index(request):
 
 def student_home(request):
     context_dict={}
+    fbCat = {}
     if request.user.is_authenticated and request.user.is_student:
         try:
             stud = StudentProfile.objects.get(student=request.user)
             fb = stud.feedback_set.all().order_by('-datetime_given')
             courses=stud.courses.all()
+            for feedback in fb:
+                cat = feedback.category.name
+                if cat not in fbCat:
+                    fbCat[cat] = [[feedback.points, feedback.datetime_given.strftime('%Y-%m-%d %H:%M')]]
+                else:
+                    fbCat[cat].append([feedback.points, feedback.datetime_given.strftime('%Y-%m-%d %H:%M')])
             context_dict['student'] = stud
             context_dict['courses'] = courses
             context_dict['feedback'] = fb
+            context_dict['feedbackData'] = json.dumps(fbCat)
+
         except:
             context_dict['error'] = "error"
             return  render(request, 'student_feedback_app/error_page.html', context_dict)
