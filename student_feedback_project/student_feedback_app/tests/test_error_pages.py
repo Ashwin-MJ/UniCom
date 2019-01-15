@@ -8,7 +8,7 @@ class StudentHomeErrorTestCase(TestCase):
         add_course("Systems Programming 3", "SP3", "Introduction to Systems Programming using C and C++")
         add_student("Bob", "3015244", "Bob@bob.bob", "Bob", 0, ["SP3"])
         add_lecturer("Wolf", "00001", "star", "wolf@star.com", ["SP3"])
-    
+
     def test_no_auth_page(self):
         c = Client()
         response = c.get('/student/home/')
@@ -17,11 +17,11 @@ class StudentHomeErrorTestCase(TestCase):
     def test_no_auth_message(self):
         c = Client()
         response = c.get('/student/home/')
-        self.assertContains(response, "You are not logged in")
+        self.assertContains(response, "You Are Not Logged In")
 
     def test_lecturer_wrong_auth_page(self):
         c = Client()
-        c.login(username="00001", password="star")
+        c.login(username="00001", password="wrong")
         response = c.get('/student/home/')
         self.assertEqual(response.templates[0].name, "student_feedback_app/error_page.html")
         c.logout()
@@ -36,5 +36,3 @@ class StudentHomeErrorTestCase(TestCase):
 
 
 #TODO figure out how to pass info to context dict or otherwise get error
-
-

@@ -197,7 +197,7 @@ def lecturer_view_student(request,student_number):
             context_dict['lecturer'] = lect
             context_dict['student'] = stud
             context_dict['feedback'] = fb
-            context_dict['courses'] = courses
+            context_dict['courses'] = stud.get_courses_with_score()
         except:
             context_dict['error'] = "no_student"
             return render(request,'student_feedback_app/error_page.html', context_dict)
@@ -206,7 +206,7 @@ def lecturer_view_student(request,student_number):
         return render(request,'student_feedback_app/error_page.html', context_dict)
     return render(request,'student_feedback_app/lecturer_view_student.html',context_dict)
 
-def add_feedback(request,subject_slug,student_number):
+def add_individual_feedback(request,subject_slug,student_number):
     if not request.user.is_authenticated or not request.user.is_lecturer:
         context_dict['error'] = "auth"
         return render(request,'student_feedback_app/error_page.html', context_dict)
@@ -242,7 +242,7 @@ def add_feedback(request,subject_slug,student_number):
         else:
             form = FeedbackForm()
         context_dict['form'] = form
-        return render(request,'student_feedback_app/add_feedback.html',context_dict)
+        return render(request,'student_feedback_app/add_individual_feedback.html',context_dict)
     except:
         context_dict['student'] = None
         context_dict['feedback'] = None
