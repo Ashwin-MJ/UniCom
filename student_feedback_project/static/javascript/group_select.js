@@ -21,5 +21,23 @@ $('#group-feedback-form').submit(function(){
     document.cookie = cookieText;
     return true;
   }
+});
 
+$('#individual-feedback-form').submit(function(){
+  var res=[];
+  $('.students').each(function(){
+    if($(this).hasClass('color')){
+      res.push($(this).attr('id'))
+    }
+  })
+  var course_slug = document.getElementsByClassName("container")[1].id;
+
+  var jsonText = JSON.stringify(res);
+  console.log(jsonText);
+  var cookieText = "students=" + jsonText + ';'
+  document.cookie = cookieText;
+  var act = "/lecturer/" + course_slug + "/" + res[0] + "/add-individual-feedback/";
+  console.log(act)
+  document.getElementById("individual-feedback-form").setAttribute("action",act);
+  return true;
 });

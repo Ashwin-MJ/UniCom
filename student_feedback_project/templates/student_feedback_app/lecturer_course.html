@@ -11,7 +11,7 @@
 
 
 {% block body_block %}
-<div class="container">
+<div class="container" id="{{ course.subject_slug }}">
   <div class="card custom-card">
     <h3 class="card-body text-center custom-card-title token" style="padding:10px;">
       Course Token: <b>{{ course.course_token}}</b>
