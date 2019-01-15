@@ -3,7 +3,7 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding-bottom: 10px;
+  margin-bottom: 25px;
 }
 
 .btn-material {
@@ -46,4 +46,10 @@
   background-color: #6eb9f7;
   background-size: 100%;
   transition: background 0s;
+}
+
+.custom-radio-button {
+  padding: 10px;
+  list-style: none;
+  font-size: 150%;
 }

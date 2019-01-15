@@ -14,9 +14,10 @@ Provided Feedback
 {% block body_block %}
 
 <div class="container">
-  <div class="card scroll">
+  <div class="card scroll-bg">
     <h3 class="card-body text-center custom-card-title">Recent Feedback</h3>
-    <div class="card-body">
+    <hr />
+    <div class="card-body scroll">
       {% for fb in feedback %}
       {% if fb.is_recent %}
       <div class="card recent custom-card">
@@ -43,8 +44,7 @@ Provided Feedback
             </div>
           </div>
         </div>
-
-        {% endfor %}
+      {% endfor %}
     </div>
   </div>
 </div>

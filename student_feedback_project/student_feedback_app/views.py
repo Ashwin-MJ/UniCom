@@ -42,9 +42,11 @@ def student_all_feedback(request):
     context_dict = {}
     if request.user.is_authenticated and request.user.is_student:
         stud= StudentProfile.objects.get(student=request.user)
-        fb = stud.feedback_set.all()
+        fb = stud.feedback_set.all().order_by('-datetime_given')
         context_dict['student'] = stud
         context_dict['feedback'] = fb
+        context_dict['top_attributes'] = stud.get_top_attributes()
+        context_dict['to_improve'] = stud.get_weaknesses()
     else:
         context_dict['error'] = "auth"
         return render(request,'student_feedback_app/error_page.html', context_dict)
@@ -59,7 +61,7 @@ def student_all_courses(request):
         courses = stud.courses.all()
         fb = stud.feedback_set.all()
         context_dict['stud'] = stud
-        context_dict['courses'] = courses
+        context_dict['courses'] = stud.get_courses_with_score()
         context_dict['feedback'] = fb
         if(request.method == 'POST'):
             form = addCourseForm(request.POST)
@@ -92,16 +94,15 @@ def student_course(request, subject_slug):
         try:
             course = Course.objects.get(subject_slug=subject_slug)
             stud = StudentProfile.objects.get(student=request.user)
-            print(stud.score)
             lect = course.lecturer
             students = course.students.all()
             top_students = students.order_by('-score')
             context_dict['course'] = course
             context_dict['lect'] = lect
             context_dict['students'] = students
-            # Add top students for each course. This requires editing models to store course in feedback
-            fb = course.feedback_set.all().order_by('-datetime_given')
-            context_dict['feedback'] = fb
+            context_dict['sorted_students'] = course.get_leaderboard()
+            context_dict['feedback'] = stud.get_fb_for_course(course.subject)
+            context_dict['score'] = stud.get_score_for_course(course.subject)
         except:
             context_dict['course'] = None
             context_dict['lect'] = None
@@ -155,18 +156,16 @@ def lecturer_course(request,subject_slug):
             course = Course.objects.get(subject_slug=subject_slug)
             lect = course.lecturer
             students = course.students.all()
-            top_students = students.order_by('-score')
             context_dict['course'] = course
             context_dict['lect'] = lect
-            context_dict['students'] = students
-            # Add top students for each course. This requires editing models to store course in feedback
+            context_dict['students_with_score'] = {}
+
             fb = course.feedback_set.all().order_by('-datetime_given')
+
+            context_dict['students_with_score'] = course.get_students_with_score()
+            context_dict['sorted_students'] = course.get_leaderboard()
             context_dict['feedback'] = fb
         except:
-            context_dict['course'] = None
-            context_dict['lect'] = None
-            context_dict['students'] = None
-            context_dict['feedback'] = None
             context_dict['error'] = "no_course"
             return render(request,'student_feedback_app/error_page.html', context_dict)
     else:
@@ -395,7 +394,7 @@ class FeedbackSortedByDate(generics.ListAPIView):
     queryset = Feedback.objects.all().order_by('-date_given')
     serializer_class = FeedbackSerializer
 
-class FeedbackSortedByClass(generics.ListAPIView):  
+class FeedbackSortedByClass(generics.ListAPIView):
     queryset = Feedback_with_class.objects.all().order_by('className')
     serializer_class = FeedbackSerializer
 
@@ -486,4 +485,3 @@ def register(request):
     else:
         form = RegisterForm()
     return render(request, 'registration/registration_form.html', {'form': form})
-
