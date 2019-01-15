@@ -24,8 +24,8 @@ Home Page
      for(var cat in catData){
          dataPoints1 = []
          for(var i=0; i < catData[cat].length; i++){
-             dataPoints1.push({x: new Date(catData[cat][i][1]), y: catData[cat][i][0]})
-             console.log(dataPoints1)
+             dataPoints1.push({x: new Date(catData[cat][i][1].replace(/-/g, "/")), y: catData[cat][i][0]})
+             console.log(catData[cat][i][1])
 
          }
 

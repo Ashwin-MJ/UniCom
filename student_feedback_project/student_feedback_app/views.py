@@ -34,6 +34,7 @@ def student_home(request):
                     fbCat[cat] = [[feedback.points, feedback.datetime_given.strftime('%Y-%m-%d %H:%M')]]
                 else:
                     fbCat[cat].append([feedback.points, feedback.datetime_given.strftime('%Y-%m-%d %H:%M')])
+            print(fbCat)
             context_dict['student'] = stud
             context_dict['courses'] = courses
             context_dict['feedback'] = fb
