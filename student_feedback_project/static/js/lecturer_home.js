@@ -31,39 +31,8 @@ function sort(fb_keep, students, sort_param, keep_param){
 	httpRequest.onreadystatechange = function(){
 		if (this.readyState == 4 && this.status == 200) {			
 			var sortedFb = JSON.parse(this.responseText);
-
-			switch(keep_param){
-				case "lecturer":
-					//make lecturer id the one in the database then remove fb that is not from this lecturer
-					var lecturer_id = fb_keep + 5;			
-					for(var i=0; i<sortedFb.length; i++){
-						if(sortedFb[i].lecturer != lecturer_id){
-							sortedFb.splice(i,1);
-						}
-					}
-					break;
-				case "course":
-					var course_name = fb_keep;			
-					for(var i=0; i<sortedFb.length; i++){
-						if(sortedFb[i].courseName != course_name){
-							sortedFb.splice(i,1);
-						}
-					}
-					break;
-				case "student":
-					var student_id = fb_keep;			
-					for(var i=0; i<sortedFb.length; i++){
-						if(sortedFb[i].student != student_id){
-							sortedFb.splice(i,1);
-						}
-					}
-					break;
-				default:
-			}
 			
-			
-			
-			//for every feedback replace the id number given by JSON for student to the name
+			//for every feedback replace the id number given by JSON for student to the name and see if feedback is recent (5mins)
 			for(var fb of sortedFb){
 				var stud_id = fb["student"];				
 				
@@ -80,9 +49,44 @@ function sort(fb_keep, students, sort_param, keep_param){
 				}
 				else
 					fb['is_recent'] = false;
-			}		
+			}	
+
+			switch(keep_param){
+				case "lecturer":
+					//make lecturer id the one in the database then remove fb that is not from this lecturer
+					var lecturer_id = fb_keep + 5;			
+					for(var i=0; i<sortedFb.length; i++){
+						if(sortedFb[i].lecturer != lecturer_id){
+							sortedFb.splice(i,1);
+							i=-1;
+						}
+					}
+					var footerType = "student";
+					break;
+				case "course":
+					var course_name = fb_keep;			
+					for(var i=0; i<sortedFb.length; i++){
+						if(sortedFb[i].courseName != course_name){
+							sortedFb.splice(i,1);
+							i=-1;
+						}
+					}
+					break;
+				case "student":
+					var student_name = fb_keep;			
+					for(var i=0; i<sortedFb.length; i++){
+						if(sortedFb[i].student != student_name){
+							sortedFb.splice(i,1);
+							i=-1;
+						}
+					}
+					var footerType = "lecturer";
+					break;
+				default:
+			}
 			
 			
+						
 			//place this parsed data into the page
 			show(sortedFb);
 		}
@@ -92,7 +96,7 @@ function sort(fb_keep, students, sort_param, keep_param){
 }
 
 
-function show(sorted_fb){
+function show(sorted_fb, footerType){
 	var fb_text = '';
 	for (var fb of sorted_fb){
 		var myDate = new Date(fb.datetime_given);
@@ -117,6 +121,10 @@ function show(sorted_fb){
 		  minutes = minutes < 10 ? '0'+minutes : minutes;
 		  var strTime = hours + ':' + minutes + ' '+ ampm;
 		var showDate = ' ' + month[myDate.getMonth()] + '. ' + myDate.getDate() + ', ' + myDate.getFullYear() + ', ' + strTime;
+		if(footerType == "student")
+			var footer = fb.student;
+		else
+			var footer = fb.lecturer;
 		if(fb['is_recent']){
 			fb_text += '<div class="card recent custom-card">';
 		}
@@ -131,7 +139,7 @@ function show(sorted_fb){
                   if (fb.optional_message){
                   fb_text += '<em>"' + fb.optional_message + '"</em>'
 				  }
-                  fb_text += '<footer>' + fb.student + '</footer>' 
+                  fb_text += '<footer>' + footer + '</footer>' 
                 + `</blockquote>
               </div>
               Course: <em>` + fb.courseName + `</em><br />
