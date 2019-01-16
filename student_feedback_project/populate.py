@@ -6,6 +6,7 @@ django.setup()
 from student_feedback_app.models import StudentProfile, Course, LecturerProfile, Feedback, Category, Message
 from django.template.defaultfilters import slugify
 from django.contrib.auth import get_user_model
+from django.db import connection
 
 User = get_user_model()
 
@@ -59,7 +60,29 @@ def populate():
 		"email": "jane_mitchell@student.gla.ac.uk",
 		"score":0,
 		"courses":["ARH01", "POL01"]
-		}]
+		},
+                {"name": "Wulfric Gwenda",
+		"student_number": "14021382",
+		"password": "password",
+		"email": "wulfric_gwenda@student.gla.ac.uk",
+		"score":40,
+		"courses":["POL01"]
+		},
+                {"name": "Ralph Merthin",
+		"student_number": "8352781",
+		"password": "password",
+		"email": "ralph_merthin@student.gla.ac.uk",
+		"score":4,
+		"courses":["MAT1Q", "POL01"]
+		},
+                {"name": "Thomas Langley",
+		"student_number": "1439181",
+		"password": "password",
+		"email": "thomas_langley@student.gla.ac.uk",
+		"score":16,
+		"courses":["ARH01", "MAT1Q"]
+		}
+                ]
 
 	lecturers = [
 		{"name": "Prof. Roy",
@@ -79,7 +102,7 @@ def populate():
 		{"feedback_id": 1,
 		"category": "Listening",
 		"points": 4,
-		"lecturer": "00001",
+		"lecturer": "00002",
 		"student": "1402789",
 		"course_code" : "MAT1Q",
 		"pre_defined_message": "Good job answering the question today!",
@@ -96,7 +119,7 @@ def populate():
 		"message": "Great marks in todays quiz!",
 		"category": "Participation",
 		"points": 5,
-		"lecturer": "00002",
+		"lecturer": "00001",
 		"student": "1402781",
 		"course_code": "ARH01",
 		"pre_defined_message": "Very good question today. I'm sure you helped a lot of students by asking it!",
