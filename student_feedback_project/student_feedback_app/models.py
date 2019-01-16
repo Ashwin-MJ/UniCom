@@ -20,6 +20,8 @@ class User(AbstractUser):
     id_number = models.CharField(max_length=20,  unique=True)
     is_student = models.BooleanField(default=False)
     is_lecturer = models.BooleanField(default=False)
+    
+    is_active = models.BooleanField(default=False)
 
     USERNAME_FIELD = 'id_number'
     REQUIRED_FIELDS = ['username', 'email']
@@ -35,6 +37,7 @@ def update_user_profile(sender, instance, created, **kwargs):
             LecturerProfile.objects.create(lecturer=instance)
             instance.lecturerprofile.save()
         else :
+            instance.is_active = True
             instance.is_student = True
             instance.save()
             StudentProfile.objects.create(student=instance)
