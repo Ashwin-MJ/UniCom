@@ -151,6 +151,11 @@ def populate():
 								someFeedback.get('lecturer'),someFeedback.get('student'),someFeedback.get('course_code'),
 								someFeedback.get('pre_defined_message'), someFeedback.get('optional_message'))
 
+	create_view_fb_cat()
+	create_view_fb_stud()
+	create_view_fb_course()
+	create_view_fb_lect()
+
 
 	print("Courses Added")
 	for each_course in Course.objects.all():
@@ -205,6 +210,47 @@ def populate():
 		print("\tLecturer: " + fb.lecturer.lecturer.username)
 		print("\tStudent: " + fb.student.student.username)
 		print("\tCourse: " + fb.which_course.subject)
+
+	print("-----------------")
+	print("Views Added:")
+	print("Feedback_with_category")
+	print("Feedback_with_student")
+	print("Feedback_with_course")
+	print("Feedback_with_lecturer")
+       
+
+# function to add the view feedback with category
+def create_view_fb_cat():
+    with connection.cursor() as cursor:
+        cursor.execute("CREATE VIEW student_feedback_app_feedback_with_category \
+                        as select fb.*, ca.name categoryName from student_feedback_app_feedback fb \
+                        INNER JOIN student_feedback_app_category ca ON fb.category_id = ca.id;")
+
+# function to add the view feedback with student
+def create_view_fb_stud():
+    with connection.cursor() as cursor:
+        cursor.execute("CREATE VIEW student_feedback_app_feedback_with_student \
+                        as select fb.*, stud.username studentName from student_feedback_app_feedback fb \
+                        INNER JOIN student_feedback_app_user stud ON fb.student_id = stud.id;")
+
+# function to add the view feedback with lecturer
+def create_view_fb_lect():
+    with connection.cursor() as cursor:
+        cursor.execute("CREATE VIEW student_feedback_app_feedback_with_lecturer \
+                        as select fb.*, lect.username lecturerName from student_feedback_app_feedback fb \
+                        INNER JOIN student_feedback_app_user lect ON fb.lecturer_id = lect.id;")
+
+# function to add the view feedback with course
+def create_view_fb_course():
+    with connection.cursor() as cursor:
+        cursor.execute("CREATE VIEW student_feedback_app_feedback_with_course \
+                        as select fb.*, course.subject courseName from student_feedback_app_feedback fb \
+                        INNER JOIN student_feedback_app_course course ON fb.which_course_id = course.course_code;")
+
+#to add new view: make function and execute line, add model in models.py, test in DB browser SQLite
+
+#for now you have to run populate.py after deleting the database so the views only generate once
+
 
 # Helper function to add a new course
 def add_course(subject,course_code, course_description):
