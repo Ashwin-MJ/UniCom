@@ -76,9 +76,9 @@ function sort(fb_keep, students, lecturers, sort_param, keep_param){
 			switch(keep_param){
 				case "lecturer":
 					//make lecturer id the one in the database then remove fb that is not from this lecturer
-					var lecturer_id = fb_keep + 5;			
+					var lecturer_name = fb_keep;			
 					for(var i=0; i<sortedFb.length; i++){
-						if(sortedFb[i].lecturer != lecturer_id){
+						if(sortedFb[i].lecturer != lecturer_name){
 							sortedFb.splice(i,1);
 							i=-1;
 						}
@@ -110,7 +110,7 @@ function sort(fb_keep, students, lecturers, sort_param, keep_param){
 			
 						
 			//place this parsed data into the page
-			show(sortedFb);
+			show(sortedFb, footerType);
 		}
 	};	
 	httpRequest.open("GET", Url, true);
