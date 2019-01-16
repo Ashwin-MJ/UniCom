@@ -388,7 +388,7 @@ class CategoryAutocomplete(autocomplete.Select2QuerySetView):
 
 
 class FeedbackSortedByPoints(generics.ListAPIView):
-    queryset = Feedback_with_course.objects.all().order_by('points')
+    queryset = Feedback_with_course.objects.all().order_by('-points')
     serializer_class = Feedback_with_courseSerializer
 
 class FeedbackSortedByDate(generics.ListAPIView):

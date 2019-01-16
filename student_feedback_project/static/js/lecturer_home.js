@@ -26,20 +26,42 @@ function sort(fb_keep, students, sort_param, keep_param){
 			var Url = "http://127.0.0.1:8000/FeedbackSortedByCourse";
 			break;
 		default:
-		break
 	}		
 	var httpRequest = new XMLHttpRequest();
 	httpRequest.onreadystatechange = function(){
 		if (this.readyState == 4 && this.status == 200) {			
 			var sortedFb = JSON.parse(this.responseText);
-//add switch statment for fb_keep on keep_param			
-			//make lecturer id the one in the database then remove fb that is not from this lecturer
-			var lecturer_id = fb_keep + 5;			
-			for(var i=0; i<sortedFb.length; i++){
-				if(sortedFb[i].lecturer != lecturer_id){
-					sortedFb.splice(i,1);
-				}
+
+			switch(keep_param){
+				case "lecturer":
+					//make lecturer id the one in the database then remove fb that is not from this lecturer
+					var lecturer_id = fb_keep + 5;			
+					for(var i=0; i<sortedFb.length; i++){
+						if(sortedFb[i].lecturer != lecturer_id){
+							sortedFb.splice(i,1);
+						}
+					}
+					break;
+				case "course":
+					var course_name = fb_keep;			
+					for(var i=0; i<sortedFb.length; i++){
+						if(sortedFb[i].courseName != course_name){
+							sortedFb.splice(i,1);
+						}
+					}
+					break;
+				case "student":
+					var student_id = fb_keep;			
+					for(var i=0; i<sortedFb.length; i++){
+						if(sortedFb[i].student != student_id){
+							sortedFb.splice(i,1);
+						}
+					}
+					break;
+				default:
 			}
+			
+			
 			
 			//for every feedback replace the id number given by JSON for student to the name
 			for(var fb of sortedFb){
@@ -89,12 +111,12 @@ function show(sorted_fb){
 		  month[11]="Dec";
 		  var hours = myDate.getHours();
 		  var minutes = myDate.getMinutes();
-		  var ampm = hours >= 12 ? 'pm' : 'am';
+		  var ampm = hours >= 12 ? 'p.m.' : 'a.m.';
 		  hours = hours % 12;
 		  hours = hours ? hours : 12;
 		  minutes = minutes < 10 ? '0'+minutes : minutes;
-		  var strTime = hours + ':' + minutes + ampm;
-		var showDate = month[myDate.getMonth()] + '.' + myDate.getDate() + ',' + myDate.getFullYear() + ',' + strTime;
+		  var strTime = hours + ':' + minutes + ' '+ ampm;
+		var showDate = ' ' + month[myDate.getMonth()] + '. ' + myDate.getDate() + ', ' + myDate.getFullYear() + ', ' + strTime;
 		if(fb['is_recent']){
 			fb_text += '<div class="card recent custom-card">';
 		}
@@ -107,12 +129,12 @@ function show(sorted_fb){
                 <blockquote class="quote">`
                 +  fb["pre_defined_message_id"] +'<br />';
                   if (fb.optional_message){
-                  fb_text += '<em>' + fb.optional_message + '</em>'
+                  fb_text += '<em>"' + fb.optional_message + '"</em>'
 				  }
                   fb_text += '<footer>' + fb.student + '</footer>' 
                 + `</blockquote>
               </div>
-              Course:<em>` + fb.courseName + `</em><br />
+              Course: <em>` + fb.courseName + `</em><br />
               <i class="material-icons" style="font-size:70%;">calendar_today</i>` + showDate
             + `</div>
             <div class="column right-number">`
