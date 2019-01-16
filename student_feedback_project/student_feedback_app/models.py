@@ -21,6 +21,7 @@ class User(AbstractUser):
     slug = models.SlugField(max_length=50)
     profile_picture = models.ImageField(upload_to='profile_pictures', default="profile_pictures/default_image.jpg", blank=True)
     id_number = models.CharField(max_length=20,  unique=True)
+    username = models.CharField(max_length=25,  unique=True)
     is_student = models.BooleanField(default=False)
     is_lecturer = models.BooleanField(default=False)
     

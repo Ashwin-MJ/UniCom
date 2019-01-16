@@ -31,7 +31,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
 'studentfeedbackapp.herokuapp.com',
-'http://feedbackapp.pythonanywhere.com',
+'feedbackapp.pythonanywhere.com',
 'localhost',
 '127.0.0.1',
 ]
