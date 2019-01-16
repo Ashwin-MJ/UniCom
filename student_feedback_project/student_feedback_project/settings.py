@@ -138,3 +138,13 @@ MEDIA_URL = '/media/'
 
 
 AUTH_USER_MODEL = "student_feedback_app.User"
+
+
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_HOST_USER = "lect.acc.unicom@gmail.com"
+EMAIL_HOST_PASSWORD = '1234567890poiuytrewq'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+ADMINS = [('Default email', 'lect.acc.unicom@gmail.com'),]
+

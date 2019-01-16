@@ -8,6 +8,11 @@ from django.utils import timezone
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
+from django.core.mail import send_mail
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import get_template
+from django.template import Context
+
 import datetime
 import random, string
 
@@ -36,6 +41,15 @@ def update_user_profile(sender, instance, created, **kwargs):
         if instance.is_lecturer:
             LecturerProfile.objects.create(lecturer=instance)
             instance.lecturerprofile.save()
+            emails = []
+            superusers = User.objects.filter(is_superuser=True)
+            for superuser in superusers:
+                emails.append(superuser.email)            
+            
+            message = 'Lecturer ' + instance.username + ' has registered and needs approval. Approve profiles @ feedbackapp.pythonanywhere.com/admin'
+            
+            send_mail('Lecturer needs approval',message,'lect.acc.unicom@gmail.com',emails)
+            
         else :
             instance.is_active = True
             instance.is_student = True
