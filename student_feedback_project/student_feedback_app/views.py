@@ -4,7 +4,7 @@ from student_feedback_app.serializers import *
 from rest_framework import generics
 from student_feedback_app.models import Feedback
 from .forms import *
-from .models import *
+from student_feedback_app.models import *
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.http import HttpResponse,HttpResponseRedirect, JsonResponse
@@ -151,7 +151,7 @@ def my_provided_feedback(request):
     if request.user.is_authenticated and request.user.is_lecturer:
         lect = LecturerProfile.objects.get(lecturer=request.user)
         fb = lect.feedback_set.all().order_by('-datetime_given')
-        context_dict['lect'] = lect
+        context_dict['lecturer'] = lect
         context_dict['feedback'] = fb
     else:
         context_dict['error'] = "auth"
@@ -167,11 +167,11 @@ def lecturer_course(request,subject_slug):
             lect = course.lecturer
             students = course.students.all()
             context_dict['course'] = course
-            context_dict['lect'] = lect
+            context_dict['lecturer'] = lect
             context_dict['students_with_score'] = {}
-
+            
+            # Add top students for each course. This requires editing models to store course in feedback
             fb = course.feedback_set.all().order_by('-datetime_given')
-
             context_dict['students_with_score'] = course.get_students_with_score()
             context_dict['sorted_students'] = course.get_leaderboard()
             context_dict['feedback'] = fb
@@ -314,7 +314,7 @@ def lecturer_all_courses(request):
         lect = LecturerProfile.objects.get(lecturer=request.user)
         courses = lect.course_set.all()
         fb = lect.feedback_set.all().order_by('-datetime_given')
-        context_dict['lect'] = lect
+        context_dict['lecturer'] = lect
         context_dict['courses'] = courses
         context_dict['feedback'] = fb
     else:
@@ -397,16 +397,16 @@ class CategoryAutocomplete(autocomplete.Select2QuerySetView):
 
 
 class FeedbackSortedByPoints(generics.ListAPIView):
-    queryset = Feedback.objects.all().order_by('points')
-    serializer_class = FeedbackSerializer
+    queryset = Feedback_with_course.objects.all().order_by('-points')
+    serializer_class = Feedback_with_courseSerializer
 
 class FeedbackSortedByDate(generics.ListAPIView):
-    queryset = Feedback.objects.all().order_by('-date_given')
-    serializer_class = FeedbackSerializer
+    queryset = Feedback_with_course.objects.all().order_by('-datetime_given')
+    serializer_class = Feedback_with_courseSerializer
 
-class FeedbackSortedByClass(generics.ListAPIView):
-    queryset = Feedback_with_class.objects.all().order_by('className')
-    serializer_class = FeedbackSerializer
+class FeedbackSortedByCourse(generics.ListAPIView):  
+    queryset = Feedback_with_course.objects.all().order_by('courseName')
+    serializer_class = Feedback_with_courseSerializer
 
 class CategoryList(generics.ListAPIView):
     queryset = Category.objects.all()
@@ -419,6 +419,10 @@ class Feedback_with_categoryList(generics.ListAPIView):
 class Feedback_with_studentList(generics.ListAPIView):
     queryset = Feedback_with_student.objects.all()
     serializer_class = Feedback_with_studentSerializer
+
+class Feedback_with_lecturerList(generics.ListAPIView):
+    queryset = Feedback_with_lecturer.objects.all()
+    serializer_class = Feedback_with_lecturerSerializer
 
 
 class MessageAutocomplete(autocomplete.Select2QuerySetView):

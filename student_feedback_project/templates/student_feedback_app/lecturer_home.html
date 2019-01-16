@@ -1,5 +1,7 @@
 {% extends 'student_feedback_app/base.html' %}
+
 {% load static %}
+
 
 {% block title%}
 My Homepage
@@ -50,7 +52,7 @@ Home Page
     <div class="card scroll-bg">
       <h3 class="card-body text-center custom-card-title">Recent Feedback</h3>
       <hr />
-      <div class="card-body scroll" >
+      <div class="card-body scroll" id="fb-list" >
         {% for fb in feedback %}
         {% if fb.is_recent %}
         <div class="card recent custom-card">
@@ -79,15 +81,14 @@ Home Page
           </div>
 
           {% endfor %}
-        </div>
 
+        </div>
+		
         <div class="button" style="padding-bottom:0px; padding-top:10px;">
-          <button onclick="getCats({{ lecturer.lecturer.id_number }}, 'points')" type="button" class="btn btn-primary">Sort by points</button>
-          <button onclick="getCats({{ lecturer.lecturer.id_number }}, 'date')" type="button" class="btn btn-primary">Sort by date</button>
-          <button onclick="getCats({{ lecturer.lecturer.id_number }}, 'class')" type="button" class="btn btn-primary">Sort by class</button>
+          <button onclick="fetchStud('{{ lecturer.lecturer.username }}', 'points', 'lecturer')" type="button" class="btn btn-primary">Sort by points</button>
+          <button onclick="fetchStud('{{ lecturer.lecturer.username }}', 'date', 'lecturer' )" type="button" class="btn btn-primary">Sort by date</button>
+          <button onclick="fetchStud('{{ lecturer.lecturer.username }}', 'course', 'lecturer')" type="button" class="btn btn-primary">Sort by course</button>
         </div>
-
-
        </div>
 
     </div>
@@ -95,7 +96,3 @@ Home Page
 </div>
 {% endblock %}
 
-
-{% block js-link %}
-	<script type="text/javascript" src="{% static 'js/lecturer_home.js' %}"></script>
-{% endblock %}
