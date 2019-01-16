@@ -8,20 +8,63 @@ Register
 Register
 {% endblock %}
 
+{% load widget_tweaks %}
 {% block body_block %}
-<div>
-  <form id="register_form" method="post" action="">
-    {% csrf_token %}
+<div class="container">
 
-    <div class="container">
-      <div class="card" style="margin-left:25px; margin-top:25px; align-items:center">
-        <h3 class="card-body text-center">Register</h3>
-        <div class="card-body">
-          {{ form.as_p }}
+  <div class="card custom-card" style="margin-bottom:25px;">
+
+    <form id="register_form" method="post" action="">
+      {% csrf_token %}
+
+      {% for hidden_field in form.hidden_fields %}
+        {{ hidden_field }}
+      {% endfor %}
+
+      <h3 class="card-body text-center custom-card-title">Register</h3>
+      <hr />
+
+      {% if form.non_field_errors %}
+        <div class="alert alert-danger" role="alert">
+          {% for error in form.non_field_errors %}
+            {{ error }}
+          {% endfor %}
         </div>
-        <input type="submit" value="Register" style="width:50%;"/>
+      {% endif %}
+
+      {% for field in form.visible_fields %}
+        <div class="form-group" style="padding:10px">
+          <h3 class="custom-card-title">
+            {{ field.label_tag }}
+          </h3>
+          {% if field.help_text %}
+            <small class="form-text text-muted">{{ field.help_text }}</small>
+          {% endif %}
+
+          {% if form.is_bound %}
+            {% if field.errors %}
+              {% render_field field class="form-control is-invalid" %}
+              {% for error in field.errors %}
+                <div>
+                  {{ error }}
+                </div>
+              {% endfor %}
+            {% else %}
+              {% render_field field class="form-control is-valid" %}
+            {% endif %}
+          {% elif field.label == 'Sign up as:' %}
+            {% render_field field class="custom-radio-button" %}
+          {% else %}
+            {% render_field field class="form-control" %}
+          {% endif %}
+
+        </div>
+      {% endfor %}
+
+      <div class="button">
+        <input class="btn btn-material btn-ripple" type="submit" name="submit" value="Register" />
       </div>
-    </div>
-  </form>
+    </form>
+  </div>
 </div>
 {% endblock %}

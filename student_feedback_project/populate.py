@@ -6,6 +6,7 @@ django.setup()
 from student_feedback_app.models import StudentProfile, Course, LecturerProfile, Feedback, Category, Message
 from django.template.defaultfilters import slugify
 from django.contrib.auth import get_user_model
+from django.db import connection
 
 User = get_user_model()
 
@@ -25,53 +26,53 @@ def populate():
 		]
 
 	students = [
-		{"name": "Link",
+		{"name": "Sarah Fields",
 		"student_number": "1402789",
-		"password": "Zelda",
-		"email": "Link@sword.hy",
+		"password": "password",
+		"email": "sarah_fields@student.gla.ac.uk",
 		"score":0,
 		"courses":["MAT1Q", "POL01"]
 		},
-		{"name": "Harry Potter",
+		{"name": "James Smith",
 		"student_number": "1402001",
-		"password": "Ron",
-		"email": "Harry@quidditch.hw",
+		"password": "password",
+		"email": "james_smith@student.gla.ac.uk",
 		"score":0,
 		"courses":["MAT1Q", "ARH01"]
 		},
-		{"name": "Donkey Kong",
+		{"name": "Sophie Clover",
 		"student_number": "1403389",
-		"password": "Diddy",
-		"email": "Donkey@kong.jng",
+		"password": "password",
+		"email": "sophie_clover@student.gla.ac.uk",
 		"score":0,
 		"courses":["MAT1Q"]
 		},
-		{"name": "Sheik",
+		{"name": "Jake White",
 		"student_number": "002489",
-		"password": "teleport",
-		"email": "Sheik@hookshot.hy",
+		"password": "password",
+		"email": "jake_white@student.gla.ac.uk",
 		"score":0,
 		"courses":["ARH01"]
 		},
-		{"name": "Navi",
+		{"name": "Jane Mitchell",
 		"student_number": "1402781",
-		"password": "Listen!",
-		"email": "Navi@listen.hy",
+		"password": "password",
+		"email": "jane_mitchell@student.gla.ac.uk",
 		"score":0,
 		"courses":["ARH01", "POL01"]
 		}]
 
 	lecturers = [
-		{"name": "Ganondorf",
+		{"name": "Prof. Roy",
 		"lecturer_number": "00001",
-		"password": "Zelda",
-		"email": "Ganon@power.hy",
+		"password": "password",
+		"email": "scott_roy@glasgow.ac.uk",
 		"courses":["ARH01", "POL01"]
 		},
-		{"name": "Voldemort",
+		{"name": "Dr. Cossar",
 		"lecturer_number": "00002",
-		"password": "Riddle",
-		"email": "Voldy@death.hw",
+		"password": "password",
+		"email": "callum_cossar@glasgow.ac.uk",
 		"courses":["MAT1Q"]
 		}]
 
@@ -151,6 +152,11 @@ def populate():
 								someFeedback.get('lecturer'),someFeedback.get('student'),someFeedback.get('course_code'),
 								someFeedback.get('pre_defined_message'), someFeedback.get('optional_message'))
 
+	create_view_fb_cat()
+	create_view_fb_stud()
+	create_view_fb_course()
+	create_view_fb_lect()
+
 
 	print("Courses Added")
 	for each_course in Course.objects.all():
@@ -206,6 +212,47 @@ def populate():
 		print("\tStudent: " + fb.student.student.username)
 		print("\tCourse: " + fb.which_course.subject)
 
+	print("-----------------")
+	print("Views Added:")
+	print("Feedback_with_category")
+	print("Feedback_with_student")
+	print("Feedback_with_course")
+	print("Feedback_with_lecturer")
+       
+
+# function to add the view feedback with category
+def create_view_fb_cat():
+    with connection.cursor() as cursor:
+        cursor.execute("CREATE VIEW student_feedback_app_feedback_with_category \
+                        as select fb.*, ca.name categoryName from student_feedback_app_feedback fb \
+                        INNER JOIN student_feedback_app_category ca ON fb.category_id = ca.id;")
+
+# function to add the view feedback with student
+def create_view_fb_stud():
+    with connection.cursor() as cursor:
+        cursor.execute("CREATE VIEW student_feedback_app_feedback_with_student \
+                        as select fb.*, stud.username studentName from student_feedback_app_feedback fb \
+                        INNER JOIN student_feedback_app_user stud ON fb.student_id = stud.id;")
+
+# function to add the view feedback with lecturer
+def create_view_fb_lect():
+    with connection.cursor() as cursor:
+        cursor.execute("CREATE VIEW student_feedback_app_feedback_with_lecturer \
+                        as select fb.*, lect.username lecturerName from student_feedback_app_feedback fb \
+                        INNER JOIN student_feedback_app_user lect ON fb.lecturer_id = lect.id;")
+
+# function to add the view feedback with course
+def create_view_fb_course():
+    with connection.cursor() as cursor:
+        cursor.execute("CREATE VIEW student_feedback_app_feedback_with_course \
+                        as select fb.*, course.subject courseName from student_feedback_app_feedback fb \
+                        INNER JOIN student_feedback_app_course course ON fb.which_course_id = course.course_code;")
+
+#to add new view: make function and execute line, add model in models.py, test in DB browser SQLite
+
+#for now you have to run populate.py after deleting the database so the views only generate once
+
+
 # Helper function to add a new course
 def add_course(subject,course_code, course_description):
 	course = Course.objects.get_or_create(subject=subject,course_code=course_code, course_description=course_description)[0]
@@ -242,7 +289,6 @@ def add_lecturer(name,lecturer_number,password,email,courses):
 	lecturer.set_password(password)
 	lecturer.id_number = lecturer_number
 	lecturer.is_lecturer = True
-	lecturer.is_student = False
 	lecturer.save()
 
 	lecturer_prof = LecturerProfile.objects.get_or_create(lecturer=lecturer)[0]

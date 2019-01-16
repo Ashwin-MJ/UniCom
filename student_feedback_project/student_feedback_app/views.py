@@ -1,9 +1,13 @@
 from django.shortcuts import render
-from django.http import HttpResponse,HttpResponseRedirect, JsonResponse
-from .models import LecturerProfile,Feedback,Course,StudentProfile,User,Category,Message
-from .forms import CourseForm,FeedbackForm,RegisterForm,addCourseForm
+from rest_framework.views import APIView
+from student_feedback_app.serializers import *
+from rest_framework import generics
+from student_feedback_app.models import Feedback
+from .forms import *
+from student_feedback_app.models import *
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+from django.http import HttpResponse,HttpResponseRedirect, JsonResponse
 from dal import autocomplete
 import datetime
 from django import http
@@ -12,20 +16,31 @@ from django.shortcuts import redirect
 from django.contrib.auth import login
 import json
 
+from django.urls import reverse
+
 # Create your views here.
 def index(request):
     return HttpResponseRedirect('/accounts/login/')
 
 def student_home(request):
     context_dict={}
+    fbCat = {}
     if request.user.is_authenticated and request.user.is_student:
         try:
             stud = StudentProfile.objects.get(student=request.user)
             fb = stud.feedback_set.all().order_by('-datetime_given')
             courses=stud.courses.all()
+            for feedback in fb:
+                cat = feedback.category.name
+                if cat not in fbCat:
+                    fbCat[cat] = [[feedback.points, feedback.datetime_given.strftime('%Y-%m-%d %H:%M')]]
+                else:
+                    fbCat[cat].append([feedback.points, feedback.datetime_given.strftime('%Y-%m-%d %H:%M')])
             context_dict['student'] = stud
             context_dict['courses'] = courses
             context_dict['feedback'] = fb
+            context_dict['feedbackData'] = json.dumps(fbCat)
+
         except:
             context_dict['error'] = "error"
             return  render(request, 'student_feedback_app/error_page.html', context_dict)
@@ -38,14 +53,16 @@ def student_all_feedback(request):
     context_dict = {}
     if request.user.is_authenticated and request.user.is_student:
         stud= StudentProfile.objects.get(student=request.user)
-        fb = stud.feedback_set.all()
+        fb = stud.feedback_set.all().order_by('-datetime_given')
         context_dict['student'] = stud
         context_dict['feedback'] = fb
+        context_dict['top_attributes'] = stud.get_top_attributes()
+        context_dict['to_improve'] = stud.get_weaknesses()
     else:
         context_dict['error'] = "auth"
         return render(request,'student_feedback_app/error_page.html', context_dict)
 
-    return render(request,'student_feedback_app/all_feedback.html',context_dict)
+    return render(request,'student_feedback_app/student_all_feedback.html',context_dict)
 
 
 def student_all_courses(request):
@@ -55,7 +72,7 @@ def student_all_courses(request):
         courses = stud.courses.all()
         fb = stud.feedback_set.all()
         context_dict['stud'] = stud
-        context_dict['courses'] = courses
+        context_dict['courses'] = stud.get_courses_with_score()
         context_dict['feedback'] = fb
         if(request.method == 'POST'):
             form = addCourseForm(request.POST)
@@ -88,16 +105,15 @@ def student_course(request, subject_slug):
         try:
             course = Course.objects.get(subject_slug=subject_slug)
             stud = StudentProfile.objects.get(student=request.user)
-            print(stud.score)
             lect = course.lecturer
             students = course.students.all()
             top_students = students.order_by('-score')
             context_dict['course'] = course
             context_dict['lect'] = lect
             context_dict['students'] = students
-            # Add top students for each course. This requires editing models to store course in feedback
-            fb = course.feedback_set.all().order_by('-datetime_given')
-            context_dict['feedback'] = fb
+            context_dict['sorted_students'] = course.get_leaderboard()
+            context_dict['feedback'] = stud.get_fb_for_course(course.subject)
+            context_dict['score'] = stud.get_score_for_course(course.subject)
         except:
             context_dict['course'] = None
             context_dict['lect'] = None
@@ -136,7 +152,7 @@ def my_provided_feedback(request):
     if request.user.is_authenticated and request.user.is_lecturer:
         lect = LecturerProfile.objects.get(lecturer=request.user)
         fb = lect.feedback_set.all().order_by('-datetime_given')
-        context_dict['lect'] = lect
+        context_dict['lecturer'] = lect
         context_dict['feedback'] = fb
     else:
         context_dict['error'] = "auth"
@@ -151,18 +167,16 @@ def lecturer_course(request,subject_slug):
             course = Course.objects.get(subject_slug=subject_slug)
             lect = course.lecturer
             students = course.students.all()
-            top_students = students.order_by('-score')
             context_dict['course'] = course
-            context_dict['lect'] = lect
-            context_dict['students'] = students
+            context_dict['lecturer'] = lect
+            context_dict['students_with_score'] = {}
+            
             # Add top students for each course. This requires editing models to store course in feedback
             fb = course.feedback_set.all().order_by('-datetime_given')
+            context_dict['students_with_score'] = course.get_students_with_score()
+            context_dict['sorted_students'] = course.get_leaderboard()
             context_dict['feedback'] = fb
         except:
-            context_dict['course'] = None
-            context_dict['lect'] = None
-            context_dict['students'] = None
-            context_dict['feedback'] = None
             context_dict['error'] = "no_course"
             return render(request,'student_feedback_app/error_page.html', context_dict)
     else:
@@ -184,7 +198,7 @@ def lecturer_view_student(request,student_number):
             context_dict['lecturer'] = lect
             context_dict['student'] = stud
             context_dict['feedback'] = fb
-            context_dict['courses'] = courses
+            context_dict['courses'] = stud.get_courses_with_score()
         except:
             context_dict['error'] = "no_student"
             return render(request,'student_feedback_app/error_page.html', context_dict)
@@ -193,15 +207,34 @@ def lecturer_view_student(request,student_number):
         return render(request,'student_feedback_app/error_page.html', context_dict)
     return render(request,'student_feedback_app/lecturer_view_student.html',context_dict)
 
-def add_feedback(request,subject_slug,student_number):
+def add_individual_feedback(request,subject_slug,student_number):
     if not request.user.is_authenticated or not request.user.is_lecturer:
         context_dict['error'] = "auth"
         return render(request,'student_feedback_app/error_page.html', context_dict)
     context_dict = {}
     try:
+        # Retrieving student string from cookies
+        students_string = request.COOKIES.get("indiv_students")
+
+        try:
+            students_list = json.loads(students_string)
+        except:
+            # Seems to be an error in using json.loads for a list with a single element so do this instead
+            students_list = students_string
+
+        # At this point, the variable students_list contains a list of all students still to be given feedback
+        # Remove current student from that list
+
+        # Removing first element of list (current student)
+        students_list = students_list[1:]
+
+        # Saving the above updated list as a cookie 'indiv_students'
+        request.COOKIES["indiv_students"] = students_list
+
         lect = LecturerProfile.objects.get(lecturer=request.user)
         stud_user = User.objects.get(id_number=student_number)
         stud = StudentProfile.objects.get(student=stud_user)
+
         fb = stud.feedback_set.all()
         context_dict['lecturer'] = lect
         context_dict['student'] = stud
@@ -222,14 +255,34 @@ def add_feedback(request,subject_slug,student_number):
                 new_fb.which_course = course
                 new_fb.datetime_given = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 stud.save()
+                new_fb.pk = None
                 new_fb.save()
-                return my_provided_feedback(request)
+
+                rem_students = students_list
+
+                # Check if there are more students to provide individual fb to
+                if(len(rem_students) >= 1):
+                    next_stud = rem_students[0]
+
+                    # Get response as url for next student
+                    response = HttpResponseRedirect(reverse('add_individual_feedback', args=[course.subject_slug, next_stud]))
+                    # Set the cookie in the response so that the next page has the updated cookie
+                    # i.e the updated list of students
+                    response.set_cookie("indiv_students",json.dumps(rem_students))
+                    return response
+                else:
+                    # Delete cookies so there are no issues the next time group/individual feedback is given
+                    request.COOKIES["indiv_students"] = ""
+                    request.COOKIES['students'] = ""
+                    response = my_provided_feedback(request)
+                    response.delete_cookie('indiv_students')
+                    return response
             else:
                 print(form.errors)
         else:
             form = FeedbackForm()
         context_dict['form'] = form
-        return render(request,'student_feedback_app/add_feedback.html',context_dict)
+        return render(request,'student_feedback_app/add_individual_feedback.html',context_dict)
     except:
         context_dict['student'] = None
         context_dict['feedback'] = None
@@ -301,7 +354,7 @@ def lecturer_all_courses(request):
         lect = LecturerProfile.objects.get(lecturer=request.user)
         courses = lect.course_set.all()
         fb = lect.feedback_set.all().order_by('-datetime_given')
-        context_dict['lect'] = lect
+        context_dict['lecturer'] = lect
         context_dict['courses'] = courses
         context_dict['feedback'] = fb
     else:
@@ -382,6 +435,36 @@ class CategoryAutocomplete(autocomplete.Select2QuerySetView):
         else:
             return False
 
+
+class FeedbackSortedByPoints(generics.ListAPIView):
+    queryset = Feedback_with_course.objects.all().order_by('-points')
+    serializer_class = Feedback_with_courseSerializer
+
+class FeedbackSortedByDate(generics.ListAPIView):
+    queryset = Feedback_with_course.objects.all().order_by('-datetime_given')
+    serializer_class = Feedback_with_courseSerializer
+
+class FeedbackSortedByCourse(generics.ListAPIView):  
+    queryset = Feedback_with_course.objects.all().order_by('courseName')
+    serializer_class = Feedback_with_courseSerializer
+
+class CategoryList(generics.ListAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+
+class Feedback_with_categoryList(generics.ListAPIView):
+    queryset = Feedback_with_category.objects.all()
+    serializer_class = Feedback_with_categorySerializer
+
+class Feedback_with_studentList(generics.ListAPIView):
+    queryset = Feedback_with_student.objects.all()
+    serializer_class = Feedback_with_studentSerializer
+
+class Feedback_with_lecturerList(generics.ListAPIView):
+    queryset = Feedback_with_lecturer.objects.all()
+    serializer_class = Feedback_with_lecturerSerializer
+
+
 class MessageAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
         if not self.request.user.is_authenticated or not self.request.user.is_lecturer:
@@ -442,7 +525,7 @@ class MessageAutocomplete(autocomplete.Select2QuerySetView):
             return True
         else:
             return False
-            
+
 def register(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST)

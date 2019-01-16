@@ -5,102 +5,126 @@ Error
 {% endblock %}
 
 {% block current_page %}
-Error page
+Error Page
 {% endblock%}
-
 
 {% block body_block %}
 <div class="container">
 {% if error == "auth" %}
-		{% if not user.is_authenticated %}
-		<div class="col-sm card" style="width:50%;margin-left:25px; margin-top:25px;">
-      <h3 class="card-body text-center">You are not logged in</h3>
-			Please log in or register
-			<div class="card-body">
-				<a class="nav-link" href="{% url 'auth_login' %}">
-        <div class="card" style="width:50%; padding-left:10px">
-						Login
-          </div>
-				</a>
-				<a class="nav-link" href="{% url 'registration_register' %}">
-        <div class="card" style="width:50%; padding-left:10px">
-						Register
-          </div>
-				</a>
-      </div>
-			{% endif %}
-			{% if user.is_student %}
-			<div class="col-sm card" style="width:50%;margin-left:25px; margin-top:25px;padding">
-				<h3 class="card-body text-center">Access denied</h3>
+	{% if not user.is_authenticated %}
+	<div class="card" style="margin-top:25px;">
+    <h3 class="card-body text-center custom-card-title">You Are Not Logged In</h3>
+		<hr />
+		<h5 class="card-body text-left" id="title">
+			Please log in or register:
+			</h5>
+		<div class="card-body" style="align-self:center">
+			<a class="nav-link" href="{% url 'auth_login' %}">
+        <button class="btn btn-material btn-ripple" style="width:200px">Login</button>
+			</a>
+			<a class="nav-link" href="{% url 'registration_register' %}">
+      	<button class="btn btn-material btn-ripple" style="width:200px">Register</button>
+			</a>
+    </div>
+		{% endif %}
+		{% if user.is_student %}
+		<div class="card" style="margin-top:25px;">
+			<h3 class="card-body text-center custom-card-title">Access Denied</h3>
+			<hr />
+			<h5 class="card-body text-left" id="title">
 				As a student you are not allowed to access this page
+			</h5>
+			<div class="card-body" style="align-self:center">
 				<a class="nav-link" href="{% url 'student_home' %}">
-				<div class="card" style="width:50%; padding-left:10px">
-						Return to home page
-					</div>
+					<button class="btn btn-material btn-ripple" style="width:200px">Return to Home Page</button>
 				</a>
 			</div>
-			{% endif %}
-			{% if user.is_lecturer %}
-			<div class="col-sm card" style="width:50%;margin-left:25px; margin-top:25px;padding">
-				<h3 class="card-body text-center">Access denied</h3>
+		</div>
+		{% endif %}
+		{% if user.is_lecturer %}
+		<div class="card" style="margin-top:25px;">
+			<h3 class="card-body text-center custom-card-title">Access Denied</h3>
+			<hr />
+			<h5 class="card-body text-left" id="title">
 				As a lecturer you are not allowed to access this page
+			</h5>
+			<div class="card-body" style="align-self:center">
 				<a class="nav-link" href="{% url 'lecturer_home' %}">
-				<div class="card" style="width:50%; padding-left:10px">
-						Return to home page
-					</div>
+					<button class="btn btn-material btn-ripple" style="width:200px">Return to Home Page</button>
 				</a>
 			</div>
-			{% endif %}
+		</div>
+		{% endif %}
 	</div>
 {% endif %}
 
 
 {% if error == "error" %}
 <div class="container">
-	<div class="col-sm card" style="width:50%;margin-left:25px; margin-top:25px;">
-		<h3 class="card-body text-center">Something went wrong</h3>
-		Please try returning to the page you were just on
+	<div class="card" style="margin-top:25px;">
+		<h3 class="card-body text-center custom-card-title">Something Went Wrong</h3>
+		<hr />
+		<h5 class="card-body text-left" id="title">
+			Please try returning to the page you were just on, or press below to return to the home page
+		</h5>
+		<div class="card-body" style="align-self:center">
+			<a class="nav-link"
+				{% if user.is_lecturer %}
+					href="{% url 'lecturer_home' %}"
+				{% else %}
+					href="{% url 'student_home' %}"
+				{% endif %}>
+				<button class="btn btn-material btn-ripple" style="width:200px">Return to Home Page</button>
+			</a>
+		</div>
 	</div>
 </div>
 {% endif %}
 
 {% if error == "no_course" %}
 <div class="container">
-	<div class="col-sm card" style="width:50%;margin-left:25px; margin-top:25px;padding">
-		<h3 class="card-body text-center">Course does not exist</h3>
-		Try creating a new class or check if the course name entered is correct
-		{% if user.is_lecturer %}
-		<a class="nav-link" href="{% url 'create_course' %}">
-		<div class="card" style="width:50%; padding-left:10px">
-				Create course
-			</div>
-		</a>
-		<a class="nav-link" href="{% url 'lecturer_home' %}">
-		<div class="card" style="width:50%; padding-left:10px">
-				Return to home page
-			</div>
-		</a>
-		{% else %}
-		<a class="nav-link" href="{% url 'student_home' %}">
-		<div class="card" style="width:50%; padding-left:10px">
-				Return to home page
-			</div>
-		</a>
-		{% endif %}
+	<div class="card" style="margin-top:25px;">
+		<h3 class="card-body text-center custom-card-title">Course Does Not Exist</h3>
+		<hr />
+		<h5 class="card-body text-left" id="title">
+			Check if the course name entered is correct
+			{% if user.is_lecturer %}
+			or try creating a new course:
+			{% endif %}
+		</h5>
+		<div class="card-body" style="align-self:center; margin-top;0">
+			{% if user.is_lecturer %}
+			<a class="nav-link" href="{% url 'create_course' %}">
+				<button class="btn btn-material btn-ripple" style="width:200px">Create a Course</button>
+			</a>
+			{% endif %}
+			<a class="nav-link"
+				{% if user.is_lecturer %}
+					href="{% url 'lecturer_home' %}"
+				{% else %}
+					href="{% url 'student_home' %}"
+				{% endif %}>
+				<button class="btn btn-material btn-ripple" style="width:200px">Return to Home Page</button>
+			</a>
+		</div>
 	</div>
 </div>
 {% endif %}
 
 {% if error == "no_student" %}
 <div class="container">
-	<div class="col-sm card" style="width:50%;margin-left:25px; margin-top:25px;padding">
-		<h3 class="card-body text-center">Student does not exist</h3>
-		Check if the student number entered is correct
-		<a class="nav-link" href="{% url 'lecturer_home' %}">
-		<div class="card" style="width:50%; padding-left:10px">
-				Return to home page
-			</div>
-		</a>
+	<div class="card" style="margin-top:25px;">
+		<h3 class="card-body text-center custom-card-title">Student Does Not Exist</h3>
+		<hr />
+		<h5 class="card-body text-left" id="title">
+			Check if the student number entered is correct
+		</h5>
+
+		<div class="card-body" style="align-self:center">
+			<a class="nav-link" href="{% url 'lecturer_home' %}">
+				<button class="btn btn-material btn-ripple" style="width:200px">Return to Home Page</button>
+			</a>
+		</div>
 	</div>
 </div>
 {% endif %}

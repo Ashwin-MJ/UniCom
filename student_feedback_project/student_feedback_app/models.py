@@ -6,6 +6,11 @@ from django.template.defaultfilters import slugify
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
+from django.core.mail import send_mail
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import get_template
+from django.template import Context
+
 import datetime
 import random, string
 
@@ -16,12 +21,15 @@ class User(AbstractUser):
     slug = models.SlugField(max_length=50)
     profile_picture = models.ImageField(upload_to='profile_pictures', default="profile_pictures/default_image.jpg", blank=True)
     id_number = models.CharField(max_length=20,  unique=True)
+    username = models.CharField(max_length=25,  unique=True)
     is_student = models.BooleanField(default=False)
     is_lecturer = models.BooleanField(default=False)
+    
+    is_active = models.BooleanField(default=False)
 
     USERNAME_FIELD = 'id_number'
     REQUIRED_FIELDS = ['username', 'email']
-    
+
     def save(self, *args, **kwargs):
         self.slug = slugify(self.username)
         super(User, self).save(*args, **kwargs)
@@ -32,7 +40,17 @@ def update_user_profile(sender, instance, created, **kwargs):
         if instance.is_lecturer:
             LecturerProfile.objects.create(lecturer=instance)
             instance.lecturerprofile.save()
+            emails = []
+            superusers = User.objects.filter(is_superuser=True)
+            for superuser in superusers:
+                emails.append(superuser.email)            
+            
+            message = 'Lecturer ' + instance.username + ' has registered and needs approval. Approve profiles @ feedbackapp.pythonanywhere.com/admin'
+            
+            send_mail('Lecturer needs approval',message,'lect.acc.unicom@gmail.com',emails)
+            
         else :
+            instance.is_active = True
             instance.is_student = True
             instance.save()
             StudentProfile.objects.create(student=instance)
@@ -43,6 +61,44 @@ class StudentProfile(models.Model):
     student = models.OneToOneField(User, on_delete=models.CASCADE,primary_key=True)
     score = models.IntegerField(default=0)
     courses = models.ManyToManyField('Course')
+
+    def get_score_for_course(self,course):
+        score = 0
+        for fb in self.feedback_set.all():
+            if fb.which_course.subject == course:
+                score += fb.points
+        return score
+
+    def get_top_attributes(self):
+        scores = {}
+        for fb in self.feedback_set.all():
+            if fb.category not in scores:
+                scores[fb.category] = fb.points
+            else:
+                scores[fb.category] += fb.points
+
+        scores = [(k, scores[k]) for k in sorted(scores, key=scores.get, reverse=True)]
+        return scores
+
+    def get_weaknesses(self):
+        scores = self.get_top_attributes()
+        scores.reverse()
+        return scores
+
+    def get_fb_for_course(self,course):
+        fb_for_course = []
+        for fb in self.feedback_set.all():
+            if fb.which_course.subject == course:
+                fb_for_course += [fb]
+
+        return fb_for_course
+
+    def get_courses_with_score(self):
+        courses_with_score = {}
+        for course in self.courses.all():
+            courses_with_score[course] = self.get_score_for_course(course.subject)
+
+        return courses_with_score
 
 class Course(models.Model):
     subject = models.CharField("Subject", max_length=40,)
@@ -70,12 +126,35 @@ class Course(models.Model):
 
         return cT
 
+    def get_students_with_score(self):
+        temp_dict = {}
+        for each_stud in self.students.all():
+            temp_dict[each_stud] = each_stud.get_score_for_course(self.subject)
+
+        return temp_dict
+
+    def get_leaderboard(self):
+        temp_dict = self.get_students_with_score()
+        # The dictionary stored in the retrieved dictionary has
+        # each student as key and their score for this course as value
+        # To get leaderboard, simply sort this dictionary by value and reverse
+        temp_dict = [(k, temp_dict[k]) for k in sorted(temp_dict, key=temp_dict.get, reverse=True)]
+        # Note that context_dict['sorted_students'] is saved as an array with format:
+        # [(<StudentProfile: StudentProfile object (X)>, Y),
+        #   (<StudentProfile: StudentProfile object (X)>, Y),
+        #   ...
+        #   ]
+        # This is important in the template
+        return temp_dict
+
+
 class LecturerProfile(models.Model):
     lecturer = models.OneToOneField(User, on_delete=models.CASCADE,primary_key=True)
     # Can access lecturers courses using LecturerProfile.course_set.all()
     # Can access lecturers feedback using LectureProfile.feedback_set.all()
 
 class Feedback(models.Model):
+    date_given = models.DateTimeField(default=timezone.now)
     feedback_id = models.IntegerField(primary_key=True,default=0)
     pre_defined_message = models.ForeignKey('Message',on_delete=models.CASCADE,null=True,blank=True) # Selected from a pre defined list depending on selected category
     points = models.IntegerField(default=0)
@@ -105,3 +184,41 @@ class Message(models.Model):
 
     def __str__(self):
         return self.text
+
+class Feedback_with_category(models.Model):
+    categoryName = models.CharField(max_length=200,default="No category")
+    feedback_id = models.IntegerField(primary_key=True,default=0)
+    class Meta:
+        managed = False
+        db_table = "student_feedback_app_feedback_with_category"
+
+class Feedback_with_student(models.Model):
+    studentName = models.CharField(max_length=200,default="No student")
+    student_id = models.IntegerField(primary_key=True,default=0)
+    class Meta:
+        managed = False
+        db_table = "student_feedback_app_feedback_with_student"
+
+class Feedback_with_lecturer(models.Model):
+    lecturerName = models.CharField(max_length=200,default="No lecturer")
+    lecturer_id = models.IntegerField(primary_key=True,default=0)
+    class Meta:
+        managed = False
+        db_table = "student_feedback_app_feedback_with_lecturer"
+
+class Feedback_with_course(models.Model):
+    courseName = models.CharField(max_length=200,default="No course")
+    date_given = models.DateTimeField(default=timezone.now)
+    feedback_id = models.IntegerField(primary_key=True,default=0)
+    pre_defined_message_id = models.CharField(max_length=200,default="No message")
+    points = models.IntegerField(default=0)
+    lecturer = models.ForeignKey('LecturerProfile', on_delete=models.CASCADE, null=True, blank=True)
+    student = models.ForeignKey('StudentProfile', on_delete=models.CASCADE, null=True, blank=True)
+    which_course = models.ForeignKey('Course', on_delete=models.CASCADE, null=True, blank=True)
+    datetime_given = models.DateTimeField(default=timezone.now, blank=False)
+    optional_message = models.CharField(max_length=200,default="")
+    category = models.ForeignKey('Category', on_delete=models.CASCADE, null=True, blank=True)
+    class Meta:
+        managed = False
+        db_table = "student_feedback_app_feedback_with_course"
+

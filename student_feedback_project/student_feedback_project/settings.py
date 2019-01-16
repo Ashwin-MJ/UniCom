@@ -31,6 +31,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
 'studentfeedbackapp.herokuapp.com',
+'feedbackapp.pythonanywhere.com',
 'localhost',
 '127.0.0.1',
 ]
@@ -40,7 +41,7 @@ ALLOWED_HOSTS = [
 
 INSTALLED_APPS = [
     'dal', # Django Autocomplete Light
-    'dal_select2', 
+    'dal_select2',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -48,6 +49,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'student_feedback_app',
+    'widget_tweaks',
 ]
 
 MIDDLEWARE = [
@@ -137,3 +139,13 @@ MEDIA_URL = '/media/'
 
 
 AUTH_USER_MODEL = "student_feedback_app.User"
+
+
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_HOST_USER = "lect.acc.unicom@gmail.com"
+EMAIL_HOST_PASSWORD = '1234567890poiuytrewq'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+ADMINS = [('Default email', 'lect.acc.unicom@gmail.com'),]
+

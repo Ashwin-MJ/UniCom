@@ -1,0 +1,98 @@
+#title {
+  font-family: 'Patrick Hand SC', cursive;
+  font-size: 150%;
+}
+
+.custom-navbar-header {
+  background-color: teal!important;
+}
+
+body{
+  font-family: "Alegreya Sans", sans-serif;
+}
+
+.container {
+    padding: 2px 16px;
+}
+
+.text-box{
+  display: flex;
+  flex-flow: column wrap;
+  align-items: center;
+}
+
+#dropdownMenuButton{
+  color: blue;
+  background-color: inherit;
+}
+
+.scroll {
+  max-height: 80vh;
+  overflow-y: scroll;
+  padding-top:0px;
+}
+
+.scroll-bg {
+  margin-top: 25px;
+  margin-bottom:25px!important;
+  max-height:80vh;
+}
+
+.recent {
+  background-color: teal!important;
+}
+
+.recent b {
+  color: white;
+}
+
+.recent div {
+  color: white;
+}
+.recent blockquote footer {
+  color: white;
+}
+
+.recent footer:before {
+  content: '\2015';
+}
+.recent .quote:after {
+  content: '\201D';
+  position: absolute;
+  top: 0.2em;
+  right: 0;
+  font-size: 8em;
+  font-style: italic;
+  color: white;
+}
+
+.recent .quote {
+  color: white;
+}
+
+.recent .right-number {
+  width: 30%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 400%;
+  padding-right: 3%;
+  margin-bottom: 1rem;
+  font-family: 'Dosis', sans-serif;
+  color: white;
+}
+
+.picture {
+  border-radius: 50%;
+  max-width: 50px;
+  border: 1px solid teal;
+}
+
+hr {
+  display:block;
+  border:none;
+  color:white;
+  height:1px;
+  background:black;
+  background: -webkit-gradient(radial, 50% 50%, 0, 50% 50%, 175, from(#000), to(#fff));
+}
