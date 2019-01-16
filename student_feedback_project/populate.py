@@ -6,6 +6,7 @@ django.setup()
 from student_feedback_app.models import StudentProfile, Course, LecturerProfile, Feedback, Category, Message
 from django.template.defaultfilters import slugify
 from django.contrib.auth import get_user_model
+from django.db import connection
 
 User = get_user_model()
 
