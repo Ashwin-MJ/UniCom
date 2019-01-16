@@ -6,7 +6,7 @@ function fetchStud(fb_keep, sort_param, keep_param){
 	httpRequest.onreadystatechange = function(){
 		if (this.readyState == 4 && this.status == 200) {
 			var students = JSON.parse(this.responseText);	
-			sort(fb_keep, students, sort_param, keep_param);
+			fetchLect(fb_keep, students, sort_param, keep_param);
 
 		}
 	};	
@@ -14,7 +14,21 @@ function fetchStud(fb_keep, sort_param, keep_param){
 	httpRequest.send();	
 }
 
-function sort(fb_keep, students, sort_param, keep_param){	
+function fetchLect(fb_keep, students, sort_param, keep_param){
+	const Url = "http://127.0.0.1:8000/Feedback_with_lecturerList/";	
+	var httpRequest = new XMLHttpRequest();
+	httpRequest.onreadystatechange = function(){
+		if (this.readyState == 4 && this.status == 200) {
+			var lecturers = JSON.parse(this.responseText);	
+			sort(fb_keep, students, lecturers, sort_param, keep_param);
+
+		}
+	};	
+	httpRequest.open("GET", Url, true);
+	httpRequest.send();	
+}
+
+function sort(fb_keep, students, lecturers, sort_param, keep_param){	
 	switch(sort_param){
 		case "points":
 			var Url = "http://127.0.0.1:8000/FeedbackSortedByPoints";
@@ -32,15 +46,23 @@ function sort(fb_keep, students, sort_param, keep_param){
 		if (this.readyState == 4 && this.status == 200) {			
 			var sortedFb = JSON.parse(this.responseText);
 			
-			//for every feedback replace the id number given by JSON for student to the name and see if feedback is recent (5mins)
+			//for every feedback replace the id number given by JSON for student and lecturer to the name and see if feedback is recent (5mins)
 			for(var fb of sortedFb){
-				var stud_id = fb["student"];				
-				
+				var stud_id = fb["student"];								
 				for(var stud of students){
 					if(stud["student_id"] == stud_id){
 						fb["student"] = stud["studentName"];
 					}
+				}
+				
+				var lect_id = fb["lecturer"];				
+				
+				for(var lect of lecturers){
+					if(lect["lecturer_id"] == lect_id){
+						fb["lecturer"] = lect["lecturerName"];
+					}
 				}	
+				
 				var fb_date= new Date(fb['datetime_given']);
 				var now_date = new Date();
 				var five_mins = new Date(5*60000);

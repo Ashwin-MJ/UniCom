@@ -121,6 +121,13 @@ class Feedback_with_student(models.Model):
         managed = False
         db_table = "student_feedback_app_feedback_with_student"
 
+class Feedback_with_lecturer(models.Model):
+    lecturerName = models.CharField(max_length=200,default="No lecturer")
+    lecturer_id = models.IntegerField(primary_key=True,default=0)
+    class Meta:
+        managed = False
+        db_table = "student_feedback_app_feedback_with_lecturer"
+
 class Feedback_with_course(models.Model):
     courseName = models.CharField(max_length=200,default="No course")
     date_given = models.DateTimeField(default=timezone.now)

@@ -23,3 +23,8 @@ class Feedback_with_studentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Feedback_with_student
         fields = ('studentName', 'student_id')
+
+class Feedback_with_lecturerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Feedback_with_lecturer
+        fields = ('lecturerName', 'lecturer_id')

@@ -411,6 +411,10 @@ class Feedback_with_studentList(generics.ListAPIView):
     queryset = Feedback_with_student.objects.all()
     serializer_class = Feedback_with_studentSerializer
 
+class Feedback_with_lecturerList(generics.ListAPIView):
+    queryset = Feedback_with_lecturer.objects.all()
+    serializer_class = Feedback_with_lecturerSerializer
+
 
 class MessageAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
