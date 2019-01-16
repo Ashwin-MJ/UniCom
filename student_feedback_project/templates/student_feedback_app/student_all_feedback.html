@@ -17,7 +17,7 @@ Feedback
 
       <div class="card scroll">
         <h3 class="card-body text-center custom-card-title">Recent Feedback</h3>
-        <div class="card-body">
+        <div class="card-body" id="fb-list">
           {% for fb in feedback %}
           {% if fb.is_recent %}
           <div class="card recent custom-card">
@@ -46,6 +46,11 @@ Feedback
             </div>
 
             {% endfor %}
+        </div>
+		<div class="button" style="padding-bottom:0px; padding-top:10px;">
+          <button onclick="fetchStud('{{ student.student.username }}', 'points', 'student')" type="button" class="btn btn-primary">Sort by points</button>
+          <button onclick="fetchStud('{{ student.student.username }}', 'date', 'student')" type="button" class="btn btn-primary">Sort by date</button>
+          <button onclick="fetchStud('{{ student.student.username }}', 'course', 'student')" type="button" class="btn btn-primary">Sort by course</button>
         </div>
       </div>
 
