@@ -212,9 +212,25 @@ def add_individual_feedback(request,subject_slug,student_number):
         return render(request,'student_feedback_app/error_page.html', context_dict)
     context_dict = {}
     try:
+        students_string = request.COOKIES.get("students")
+        print(students_string)
+        try:
+            students_list = json.loads(students_string)
+        except:
+            print("in exception")
+            students_list = students_string
+        # Remove current student from cookie
+        print("got students_list")
+        students_list = students_list[1:]
+        print("removed current stud")
+        request.COOKIES["students"] = students_list
+        print(request.COOKIES.get("students"))
+
+
         lect = LecturerProfile.objects.get(lecturer=request.user)
         stud_user = User.objects.get(id_number=student_number)
         stud = StudentProfile.objects.get(student=stud_user)
+
         fb = stud.feedback_set.all()
         context_dict['lecturer'] = lect
         context_dict['student'] = stud
@@ -235,13 +251,28 @@ def add_individual_feedback(request,subject_slug,student_number):
                 new_fb.which_course = course
                 new_fb.datetime_given = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 stud.save()
+                new_fb.pk = None
                 new_fb.save()
+
+                rem_students = request.COOKIES.get("students")
+
+                print(rem_students)
+                print("Here")
+                # Check if there are more students to provide individual fb to
+                if(len(rem_students) >= 1):
+                    print("There are more students")
+                    next_stud = rem_students[0]
+                    next_page = "http://127.0.0.1:8000/lecturer/" + course.subject_slug + "/" + next_stud + "/add-individual-feedback/?"
+                    return HttpResponseRedirect(next_page)
+                else:
+                    print("No more students")
                 return my_provided_feedback(request)
             else:
                 print(form.errors)
         else:
             form = FeedbackForm()
         context_dict['form'] = form
+        request.COOKIES["students"] = ""
         return render(request,'student_feedback_app/add_individual_feedback.html',context_dict)
     except:
         context_dict['student'] = None
@@ -257,6 +288,7 @@ def add_group_feedback(request,subject_slug):
     context_dict = {}
 
     try:
+        print(request.COOKIES)
         students_string = request.COOKIES.get("students")
 
         students_list = json.loads(students_string)

@@ -69,7 +69,7 @@ Add Feedback
         {% endfor %}
 
         <div class="button">
-          <input class="btn btn-material btn-ripple" type="submit" name="submit" value="Submit Feedback" />
+          <input id="submit-fb-form" class="btn btn-material btn-ripple" type="submit" name="submit" value="Submit Feedback" />
         </div>
       </form>
 
@@ -126,6 +126,7 @@ Add Feedback
 
 {% block footer %}
 <script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
+<script type="text/javascript" src="{% static 'javascript/next_student.js' %}" ></script>
 
 {{ form.media }}
 {% endblock %}

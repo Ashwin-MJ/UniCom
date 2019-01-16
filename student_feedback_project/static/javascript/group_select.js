@@ -30,14 +30,15 @@ $('#individual-feedback-form').submit(function(){
       res.push($(this).attr('id'))
     }
   })
+
   var course_slug = document.getElementsByClassName("container")[1].id;
 
   var jsonText = JSON.stringify(res);
-  console.log(jsonText);
-  var cookieText = "students=" + jsonText + ';'
+
+  var cookieText = "students=" + jsonText + ';path=/lecturer/'+course_slug + "/";
   document.cookie = cookieText;
   var act = "/lecturer/" + course_slug + "/" + res[0] + "/add-individual-feedback/";
-  console.log(act)
+
   document.getElementById("individual-feedback-form").setAttribute("action",act);
   return true;
 });
