@@ -38,6 +38,7 @@ class RegisterForm(UserCreationForm):
     is_lecturer = forms.ChoiceField(choices=[(1,'Lecturer'),
          (0,'Student')], widget=forms.RadioSelect(), label='Sign up as:')
     is_student = forms.BooleanField(widget=forms.HiddenInput(), required=False)
+    username = forms.CharField(label='Full Name:', required=False)
 
     class Meta:
         model = User
