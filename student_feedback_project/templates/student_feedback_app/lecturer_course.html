@@ -11,7 +11,7 @@
 
 
 {% block body_block %}
-<div class="container">
+<div class="container" id="{{ course.subject_slug }}">
   <div class="card custom-card">
     <h3 class="card-body text-center custom-card-title token" style="padding:10px;">
       Course Token: <b>{{ course.course_token}}</b>
@@ -45,8 +45,13 @@
         </div>
         <hr />
         <form id="group-feedback-form" action="{% url 'add_group_feedback' course.subject_slug %}" id="group-feedback-form">
-          <div class="button" style="padding-bottom:10px">
+          <div class="button">
               <button class="btn btn-material btn-ripple" type="submit">Add Group Feedback</button>
+          </div>
+          </form>
+        <form id="individual-feedback-form" action="{% url 'add_individual_feedback' course.subject_slug 1402789 %}" id="individual-feedback-form">
+          <div class="button">
+              <button class="btn btn-material btn-ripple" type="submit">Add Individual Feedback</button>
           </div>
           </form>
       </div>

@@ -17,8 +17,8 @@ Currently viewing <br />
         <h3 class="card-body text-center custom-card-title">{{ student.student.username }}'s Courses</h3>
         <hr />
         <div class="card-body scroll">
-          {% for course in courses %}
-              <a style="text-decoration: none; color: black" href="{% url 'lecturer_course' course.subject_slug%}">
+          {% for course,score in courses.items %}
+              <a style="text-decoration: none; color: black" href="{% url 'student_course' course.subject_slug%}">
                 <div class="card custom-card">
                   <b class="card-sub-heading">{{ course.subject }}</b>
 
@@ -28,14 +28,14 @@ Currently viewing <br />
                         <div class="course-info">
                           {{ course.course_description }}<br />
                           <footer>
-                            Add a footer here?
+                            {{course.lecturer.lecturer.username}}
                             </footer>
                             <br />
                           </div>
                       </div>
                     </div>
                     <div class="column right-number">
-                      {{ course.students.all|length }}
+                      {{ score }}
                       </div>
                     </div>
                   </div>
