@@ -15,9 +15,10 @@ Feedback
 <div class="container">
     <div class="card-deck">
 
-      <div class="card scroll">
+      <div class="card scroll-bg">
         <h3 class="card-body text-center custom-card-title">Recent Feedback</h3>
-        <div class="card-body" id="fb-list">
+        <hr />
+        <div class="card-body scroll" id="fb-list">
           {% for fb in feedback %}
           {% if fb.is_recent %}
           <div class="card recent custom-card">
@@ -54,24 +55,43 @@ Feedback
         </div>
       </div>
 
-
-        <div class="card scroll">
+      <div class="card scroll-bg">
         <h3 class="card-body text-center custom-card-title">My Top Attributes</h3>
-            <div class="card-body">
-                <div class="card custom-card">
-                    Functionality to be made
+        <hr />
+        <div class="card-body" style="height:800px">
+          {% for category,score in top_attributes %}
+          <div class="card custom-card">
+            <div class="row">
+              <div class="column left-category">
+                <b class="card-sub-heading">{{ category.name }}</b>
                 </div>
-           </div>
+              <div class="column right-number-category">
+                  {{ score }}
+                </div>
+              </div>
+            </div>
+            {% endfor %}
         </div>
+      </div>
 
-        <div class="card scroll">
-        <h3 class="card-body text-center custom-card-title">Areas To Improve</h3>
-            <div class="card-body">
-                <div class="card custom-card">
-                    Functionality to be made
+      <div class="card scroll-bg">
+        <h3 class="card-body text-center custom-card-title">Areas to Improve</h3>
+        <hr />
+        <div class="card-body" style="height:800px">
+          {% for category,score in to_improve %}
+          <div class="card custom-card">
+            <div class="row">
+              <div class="column left-category">
+                <b class="card-sub-heading">{{ category.name }}</b>
                 </div>
-           </div>
+              <div class="column right-number-category">
+                  {{ score }}
+                </div>
+              </div>
+            </div>
+            {% endfor %}
         </div>
+      </div>
 
     </div>
 </div>

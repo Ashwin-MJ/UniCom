@@ -17,14 +17,10 @@ Courses
 <div class="container">
   <div class="card-deck">
 
-    <div class="card scroll">
+    <div class="card scroll-bg">
       <h3 class="card-body text-center custom-card-title">My Courses</h3>
-      <form id="group-feedback-form" action="{% url 'create_course'  %}">
-        <div class="button" style="padding-bottom:0px; padding-top:10px;">
-            <button class="btn btn-material btn-ripple" type="submit">Create Course</button>
-        </div>
-      </form>
-      <div class="card-body">
+      <hr />
+      <div class="card-body scroll">
         {% for course in courses %}
             <a style="text-decoration: none; color: black" href="{% url 'lecturer_course' course.subject_slug%}">
               <div class="card custom-card">
@@ -50,11 +46,18 @@ Courses
             </a>
           {% endfor %}
       </div>
+      <hr />
+      <form id="group-feedback-form" action="{% url 'create_course'  %}">
+        <div class="button" style="padding-bottom:10px; padding-top:10px;">
+            <button class="btn btn-material btn-ripple" type="submit">Create Course</button>
+        </div>
+      </form>
     </div>
 
-    <div class="card scroll">
+    <div class="card scroll-bg">
       <h3 class="card-body text-center custom-card-title">Recent Feedback</h3>
-      <div class="card-body" id="fb-list">
+      <hr />
+      <div class="card-body scroll" id="fb-list">
         {% for fb in feedback %}
         {% if fb.is_recent %}
         <div class="card recent custom-card">
@@ -91,9 +94,10 @@ Courses
         </div>
     </div>
 
-  <div class="card scroll">
+  <div class="card scroll-bg">
       <h3 class="card-body text-center custom-card-title">My Top Students</h3>
-      <div class="card-body" style="padding-top:0px">
+
+      <div class="card-body">
         <p class="card-text"></p>
         Functionality to be made
       </div>

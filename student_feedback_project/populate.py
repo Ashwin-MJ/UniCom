@@ -5,12 +5,9 @@ import django
 django.setup()
 from student_feedback_app.models import StudentProfile, Course, LecturerProfile, Feedback, Category, Message
 from django.template.defaultfilters import slugify
-from django.contrib.auth.models import User
-from django.utils import timezone
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
-from django.db import connection
 
 
 def populate():
@@ -28,53 +25,53 @@ def populate():
 		]
 
 	students = [
-		{"name": "Link",
+		{"name": "Sarah Fields",
 		"student_number": "1402789",
-		"password": "Zelda",
-		"email": "Link@sword.hy",
+		"password": "password",
+		"email": "sarah_fields@student.gla.ac.uk",
 		"score":0,
 		"courses":["MAT1Q", "POL01"]
 		},
-		{"name": "Harry Potter",
+		{"name": "James Smith",
 		"student_number": "1402001",
-		"password": "Ron",
-		"email": "Harry@quidditch.hw",
+		"password": "password",
+		"email": "james_smith@student.gla.ac.uk",
 		"score":0,
 		"courses":["MAT1Q", "ARH01"]
 		},
-		{"name": "Donkey Kong",
+		{"name": "Sophie Clover",
 		"student_number": "1403389",
-		"password": "Diddy",
-		"email": "Donkey@kong.jng",
+		"password": "password",
+		"email": "sophie_clover@student.gla.ac.uk",
 		"score":0,
 		"courses":["MAT1Q"]
 		},
-		{"name": "Sheik",
+		{"name": "Jake White",
 		"student_number": "002489",
-		"password": "teleport",
-		"email": "Sheik@hookshot.hy",
+		"password": "password",
+		"email": "jake_white@student.gla.ac.uk",
 		"score":0,
 		"courses":["ARH01"]
 		},
-		{"name": "Navi",
+		{"name": "Jane Mitchell",
 		"student_number": "1402781",
-		"password": "Listen!",
-		"email": "Navi@listen.hy",
+		"password": "password",
+		"email": "jane_mitchell@student.gla.ac.uk",
 		"score":0,
 		"courses":["ARH01", "POL01"]
 		}]
 
 	lecturers = [
-		{"name": "Ganondorf",
+		{"name": "Prof. Roy",
 		"lecturer_number": "00001",
-		"password": "Zelda",
-		"email": "Ganon@power.hy",
+		"password": "password",
+		"email": "scott_roy@glasgow.ac.uk",
 		"courses":["ARH01", "POL01"]
 		},
-		{"name": "Voldemort",
+		{"name": "Dr. Cossar",
 		"lecturer_number": "00002",
-		"password": "Riddle",
-		"email": "Voldy@death.hw",
+		"password": "password",
+		"email": "callum_cossar@glasgow.ac.uk",
 		"courses":["MAT1Q"]
 		}]
 
@@ -151,13 +148,14 @@ def populate():
 
 	for someFeedback in feedback:
 		feedback = add_feedback(someFeedback.get('feedback_id'),someFeedback.get('category'),someFeedback.get('points'),
-                        someFeedback.get('lecturer'),someFeedback.get('student'),someFeedback.get('course_code'),
-						someFeedback.get('pre_defined_message'), someFeedback.get('optional_message'))
+								someFeedback.get('lecturer'),someFeedback.get('student'),someFeedback.get('course_code'),
+								someFeedback.get('pre_defined_message'), someFeedback.get('optional_message'))
 
 	create_view_fb_cat()
 	create_view_fb_stud()
 	create_view_fb_course()
 	create_view_fb_lect()
+
 
 	print("Courses Added")
 	for each_course in Course.objects.all():
@@ -254,13 +252,11 @@ def create_view_fb_course():
 #for now you have to run populate.py after deleting the database so the views only generate once
 
 
-
 # Helper function to add a new course
 def add_course(subject,course_code, course_description):
 	course = Course.objects.get_or_create(subject=subject,course_code=course_code, course_description=course_description)[0]
 	course.save()
 	return course
-
 
 # Helper function to add a new student
 def add_student(name,student_number,email,password,score,courses):
@@ -292,7 +288,6 @@ def add_lecturer(name,lecturer_number,password,email,courses):
 	lecturer.set_password(password)
 	lecturer.id_number = lecturer_number
 	lecturer.is_lecturer = True
-	lecturer.is_student = False
 	lecturer.save()
 
 	lecturer_prof = LecturerProfile.objects.get_or_create(lecturer=lecturer)[0]

@@ -18,6 +18,8 @@ class User(AbstractUser):
     id_number = models.CharField(max_length=20,  unique=True)
     is_student = models.BooleanField(default=False)
     is_lecturer = models.BooleanField(default=False)
+    
+    is_active = models.BooleanField(default=False)
 
     USERNAME_FIELD = 'id_number'
     REQUIRED_FIELDS = ['username', 'email']
@@ -33,6 +35,7 @@ def update_user_profile(sender, instance, created, **kwargs):
             LecturerProfile.objects.create(lecturer=instance)
             instance.lecturerprofile.save()
         else :
+            instance.is_active = True
             instance.is_student = True
             instance.save()
             StudentProfile.objects.create(student=instance)
@@ -43,6 +46,44 @@ class StudentProfile(models.Model):
     student = models.OneToOneField(User, on_delete=models.CASCADE,primary_key=True)
     score = models.IntegerField(default=0)
     courses = models.ManyToManyField('Course')
+
+    def get_score_for_course(self,course):
+        score = 0
+        for fb in self.feedback_set.all():
+            if fb.which_course.subject == course:
+                score += fb.points
+        return score
+
+    def get_top_attributes(self):
+        scores = {}
+        for fb in self.feedback_set.all():
+            if fb.category not in scores:
+                scores[fb.category] = fb.points
+            else:
+                scores[fb.category] += fb.points
+
+        scores = [(k, scores[k]) for k in sorted(scores, key=scores.get, reverse=True)]
+        return scores
+
+    def get_weaknesses(self):
+        scores = self.get_top_attributes()
+        scores.reverse()
+        return scores
+
+    def get_fb_for_course(self,course):
+        fb_for_course = []
+        for fb in self.feedback_set.all():
+            if fb.which_course.subject == course:
+                fb_for_course += [fb]
+
+        return fb_for_course
+
+    def get_courses_with_score(self):
+        courses_with_score = {}
+        for course in self.courses.all():
+            courses_with_score[course] = self.get_score_for_course(course.subject)
+
+        return courses_with_score
 
 class Course(models.Model):
     subject = models.CharField("Subject", max_length=40,)
@@ -69,6 +110,28 @@ class Course(models.Model):
                 cT = self.token_gen()
 
         return cT
+
+    def get_students_with_score(self):
+        temp_dict = {}
+        for each_stud in self.students.all():
+            temp_dict[each_stud] = each_stud.get_score_for_course(self.subject)
+
+        return temp_dict
+
+    def get_leaderboard(self):
+        temp_dict = self.get_students_with_score()
+        # The dictionary stored in the retrieved dictionary has
+        # each student as key and their score for this course as value
+        # To get leaderboard, simply sort this dictionary by value and reverse
+        temp_dict = [(k, temp_dict[k]) for k in sorted(temp_dict, key=temp_dict.get, reverse=True)]
+        # Note that context_dict['sorted_students'] is saved as an array with format:
+        # [(<StudentProfile: StudentProfile object (X)>, Y),
+        #   (<StudentProfile: StudentProfile object (X)>, Y),
+        #   ...
+        #   ]
+        # This is important in the template
+        return temp_dict
+
 
 class LecturerProfile(models.Model):
     lecturer = models.OneToOneField(User, on_delete=models.CASCADE,primary_key=True)

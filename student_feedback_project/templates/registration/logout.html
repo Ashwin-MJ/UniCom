@@ -9,20 +9,20 @@ Logged Out
 {% endblock %}
 
 {% block body_block %}
-<div>
-  <form id="login_form" method="post" action="">
-    {% csrf_token %}
-
-    <div class="container">
-      <div class="col-sm card" style="width:50%; margin-left:25px; margin-top:25px;">
-        <h3 class="card-body text-center">Logged Out</h3>
-        You are now logged out.
-        <a class="nav-link" href="{% url 'auth_login' %}">
-    		<div class="card" style="width:50%; padding-left:10px">
-    				Login
-    			</div>
-    		</a>
+<div class="container">
+  <div class="card" style="margin-top:25px;">
+    <h3 class="card-body text-center custom-card-title">Logged Out</h3>
+    <hr />
+    <h5 class="card-body text-left" id="title">
+      You are now logged out.
+    </h5>
+    <div class="card-body" style="align-self:center">
+			<a class="nav-link" href="{% url 'auth_login' %}">
+        <button class="btn btn-material btn-ripple" style="width:200px">Login</button>
+			</a>
+			<a class="nav-link" href="{% url 'registration_register' %}">
+      	<button class="btn btn-material btn-ripple" style="width:200px">Register</button>
+			</a>
     </div>
-  </form>
 </div>
 {% endblock %}

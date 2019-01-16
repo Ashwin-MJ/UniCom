@@ -13,8 +13,9 @@
 <div class="container">
   <div class="card-deck">
 
-    <div class="card" style="width:40%;margin-top:25px;">
+    <div class="card scroll-bg" style="margin-top:25px;">
       <h3 class="card-body text-center custom-card-title">Course Info</h3>
+      <hr />
       <div class="card-body">
           <div class="card card-padding custom-card">
               <b class="custom-card-title">Lecturer:</b>
@@ -24,19 +25,26 @@
               <b class="custom-card-title">Course Description:</b>
               <em>{{course.course_description }}</em>
           </div>
-          <div class="card card-padding custom-card">
-              <b class="custom-card-title">Current Score: </b>
-              {{stud.score}}
-          </div>
+          <div class="card custom-card">
+            <div class="row">
+              <div class="column left-category">
+                <b class="custom-card-title">Current Score:</b>
+                </div>
+              <div class="column right-number" style="margin-bottom:0">
+                  {{ score }}
+                </div>
+              </div>
+            </div>
       </div>
     </div>
 
-    <div class="card scroll" style="width:40%">
+    <div class="card scroll-bg">
       <h3 class="card-body text-center custom-card-title">Recent Feedback</h3>
-      <div class="card-body" id="fb-list">
+      <hr />
+      <div class="card-body scroll" id="fb-list">
         {% for fb in feedback %}
         {% if fb.is_recent %}
-        <div class="card custom-card recent">
+        <div class="card recent custom-card">
         {% else %}
         <div class="card custom-card">
         {% endif %}
@@ -49,7 +57,7 @@
                   {% if fb.optional_message %}
                   <em>"{{ fb.optional_message }}"</em>
                   {% endif %}
-                  <footer>{{fb.lecturer.lecturer.username}}</footer>
+                  <footer>{{fb.student.student.username}}</footer>
                 </blockquote>
               </div>
               Course:<em> {{fb.which_course.subject}}</em><br />
@@ -60,6 +68,7 @@
               </div>
             </div>
           </div>
+
           {% endfor %}
       </div>
 	  <div class="button" style="padding-bottom:0px; padding-top:10px;">
@@ -69,13 +78,32 @@
       </div>
     </div>
 
-    <div class="card" style="width:40%; margin-left:25px; margin-top:25px;">
+    <div class="card scroll-bg">
       <h3 class="card-body text-center custom-card-title">Leaderboard</h3>
-      <div class="card-body text-center">
-        <p class="card-text">This will show the top X students of the course</p>
+      <hr />
+      <div class="card-body scroll">
+        {% for stud,score in sorted_students %}
+        <div class="card custom-card">
+          <div class="row">
+            <div class="column left">
+              <b class="card-sub-heading">{{ stud.student.username }}</b>
+              <div class="card-sub-heading">
+                {{ score }}
+                </div>
+              </div>
+            <div class="column right">
+              <a href="{% url 'lecturer_view_student' stud.student.id_number%}">
+                <img class="picture" src="{{stud.student.profile_picture.url}}"/>
+              </a>
+              </div>
 
+            </div>
+          </div>
+          <br />
+          {% endfor %}
       </div>
     </div>
+
   </div>
 </div>
 
