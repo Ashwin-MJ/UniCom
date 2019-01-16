@@ -16,6 +16,8 @@ from django.shortcuts import redirect
 from django.contrib.auth import login
 import json
 
+from django.urls import reverse
+
 # Create your views here.
 def index(request):
     return HttpResponseRedirect('/accounts/login/')
@@ -34,7 +36,6 @@ def student_home(request):
                     fbCat[cat] = [[feedback.points, feedback.datetime_given.strftime('%Y-%m-%d %H:%M')]]
                 else:
                     fbCat[cat].append([feedback.points, feedback.datetime_given.strftime('%Y-%m-%d %H:%M')])
-            print(fbCat)
             context_dict['student'] = stud
             context_dict['courses'] = courses
             context_dict['feedback'] = fb
@@ -212,20 +213,23 @@ def add_individual_feedback(request,subject_slug,student_number):
         return render(request,'student_feedback_app/error_page.html', context_dict)
     context_dict = {}
     try:
-        students_string = request.COOKIES.get("students")
-        print(students_string)
+        # Retrieving student string from cookies
+        students_string = request.COOKIES.get("indiv_students")
+
         try:
             students_list = json.loads(students_string)
         except:
-            print("in exception")
+            # Seems to be an error in using json.loads for a list with a single element so do this instead
             students_list = students_string
-        # Remove current student from cookie
-        print("got students_list")
-        students_list = students_list[1:]
-        print("removed current stud")
-        request.COOKIES["students"] = students_list
-        print(request.COOKIES.get("students"))
 
+        # At this point, the variable students_list contains a list of all students still to be given feedback
+        # Remove current student from that list
+
+        # Removing first element of list (current student)
+        students_list = students_list[1:]
+
+        # Saving the above updated list as a cookie 'indiv_students'
+        request.COOKIES["indiv_students"] = students_list
 
         lect = LecturerProfile.objects.get(lecturer=request.user)
         stud_user = User.objects.get(id_number=student_number)
@@ -254,25 +258,30 @@ def add_individual_feedback(request,subject_slug,student_number):
                 new_fb.pk = None
                 new_fb.save()
 
-                rem_students = request.COOKIES.get("students")
+                rem_students = students_list
 
-                print(rem_students)
-                print("Here")
                 # Check if there are more students to provide individual fb to
                 if(len(rem_students) >= 1):
-                    print("There are more students")
                     next_stud = rem_students[0]
-                    next_page = "http://127.0.0.1:8000/lecturer/" + course.subject_slug + "/" + next_stud + "/add-individual-feedback/?"
-                    return HttpResponseRedirect(next_page)
+
+                    # Get response as url for next student
+                    response = HttpResponseRedirect(reverse('add_individual_feedback', args=[course.subject_slug, next_stud]))
+                    # Set the cookie in the response so that the next page has the updated cookie
+                    # i.e the updated list of students
+                    response.set_cookie("indiv_students",json.dumps(rem_students))
+                    return response
                 else:
-                    print("No more students")
-                return my_provided_feedback(request)
+                    # Delete cookies so there are no issues the next time group/individual feedback is given
+                    request.COOKIES["indiv_students"] = ""
+                    request.COOKIES['students'] = ""
+                    response = my_provided_feedback(request)
+                    response.delete_cookie('indiv_students')
+                    return response
             else:
                 print(form.errors)
         else:
             form = FeedbackForm()
         context_dict['form'] = form
-        request.COOKIES["students"] = ""
         return render(request,'student_feedback_app/add_individual_feedback.html',context_dict)
     except:
         context_dict['student'] = None
@@ -288,7 +297,6 @@ def add_group_feedback(request,subject_slug):
     context_dict = {}
 
     try:
-        print(request.COOKIES)
         students_string = request.COOKIES.get("students")
 
         students_list = json.loads(students_string)

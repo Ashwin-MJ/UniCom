@@ -35,7 +35,7 @@ $('#individual-feedback-form').submit(function(){
 
   var jsonText = JSON.stringify(res);
 
-  var cookieText = "students=" + jsonText + ';path=/lecturer/'+course_slug + "/";
+  var cookieText = "indiv_students=" + jsonText + ';path=/lecturer/'+course_slug + "/";
   document.cookie = cookieText;
   var act = "/lecturer/" + course_slug + "/" + res[0] + "/add-individual-feedback/";
 
