@@ -149,6 +149,12 @@ class Course(models.Model):
 
 class LecturerProfile(models.Model):
     lecturer = models.OneToOneField(User, on_delete=models.CASCADE,primary_key=True)
+
+    def get_my_students(self):
+        students = Course.objects.none()
+        for course in self.course_set.all():
+            students = students | course.students.all()
+        return students.distinct()
     # Can access lecturers courses using LecturerProfile.course_set.all()
     # Can access lecturers feedback using LectureProfile.feedback_set.all()
 

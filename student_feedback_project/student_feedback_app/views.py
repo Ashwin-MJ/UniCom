@@ -314,6 +314,7 @@ def lecturer_all_courses(request):
         lect = LecturerProfile.objects.get(lecturer=request.user)
         courses = lect.course_set.all()
         fb = lect.feedback_set.all().order_by('-datetime_given')
+        topStuds = lect.get_my_students().order_by('score')
         context_dict['lecturer'] = lect
         context_dict['courses'] = courses
         context_dict['feedback'] = fb
