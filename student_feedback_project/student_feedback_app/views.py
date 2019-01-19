@@ -440,7 +440,7 @@ def create_course(request):
 
 class CategoryAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
-        if not self.request.user.is_authenticated or not self.request.user.is_lecturer:
+        if not self.request.user.is_authenticated:
             return Category.objects.none()
 
         query_set = Category.objects.all()
@@ -517,7 +517,7 @@ class Feedback_with_lecturerList(generics.ListAPIView):
 
 class MessageAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
-        if not self.request.user.is_authenticated or not self.request.user.is_lecturer:
+        if not self.request.user.is_authenticated:
             return Message.objects.none()
 
         query_set = Message.objects.all()

@@ -31,7 +31,7 @@ def populate():
 		"password": "password",
 		"email": "sarah_fields@student.gla.ac.uk",
 		"score":0,
-		"courses":["MAT1Q", "POL01"]
+		"courses":["MAT1Q", "POL01", "ARH01"]
 		},
 		{"name": "James Smith",
 		"student_number": "1402001",
@@ -102,7 +102,7 @@ def populate():
 		{"feedback_id": 1,
 		"category": "Listening",
 		"points": 4,
-		"lecturer": "00002",
+		"from_user": "00002",
 		"student": "1402789",
 		"course_code" : "MAT1Q",
 		"pre_defined_message": "Good job answering the question today!",
@@ -110,26 +110,34 @@ def populate():
 		{"feedback_id": 2,
 		"category": "Cooperation",
 		"points": 3,
-		"lecturer": "00002",
+		"from_user": "00002",
 		"student": "1402001",
 		"course_code" : "MAT1Q",
 		"pre_defined_message": "Excellent team work today!",
 		"optional_message": "I noticed how you helped Link complete his work."},
 		{"feedback_id": 3,
-		"message": "Great marks in todays quiz!",
 		"category": "Participation",
 		"points": 5,
-		"lecturer": "00001",
+		"from_user": "00001",
 		"student": "1402781",
 		"course_code": "ARH01",
 		"pre_defined_message": "Very good question today. I'm sure you helped a lot of students by asking it!",
-		"optional_message": "If you require further clarification, feel free to drop by my office."}
+		"optional_message": "If you require further clarification, feel free to drop by my office."},
+		{"feedback_id": 4,
+		"category": "Helpfulness",
+		"points": 5,
+		"from_user": "1402789",
+		"student": "002489",
+		"course_code": "ARH01",
+		"pre_defined_message": "Thanks for helping me out in class today!",
+		"optional_message": ""}
 		]
 
 	categories = [
 		{"name" : "Listening"},
 		{"name" : "Cooperation"},
-		{"name" : "Participation"}
+		{"name" : "Participation"},
+		{"name" : "Helpfulness"}
 		]
 
 	saved_messages = [
@@ -148,7 +156,9 @@ def populate():
 		{"category" : "Participation",
 		"text": "You made excellent points in todays discussion!"},
 		{"category" : "Participation",
-		"text": "Very good question today. I'm sure you helped a lot of students by asking it!"}
+		"text": "Very good question today. I'm sure you helped a lot of students by asking it!"},
+		{"category" : "Helpfulness",
+		"text": "Thanks for helping me out in class today!"}
 		]
 
 
@@ -171,7 +181,7 @@ def populate():
 
 	for someFeedback in feedback:
 		feedback = add_feedback(someFeedback.get('feedback_id'),someFeedback.get('category'),someFeedback.get('points'),
-								someFeedback.get('lecturer'),someFeedback.get('student'),someFeedback.get('course_code'),
+								someFeedback.get('from_user'),someFeedback.get('student'),someFeedback.get('course_code'),
 								someFeedback.get('pre_defined_message'), someFeedback.get('optional_message'))
 
 	create_view_fb_cat()
@@ -324,15 +334,15 @@ def add_lecturer(name,lecturer_number,password,email,courses):
 	return lecturer_prof
 
 # Helper function to add feedback
-def add_feedback(feedback_id,category,points,lecturer,student,course_code,pre_defined_message,optional_message):
+def add_feedback(feedback_id,category,points,from_user,student,course_code,pre_defined_message,optional_message):
 	fb = Feedback.objects.get_or_create(feedback_id=feedback_id)[0]
 	fb.category = Category.objects.get(name=category)
 	fb.pre_defined_message = Message.objects.get(text=pre_defined_message)
 	fb.points = points
 	fb.optional_message = optional_message
 	fb.which_course = Course.objects.get(course_code=course_code)
-	lect_user = User.objects.get(id_number=lecturer)
-	fb.from_user = lect_user
+	from_user_model = User.objects.get(id_number=from_user)
+	fb.from_user = from_user_model
 	# fb.lecturer = LecturerProfile.objects.get(lecturer=lect_user)
 	student_user = User.objects.get(id_number=student)
 	stud = StudentProfile.objects.get(student=student_user)
