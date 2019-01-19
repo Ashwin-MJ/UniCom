@@ -354,9 +354,11 @@ def lecturer_all_courses(request):
         lect = LecturerProfile.objects.get(lecturer=request.user)
         courses = lect.course_set.all()
         fb = lect.feedback_set.all().order_by('-datetime_given')
+        top_students = lect.get_my_students().order_by('-score')[:5]
         context_dict['lecturer'] = lect
         context_dict['courses'] = courses
         context_dict['feedback'] = fb
+        context_dict['top_students'] = top_students
     else:
         context_dict['error'] = "auth"
         return render(request,'student_feedback_app/error_page.html', context_dict)

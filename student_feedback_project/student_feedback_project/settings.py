@@ -148,4 +148,3 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
 ADMINS = [('Default email', 'lect.acc.unicom@gmail.com'),]
-
