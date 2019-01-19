@@ -205,7 +205,7 @@ def populate():
 			print("\t\t" + each_course.subject)
 		print("\tFeedback: ")
 		for fb in student.feedback_set.all():
-			print("\t\t" + str(fb.points) + " points for " + fb.category.name + " from " + fb.lecturer.lecturer.username)
+			print("\t\t" + str(fb.points) + " points for " + fb.category.name + " from " + fb.from_user.username)
 
 	print("-----------------")
 	print("Lecturers Added:")
@@ -218,7 +218,7 @@ def populate():
 		for each_course in lecturer.course_set.all():
 			print("\t\t" + each_course.subject)
 		print("\tFeedback Given:")
-		for fb in lecturer.feedback_set.all():
+		for fb in lecturer.lecturer.feedback_set.all():
 			print("\t\t" + str(fb.points) + " points given to " + fb.student.student.username + " for " + fb.category.name)
 
 
@@ -230,7 +230,7 @@ def populate():
 		print("\tOptional Message: " + fb.optional_message)
 		print("\tCategory: " + fb.category.name)
 		print("\tPoints Awarded: " + str(fb.points))
-		print("\tLecturer: " + fb.lecturer.lecturer.username)
+		print("\tFrom User: " + fb.from_user.username)
 		print("\tStudent: " + fb.student.student.username)
 		print("\tCourse: " + fb.which_course.subject)
 
@@ -240,7 +240,7 @@ def populate():
 	print("Feedback_with_student")
 	print("Feedback_with_course")
 	print("Feedback_with_lecturer")
-       
+
 
 # function to add the view feedback with category
 def create_view_fb_cat():
@@ -332,7 +332,8 @@ def add_feedback(feedback_id,category,points,lecturer,student,course_code,pre_de
 	fb.optional_message = optional_message
 	fb.which_course = Course.objects.get(course_code=course_code)
 	lect_user = User.objects.get(id_number=lecturer)
-	fb.lecturer = LecturerProfile.objects.get(lecturer=lect_user)
+	fb.from_user = lect_user
+	# fb.lecturer = LecturerProfile.objects.get(lecturer=lect_user)
 	student_user = User.objects.get(id_number=student)
 	stud = StudentProfile.objects.get(student=student_user)
 	fb.student = stud
