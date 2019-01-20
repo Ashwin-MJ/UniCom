@@ -38,25 +38,29 @@ body{
   max-height:80vh;
 }
 
+.from_stud {
+  background-color: red!important;
+}
+
 .recent {
   background-color: teal!important;
 }
 
-.recent b {
+.text-white b {
   color: white;
 }
 
-.recent div {
+.text-white div {
   color: white;
 }
-.recent blockquote footer {
+.text-white blockquote footer {
   color: white;
 }
 
-.recent footer:before {
+.text-white footer:before {
   content: '\2015';
 }
-.recent .quote:after {
+.text-white .quote:after {
   content: '\201D';
   position: absolute;
   top: 0.2em;
@@ -66,11 +70,11 @@ body{
   color: white;
 }
 
-.recent .quote {
+.text-white .quote {
   color: white;
 }
 
-.recent .right-number {
+.text-white .right-number {
   width: 30%;
   display: flex;
   align-items: center;

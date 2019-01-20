@@ -24,7 +24,7 @@ class User(AbstractUser):
     username = models.CharField(max_length=25,  unique=True)
     is_student = models.BooleanField(default=False)
     is_lecturer = models.BooleanField(default=False)
-    
+
     is_active = models.BooleanField(default=False)
 
     USERNAME_FIELD = 'id_number'
@@ -43,12 +43,12 @@ def update_user_profile(sender, instance, created, **kwargs):
             emails = []
             superusers = User.objects.filter(is_superuser=True)
             for superuser in superusers:
-                emails.append(superuser.email)            
-            
+                emails.append(superuser.email)
+
             message = 'Lecturer ' + instance.username + ' has registered and needs approval. Approve profiles @ feedbackapp.pythonanywhere.com/admin'
-            
+
             send_mail('Lecturer needs approval',message,'lect.acc.unicom@gmail.com',emails)
-            
+
         else :
             instance.is_active = True
             instance.is_student = True
@@ -164,7 +164,7 @@ class Feedback(models.Model):
     feedback_id = models.IntegerField(primary_key=True,default=0)
     pre_defined_message = models.ForeignKey('Message',on_delete=models.CASCADE,null=True,blank=True) # Selected from a pre defined list depending on selected category
     points = models.IntegerField(default=0)
-    lecturer = models.ForeignKey('LecturerProfile', on_delete=models.CASCADE, null=True, blank=True)
+    from_user = models.ForeignKey('User', on_delete=models.CASCADE, null=True, blank=True)
     student = models.ForeignKey('StudentProfile', on_delete=models.CASCADE, null=True, blank=True)
     which_course = models.ForeignKey('Course', on_delete=models.CASCADE, null=True, blank=True)
     datetime_given = models.DateTimeField(default=timezone.now, blank=False)
@@ -173,6 +173,14 @@ class Feedback(models.Model):
 
     def is_recent(self):
         return timezone.now() - self.datetime_given < datetime.timedelta(minutes=5)
+
+    def from_student(self):
+        # Helper function to allow you to identify if a feedback is provided from a student
+        return self.from_user.is_student and not self.from_user.is_lecturer
+
+    def from_lecturer(self):
+        # Helper function to allow you to identify if a feedback is provided from a lecturer
+        return self.from_user.is_lecturer and not self.from_user.is_student
 
 class Category(models.Model):
     name = models.CharField(max_length=20, default="Empty",primary_key=True)
@@ -227,4 +235,3 @@ class Feedback_with_course(models.Model):
     class Meta:
         managed = False
         db_table = "student_feedback_app_feedback_with_course"
-
