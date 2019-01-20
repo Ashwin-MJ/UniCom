@@ -5,7 +5,7 @@ class Feedback_with_courseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Feedback_with_course
         fields = ('courseName', 'date_given', 'feedback_id', 'pre_defined_message_id',
-                  'points', 'lecturer', 'student',
+                  'points', 'from_user', 'student',
                   'which_course', 'datetime_given', 'optional_message',
                   'category')
 
@@ -24,7 +24,7 @@ class Feedback_with_studentSerializer(serializers.ModelSerializer):
         model = Feedback_with_student
         fields = ('studentName', 'student_id')
 
-class Feedback_with_lecturerSerializer(serializers.ModelSerializer):
+class Feedback_with_from_userSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Feedback_with_lecturer
-        fields = ('lecturerName', 'lecturer_id')
+        model = Feedback_with_from_user
+        fields = ('fromUserName', 'from_user_id')

@@ -33,7 +33,7 @@ urlpatterns = [
     re_path(r'^CategoryList/$', views.CategoryList.as_view()),
     re_path(r'^Feedback_with_categoryList/$', views.Feedback_with_categoryList.as_view()),
     re_path(r'^Feedback_with_studentList/$', views.Feedback_with_studentList.as_view()),
-    re_path(r'^Feedback_with_lecturerList/$', views.Feedback_with_lecturerList.as_view()),
+    re_path(r'^Feedback_with_from_userList/$', views.Feedback_with_from_userList.as_view()),
     re_path(r'^lecturer/view-student/(?P<student_number>[\w\-]+)/$', views.lecturer_view_student, name='lecturer_view_student'),
     re_path(r'^category-autocomplete/$', CategoryAutocomplete.as_view(model=Category,create_field='name'), name='category_autocomplete'),
     re_path(r'^message-autocomplete/$', MessageAutocomplete.as_view(model=Message,create_field='text'), name='message_autocomplete'),
