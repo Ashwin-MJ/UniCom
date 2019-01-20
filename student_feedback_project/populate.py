@@ -187,7 +187,7 @@ def populate():
 	create_view_fb_cat()
 	create_view_fb_stud()
 	create_view_fb_course()
-	create_view_fb_lect()
+	create_view_fb_from_user()
 
 
 	print("Courses Added")
@@ -249,7 +249,7 @@ def populate():
 	print("Feedback_with_category")
 	print("Feedback_with_student")
 	print("Feedback_with_course")
-	print("Feedback_with_lecturer")
+	print("Feedback_with_from_user")
 
 
 # function to add the view feedback with category
@@ -266,12 +266,12 @@ def create_view_fb_stud():
                         as select fb.*, stud.username studentName from student_feedback_app_feedback fb \
                         INNER JOIN student_feedback_app_user stud ON fb.student_id = stud.id;")
 
-# function to add the view feedback with lecturer
-def create_view_fb_lect():
+# function to add the view feedback with giving user
+def create_view_fb_from_user():
     with connection.cursor() as cursor:
-        cursor.execute("CREATE VIEW student_feedback_app_feedback_with_lecturer \
-                        as select fb.*, lect.username lecturerName from student_feedback_app_feedback fb \
-                        INNER JOIN student_feedback_app_user lect ON fb.lecturer_id = lect.id;")
+        cursor.execute("CREATE VIEW student_feedback_app_feedback_with_from_user \
+                        as select fb.*, from_user.username fromUserName from student_feedback_app_feedback fb \
+                        INNER JOIN student_feedback_app_user from_user ON fb.from_user_id = from_user.id;")
 
 # function to add the view feedback with course
 def create_view_fb_course():

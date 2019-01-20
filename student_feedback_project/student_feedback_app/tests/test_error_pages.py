@@ -26,6 +26,13 @@ class StudentHomeErrorTestCase(TestCase):
         self.assertEqual(response.templates[0].name, "student_feedback_app/error_page.html")
         c.logout()
 
+    def test_lecturer_wrong_auth_message(self):
+        c = Client()
+        c.login(username="00001", password="star")
+        response = c.get('/student/home/')
+        self.assertContains(response, "As a lecturer you are not allowed to access this page")
+        c.logout()
+
     def test_exception_error_page(self):
         c = Client()
         c.login(username="3015244", password="Bob")
@@ -35,4 +42,6 @@ class StudentHomeErrorTestCase(TestCase):
         #print(response.context)
 
 
-#TODO figure out how to pass info to context dict or otherwise get error
+
+#TODO figure out how to pass info to context dict or otherwise produce error
+

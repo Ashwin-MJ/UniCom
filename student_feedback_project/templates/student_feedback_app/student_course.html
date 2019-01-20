@@ -44,7 +44,7 @@
       <div class="card-body scroll" id="fb-list">
         {% for fb in feedback %}
         {% if fb.is_recent %}
-        <div class="card recent custom-card">
+        <div class="card recent custom-card text-white">
         {% else %}
         <div class="card custom-card">
         {% endif %}
@@ -72,9 +72,9 @@
           {% endfor %}
       </div>
 	  <div class="button" style="padding-bottom:0px; padding-top:10px;">
-          <button onclick="fetchStud('{{ course.subject }}', 'points', 'course')" type="button" class="btn btn-primary">Sort by points</button>
-          <button onclick="fetchStud('{{ course.subject }}', 'date', 'course')" type="button" class="btn btn-primary">Sort by date</button>
-          <button onclick="fetchStud('{{ course.subject }}', 'course', 'course')" type="button" class="btn btn-primary">Sort by course</button>
+          <button onclick="fetchStud('{{ course.subject }},{{ student.student.username }}', 'points', 'course-student')" type="button" class="btn btn-primary">Sort by points</button>
+          <button onclick="fetchStud('{{ course.subject }},{{ student.student.username }}', 'date', 'course-student')" type="button" class="btn btn-primary">Sort by date</button>
+          <button onclick="fetchStud('{{ course.subject }},{{ student.student.username }}', 'course', 'course-student')" type="button" class="btn btn-primary">Sort by course</button>
       </div>
     </div>
 

@@ -215,12 +215,12 @@ class Feedback_with_student(models.Model):
         managed = False
         db_table = "student_feedback_app_feedback_with_student"
 
-class Feedback_with_lecturer(models.Model):
-    lecturerName = models.CharField(max_length=200,default="No lecturer")
-    lecturer_id = models.IntegerField(primary_key=True,default=0)
+class Feedback_with_from_user(models.Model):
+    fromUserName = models.CharField(max_length=200,default="No giving user")
+    from_user_id = models.IntegerField(primary_key=True,default=0)
     class Meta:
         managed = False
-        db_table = "student_feedback_app_feedback_with_lecturer"
+        db_table = "student_feedback_app_feedback_with_from_user"
 
 class Feedback_with_course(models.Model):
     courseName = models.CharField(max_length=200,default="No course")
@@ -228,7 +228,7 @@ class Feedback_with_course(models.Model):
     feedback_id = models.IntegerField(primary_key=True,default=0)
     pre_defined_message_id = models.CharField(max_length=200,default="No message")
     points = models.IntegerField(default=0)
-    lecturer = models.ForeignKey('LecturerProfile', on_delete=models.CASCADE, null=True, blank=True)
+    from_user = models.ForeignKey('User', on_delete=models.CASCADE, null=True, blank=True)
     student = models.ForeignKey('StudentProfile', on_delete=models.CASCADE, null=True, blank=True)
     which_course = models.ForeignKey('Course', on_delete=models.CASCADE, null=True, blank=True)
     datetime_given = models.DateTimeField(default=timezone.now, blank=False)
