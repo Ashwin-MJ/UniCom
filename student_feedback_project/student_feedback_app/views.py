@@ -56,7 +56,10 @@ def student_all_feedback(request):
         fb = stud.feedback_set.all().order_by('-datetime_given')
         context_dict['student'] = stud
         context_dict['feedback'] = fb
-        context_dict['top_attributes'] = stud.get_top_attributes()
+        top_attributes = stud.get_top_attributes()
+        if len(top_attributes) > 4:
+            top_attributes =  top_attributes[:4]
+        context_dict['top_attributes'] = top_attributes
         context_dict['to_improve'] = stud.get_weaknesses()
     else:
         context_dict['error'] = "auth"
@@ -480,7 +483,7 @@ class CategoryAutocomplete(autocomplete.Select2QuerySetView):
         return create_option
 
     def has_add_permission(self, request):
-        if self.request.user.is_authenticated and self.request.user.is_lecturer:
+        if self.request.user.is_authenticated:
             return True
         else:
             return False
@@ -571,7 +574,7 @@ class MessageAutocomplete(autocomplete.Select2QuerySetView):
             })
 
     def has_add_permission(self, request):
-        if self.request.user.is_authenticated and self.request.user.is_lecturer:
+        if self.request.user.is_authenticated:
             return True
         else:
             return False
