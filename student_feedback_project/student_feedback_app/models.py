@@ -83,6 +83,8 @@ class StudentProfile(models.Model):
     def get_weaknesses(self):
         scores = self.get_top_attributes()
         scores.reverse()
+        if len(scores) > 4:
+            scores = scores[:4]
         return scores
 
     def get_fb_for_course(self,course):
