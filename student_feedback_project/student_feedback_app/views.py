@@ -114,6 +114,7 @@ def student_course(request, subject_slug):
             context_dict['sorted_students'] = course.get_leaderboard()
             context_dict['feedback'] = stud.get_fb_for_course(course.subject)
             context_dict['score'] = stud.get_score_for_course(course.subject)
+            context_dict['student'] = stud
         except:
             context_dict['course'] = None
             context_dict['lect'] = None
@@ -510,9 +511,9 @@ class Feedback_with_studentList(generics.ListAPIView):
     queryset = Feedback_with_student.objects.all()
     serializer_class = Feedback_with_studentSerializer
 
-class Feedback_with_lecturerList(generics.ListAPIView):
-    queryset = Feedback_with_lecturer.objects.all()
-    serializer_class = Feedback_with_lecturerSerializer
+class Feedback_with_from_userList(generics.ListAPIView):
+    queryset = Feedback_with_from_user.objects.all()
+    serializer_class = Feedback_with_from_userSerializer
 
 
 class MessageAutocomplete(autocomplete.Select2QuerySetView):

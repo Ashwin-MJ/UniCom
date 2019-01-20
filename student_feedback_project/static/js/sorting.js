@@ -6,7 +6,7 @@ function fetchStud(fb_keep, sort_param, keep_param){
 	httpRequest.onreadystatechange = function(){
 		if (this.readyState == 4 && this.status == 200) {
 			var students = JSON.parse(this.responseText);
-			fetchLect(fb_keep, students, sort_param, keep_param);
+			fetchFromUser(fb_keep, students, sort_param, keep_param);
 
 		}
 	};
@@ -14,13 +14,13 @@ function fetchStud(fb_keep, sort_param, keep_param){
 	httpRequest.send();
 }
 
-function fetchLect(fb_keep, students, sort_param, keep_param){
-	const Url = "http://127.0.0.1:8000/Feedback_with_lecturerList/";
+function fetchFromUser(fb_keep, students, sort_param, keep_param){
+	const Url = "http://127.0.0.1:8000/Feedback_with_from_userList/";
 	var httpRequest = new XMLHttpRequest();
 	httpRequest.onreadystatechange = function(){
 		if (this.readyState == 4 && this.status == 200) {
-			var lecturers = JSON.parse(this.responseText);
-			sort(fb_keep, students, lecturers, sort_param, keep_param);
+			var fromUsers = JSON.parse(this.responseText);
+			sort(fb_keep, students, fromUsers, sort_param, keep_param);
 
 		}
 	};
@@ -28,7 +28,7 @@ function fetchLect(fb_keep, students, sort_param, keep_param){
 	httpRequest.send();
 }
 
-function sort(fb_keep, students, lecturers, sort_param, keep_param){
+function sort(fb_keep, students, fromUsers, sort_param, keep_param){
 	switch(sort_param){
 		case "points":
 			var Url = "http://127.0.0.1:8000/FeedbackSortedByPoints";
@@ -55,11 +55,11 @@ function sort(fb_keep, students, lecturers, sort_param, keep_param){
 					}
 				}
 
-				var lect_id = fb["lecturer"];
+				var from_user_id = fb["from_user"];
 
-				for(var lect of lecturers){
-					if(lect["lecturer_id"] == lect_id){
-						fb["lecturer"] = lect["lecturerName"];
+				for(var user of fromUsers){
+					if(user["from_user_id"] == from_user_id){
+						fb["from_user"] = user["fromUserName"];
 					}
 				}
 
@@ -74,11 +74,11 @@ function sort(fb_keep, students, lecturers, sort_param, keep_param){
 			}
 
 			switch(keep_param){
-				case "lecturer":
-					//make lecturer id the one in the database then remove fb that is not from this lecturer
-					var lecturer_name = fb_keep;
+				case "from_user":
+					//remove fb that is not from the parameter we want to keep
+					var from_user_name = fb_keep;
 					for(var i=0; i<sortedFb.length; i++){
-						if(sortedFb[i].lecturer != lecturer_name){
+						if(sortedFb[i].from_user != from_user_name){
 							sortedFb.splice(i,1);
 							i=-1;
 						}
@@ -93,6 +93,24 @@ function sort(fb_keep, students, lecturers, sort_param, keep_param){
 							i=-1;
 						}
 					}
+					var footerType = "student";
+					break;
+				case "course-student":
+					var course_name = fb_keep.split(",")[0];
+					for(var i=0; i<sortedFb.length; i++){
+						if(sortedFb[i].courseName != course_name){
+							sortedFb.splice(i,1);
+							i=-1;
+						}
+					}
+					var student_name = fb_keep.split(",")[1];
+					for(var i=0; i<sortedFb.length; i++){
+						if(sortedFb[i].student != student_name){
+							sortedFb.splice(i,1);
+							i=-1;
+						}
+					}
+					var footerType = "from_user";
 					break;
 				case "student":
 					var student_name = fb_keep;
@@ -102,7 +120,7 @@ function sort(fb_keep, students, lecturers, sort_param, keep_param){
 							i=-1;
 						}
 					}
-					var footerType = "lecturer";
+					var footerType = "from_user";
 					break;
 				default:
 			}
@@ -146,9 +164,9 @@ function show(sorted_fb, footerType){
 		if(footerType == "student")
 			var footer = fb.student;
 		else
-			var footer = fb.lecturer;
+			var footer = fb.from_user;
 		if(fb['is_recent']){
-			fb_text += '<div class="card recent custom-card">';
+			fb_text += '<div class="card recent custom-card text-white">';
 		}
 		else
 			fb_text += '<div class="card custom-card">';
