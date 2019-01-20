@@ -57,7 +57,7 @@
                   {% if fb.optional_message %}
                   <em>"{{ fb.optional_message }}"</em>
                   {% endif %}
-                  <footer>{{fb.student.student.username}}</footer>
+                  <footer>{{fb.from_user.username}}</footer>
                 </blockquote>
               </div>
               Course:<em> {{fb.which_course.subject}}</em><br />
@@ -83,23 +83,25 @@
       <hr />
       <div class="card-body scroll">
         {% for stud,score in sorted_students %}
-        <div class="card custom-card">
-          <div class="row">
-            <div class="column left">
-              <b class="card-sub-heading">{{ stud.student.username }}</b>
-              <div class="card-sub-heading">
-                {{ score }}
+        <a href="{% url 'stud_add_individual_feedback' course.subject_slug stud.student.id_number %}">
+          <div class="card custom-card">
+            <div class="row">
+              <div class="column left">
+                <b class="card-sub-heading">{{ stud.student.username }}</b>
+                <div class="card-sub-heading">
+                  {{ score }}
+                  </div>
                 </div>
-              </div>
-            <div class="column right">
-              <a href="{% url 'lecturer_view_student' stud.student.id_number%}">
-                <img class="picture" src="{{stud.student.profile_picture.url}}"/>
-              </a>
-              </div>
+              <div class="column right">
+                <a href="{% url 'lecturer_view_student' stud.student.id_number%}">
+                  <img class="picture" src="{{stud.student.profile_picture.url}}"/>
+                </a>
+                </div>
 
+              </div>
             </div>
-          </div>
-          <br />
+            <br />
+          </a>
           {% endfor %}
       </div>
     </div>
