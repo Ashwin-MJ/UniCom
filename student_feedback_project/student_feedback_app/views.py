@@ -34,7 +34,6 @@ def student_home(request):
                     fbCat[cat] = [[feedback.points, feedback.datetime_given.strftime('%Y-%m-%d %H:%M')]]
                 else:
                     fbCat[cat].append([feedback.points, feedback.datetime_given.strftime('%Y-%m-%d %H:%M')])
-            print(fbCat)
             context_dict['student'] = stud
             context_dict['courses'] = courses
             context_dict['feedback'] = fb
@@ -47,6 +46,61 @@ def student_home(request):
         context_dict['error'] = "auth"
         return render(request, 'student_feedback_app/error_page.html', context_dict)
     return render(request, 'student_feedback_app/student_home.html', context_dict)
+
+def student_profile(request):
+    context_dict = {}
+    if request.user.is_authenticated and request.user.is_student:
+        try:
+            stud = StudentProfile.objects.get(student=request.user)
+            fb = stud.feedback_set.all().order_by('-datetime_given')
+            courses = stud.courses.all()
+
+            context_dict['student'] = stud
+            context_dict['courses'] = stud.get_courses_with_score()
+            context_dict['feedback'] = fb
+
+        except:
+            context_dict['error'] = "error"
+            return render(request, 'student_feedback_app/error_page.html', context_dict)
+    else:
+        context_dict['error'] = "auth"
+        return render(request, 'student_feedback_app/error_page.html', context_dict)
+    return render(request, 'student_feedback_app/student_profile.html', context_dict)
+
+def edit_bio(request):
+    context_dict={}
+    if request.user.is_authenticated and request.user.is_student:
+        try:
+            stud = StudentProfile.objects.get(student=request.user)
+            context_dict['student'] = stud
+            if request.method == 'POST':
+                form = EditBioForm(request.POST)
+                print("-------form: ",form)
+                if form.is_valid():
+                    new_bio=form.cleaned_data["bio"]
+                    new_degree=form.cleaned_data["degree"]
+                    print("------form entrys: ", new_bio, new_degree)
+                    stud.degree=new_degree
+                    print("-------stud.degree: ",stud.degree)
+                    stud.bio= new_bio
+                    print("-------",stud)
+                    stud.save()
+                    return student_profile(request)
+                else:
+                    print(form.errors)
+            else:
+                form = EditBioForm()
+            context_dict["form"] = form
+            return render(request, 'student_feedback_app/edit_bio.html', context_dict)
+        except:
+            context_dict['error'] = "error"
+            return render(request, 'student_feedback_app/error_page.html', context_dict)
+    else:
+        context_dict['error'] = auth
+        return render(request, 'student_feedback_app/error_page.html', context_dict, )
+    return render(request, 'student_feedback_app/student_profile.html', context_dict, )
+
+
 
 def student_all_feedback(request):
     context_dict = {}
@@ -347,6 +401,8 @@ def create_course(request):
     except:
         context_dict['error'] = "error"
         return render(request,'student_feedback_app/error_page.html', context_dict)
+
+
 
 class CategoryAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):

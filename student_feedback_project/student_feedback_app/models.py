@@ -45,6 +45,8 @@ class StudentProfile(models.Model):
     student = models.OneToOneField(User, on_delete=models.CASCADE,primary_key=True)
     score = models.IntegerField(default=0)
     courses = models.ManyToManyField('Course')
+    degree = models.CharField(max_length=40, default="Degree not specified")
+    bio = models.CharField(max_length=250, default="Biography not specified")
 
     def get_score_for_course(self,course):
         score = 0

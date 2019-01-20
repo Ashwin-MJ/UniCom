@@ -14,6 +14,9 @@ urlpatterns = [
     re_path(r'^student/all-feedback/$', views.student_all_feedback, name='student_all_feedback'),
     re_path(r'^student/courses/(?P<subject_slug>[\w\-]+)/$', views.student_course, name='student_course'),
     re_path(r'^student/courses/$', views.student_all_courses, name='student_all_courses'),
+    re_path(r'^student/profile/$', views.student_profile, name='student_profile'),
+    re_path(r'^student/edit-bio/$', views.edit_bio, name='edit_bio'),
+
     re_path(r'^lecturer/home/$', views.lecturer_home, name='lecturer_home'),
     re_path(r'^lecturer/my-provided-feedback/$', views.my_provided_feedback, name='my_provided_feedback'),
     re_path(r'^lecturer/create-course/$', views.create_course, name='create_course'),

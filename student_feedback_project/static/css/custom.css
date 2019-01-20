@@ -87,6 +87,9 @@ body{
   max-width: 50px;
   border: 1px solid teal;
 }
+.picture-my-account{
+  max-width: 300px;
+}
 
 hr {
   display:block;

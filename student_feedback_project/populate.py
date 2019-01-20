@@ -91,7 +91,7 @@ def populate():
 		"student": "1402001",
 		"course_code" : "MAT1Q",
 		"pre_defined_message": "Excellent team work today!",
-		"optional_message": "I noticed how you helped Link complete his work."},
+		"optional_message": "I noticed how you helped Jane complete her work."},
 		{"feedback_id": 3,
 		"message": "Great marks in todays quiz!",
 		"category": "Participation",

@@ -1,0 +1,50 @@
+{% extends 'student_feedback_app/base.html' %}
+
+{% block title%}
+Create A Course
+{% endblock %}
+
+{% block current_page %}
+{{ lecturer.lecturer.username }}<br />
+Create A Course
+{% endblock %}
+
+
+{% block body_block %}
+{% load widget_tweaks %}
+
+<div class="container">
+  <div class="card custom-card" style="margin-bottom:25px;">
+    <form id="" method="post" action="">
+      {% csrf_token %}
+      {% for hidden in form.hidden_fields %}
+          {{ hidden }}
+      {% endfor %}
+
+      <h3 class="card-body text-center custom-card-title">Edit Bio</h3>
+
+      {% if form.non_field_errors %}
+        <div class="alert alert-danger" role="alert">
+          {% for error in form.non_field_errors %}
+            {{ error }}
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      {% for field in form.visible_fields %}
+        <div class="form-group card custom-card">
+          <h3 class="custom-card-title">
+            {{ field.help_text }}:
+          </h3>
+            {% render_field field class="form-control" %}
+        </div>
+      {% endfor %}
+
+      <div class="button">
+        <input class="btn btn-material btn-ripple" type="submit" name="submit" value="Edit Bio" />
+      </div>
+
+    </form>
+  </div>
+</div>
+{% endblock %}
