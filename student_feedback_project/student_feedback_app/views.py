@@ -178,6 +178,31 @@ def stud_add_individual_feedback(request,subject_slug,student_number):
         return render(request,'student_feedback_app/error_page.html', context_dict)
     return render(request,'student_feedback_app/stud_add_individual_feedback.html',context_dict)
 
+def my_provided_feedback(request):
+    context_dict = {}
+    if not request.user.is_authenticated:
+        context_dict['error'] = "auth"
+        return render(request,'student_feedback_app/error_page.html', context_dict)
+
+    try:
+        if request.user.is_student:
+            stud = StudentProfile.objects.get(student=request.user)
+            fb = request.user.feedback_set.all().order_by('-datetime_given')
+            context_dict['student'] = stud
+            context_dict['feedback'] = fb
+            return render(request,'student_feedback_app/student_provided_feedback.html',context_dict)
+
+        if request.user.is_lecturer:
+            lect = LecturerProfile.objects.get(lecturer=request.user)
+            fb = request.user.feedback_set.all().order_by('-datetime_given')
+            context_dict['lecturer'] = lect
+            context_dict['feedback'] = fb
+            return render(request,'student_feedback_app/lect_provided_feedback.html',context_dict)
+
+    except:
+        context_dict['error'] = "error"
+        return render(request,'student_feedback_app/error_page.html', context_dict)
+
 def lecturer_home(request):
     context_dict = {}
     if request.user.is_authenticated and request.user.is_lecturer:
@@ -197,19 +222,6 @@ def lecturer_home(request):
         context_dict['error'] = "auth"
         return render(request,'student_feedback_app/error_page.html', context_dict)
     return render(request,'student_feedback_app/lecturer_home.html',context_dict)
-
-def my_provided_feedback(request):
-    context_dict = {}
-    if request.user.is_authenticated and request.user.is_lecturer:
-        lect = LecturerProfile.objects.get(lecturer=request.user)
-        fb = request.user.feedback_set.all().order_by('-datetime_given')
-        context_dict['lecturer'] = lect
-        context_dict['feedback'] = fb
-    else:
-        context_dict['error'] = "auth"
-        return render(request,'student_feedback_app/error_page.html', context_dict)
-
-    return render(request,'student_feedback_app/my_provided_feedback.html',context_dict)
 
 def lecturer_course(request,subject_slug):
     context_dict = {}
