@@ -174,6 +174,14 @@ class Feedback(models.Model):
     def is_recent(self):
         return timezone.now() - self.datetime_given < datetime.timedelta(minutes=5)
 
+    def from_student(self):
+        # Helper function to allow you to identify if a feedback is provided from a student
+        return self.from_user.is_student and not self.from_user.is_lecturer
+
+    def from_lecturer(self):
+        # Helper function to allow you to identify if a feedback is provided from a lecturer
+        return self.from_user.is_lecturer and not self.from_user.is_student
+
 class Category(models.Model):
     name = models.CharField(max_length=20, default="Empty",primary_key=True)
     # Can access messages associated with a given category using Category.message_set.all()

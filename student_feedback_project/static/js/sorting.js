@@ -1,34 +1,34 @@
 "use strict";
 
 function fetchStud(fb_keep, sort_param, keep_param){
-	const Url = "http://127.0.0.1:8000/Feedback_with_studentList/";	
+	const Url = "http://127.0.0.1:8000/Feedback_with_studentList/";
 	var httpRequest = new XMLHttpRequest();
 	httpRequest.onreadystatechange = function(){
 		if (this.readyState == 4 && this.status == 200) {
-			var students = JSON.parse(this.responseText);	
+			var students = JSON.parse(this.responseText);
 			fetchLect(fb_keep, students, sort_param, keep_param);
 
 		}
-	};	
+	};
 	httpRequest.open("GET", Url, true);
-	httpRequest.send();	
+	httpRequest.send();
 }
 
 function fetchLect(fb_keep, students, sort_param, keep_param){
-	const Url = "http://127.0.0.1:8000/Feedback_with_lecturerList/";	
+	const Url = "http://127.0.0.1:8000/Feedback_with_lecturerList/";
 	var httpRequest = new XMLHttpRequest();
 	httpRequest.onreadystatechange = function(){
 		if (this.readyState == 4 && this.status == 200) {
-			var lecturers = JSON.parse(this.responseText);	
+			var lecturers = JSON.parse(this.responseText);
 			sort(fb_keep, students, lecturers, sort_param, keep_param);
 
 		}
-	};	
+	};
 	httpRequest.open("GET", Url, true);
-	httpRequest.send();	
+	httpRequest.send();
 }
 
-function sort(fb_keep, students, lecturers, sort_param, keep_param){	
+function sort(fb_keep, students, lecturers, sort_param, keep_param){
 	switch(sort_param){
 		case "points":
 			var Url = "http://127.0.0.1:8000/FeedbackSortedByPoints";
@@ -40,29 +40,29 @@ function sort(fb_keep, students, lecturers, sort_param, keep_param){
 			var Url = "http://127.0.0.1:8000/FeedbackSortedByCourse";
 			break;
 		default:
-	}		
+	}
 	var httpRequest = new XMLHttpRequest();
 	httpRequest.onreadystatechange = function(){
-		if (this.readyState == 4 && this.status == 200) {			
+		if (this.readyState == 4 && this.status == 200) {
 			var sortedFb = JSON.parse(this.responseText);
-			
+
 			//for every feedback replace the id number given by JSON for student and lecturer to the name and see if feedback is recent (5mins)
 			for(var fb of sortedFb){
-				var stud_id = fb["student"];								
+				var stud_id = fb["student"];
 				for(var stud of students){
 					if(stud["student_id"] == stud_id){
 						fb["student"] = stud["studentName"];
 					}
 				}
-				
-				var lect_id = fb["lecturer"];				
-				
+
+				var lect_id = fb["lecturer"];
+
 				for(var lect of lecturers){
 					if(lect["lecturer_id"] == lect_id){
 						fb["lecturer"] = lect["lecturerName"];
 					}
-				}	
-				
+				}
+
 				var fb_date= new Date(fb['datetime_given']);
 				var now_date = new Date();
 				var five_mins = new Date(5*60000);
@@ -71,12 +71,12 @@ function sort(fb_keep, students, lecturers, sort_param, keep_param){
 				}
 				else
 					fb['is_recent'] = false;
-			}	
+			}
 
 			switch(keep_param){
 				case "lecturer":
 					//make lecturer id the one in the database then remove fb that is not from this lecturer
-					var lecturer_name = fb_keep;			
+					var lecturer_name = fb_keep;
 					for(var i=0; i<sortedFb.length; i++){
 						if(sortedFb[i].lecturer != lecturer_name){
 							sortedFb.splice(i,1);
@@ -86,7 +86,7 @@ function sort(fb_keep, students, lecturers, sort_param, keep_param){
 					var footerType = "student";
 					break;
 				case "course":
-					var course_name = fb_keep;			
+					var course_name = fb_keep;
 					for(var i=0; i<sortedFb.length; i++){
 						if(sortedFb[i].courseName != course_name){
 							sortedFb.splice(i,1);
@@ -95,7 +95,7 @@ function sort(fb_keep, students, lecturers, sort_param, keep_param){
 					}
 					break;
 				case "student":
-					var student_name = fb_keep;			
+					var student_name = fb_keep;
 					for(var i=0; i<sortedFb.length; i++){
 						if(sortedFb[i].student != student_name){
 							sortedFb.splice(i,1);
@@ -106,13 +106,13 @@ function sort(fb_keep, students, lecturers, sort_param, keep_param){
 					break;
 				default:
 			}
-			
-			
-						
+
+
+
 			//place this parsed data into the page
 			show(sortedFb, footerType);
 		}
-	};	
+	};
 	httpRequest.open("GET", Url, true);
 	httpRequest.send();
 }
@@ -161,7 +161,7 @@ function show(sorted_fb, footerType){
                   if (fb.optional_message){
                   fb_text += '<em>"' + fb.optional_message + '"</em>'
 				  }
-                  fb_text += '<footer>' + footer + '</footer>' 
+                  fb_text += '<footer>' + footer + '</footer>'
                 + `</blockquote>
               </div>
               Course: <em>` + fb.courseName + `</em><br />
