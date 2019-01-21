@@ -75,15 +75,11 @@ def edit_bio(request):
             context_dict['student'] = stud
             if request.method == 'POST':
                 form = EditBioForm(request.POST)
-                print("-------form: ",form)
                 if form.is_valid():
                     new_bio=form.cleaned_data["bio"]
                     new_degree=form.cleaned_data["degree"]
-                    print("------form entrys: ", new_bio, new_degree)
                     stud.degree=new_degree
-                    print("-------stud.degree: ",stud.degree)
                     stud.bio= new_bio
-                    print("-------",stud)
                     stud.save()
                     return student_profile(request)
                 else:
