@@ -1,7 +1,7 @@
 from dal import autocomplete
 from django import forms
 
-from .models import Course,Feedback,User,Category,Message
+from .models import Course,Feedback,User, StudentProfile, Category,Message
 import datetime
 from django.contrib.auth.forms import UserCreationForm#,AuthenticationForm
 
@@ -55,3 +55,13 @@ class addCourseForm(forms.ModelForm):
     class Meta:
         model = Course
         fields = ('course_token',)
+
+
+
+class EditBioForm(forms.ModelForm):
+    degree = forms.CharField(max_length=40, help_text="Degree", required=True)
+    bio = forms.CharField(max_length=250, help_text= 'Bio', required=True)
+
+    class Meta:
+        model = StudentProfile
+        fields = ('degree', 'bio',)
