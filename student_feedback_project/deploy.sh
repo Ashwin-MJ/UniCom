@@ -1,4 +1,5 @@
 #!/bin/bash
+cd ~/UniCom/student_feedback_project/
 eval ". ../../unicom/bin/activate"
 eval "git pull"
 eval "pip3 install -r requirements.txt"
