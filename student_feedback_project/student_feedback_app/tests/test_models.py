@@ -53,7 +53,7 @@ class FeedbackTestCase(TestCase):
 
     def test_fb_correct_lecturer(self):
         fb = Feedback.objects.get(feedback_id=1)
-        self.assertEqual(fb.lecturer.lecturer.username, "Wolf")
+        self.assertEqual(fb.from_user.username, "Wolf")
 
     def test_fb_correct_student(self):
         fb = Feedback.objects.get(feedback_id=1)
