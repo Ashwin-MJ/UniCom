@@ -83,6 +83,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'student_feedback_project.wsgi.application'
 
 
+
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 

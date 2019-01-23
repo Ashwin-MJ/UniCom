@@ -423,7 +423,7 @@ def add_course(subject,course_code, course_description):
 	course.save()
 	return course
 
-# Helper function to add a new student
+# Helper function to add a new student #needs courses in db
 def add_student(name,student_number,email,password,score,courses):
 	# First get the User model associated with the student
 	student = User.objects.get_or_create(username=name,email=email)[0]
@@ -447,12 +447,13 @@ def add_student(name,student_number,email,password,score,courses):
 	student_prof.save()
 	return student_prof
 
-# Helper function to add a new lecturer. Follows a similar pattern to add_student
+# Helper function to add a new lecturer. Follows a similar pattern to add_student #needs courses in db
 def add_lecturer(name,lecturer_number,password,email,courses):
 	lecturer = User.objects.get_or_create(username=name,email=email)[0]
 	lecturer.set_password(password)
 	lecturer.id_number = lecturer_number
 	lecturer.is_lecturer = True
+	lecturer.is_student = False
 	lecturer.save()
 
 	lecturer_prof = LecturerProfile.objects.get_or_create(lecturer=lecturer)[0]
@@ -465,7 +466,7 @@ def add_lecturer(name,lecturer_number,password,email,courses):
 	lecturer_prof.save()
 	return lecturer_prof
 
-# Helper function to add feedback
+# Helper function to add feedback #needs categories, (pre defined) messages, courses, users in db
 def add_feedback(feedback_id,category,points,from_user,student,course_code,pre_defined_message,optional_message):
 	fb = Feedback.objects.get_or_create(feedback_id=feedback_id)[0]
 	fb.category = Category.objects.get(name=category)
@@ -489,7 +490,7 @@ def add_category(name):
 	cat = Category.objects.get_or_create(name=name)[0]
 	cat.save()
 
-# Helper function to add pre defined message
+# Helper function to add pre defined message #needs categories in db
 def add_message(category,text):
 	cat = Category.objects.get(name=category)
 	mess = Message.objects.get_or_create(category=cat,text=text)[0]
