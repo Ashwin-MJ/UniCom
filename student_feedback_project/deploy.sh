@@ -1,4 +1,6 @@
 #!/bin/bash
+eval ". ../../unicom/bin/activate"
+eval "git pull"
 eval "pip3 install -r requirements.txt"
 rm db.sqlite3
 eval "python3 manage.py migrate --run-syncdb"
