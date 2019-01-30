@@ -49,6 +49,57 @@ def student_home(request):
         return render(request, 'student_feedback_app/error_page.html', context_dict)
     return render(request, 'student_feedback_app/student_home.html', context_dict)
 
+def student_profile(request):
+    context_dict = {}
+    if request.user.is_authenticated and request.user.is_student:
+        try:
+            stud = StudentProfile.objects.get(student=request.user)
+            fb = stud.feedback_set.all().order_by('-datetime_given')
+            courses = stud.courses.all()
+
+            context_dict['student'] = stud
+            context_dict['courses'] = stud.get_courses_with_score()
+            context_dict['feedback'] = fb
+
+        except:
+            context_dict['error'] = "error"
+            return render(request, 'student_feedback_app/error_page.html', context_dict)
+    else:
+        context_dict['error'] = "auth"
+        return render(request, 'student_feedback_app/error_page.html', context_dict)
+    return render(request, 'student_feedback_app/student_profile.html', context_dict)
+
+def edit_bio(request):
+    context_dict={}
+    if request.user.is_authenticated and request.user.is_student:
+        try:
+            stud = StudentProfile.objects.get(student=request.user)
+            context_dict['student'] = stud
+            if request.method == 'POST':
+                form = EditBioForm(request.POST)
+                if form.is_valid():
+                    new_bio=form.cleaned_data["bio"]
+                    new_degree=form.cleaned_data["degree"]
+                    stud.degree=new_degree
+                    stud.bio= new_bio
+                    stud.save()
+                    return student_profile(request)
+                else:
+                    print(form.errors)
+            else:
+                form = EditBioForm()
+            context_dict["form"] = form
+            return render(request, 'student_feedback_app/edit_bio.html', context_dict)
+        except:
+            context_dict['error'] = "error"
+            return render(request, 'student_feedback_app/error_page.html', context_dict)
+    else:
+        context_dict['error'] = auth
+        return render(request, 'student_feedback_app/error_page.html', context_dict, )
+    return render(request, 'student_feedback_app/student_profile.html', context_dict, )
+
+
+
 def student_all_feedback(request):
     context_dict = {}
     if request.user.is_authenticated and request.user.is_student:
@@ -453,6 +504,8 @@ def create_course(request):
     except:
         context_dict['error'] = "error"
         return render(request,'student_feedback_app/error_page.html', context_dict)
+
+
 
 class CategoryAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):

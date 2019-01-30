@@ -1,7 +1,8 @@
 "use strict";
 
 function fetchStud(fb_keep, sort_param, keep_param){
-	const Url = "http://127.0.0.1:8000/Feedback_with_studentList/";
+	var host = location.protocol + "//" + window.location.host;
+	const Url = host + "/Feedback_with_studentList/";
 	var httpRequest = new XMLHttpRequest();
 	httpRequest.onreadystatechange = function(){
 		if (this.readyState == 4 && this.status == 200) {
@@ -15,7 +16,8 @@ function fetchStud(fb_keep, sort_param, keep_param){
 }
 
 function fetchFromUser(fb_keep, students, sort_param, keep_param){
-	const Url = "http://127.0.0.1:8000/Feedback_with_from_userList/";
+	var host = location.protocol + "//" + window.location.host;
+	const Url = host + "/Feedback_with_from_userList/";
 	var httpRequest = new XMLHttpRequest();
 	httpRequest.onreadystatechange = function(){
 		if (this.readyState == 4 && this.status == 200) {
@@ -29,15 +31,16 @@ function fetchFromUser(fb_keep, students, sort_param, keep_param){
 }
 
 function sort(fb_keep, students, fromUsers, sort_param, keep_param){
+	var host = location.protocol + "//" + window.location.host;
 	switch(sort_param){
 		case "points":
-			var Url = "http://127.0.0.1:8000/FeedbackSortedByPoints";
+			var Url = host + "/FeedbackSortedByPoints";
 			break;
 		case "date":
-			var Url = "http://127.0.0.1:8000/FeedbackSortedByDate";
+			var Url = host + "/FeedbackSortedByDate";
 			break;
 		case "course":
-			var Url = "http://127.0.0.1:8000/FeedbackSortedByCourse";
+			var Url = host + "/FeedbackSortedByCourse";
 			break;
 		default:
 	}

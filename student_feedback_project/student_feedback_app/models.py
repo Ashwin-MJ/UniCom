@@ -61,6 +61,8 @@ class StudentProfile(models.Model):
     student = models.OneToOneField(User, on_delete=models.CASCADE,primary_key=True)
     score = models.IntegerField(default=0)
     courses = models.ManyToManyField('Course')
+    degree = models.CharField(max_length=40, default="Degree not specified")
+    bio = models.CharField(max_length=250, default="Biography not specified")
 
     def get_score_for_course(self,course):
         score = 0
@@ -117,7 +119,7 @@ class Course(models.Model):
         super(Course, self).save(*args, **kwargs)
 
     def token_gen(self):
-        size = 7
+        size = 4
         chars = string.ascii_uppercase + string.digits
         cT = ''.join(random.choice(chars) for _ in range(size))
         # checking all other courses
@@ -126,7 +128,7 @@ class Course(models.Model):
             if cT == course.course_token:
                 cT = self.token_gen()
 
-        return cT
+        return self.subject_slug.upper()+cT
 
     def get_students_with_score(self):
         temp_dict = {}

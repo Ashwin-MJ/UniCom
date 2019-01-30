@@ -114,8 +114,24 @@ def populate():
 		"student": "1402001",
 		"course_code" : "MAT1Q",
 		"pre_defined_message": "Excellent team work today!",
-		"optional_message": "I noticed how you helped Link complete his work."},
+		"optional_message": "I noticed how you helped Jane complete her work."},
 		{"feedback_id": 3,
+		 "category": "Listening",
+		 "points": 5,
+		 "from_user": "00001",
+		 "student": "1402001",
+		 "course_code": "MAT1Q",
+		 "pre_defined_message": "Good job answering the question today!",
+		 "optional_message": ""},
+		{"feedback_id": 4,
+		 "category": "Participation",
+		 "points": 3,
+		 "from_user": "00002",
+		 "student": "1402001",
+		 "course_code": "MAT1Q",
+		 "pre_defined_message": "Very good question today. I'm sure you helped a lot of students by asking it!",
+		 "optional_message": ""},
+		{"feedback_id": 5,
 		"category": "Participation",
 		"points": 5,
 		"from_user": "00001",
@@ -123,22 +139,130 @@ def populate():
 		"course_code": "ARH01",
 		"pre_defined_message": "Very good question today. I'm sure you helped a lot of students by asking it!",
 		"optional_message": "If you require further clarification, feel free to drop by my office."},
-		{"feedback_id": 4,
+		{"feedback_id": 6,
 		"category": "Helpfulness",
 		"points": 5,
 		"from_user": "1402789",
 		"student": "002489",
 		"course_code": "ARH01",
 		"pre_defined_message": "Thanks for helping me out in class today!",
-		"optional_message": ""}
+		"optional_message": ""},
+		{"feedback_id": 7,
+		 "category": "Participation",
+		 "points": 5,
+		 "from_user": "00001",
+		 "student": "1402001",
+		 "course_code": "MAT1Q",
+		 "pre_defined_message": "Great marks in todays quiz!",
+		 "optional_message": ""},
+		{"feedback_id": 8,
+		 "category": "Listening",
+		 "points": 1,
+		 "from_user": "00001",
+		 "student": "1402001",
+		 "course_code": "MAT1Q",
+		 "pre_defined_message": "Thank you for noticing my error in today's class!",
+		 "optional_message": ""},
+		{"feedback_id": 9,
+		 "category": "Participation",
+		 "points": 4,
+		 "from_user": "00001",
+		 "student": "1402001",
+		 "course_code": "MAT1Q",
+		 "pre_defined_message": "You made excellent points in todays discussion!",
+		 "optional_message": ""},
+		{"feedback_id": 10,
+		 "category": "Participation",
+		 "points": 4,
+		 "from_user": "00001",
+		 "student": "1402001",
+		 "course_code": "MAT1Q",
+		 "pre_defined_message": "You made excellent points in todays discussion!",
+		 "optional_message": ""},
+		{"feedback_id": 11,
+		 "category": "Participation",
+		 "points": 4,
+		 "from_user": "1402001",
+		 "student": "1402789",
+		 "course_code": "MAT1Q",
+		 "pre_defined_message": "You made excellent points in todays discussion!",
+		 "optional_message": ""},
+		{"feedback_id": 12,
+		 "category": "Cooperation",
+		 "points": 3,
+		 "from_user": "1402001",
+		 "student": "1402781",
+		 "course_code": "MAT1Q",
+		 "pre_defined_message": "Excellent team work today!",
+		 "optional_message": ""},
+		{"feedback_id": 13,
+		 "category": "Listening",
+		 "points": 2,
+		 "from_user": "1402001",
+		 "student": "1439181",
+		 "course_code": "MAT1Q",
+		 "pre_defined_message": "Good job answering the question today!",
+		 "optional_message": ""},
+		{"feedback_id": 14,
+		 "category": "Listening",
+		 "points": 3,
+		 "from_user": "1402001",
+		 "student": "8352781",
+		 "course_code": "MAT1Q",
+		 "pre_defined_message": "Thank you for noticing my error in today's class!",
+		 "optional_message": ""},
+		{"feedback_id": 15,
+		 "category": "Cooperation",
+		 "points": 5,
+		 "from_user": "1402001",
+		 "student": "1402781",
+		 "course_code": "MAT1Q",
+		 "pre_defined_message": "Excellent team work today!",
+		 "optional_message": ""},
+		{"feedback_id": 16,
+		 "category": "Confidence",
+		 "points": 2,
+		 "from_user": "00001",
+		 "student": "1402001",
+		 "course_code": "MAT1Q",
+		 "pre_defined_message": "You performed well in front of the class today!",
+		 "optional_message": ""},
+		{"feedback_id": 17,
+		 "category": "Communication",
+		 "points": 4,
+		 "from_user": "00001",
+		 "student": "1402001",
+		 "course_code": "MAT1Q",
+		 "pre_defined_message": "You stated your thoughts and ideas very clearly!",
+		 "optional_message": ""},
+		{"feedback_id": 18,
+		 "category": "Determination",
+		 "points": 2,
+		 "from_user": "00001",
+		 "student": "1402001",
+		 "course_code": "MAT1Q",
+		 "pre_defined_message": "You stuck at the problem until it was solved!",
+		 "optional_message": ""},
+		{"feedback_id": 19,
+		 "category": "Eagerness",
+		 "points": 1,
+		 "from_user": "00001",
+		 "student": "1402001",
+		 "course_code": "MAT1Q",
+		 "pre_defined_message": "You were excited to get started today!",
+		 "optional_message": ""},
 		]
 
 	categories = [
 		{"name" : "Listening"},
 		{"name" : "Cooperation"},
 		{"name" : "Participation"},
-		{"name" : "Helpfulness"}
-		]
+		{"name" : "Helpfulness"},
+		{"name": "Determination"},
+		{"name": "Eagerness"},
+		{"name": "Communication"},
+		{"name": "Confidence"},
+	]
 
 	saved_messages = [
 		{"category" : "Listening",
@@ -158,7 +282,15 @@ def populate():
 		{"category" : "Participation",
 		"text": "Very good question today. I'm sure you helped a lot of students by asking it!"},
 		{"category" : "Helpfulness",
-		"text": "Thanks for helping me out in class today!"}
+		"text": "Thanks for helping me out in class today!"},
+		{"category" : "Determination",
+		 "text" : "You stuck at the problem until it was solved!"},
+		{"category": "Eagerness",
+		 "text": "You were excited to get started today!"},
+		{"category": "Communication",
+		 "text": "You stated your thoughts and ideas very clearly!"},
+		{"category": "Confidence",
+		 "text": "You performed well in front of the class today!"},
 		]
 
 
@@ -291,7 +423,7 @@ def add_course(subject,course_code, course_description):
 	course.save()
 	return course
 
-# Helper function to add a new student
+# Helper function to add a new student #needs courses in db
 def add_student(name,student_number,email,password,score,courses):
 	# First get the User model associated with the student
 	student = User.objects.get_or_create(username=name,email=email)[0]
@@ -315,12 +447,13 @@ def add_student(name,student_number,email,password,score,courses):
 	student_prof.save()
 	return student_prof
 
-# Helper function to add a new lecturer. Follows a similar pattern to add_student
+# Helper function to add a new lecturer. Follows a similar pattern to add_student #needs courses in db
 def add_lecturer(name,lecturer_number,password,email,courses):
 	lecturer = User.objects.get_or_create(username=name,email=email)[0]
 	lecturer.set_password(password)
 	lecturer.id_number = lecturer_number
 	lecturer.is_lecturer = True
+	lecturer.is_student = False
 	lecturer.save()
 
 	lecturer_prof = LecturerProfile.objects.get_or_create(lecturer=lecturer)[0]
@@ -333,7 +466,7 @@ def add_lecturer(name,lecturer_number,password,email,courses):
 	lecturer_prof.save()
 	return lecturer_prof
 
-# Helper function to add feedback
+# Helper function to add feedback #needs categories, (pre defined) messages, courses, users in db
 def add_feedback(feedback_id,category,points,from_user,student,course_code,pre_defined_message,optional_message):
 	fb = Feedback.objects.get_or_create(feedback_id=feedback_id)[0]
 	fb.category = Category.objects.get(name=category)
@@ -357,7 +490,7 @@ def add_category(name):
 	cat = Category.objects.get_or_create(name=name)[0]
 	cat.save()
 
-# Helper function to add pre defined message
+# Helper function to add pre defined message #needs categories in db
 def add_message(category,text):
 	cat = Category.objects.get(name=category)
 	mess = Message.objects.get_or_create(category=cat,text=text)[0]
