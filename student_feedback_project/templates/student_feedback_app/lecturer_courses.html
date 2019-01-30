@@ -39,7 +39,10 @@ Courses
                     </div>
                   </div>
                   <div class="column right-number">
-                    {{ course.students.all|length }}
+                    <div style="text-align:center">
+                      {{ course.students.all|length }}<br />
+                      <h6>STUDENTS</h6>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -80,7 +83,10 @@ Courses
               <i class="material-icons" style="font-size:70%;">calendar_today</i> {{ fb.datetime_given }}
             </div>
             <div class="column right-number">
-              {{ fb.points }}
+              <div style="text-align:center">
+                {{ fb.points }}<br />
+                <h6>POINTS</h6>
+                </div>
               </div>
             </div>
           </div>

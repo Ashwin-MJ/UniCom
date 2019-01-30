@@ -103,14 +103,17 @@ Add Feedback
                       {% if fb.optional_message %}
                       <em>"{{ fb.optional_message }}"</em>
                       {% endif %}
-                      <footer>{{fb.lecturer.lecturer.username}}</footer>
+                      <footer>{{fb.from_user.username}}</footer>
                     </blockquote>
                   </div>
                   Course:<em> {{fb.which_course.subject}}</em><br />
                   <i class="material-icons" style="font-size:70%;">calendar_today</i> {{ fb.datetime_given }}
                 </div>
                 <div class="column right-number">
-                  {{ fb.points }}
+                  <div style="text-align:center">
+                    {{ fb.points }}<br />
+                    <h6>POINTS</h6>
+                    </div>
                   </div>
                 </div>
               </div>

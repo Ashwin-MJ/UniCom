@@ -31,6 +31,11 @@ $('#individual-feedback-form').submit(function(){
     }
   })
 
+  if(res.length < 1){
+    alert("Please select at least 1 student to provide individual feedback.");
+    return false;
+  }
+
   var course_slug = document.getElementsByClassName("container")[1].id;
 
   var jsonText = JSON.stringify(res);

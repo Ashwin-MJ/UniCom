@@ -27,7 +27,7 @@ Home Page
               <div class="card custom-card">
                 <b class="card-sub-heading">{{ course.subject }}</b>
 
-                <div class="row" style="padding-bottom:1%">
+                <div class="row">
                   <div class="column left">
                     <div class="border">
                       <div class="course-info">
@@ -40,7 +40,10 @@ Home Page
                     </div>
                   </div>
                   <div class="column right-number">
-                    {{ course.students.all|length }}
+                    <div style="text-align:center">
+                      {{ course.students.all|length }}<br />
+                      <h6>STUDENTS</h6>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -68,14 +71,17 @@ Home Page
                   {% if fb.optional_message %}
                   <em>"{{ fb.optional_message }}"</em>
                   {% endif %}
-                  <footer>{{fb.student.student.username}}</footer>
+                  <footer>Given to {{fb.student.student.username}}</footer>
                 </blockquote>
               </div>
               Course:<em> {{fb.which_course.subject}}</em><br />
               <i class="material-icons" style="font-size:70%;">calendar_today</i> {{ fb.datetime_given }}
             </div>
             <div class="column right-number">
-              {{ fb.points }}
+              <div style="text-align:center">
+                {{ fb.points }}<br />
+                <h6>POINTS</h6>
+                </div>
               </div>
             </div>
           </div>

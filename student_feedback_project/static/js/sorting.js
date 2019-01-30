@@ -188,8 +188,11 @@ function show(sorted_fb, footerType){
               Course: <em>` + fb.courseName + `</em><br />
               <i class="material-icons" style="font-size:70%;">calendar_today</i>` + showDate
             + `</div>
-            <div class="column right-number">`
-            + fb.points
+            <div class="column right-number">
+							<div style="text-align:center">`
+            + fb.points + `<br />`
+						+ `<h6>POINTS</h6>`
+						+ `</div>`
             + `</div>
             </div>
           </div>`;
