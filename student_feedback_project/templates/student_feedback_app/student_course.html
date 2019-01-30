@@ -64,7 +64,10 @@
               <i class="material-icons" style="font-size:70%;">calendar_today</i> {{ fb.datetime_given }}
             </div>
             <div class="column right-number">
-              {{ fb.points }}
+              <div style="text-align:center">
+                {{ fb.points }}<br />
+                <h6>POINTS</h6>
+                </div>
               </div>
             </div>
           </div>
@@ -74,7 +77,6 @@
 	  <div class="button" style="padding-bottom:0px; padding-top:10px;">
           <button onclick="fetchStud('{{ course.subject }},{{ student.student.username }}', 'points', 'course-student')" type="button" class="btn btn-material btn-ripple">Sort by points</button>
           <button onclick="fetchStud('{{ course.subject }},{{ student.student.username }}', 'date', 'course-student')" type="button" class="btn btn-material btn-ripple">Sort by date</button>
-          <button onclick="fetchStud('{{ course.subject }},{{ student.student.username }}', 'course', 'course-student')" type="button" class="btn btn-material btn-ripple">Sort by course</button>
       </div>
     </div>
 

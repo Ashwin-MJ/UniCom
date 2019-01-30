@@ -37,7 +37,7 @@ Home Page
 
 	var chart = new CanvasJS.Chart("chartContainer", {
 	title:{
-		text: "Category Scores"
+		text: "Attribute Graph"
 	},
 	axisY:[{
 		title: "Points",
@@ -97,7 +97,10 @@ function toggleDataSeries(e) {
               <i class="material-icons" style="font-size:70%;">calendar_today</i> {{ fb.datetime_given }}
             </div>
             <div class="column right-number">
-              {{ fb.points }}
+              <div style="text-align:center">
+                {{ fb.points }}<br />
+                <h6>POINTS</h6>
+                </div>
               </div>
             </div>
           </div>
@@ -113,15 +116,21 @@ function toggleDataSeries(e) {
 
 
     <div class="" style="width:40%">
-      <h3 class="card-body text-center custom-card-title">Attribute Graph</h3>
-      <div class="card-body" style="padding-top:0px">
-        <p class="card-text"></p>
-        <div class="card custom-card">
-          <b> Total Score: </b>
-          {{student.score}}<br />
+      <div class="card custom-card">
+        <div class="row">
+          <div class="column left-category">
+            <b class="custom-card-title">Total Score:</b>
+            </div>
+          <div class="column right-number" style="margin-bottom:0">
+              {{ student.score }}
+            </div>
+          </div>
         </div>
+
+      <div class="card-body" style="padding-top:0px">
+
         <div class="card custom-card">
-          <div id="chartContainer" style="height: 300px; width: 100%;"></div>
+          <div id="chartContainer" style="height: 400px; width: 100%;"></div>
             <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
         </div>
       </div>

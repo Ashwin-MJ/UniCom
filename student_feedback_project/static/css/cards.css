@@ -78,9 +78,7 @@
   color: teal;
   float: right;
 }
-.quote footer:before {
-  content: '\2015';
-}
+
 .quote:after {
   content: '\201D';
   position: absolute;

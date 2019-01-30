@@ -1,0 +1,540 @@
+[
+{
+    "model": "student_feedback_app.user",
+    "pk": 1,
+    "fields": {
+        "password": "pbkdf2_sha256$120000$GVKxe0VAwNS3$jeh0pYTI77TJl0u7N5Rdp/S0xoW0AGyNJySrZLVci2s=",
+        "last_login": null,
+        "is_superuser": false,
+        "first_name": "",
+        "last_name": "",
+        "email": "sarah_fields@student.gla.ac.uk",
+        "is_staff": false,
+        "date_joined": "2019-01-30T11:54:59.025Z",
+        "slug": "sarah-fields",
+        "profile_picture": "profile_pictures/default_image.jpg",
+        "id_number": "1402789",
+        "username": "Sarah Fields",
+        "is_student": true,
+        "is_lecturer": false,
+        "is_active": true,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "student_feedback_app.user",
+    "pk": 2,
+    "fields": {
+        "password": "pbkdf2_sha256$120000$JFPWHOsEJpRX$hZdMpYroBu/Hruy7mm8KRsfdyGl+hDPGxUaXPFoEJrc=",
+        "last_login": null,
+        "is_superuser": false,
+        "first_name": "",
+        "last_name": "",
+        "email": "james_smith@student.gla.ac.uk",
+        "is_staff": false,
+        "date_joined": "2019-01-30T11:55:01.273Z",
+        "slug": "james-smith",
+        "profile_picture": "profile_pictures/default_image.jpg",
+        "id_number": "1402001",
+        "username": "James Smith",
+        "is_student": true,
+        "is_lecturer": false,
+        "is_active": true,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "student_feedback_app.user",
+    "pk": 3,
+    "fields": {
+        "password": "pbkdf2_sha256$120000$9EizaLTCyujO$l1dG1P2BKbrT4o6DOhDSC2LW3zK8V8uLKoED4gB9UPY=",
+        "last_login": null,
+        "is_superuser": false,
+        "first_name": "",
+        "last_name": "",
+        "email": "sophie_clover@student.gla.ac.uk",
+        "is_staff": false,
+        "date_joined": "2019-01-30T11:55:02.972Z",
+        "slug": "sophie-clover",
+        "profile_picture": "profile_pictures/default_image.jpg",
+        "id_number": "1403389",
+        "username": "Sophie Clover",
+        "is_student": true,
+        "is_lecturer": false,
+        "is_active": true,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "student_feedback_app.user",
+    "pk": 4,
+    "fields": {
+        "password": "pbkdf2_sha256$120000$9MVr0MH9FJPB$nXsIasSHhNbtPDn6VJ8bVARDYtlIJx8n2OBp/jv38i0=",
+        "last_login": null,
+        "is_superuser": false,
+        "first_name": "",
+        "last_name": "",
+        "email": "jake_white@student.gla.ac.uk",
+        "is_staff": false,
+        "date_joined": "2019-01-30T11:55:03.971Z",
+        "slug": "jake-white",
+        "profile_picture": "profile_pictures/default_image.jpg",
+        "id_number": "002489",
+        "username": "Jake White",
+        "is_student": true,
+        "is_lecturer": false,
+        "is_active": true,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "student_feedback_app.user",
+    "pk": 5,
+    "fields": {
+        "password": "pbkdf2_sha256$120000$rHUsSGjlIVV5$L548rcHXqd6u2U/IYBFHcDFVY5TKVkKatKLyNH9GDK0=",
+        "last_login": null,
+        "is_superuser": false,
+        "first_name": "",
+        "last_name": "",
+        "email": "jane_mitchell@student.gla.ac.uk",
+        "is_staff": false,
+        "date_joined": "2019-01-30T11:55:05.053Z",
+        "slug": "jane-mitchell",
+        "profile_picture": "profile_pictures/default_image.jpg",
+        "id_number": "1402781",
+        "username": "Jane Mitchell",
+        "is_student": true,
+        "is_lecturer": false,
+        "is_active": true,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "student_feedback_app.user",
+    "pk": 6,
+    "fields": {
+        "password": "pbkdf2_sha256$120000$QBKz99mrTf7H$kKLXkA6d+lmz0uI66PulAps+PA/8mwZXJSjNMGrEXHU=",
+        "last_login": null,
+        "is_superuser": false,
+        "first_name": "",
+        "last_name": "",
+        "email": "wulfric_gwenda@student.gla.ac.uk",
+        "is_staff": false,
+        "date_joined": "2019-01-30T11:55:06.482Z",
+        "slug": "wulfric-gwenda",
+        "profile_picture": "profile_pictures/default_image.jpg",
+        "id_number": "14021382",
+        "username": "Wulfric Gwenda",
+        "is_student": true,
+        "is_lecturer": false,
+        "is_active": true,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "student_feedback_app.user",
+    "pk": 7,
+    "fields": {
+        "password": "pbkdf2_sha256$120000$5ZMVLjtFtxyi$nx/+TKmjmwT53QYl7jzDK5XHgiHc8qepYyprS7j/kv0=",
+        "last_login": null,
+        "is_superuser": false,
+        "first_name": "",
+        "last_name": "",
+        "email": "ralph_merthin@student.gla.ac.uk",
+        "is_staff": false,
+        "date_joined": "2019-01-30T11:55:07.479Z",
+        "slug": "ralph-merthin",
+        "profile_picture": "profile_pictures/default_image.jpg",
+        "id_number": "8352781",
+        "username": "Ralph Merthin",
+        "is_student": true,
+        "is_lecturer": false,
+        "is_active": true,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "student_feedback_app.user",
+    "pk": 8,
+    "fields": {
+        "password": "pbkdf2_sha256$120000$TabjBVvdykLq$tthF7H/kd38+TTP4a5ORHqamSe+QT9y2GoLcGP0vxTQ=",
+        "last_login": null,
+        "is_superuser": false,
+        "first_name": "",
+        "last_name": "",
+        "email": "thomas_langley@student.gla.ac.uk",
+        "is_staff": false,
+        "date_joined": "2019-01-30T11:55:09.047Z",
+        "slug": "thomas-langley",
+        "profile_picture": "profile_pictures/default_image.jpg",
+        "id_number": "1439181",
+        "username": "Thomas Langley",
+        "is_student": true,
+        "is_lecturer": false,
+        "is_active": true,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "student_feedback_app.user",
+    "pk": 9,
+    "fields": {
+        "password": "pbkdf2_sha256$120000$Opmx33ChActa$Q5aGExYcOJ0ZOGSq0Aelb7fpX8q1R7S9x2qDMx7muxU=",
+        "last_login": null,
+        "is_superuser": false,
+        "first_name": "",
+        "last_name": "",
+        "email": "scott_roy@glasgow.ac.uk",
+        "is_staff": false,
+        "date_joined": "2019-01-30T11:55:10.688Z",
+        "slug": "prof-roy",
+        "profile_picture": "profile_pictures/default_image.jpg",
+        "id_number": "00001",
+        "username": "Prof. Roy",
+        "is_student": false,
+        "is_lecturer": true,
+        "is_active": true,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "student_feedback_app.user",
+    "pk": 10,
+    "fields": {
+        "password": "pbkdf2_sha256$120000$3X4C2JJF17me$EeU7G7wO8epMY+/JwUIHTAX3s/PoyiZfBf1KPwoaZ8I=",
+        "last_login": null,
+        "is_superuser": false,
+        "first_name": "",
+        "last_name": "",
+        "email": "callum_cossar@glasgow.ac.uk",
+        "is_staff": false,
+        "date_joined": "2019-01-30T11:55:11.703Z",
+        "slug": "dr-cossar",
+        "profile_picture": "profile_pictures/default_image.jpg",
+        "id_number": "00002",
+        "username": "Dr. Cossar",
+        "is_student": false,
+        "is_lecturer": true,
+        "is_active": true,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "student_feedback_app.studentprofile",
+    "pk": 1,
+    "fields": {
+        "score": 4,
+        "courses": [
+            "ARH01",
+            "MAT1Q",
+            "POL01"
+        ]
+    }
+},
+{
+    "model": "student_feedback_app.studentprofile",
+    "pk": 2,
+    "fields": {
+        "score": 3,
+        "courses": [
+            "ARH01",
+            "MAT1Q"
+        ]
+    }
+},
+{
+    "model": "student_feedback_app.studentprofile",
+    "pk": 3,
+    "fields": {
+        "score": 0,
+        "courses": [
+            "MAT1Q"
+        ]
+    }
+},
+{
+    "model": "student_feedback_app.studentprofile",
+    "pk": 4,
+    "fields": {
+        "score": 5,
+        "courses": [
+            "ARH01"
+        ]
+    }
+},
+{
+    "model": "student_feedback_app.studentprofile",
+    "pk": 5,
+    "fields": {
+        "score": 5,
+        "courses": [
+            "ARH01",
+            "POL01"
+        ]
+    }
+},
+{
+    "model": "student_feedback_app.studentprofile",
+    "pk": 6,
+    "fields": {
+        "score": 40,
+        "courses": [
+            "POL01"
+        ]
+    }
+},
+{
+    "model": "student_feedback_app.studentprofile",
+    "pk": 7,
+    "fields": {
+        "score": 4,
+        "courses": [
+            "MAT1Q",
+            "POL01"
+        ]
+    }
+},
+{
+    "model": "student_feedback_app.studentprofile",
+    "pk": 8,
+    "fields": {
+        "score": 16,
+        "courses": [
+            "ARH01",
+            "MAT1Q"
+        ]
+    }
+},
+{
+    "model": "student_feedback_app.studentprofile",
+    "pk": 9,
+    "fields": {
+        "score": 0,
+        "courses": []
+    }
+},
+{
+    "model": "student_feedback_app.studentprofile",
+    "pk": 10,
+    "fields": {
+        "score": 0,
+        "courses": []
+    }
+},
+{
+    "model": "student_feedback_app.course",
+    "pk": "ARH01",
+    "fields": {
+        "subject": "ArtHistory01",
+        "course_description": "A history of art between Middle Ages and High Renaissance periods",
+        "subject_slug": "arh01",
+        "lecturer": 9,
+        "course_token": "L6022BT",
+        "students": [
+            1,
+            2,
+            4,
+            5,
+            8
+        ]
+    }
+},
+{
+    "model": "student_feedback_app.course",
+    "pk": "MAT1Q",
+    "fields": {
+        "subject": "Maths1Q",
+        "course_description": "A base look at mathematical functions in the real world",
+        "subject_slug": "mat1q",
+        "lecturer": 10,
+        "course_token": "DG4IO7R",
+        "students": [
+            1,
+            2,
+            3,
+            7,
+            8
+        ]
+    }
+},
+{
+    "model": "student_feedback_app.course",
+    "pk": "POL01",
+    "fields": {
+        "subject": "Polish01",
+        "course_description": "An introductory class on the polish language",
+        "subject_slug": "pol01",
+        "lecturer": 9,
+        "course_token": "HSJH92L",
+        "students": [
+            1,
+            5,
+            6,
+            7
+        ]
+    }
+},
+{
+    "model": "student_feedback_app.lecturerprofile",
+    "pk": 9,
+    "fields": {}
+},
+{
+    "model": "student_feedback_app.lecturerprofile",
+    "pk": 10,
+    "fields": {}
+},
+{
+    "model": "student_feedback_app.feedback",
+    "pk": 1,
+    "fields": {
+        "date_given": "2019-01-30T11:55:15.799Z",
+        "pre_defined_message": "Good job answering the question today!",
+        "points": 4,
+        "from_user": 10,
+        "student": 1,
+        "which_course": "MAT1Q",
+        "datetime_given": "2019-01-30T11:55:15.799Z",
+        "optional_message": "",
+        "category": "Listening"
+    }
+},
+{
+    "model": "student_feedback_app.feedback",
+    "pk": 2,
+    "fields": {
+        "date_given": "2019-01-30T11:55:16.218Z",
+        "pre_defined_message": "Excellent team work today!",
+        "points": 3,
+        "from_user": 10,
+        "student": 2,
+        "which_course": "MAT1Q",
+        "datetime_given": "2019-01-30T11:55:16.218Z",
+        "optional_message": "I noticed how you helped Link complete his work.",
+        "category": "Cooperation"
+    }
+},
+{
+    "model": "student_feedback_app.feedback",
+    "pk": 3,
+    "fields": {
+        "date_given": "2019-01-30T11:55:16.615Z",
+        "pre_defined_message": "Very good question today. I'm sure you helped a lot of students by asking it!",
+        "points": 5,
+        "from_user": 9,
+        "student": 5,
+        "which_course": "ARH01",
+        "datetime_given": "2019-01-30T11:55:16.615Z",
+        "optional_message": "If you require further clarification, feel free to drop by my office.",
+        "category": "Participation"
+    }
+},
+{
+    "model": "student_feedback_app.feedback",
+    "pk": 4,
+    "fields": {
+        "date_given": "2019-01-30T11:55:17.024Z",
+        "pre_defined_message": "Thanks for helping me out in class today!",
+        "points": 5,
+        "from_user": 1,
+        "student": 4,
+        "which_course": "ARH01",
+        "datetime_given": "2019-01-30T11:55:17.024Z",
+        "optional_message": "",
+        "category": "Helpfulness"
+    }
+},
+{
+    "model": "student_feedback_app.category",
+    "pk": "Cooperation",
+    "fields": {}
+},
+{
+    "model": "student_feedback_app.category",
+    "pk": "Helpfulness",
+    "fields": {}
+},
+{
+    "model": "student_feedback_app.category",
+    "pk": "Listening",
+    "fields": {}
+},
+{
+    "model": "student_feedback_app.category",
+    "pk": "Participation",
+    "fields": {}
+},
+{
+    "model": "student_feedback_app.message",
+    "pk": "Excellent team work today!",
+    "fields": {
+        "category": "Cooperation"
+    }
+},
+{
+    "model": "student_feedback_app.message",
+    "pk": "Good job answering the question today!",
+    "fields": {
+        "category": "Listening"
+    }
+},
+{
+    "model": "student_feedback_app.message",
+    "pk": "Great marks in todays quiz!",
+    "fields": {
+        "category": "Participation"
+    }
+},
+{
+    "model": "student_feedback_app.message",
+    "pk": "I could tell that you were very attentive in class today!",
+    "fields": {
+        "category": "Listening"
+    }
+},
+{
+    "model": "student_feedback_app.message",
+    "pk": "Thank you for assisting your classmate in answering their question!",
+    "fields": {
+        "category": "Cooperation"
+    }
+},
+{
+    "model": "student_feedback_app.message",
+    "pk": "Thank you for noticing my error in today's class!",
+    "fields": {
+        "category": "Listening"
+    }
+},
+{
+    "model": "student_feedback_app.message",
+    "pk": "Thanks for helping me out in class today!",
+    "fields": {
+        "category": "Helpfulness"
+    }
+},
+{
+    "model": "student_feedback_app.message",
+    "pk": "Very good question today. I'm sure you helped a lot of students by asking it!",
+    "fields": {
+        "category": "Participation"
+    }
+},
+{
+    "model": "student_feedback_app.message",
+    "pk": "You made excellent points in todays discussion!",
+    "fields": {
+        "category": "Participation"
+    }
+}
+]
