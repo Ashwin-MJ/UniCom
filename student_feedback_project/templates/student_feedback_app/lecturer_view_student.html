@@ -18,7 +18,7 @@ Currently viewing <br />
         <hr />
         <div class="card-body scroll">
           {% for course,score in courses.items %}
-              <a style="text-decoration: none; color: black" href="{% url 'student_course' course.subject_slug%}">
+
                 <div class="card custom-card">
                   <b class="card-sub-heading">{{ course.subject }}</b>
 
@@ -39,7 +39,7 @@ Currently viewing <br />
                       </div>
                     </div>
                   </div>
-              </a>
+              
             {% endfor %}
         </div>
       </div>
@@ -68,7 +68,7 @@ Currently viewing <br />
                       {% if fb.optional_message %}
                       <em>"{{ fb.optional_message }}"</em>
                       {% endif %}
-                      <footer>{{fb.student.student.username}}</footer>
+                      <footer>{{fb.from_user.username}}</footer>
                     </blockquote>
                   </div>
                   Course:<em> {{fb.which_course.subject}}</em><br />
