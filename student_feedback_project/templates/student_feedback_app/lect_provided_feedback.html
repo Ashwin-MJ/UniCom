@@ -33,7 +33,7 @@ Provided Feedback
                 {% if fb.optional_message %}
                 <em>"{{ fb.optional_message }}"</em>
                 {% endif %}
-                <footer>{{fb.student.student.username}}</footer>
+                <footer>Given to {{fb.student.student.username}}</footer>
               </blockquote>
             </div>
             Course:<em> {{fb.which_course.subject}}</em><br />
@@ -50,7 +50,7 @@ Provided Feedback
           <button onclick="fetchStud('{{ lecturer.lecturer.username }}', 'points', 'from_user')" type="button" class="btn btn-material btn-ripple">Sort by points</button>
           <button onclick="fetchStud('{{ lecturer.lecturer.username }}', 'date', 'from_user')" type="button" class="btn btn-material btn-ripple">Sort by date</button>
           <button onclick="fetchStud('{{ lecturer.lecturer.username }}', 'course', 'from_user')" type="button" class="btn btn-material btn-ripple">Sort by course</button>
-        </div>  
+        </div>
   </div>
 </div>
 

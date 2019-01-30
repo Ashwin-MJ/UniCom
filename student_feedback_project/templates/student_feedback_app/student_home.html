@@ -113,13 +113,21 @@ function toggleDataSeries(e) {
 
 
     <div class="" style="width:40%">
-      <h3 class="card-body text-center custom-card-title">Attribute Graph</h3>
-      <div class="card-body" style="padding-top:0px">
-        <p class="card-text"></p>
-        <div class="card custom-card">
-          <b> Total Score: </b>
-          {{student.score}}<br />
+      <div class="card custom-card">
+        <div class="row">
+          <div class="column left-category">
+            <b class="custom-card-title">Total Score:</b>
+            </div>
+          <div class="column right-number" style="margin-bottom:0">
+              {{ student.score }}
+            </div>
+          </div>
         </div>
+
+      <h3 class="card-body text-center custom-card-title">Attribute Graph</h3>
+      <hr />
+      <div class="card-body" style="padding-top:0px">
+
         <div class="card custom-card">
           <div id="chartContainer" style="height: 300px; width: 100%;"></div>
             <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
