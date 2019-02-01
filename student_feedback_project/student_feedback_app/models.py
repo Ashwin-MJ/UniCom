@@ -64,6 +64,15 @@ class StudentProfile(models.Model):
     degree = models.CharField(max_length=40, default="Degree not specified")
     bio = models.CharField(max_length=250, default="Biography not specified")
 
+    def __lt__(self, other):
+        return self.student.username < other.student.username
+
+    def __gt__(self, other):
+        return self.student.username > other.student.username
+
+    def __eq__(self, other):
+        return self.student.username == other.student.username
+
     def get_score_for_course(self,course):
         score = 0
         for fb in self.feedback_set.all():
@@ -134,7 +143,6 @@ class Course(models.Model):
         temp_dict = {}
         for each_stud in self.students.all():
             temp_dict[each_stud] = each_stud.get_score_for_course(self.subject)
-
         return temp_dict
 
     def get_leaderboard(self):
