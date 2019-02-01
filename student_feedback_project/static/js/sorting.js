@@ -165,7 +165,7 @@ function show(sorted_fb, footerType){
 		  var strTime = hours + ':' + minutes + ' '+ ampm;
 		var showDate = ' ' + month[myDate.getMonth()] + '. ' + myDate.getDate() + ', ' + myDate.getFullYear() + ', ' + strTime;
 		if(footerType == "student")
-			var footer = fb.student;
+			var footer = 'Given to ' + fb.student;
 		else
 			var footer = fb.from_user;
 		if(fb['is_recent']){
