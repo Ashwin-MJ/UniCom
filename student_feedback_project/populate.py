@@ -61,28 +61,28 @@ def populate():
 		"score":0,
 		"courses":["ARH01", "POL01"]
 		},
-                {"name": "Wulfric Gwenda",
+        {"name": "Wulfric Gwenda",
 		"student_number": "14021382",
 		"password": "password",
 		"email": "wulfric_gwenda@student.gla.ac.uk",
 		"score":40,
 		"courses":["POL01"]
 		},
-                {"name": "Ralph Merthin",
+        {"name": "Ralph Merthin",
 		"student_number": "8352781",
 		"password": "password",
 		"email": "ralph_merthin@student.gla.ac.uk",
 		"score":4,
 		"courses":["MAT1Q", "POL01"]
 		},
-                {"name": "Thomas Langley",
+        {"name": "Thomas Langley",
 		"student_number": "1439181",
 		"password": "password",
 		"email": "thomas_langley@student.gla.ac.uk",
 		"score":16,
 		"courses":["ARH01", "MAT1Q"]
 		}
-                ]
+        ]
 
 	lecturers = [
 		{"name": "Prof. Roy",
@@ -100,197 +100,254 @@ def populate():
 
 	feedback = [
 		{"feedback_id": 1,
-		"category": "Listening",
+		"category": "Active Participation",
 		"points": 4,
 		"from_user": "00002",
 		"student": "1402789",
 		"course_code" : "MAT1Q",
-		"pre_defined_message": "Good job answering the question today!",
+		"pre_defined_message": "Great participation in class",
 		"optional_message": ""},
 		{"feedback_id": 2,
-		"category": "Cooperation",
+		"category": "Co-operation & Communication",
 		"points": 3,
 		"from_user": "00002",
 		"student": "1402001",
 		"course_code" : "MAT1Q",
-		"pre_defined_message": "Excellent team work today!",
+		"pre_defined_message": "Outstanding teamwork!",
 		"optional_message": "I noticed how you helped Jane complete her work."},
 		{"feedback_id": 3,
-		 "category": "Listening",
+		 "category": "Critical Thinking & Analysis",
 		 "points": 5,
 		 "from_user": "00001",
 		 "student": "1402001",
 		 "course_code": "MAT1Q",
-		 "pre_defined_message": "Good job answering the question today!",
+		 "pre_defined_message": "Brilliant analytical skills!",
 		 "optional_message": ""},
 		{"feedback_id": 4,
-		 "category": "Participation",
+		 "category": "Active Participation",
 		 "points": 3,
 		 "from_user": "00002",
 		 "student": "1402001",
 		 "course_code": "MAT1Q",
-		 "pre_defined_message": "Very good question today. I'm sure you helped a lot of students by asking it!",
+		 "pre_defined_message": "You were really engaged in the discussion",
 		 "optional_message": ""},
 		{"feedback_id": 5,
-		"category": "Participation",
+		"category": "Active Participation",
 		"points": 5,
 		"from_user": "00001",
 		"student": "1402781",
 		"course_code": "ARH01",
-		"pre_defined_message": "Very good question today. I'm sure you helped a lot of students by asking it!",
-		"optional_message": "If you require further clarification, feel free to drop by my office."},
+		"pre_defined_message": "Would love to hear your ideas more",
+		"optional_message": "Feel free to drop by my office."},
 		{"feedback_id": 6,
-		"category": "Helpfulness",
+		"category": "General",
 		"points": 5,
 		"from_user": "1402789",
 		"student": "002489",
 		"course_code": "ARH01",
-		"pre_defined_message": "Thanks for helping me out in class today!",
+		"pre_defined_message": "Thank you for your help!",
 		"optional_message": ""},
 		{"feedback_id": 7,
-		 "category": "Participation",
+		 "category": "Intellectual Curiosity",
 		 "points": 5,
 		 "from_user": "00001",
 		 "student": "1402001",
 		 "course_code": "MAT1Q",
-		 "pre_defined_message": "Great marks in todays quiz!",
+		 "pre_defined_message": "You were very open to new ideas",
 		 "optional_message": ""},
 		{"feedback_id": 8,
-		 "category": "Listening",
+		 "category": "Understanding & Competence",
 		 "points": 1,
 		 "from_user": "00001",
 		 "student": "1402001",
 		 "course_code": "MAT1Q",
-		 "pre_defined_message": "Thank you for noticing my error in today's class!",
+		 "pre_defined_message": "Basic understanding of concepts",
 		 "optional_message": ""},
 		{"feedback_id": 9,
-		 "category": "Participation",
+		 "category": "Co-operation & Communication",
 		 "points": 4,
 		 "from_user": "00001",
 		 "student": "1402001",
 		 "course_code": "MAT1Q",
-		 "pre_defined_message": "You made excellent points in todays discussion!",
+		 "pre_defined_message": "Try to include others’ views in your discussions",
 		 "optional_message": ""},
 		{"feedback_id": 10,
-		 "category": "Participation",
+		 "category": "Co-operation & Communication",
 		 "points": 4,
 		 "from_user": "00001",
 		 "student": "1402001",
 		 "course_code": "MAT1Q",
-		 "pre_defined_message": "You made excellent points in todays discussion!",
+		 "pre_defined_message": "You communicate really well",
 		 "optional_message": ""},
 		{"feedback_id": 11,
-		 "category": "Participation",
+		 "category": "Co-operation & Communication",
 		 "points": 4,
 		 "from_user": "1402001",
 		 "student": "1402789",
 		 "course_code": "MAT1Q",
-		 "pre_defined_message": "You made excellent points in todays discussion!",
+		 "pre_defined_message": "Kindly helped others",
 		 "optional_message": ""},
 		{"feedback_id": 12,
-		 "category": "Cooperation",
+		 "category": "Quality of Contribution",
 		 "points": 3,
 		 "from_user": "1402001",
 		 "student": "1402781",
 		 "course_code": "MAT1Q",
-		 "pre_defined_message": "Excellent team work today!",
+		 "pre_defined_message": "Try to dig deeper into the issue in your discussion",
 		 "optional_message": ""},
 		{"feedback_id": 13,
-		 "category": "Listening",
+		 "category": "Quality of Contribution",
 		 "points": 2,
 		 "from_user": "1402001",
 		 "student": "1439181",
 		 "course_code": "MAT1Q",
-		 "pre_defined_message": "Good job answering the question today!",
+		 "pre_defined_message": "You made an excellent point that showed deep thinking",
 		 "optional_message": ""},
 		{"feedback_id": 14,
-		 "category": "Listening",
+		 "category": "Quality of Contribution",
 		 "points": 3,
 		 "from_user": "1402001",
 		 "student": "8352781",
 		 "course_code": "MAT1Q",
-		 "pre_defined_message": "Thank you for noticing my error in today's class!",
+		 "pre_defined_message": "What a great idea!",
 		 "optional_message": ""},
 		{"feedback_id": 15,
-		 "category": "Cooperation",
+		 "category": "Intellectual Curiosity",
 		 "points": 5,
 		 "from_user": "1402001",
 		 "student": "1402781",
 		 "course_code": "MAT1Q",
-		 "pre_defined_message": "Excellent team work today!",
+		 "pre_defined_message": "You asked a really good question",
 		 "optional_message": ""},
 		{"feedback_id": 16,
-		 "category": "Confidence",
+		 "category": "Intellectual Curiosity",
 		 "points": 2,
 		 "from_user": "00001",
 		 "student": "1402001",
 		 "course_code": "MAT1Q",
-		 "pre_defined_message": "You performed well in front of the class today!",
+		 "pre_defined_message": "You are not afraid to challenge and question others’ ideas",
 		 "optional_message": ""},
 		{"feedback_id": 17,
-		 "category": "Communication",
+		 "category": "Intellectual Curiosity",
 		 "points": 4,
 		 "from_user": "00001",
 		 "student": "1402001",
 		 "course_code": "MAT1Q",
-		 "pre_defined_message": "You stated your thoughts and ideas very clearly!",
+		 "pre_defined_message": "You really challenged the status quo",
 		 "optional_message": ""},
 		{"feedback_id": 18,
-		 "category": "Determination",
+		 "category": "Intellectual Curiosity",
 		 "points": 2,
 		 "from_user": "00001",
 		 "student": "1402001",
 		 "course_code": "MAT1Q",
-		 "pre_defined_message": "You stuck at the problem until it was solved!",
+		 "pre_defined_message": "It’s good to think out of the box sometimes",
 		 "optional_message": ""},
 		{"feedback_id": 19,
-		 "category": "Eagerness",
+		 "category": "General",
 		 "points": 1,
 		 "from_user": "00001",
 		 "student": "1402001",
 		 "course_code": "MAT1Q",
-		 "pre_defined_message": "You were excited to get started today!",
+		 "pre_defined_message": "Welcome to the class!",
 		 "optional_message": ""},
 		]
 
 	categories = [
-		{"name" : "Listening"},
-		{"name" : "Cooperation"},
-		{"name" : "Participation"},
-		{"name" : "Helpfulness"},
-		{"name": "Determination"},
-		{"name": "Eagerness"},
-		{"name": "Communication"},
-		{"name": "Confidence"},
+		{"name": "Active Participation"},
+		{"name": "Quality of Contribution"},
+		{"name": "Co-operation & Communication"},
+		{"name": "Critical Thinking & Analysis"},
+		{"name": "Understanding & Competence"},
+		{"name": "Hard Work"},
+		{"name": "Intellectual Curiosity"},
+		{"name": "General"}
 	]
 
 	saved_messages = [
-		{"category" : "Listening",
-		"text": "Good job answering the question today!"},
-		{"category" : "Listening",
-		"text": "I could tell that you were very attentive in class today!"},
-		{"category" : "Listening",
-		"text": "Thank you for noticing my error in today's class!"},
-		{"category" : "Cooperation",
-		"text": "Thank you for assisting your classmate in answering their question!"},
-		{"category" : "Cooperation",
-		"text": "Excellent team work today!"},
-		{"category" : "Participation",
-		"text": "Great marks in todays quiz!"},
-		{"category" : "Participation",
-		"text": "You made excellent points in todays discussion!"},
-		{"category" : "Participation",
-		"text": "Very good question today. I'm sure you helped a lot of students by asking it!"},
-		{"category" : "Helpfulness",
-		"text": "Thanks for helping me out in class today!"},
-		{"category" : "Determination",
-		 "text" : "You stuck at the problem until it was solved!"},
-		{"category": "Eagerness",
-		 "text": "You were excited to get started today!"},
-		{"category": "Communication",
-		 "text": "You stated your thoughts and ideas very clearly!"},
-		{"category": "Confidence",
-		 "text": "You performed well in front of the class today!"},
+		{"category" : "Active Participation",
+		 "messages" : ["Great participation in class",
+		 				"You were really engaged in the discussion",
+						"You gave lots of ideas!",
+						"You did lots of listening",
+						"Would love to hear your ideas more"
+						]
+		},
+
+		{"category" : "Quality of Contribution",
+		 "messages" : ["Marvellous work in discussion!",
+		 				"Great quality contribution",
+						"You made an excellent point that showed deep thinking",
+						"What a great idea!",
+						"You were very reflective",
+						"Try to dig deeper into the issue in your discussion"
+						]
+		},
+
+		{"category" : "Co-operation & Communication",
+		 "messages" : ["Outstanding teamwork!",
+		 				"You really listened to your classmates!",
+						"Kindly helped others",
+						"Great leadership in discussions",
+						"You communicate really well",
+						"Brilliant in expressing your ideas",
+						"You bring out the best in others",
+						"What a great team!",
+						"Make sure you listen to other people",
+						"Try to include others’ views in your discussions"
+						]
+		},
+
+		{"category" : "Critical Thinking & Analysis",
+		 "messages" : ["You showed great critical reflections",
+		 				"Excellent application of concepts to the real-world!",
+						"Good awareness of different perspectives of the topic",
+						"Outstanding analysis of the topic",
+						"Brilliant analytical skills!",
+						"Good use of evidence to inform your thinking",
+						"Great synthesis of the literature",
+						"Try to engage with wider perspectives on the topic"
+						]
+		},
+
+		{"category" : "Understanding & Competence",
+		 "messages" : ["Impressive understanding of concepts and theories",
+		 				"Excellent understanding of the literature",
+						"Very good grasp of key materials",
+						"Basic understanding of concepts",
+						"Remember to do more readings next class",
+						"Make sure you understand the readings better"
+						]
+		},
+
+		{"category" : "Hard Work",
+		 "messages" : ["Always trying your best",
+		 				"Great attitude in class",
+						"Awesome improvements and glad to hear more!",
+						"Lots of preparation for class",
+						"You did lots of readings!",
+						"Remember to complete your work next class"
+						]
+		},
+
+		{"category" : "Intellectual Curiosity",
+		 "messages" : ["You asked a really good question",
+		 				"You are not afraid to challenge and question others’ ideas",
+						"You really challenged the status quo",
+						"Highly innovative way of thinking",
+						"You were very open to new ideas",
+						"A very reflective thinker",
+						"It’s good to think out of the box sometimes"
+						]
+		},
+
+		{"category" : "General",
+		 "messages" : ["Welcome to the class!",
+		 				"Remember to give feedback to other students and lecturers!",
+						"Thank you for your feedback",
+						"Thank you for your help!"
+						]
+		},
 		]
 
 
@@ -309,7 +366,7 @@ def populate():
 		cat = add_category(category.get("name"))
 
 	for message in saved_messages:
-		mess = add_message(message.get('category'),message.get('text'))
+		mess = add_message(message.get('category'),message.get('messages'))
 
 	for someFeedback in feedback:
 		feedback = add_feedback(someFeedback.get('feedback_id'),someFeedback.get('category'),someFeedback.get('points'),
@@ -320,69 +377,6 @@ def populate():
 	create_view_fb_stud()
 	create_view_fb_course()
 	create_view_fb_from_user()
-
-
-	print("Courses Added")
-	for each_course in Course.objects.all():
-		print("Subject: " + each_course.subject)
-		print("\tCourse Description: "+ each_course.course_description)
-		print("\tSubject_Slug: " + each_course.subject_slug)
-		print("\tCourse_Code: " + each_course.course_code)
-		print("\tCourse_token: "+ each_course.course_token)
-		print("\tLecturer: " + each_course.lecturer.lecturer.username)
-		print("\tStudents: ")
-		for student in each_course.students.all():
-			print("\t\t" + student.student.id_number + " " + student.student.username)
-
-	print("-----------------")
-	print("Students Added:")
-	for student in StudentProfile.objects.all():
-		print("Student Number: " + student.student.id_number)
-		print("\tStudent Email: " + student.student.email)
-		print("\tStudent Name: " + student.student.username)
-		print("\tStudent Slug: " + student.student.slug)
-		print("\tScore: " + str(student.score))
-		print("\tCourses: ")
-		for each_course in student.courses.all():
-			print("\t\t" + each_course.subject)
-		print("\tFeedback: ")
-		for fb in student.feedback_set.all():
-			print("\t\t" + str(fb.points) + " points for " + fb.category.name + " from " + fb.from_user.username)
-
-	print("-----------------")
-	print("Lecturers Added:")
-	for lecturer in LecturerProfile.objects.all():
-		print("Lecturer Number: " + lecturer.lecturer.id_number)
-		print("\tLecturer Email: " + lecturer.lecturer.email)
-		print("\tLecturer Name: " + lecturer.lecturer.username)
-		print("\tLecturer Slug: " + lecturer.lecturer.slug)
-		print("\tCourseses: ")
-		for each_course in lecturer.course_set.all():
-			print("\t\t" + each_course.subject)
-		print("\tFeedback Given:")
-		for fb in lecturer.lecturer.feedback_set.all():
-			print("\t\t" + str(fb.points) + " points given to " + fb.student.student.username + " for " + fb.category.name)
-
-
-	print("-----------------")
-	print("Feedback Added:")
-	for fb in Feedback.objects.all():
-		print("Feedback ID: " + str(fb.feedback_id))
-		print("\tPre Defined Message: " + fb.pre_defined_message.text)
-		print("\tOptional Message: " + fb.optional_message)
-		print("\tCategory: " + fb.category.name)
-		print("\tPoints Awarded: " + str(fb.points))
-		print("\tFrom User: " + fb.from_user.username)
-		print("\tStudent: " + fb.student.student.username)
-		print("\tCourse: " + fb.which_course.subject)
-
-	print("-----------------")
-	print("Views Added:")
-	print("Feedback_with_category")
-	print("Feedback_with_student")
-	print("Feedback_with_course")
-	print("Feedback_with_from_user")
-
 
 # function to add the view feedback with category
 def create_view_fb_cat():
@@ -491,17 +485,79 @@ def add_category(name):
 	cat.save()
 
 # Helper function to add pre defined message #needs categories in db
-def add_message(category,text):
+def add_message(category,messages):
 	cat = Category.objects.get(name=category)
-	mess = Message.objects.get_or_create(category=cat,text=text)[0]
-	mess.save()
-	cat.save()
-	return mess
+	for text in messages:
+		mess = Message.objects.get_or_create(category=cat,text=text)[0]
+		mess.save()
+		cat.save()
+	return messages
+
+def print_database():
+	print("Courses Added")
+	for each_course in Course.objects.all():
+		print("Subject: " + each_course.subject)
+		print("\tCourse Description: "+ each_course.course_description)
+		print("\tSubject_Slug: " + each_course.subject_slug)
+		print("\tCourse_Code: " + each_course.course_code)
+		print("\tCourse_token: "+ each_course.course_token)
+		print("\tLecturer: " + each_course.lecturer.lecturer.username)
+		print("\tStudents: ")
+		for student in each_course.students.all():
+			print("\t\t" + student.student.id_number + " " + student.student.username)
+
+	print("-----------------")
+	print("Students Added:")
+	for student in StudentProfile.objects.all():
+		print("Student Number: " + student.student.id_number)
+		print("\tStudent Email: " + student.student.email)
+		print("\tStudent Name: " + student.student.username)
+		print("\tStudent Slug: " + student.student.slug)
+		print("\tScore: " + str(student.score))
+		print("\tCourses: ")
+		for each_course in student.courses.all():
+			print("\t\t" + each_course.subject)
+		print("\tFeedback: ")
+		for fb in student.feedback_set.all():
+			print("\t\t" + str(fb.points) + " points for " + fb.category.name + " from " + fb.from_user.username)
+
+	print("-----------------")
+	print("Lecturers Added:")
+	for lecturer in LecturerProfile.objects.all():
+		print("Lecturer Number: " + lecturer.lecturer.id_number)
+		print("\tLecturer Email: " + lecturer.lecturer.email)
+		print("\tLecturer Name: " + lecturer.lecturer.username)
+		print("\tLecturer Slug: " + lecturer.lecturer.slug)
+		print("\tCourseses: ")
+		for each_course in lecturer.course_set.all():
+			print("\t\t" + each_course.subject)
+		print("\tFeedback Given:")
+		for fb in lecturer.lecturer.feedback_set.all():
+			print("\t\t" + str(fb.points) + " points given to " + fb.student.student.username + " for " + fb.category.name)
 
 
+	print("-----------------")
+	print("Feedback Added:")
+	for fb in Feedback.objects.all():
+		print("Feedback ID: " + str(fb.feedback_id))
+		print("\tPre Defined Message: " + fb.pre_defined_message.text)
+		print("\tOptional Message: " + fb.optional_message)
+		print("\tCategory: " + fb.category.name)
+		print("\tPoints Awarded: " + str(fb.points))
+		print("\tFrom User: " + fb.from_user.username)
+		print("\tStudent: " + fb.student.student.username)
+		print("\tCourse: " + fb.which_course.subject)
+
+	print("-----------------")
+	print("Views Added:")
+	print("Feedback_with_category")
+	print("Feedback_with_student")
+	print("Feedback_with_course")
+	print("Feedback_with_from_user")
 
 
 if __name__ == '__main__':
 	print('Populating Database...')
-	print('--------------------\n')
 	populate()
+	print('...Population Complete!')
+	# print_database()
