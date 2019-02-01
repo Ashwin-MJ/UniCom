@@ -288,7 +288,8 @@ def lecturer_course(request,subject_slug):
 
             # Add top students for each course. This requires editing models to store course in feedback
             fb = course.feedback_set.all().order_by('-datetime_given')
-            context_dict['students_with_score'] = course.get_students_with_score()
+            students = course.get_students_with_score()
+            context_dict['students_with_score'] = [(k, students[k]) for k in sorted(students)]
             context_dict['sorted_students'] = course.get_leaderboard()
             context_dict['feedback'] = fb
         except:

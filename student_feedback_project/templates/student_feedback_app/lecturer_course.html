@@ -23,13 +23,13 @@
         <h3 class="card-body text-center custom-card-title">Students</h3>
         <hr />
         <div id="all_students" class="card-body scroll">
-          {% for stud,score in students_with_score.items %}
+          {% for stud,score in students_with_score %}
           <div class="card students custom-card" id="{{ stud.student.id_number }}">
             <div class="row">
               <div class="column left">
                 <b class="card-sub-heading">{{ stud.student.username }}</b>
                 <div class="card-sub-heading">
-                  {{score }}
+                  {{ score }}
                   </div>
                 </div>
               <div class="column right">
