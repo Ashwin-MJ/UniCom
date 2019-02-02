@@ -254,14 +254,14 @@ def populate():
 		]
 
 	categories = [
-		{"name": "Active Participation", "colour" : "#FF0000"},
-		{"name": "Quality of Contribution", "colour": "#008000"},
-		{"name": "Co-operation & Communication", "colour": "#0000FF"},
-		{"name": "Critical Thinking & Analysis", "colour": "#800080"},
-		{"name": "Understanding & Competence", "colour": "#800000"},
-		{"name": "Hard Work", "colour": "#008080"},
-		{"name": "Intellectual Curiosity", "colour": "#FF00FF"},
-		{"name": "General", "colour": "#000000"}
+		{"name": "Active Participation", "colour" : "#F7D969"},
+		{"name": "Quality of Contribution", "colour": "#F16A43"},
+		{"name": "Co-operation & Communication", "colour": "#EC1C4B"},
+		{"name": "Critical Thinking & Analysis", "colour": "#A6206A"},
+		{"name": "Understanding & Competence", "colour": "#355C7D"},
+		{"name": "Hard Work", "colour": "#F8B195"},
+		{"name": "Intellectual Curiosity", "colour": "#F05053"},
+		{"name": "General", "colour": "#F9CDAE"}
 	]
 
 	saved_messages = [

@@ -97,7 +97,7 @@ class CategoryTestCase(TestCase):
 class MessageTestCase(TestCase):
 
     def setUp(self):
-        add_category("listening", "#008080")
+        add_category("listening", "#2F9395")
         add_message("listening", ["listened well"])
 
     def test_message_correct(self):
