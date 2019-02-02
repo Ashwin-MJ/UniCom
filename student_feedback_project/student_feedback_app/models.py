@@ -196,6 +196,10 @@ class Feedback(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=20, default="Empty",primary_key=True)
+
+    # Store the hex code for the colour field as a CharField. This can then be retrieved and
+    # used later as required
+    colour = models.CharField(max_length=6, default="#009999")
     # Can access messages associated with a given category using Category.message_set.all()
 
     def __str__(self):

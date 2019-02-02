@@ -43,7 +43,7 @@ class FeedbackTestCase(TestCase):
         add_course("Systems Programming 3", "SP3", "Introduction to Systems Programming using C and C++")
         add_lecturer("Wolf", "00001", "star", "wolf@star.com", ["SP3"])
         add_student("Bob", "3015244", "Bob@bob.bob", "Bob", 0, ["SP3"])
-        add_category("writing")
+        add_category("writing", "#008080")
         add_message("writing", ["wrote well"])
         add_feedback(1, "writing", 4, "00001", "3015244", "SP3", "wrote well", "good explanation of pointers")
 
@@ -88,7 +88,7 @@ class LecturerTestCase(TestCase):
 class CategoryTestCase(TestCase):
 
     def setUp(self):
-        add_category("listening")
+        add_category("listening", "#008080")
 
     def test_category_added_to_db(self):
         self.assertTrue(Category.objects.filter(name="listening").exists())
@@ -97,7 +97,7 @@ class CategoryTestCase(TestCase):
 class MessageTestCase(TestCase):
 
     def setUp(self):
-        add_category("listening")
+        add_category("listening", "#008080")
         add_message("listening", ["listened well"])
 
     def test_message_correct(self):
