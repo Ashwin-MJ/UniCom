@@ -24,7 +24,6 @@ def index(request):
 
 def my_profile(request):
     context_dict = {}
-
     if request.user.is_authenticated:
         if request.user.is_student:
             try:
@@ -52,6 +51,34 @@ def my_profile(request):
         return render(request, 'student_feedback_app/error_page.html', context_dict)
     return render(request, 'student_feedback_app/my_profile.html', context_dict)
 
+def edit_bio(request):
+    context_dict={}
+    if request.user.is_authenticated:
+        try:
+            if request.method == 'POST':
+                user = request.user
+                form = EditBioForm(request.POST)
+                if form.is_valid():
+                    new_bio=form.cleaned_data["bio"]
+                    new_degree=form.cleaned_data["degree"]
+                    user.degree=new_degree
+                    user.bio= new_bio
+                    user.save()
+                    return my_profile(request)
+                else:
+                    print(form.errors)
+            else:
+                form = EditBioForm()
+            context_dict["form"] = form
+            return render(request, 'student_feedback_app/edit_bio.html', context_dict)
+        except:
+            context_dict['error'] = "error"
+            return render(request, 'student_feedback_app/error_page.html', context_dict)
+    else:
+        context_dict['error'] = "auth"
+        return render(request, 'student_feedback_app/error_page.html', context_dict, )
+    return render(request, 'student_feedback_app/student_profile.html', context_dict, )
+
 def student_home(request):
     context_dict={}
     fbCat = {}
@@ -78,37 +105,6 @@ def student_home(request):
         context_dict['error'] = "auth"
         return render(request, 'student_feedback_app/error_page.html', context_dict)
     return render(request, 'student_feedback_app/student_home.html', context_dict)
-
-def edit_bio(request):
-    context_dict={}
-    if request.user.is_authenticated and request.user.is_student:
-        try:
-            stud = StudentProfile.objects.get(student=request.user)
-            context_dict['student'] = stud
-            if request.method == 'POST':
-                form = EditBioForm(request.POST)
-                if form.is_valid():
-                    new_bio=form.cleaned_data["bio"]
-                    new_degree=form.cleaned_data["degree"]
-                    stud.degree=new_degree
-                    stud.bio= new_bio
-                    stud.save()
-                    return student_profile(request)
-                else:
-                    print(form.errors)
-            else:
-                form = EditBioForm()
-            context_dict["form"] = form
-            return render(request, 'student_feedback_app/edit_bio.html', context_dict)
-        except:
-            context_dict['error'] = "error"
-            return render(request, 'student_feedback_app/error_page.html', context_dict)
-    else:
-        context_dict['error'] = auth
-        return render(request, 'student_feedback_app/error_page.html', context_dict, )
-    return render(request, 'student_feedback_app/student_profile.html', context_dict, )
-
-
 
 def student_all_feedback(request):
     context_dict = {}

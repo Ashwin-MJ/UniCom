@@ -24,11 +24,13 @@ My Profile
           <p class="custom-card-title">Score: {{student.score}}</p>
         {% endif %}
 
-        <div class="button">
-          <button class="btn btn-material btn-ripple">
-            Edit Bio
-          </button>
-        </div>
+        <a href="{% url 'edit_bio' %}">
+          <div class="button" style="margin-bottom:0">
+            <button class="btn btn-material btn-ripple">
+              Edit Bio
+            </button>
+          </div>
+        </a>
       </div>
     </div>
 
@@ -120,7 +122,13 @@ My Profile
                   {% if fb.optional_message %}
                   <em>"{{ fb.optional_message }}"</em>
                   {% endif %}
-                  <footer>{{fb.from_user.username}}</footer>
+                  <footer>
+                    {% if user.is_student %}
+                      {{fb.from_user.username}}
+                    {% elif user.is_lecturer %}
+                      Given to {{fb.student.student.username}}
+                    {% endif %}
+                  </footer>
                 </blockquote>
               </div>
               Course:<em> {{fb.which_course.subject}}</em><br />
@@ -134,7 +142,6 @@ My Profile
               </div>
             </div>
           </div>
-
           {% endfor %}
 
         </div>

@@ -25,7 +25,7 @@ class User(AbstractUser):
     is_student = models.BooleanField(default=False)
     is_lecturer = models.BooleanField(default=False)
 
-    degree = models.CharField(max_length=40, default="Degree not specified")
+    degree = models.CharField(max_length=60, default="Degree not specified")
     bio = models.CharField(max_length=250, default="Biography not specified")
 
     is_active = models.BooleanField(default=False)
