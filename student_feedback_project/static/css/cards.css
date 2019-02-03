@@ -137,3 +137,24 @@
 .token b {
   font-family: 'Dosis', sans-serif;
 }
+
+.card-profile {
+  width:60%;
+  align-self: center;
+  align-items:center;
+
+}
+
+.profile-top {
+  margin-top:25px;
+}
+
+.left-profile {
+  width: 30%;
+}
+
+.right-profile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

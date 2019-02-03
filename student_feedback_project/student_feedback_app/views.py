@@ -22,6 +22,36 @@ from django.urls import reverse
 def index(request):
     return HttpResponseRedirect('/accounts/login/')
 
+def my_profile(request):
+    context_dict = {}
+
+    if request.user.is_authenticated:
+        if request.user.is_student:
+            try:
+                stud = StudentProfile.objects.get(student=request.user)
+                fb = stud.feedback_set.all().order_by('-datetime_given')
+                context_dict['student'] = stud
+                context_dict['courses'] = stud.get_courses_with_score()
+                context_dict['feedback'] = fb
+            except:
+                context_dict['error'] = "error"
+                return render(request, 'student_feedback_app/error_page.html', context_dict)
+        elif request.user.is_lecturer:
+            try:
+                lect = LecturerProfile.objects.get(lecturer=request.user)
+                fb = request.user.feedback_set.all().order_by('-datetime_given')
+                context_dict['lecturer'] = lect
+                context_dict['courses'] = lect.get_courses_with_students()
+                context_dict['feedback'] = fb
+            except:
+                context_dict['error'] = "error"
+                return render(request, 'student_feedback_app/error_page.html', context_dict)
+    else:
+        # User not authenticated error
+        context_dict['error'] = "auth"
+        return render(request, 'student_feedback_app/error_page.html', context_dict)
+    return render(request, 'student_feedback_app/my_profile.html', context_dict)
+
 def student_home(request):
     context_dict={}
     fbCat = {}
@@ -48,26 +78,6 @@ def student_home(request):
         context_dict['error'] = "auth"
         return render(request, 'student_feedback_app/error_page.html', context_dict)
     return render(request, 'student_feedback_app/student_home.html', context_dict)
-
-def student_profile(request):
-    context_dict = {}
-    if request.user.is_authenticated and request.user.is_student:
-        try:
-            stud = StudentProfile.objects.get(student=request.user)
-            fb = stud.feedback_set.all().order_by('-datetime_given')
-            courses = stud.courses.all()
-
-            context_dict['student'] = stud
-            context_dict['courses'] = stud.get_courses_with_score()
-            context_dict['feedback'] = fb
-
-        except:
-            context_dict['error'] = "error"
-            return render(request, 'student_feedback_app/error_page.html', context_dict)
-    else:
-        context_dict['error'] = "auth"
-        return render(request, 'student_feedback_app/error_page.html', context_dict)
-    return render(request, 'student_feedback_app/student_profile.html', context_dict)
 
 def edit_bio(request):
     context_dict={}

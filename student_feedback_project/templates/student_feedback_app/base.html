@@ -96,7 +96,7 @@
               </a>
               <div class="dropdown-menu dropdown-menu-right">
                 {% if user.is_authenticated %}
-                  <a class="dropdown-item" id="title" href="{% url 'student_profile' %}">My Profile</a>
+                  <a class="dropdown-item" id="title" href="{% url 'my_profile' %}">My Profile</a>
                   <a class="dropdown-item" id="title" href="{% url 'auth_logout' %}">Log Out</a>
                   <a class="dropdown-item" id="title" href="{% url 'auth_password_change' %}">Change Password</a>
                   <a class="dropdown-item" id="title" href="{% url 'auth_password_reset' %}">Reset Password</a>

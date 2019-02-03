@@ -10,6 +10,8 @@ from student_feedback_app.views import CategoryAutocomplete, MessageAutocomplete
 
 urlpatterns = [
     re_path(r'^$', views.index, name='index'),
+    re_path(r'^my-profile/$', views.my_profile, name='my_profile'),
+    re_path(r'^edit-bio/$', views.edit_bio, name='edit_bio'),
     re_path(r'^student/home/$', views.student_home, name='student_home'),
     re_path(r'^student/all-feedback/$', views.student_all_feedback, name='student_all_feedback'),
     re_path(r'^student/my-provided-feedback/$', views.my_provided_feedback, name='stud_provided_feedback'),
@@ -17,8 +19,6 @@ urlpatterns = [
     re_path(r'^student/courses/$', views.student_all_courses, name='student_all_courses'),
     re_path(r'^student/(?P<subject_slug>[\w\-]+)/(?P<student_number>[\w\-]+)/add-individual-feedback/$', views.stud_add_individual_feedback,
             name='stud_add_individual_feedback'),
-    re_path(r'^student/profile/$', views.student_profile, name='student_profile'),
-    re_path(r'^student/edit-bio/$', views.edit_bio, name='edit_bio'),
     re_path(r'^lecturer/home/$', views.lecturer_home, name='lecturer_home'),
     re_path(r'^lecturer/create-course/$', views.create_course, name='create_course'),
     re_path(r'^lecturer/courses/$', views.lecturer_all_courses, name='lecturer_all_courses'),

@@ -25,6 +25,9 @@ class User(AbstractUser):
     is_student = models.BooleanField(default=False)
     is_lecturer = models.BooleanField(default=False)
 
+    degree = models.CharField(max_length=40, default="Degree not specified")
+    bio = models.CharField(max_length=250, default="Biography not specified")
+
     is_active = models.BooleanField(default=False)
 
     USERNAME_FIELD = 'id_number'
@@ -61,8 +64,6 @@ class StudentProfile(models.Model):
     student = models.OneToOneField(User, on_delete=models.CASCADE,primary_key=True)
     score = models.IntegerField(default=0)
     courses = models.ManyToManyField('Course')
-    degree = models.CharField(max_length=40, default="Degree not specified")
-    bio = models.CharField(max_length=250, default="Biography not specified")
 
     def __lt__(self, other):
         return self.student.username < other.student.username
@@ -170,6 +171,12 @@ class LecturerProfile(models.Model):
         return students.distinct()
     # Can access lecturers courses using LecturerProfile.course_set.all()
     # Can access lecturers feedback using LectureProfile.feedback_set.all()
+    def get_courses_with_students(self):
+        courses_with_students = {}
+        for course in self.course_set.all():
+            courses_with_students[course] = len(course.students.all())
+
+        return courses_with_students
 
 class Feedback(models.Model):
     date_given = models.DateTimeField(default=timezone.now)
