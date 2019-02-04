@@ -90,6 +90,8 @@ body{
 }
 .picture-my-account{
   max-width: 300px;
+  border: 1px solid teal;
+  margin: 10px;
 }
 
 hr {

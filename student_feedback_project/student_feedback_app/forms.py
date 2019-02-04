@@ -59,9 +59,9 @@ class addCourseForm(forms.ModelForm):
 
 
 class EditBioForm(forms.ModelForm):
-    degree = forms.CharField(max_length=40, help_text="Degree", required=True)
+    degree = forms.CharField(max_length=60, help_text="Degree", required=True)
     bio = forms.CharField(max_length=250, help_text= 'Bio', required=True)
 
     class Meta:
-        model = StudentProfile
+        model = User
         fields = ('degree', 'bio',)
