@@ -3,6 +3,12 @@ $('.students').click(function(e) {
   $(this).toggleClass(addclass);
 });
 
+$('#select-all').click(function(e) {
+  $('.students').each(function(e) {
+    $(this).toggleClass(addclass);
+  });
+});
+
 $('#group-feedback-form').submit(function(){
   var res=[];
   $('.students').each(function(){

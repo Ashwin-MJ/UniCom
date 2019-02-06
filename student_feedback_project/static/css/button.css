@@ -26,6 +26,7 @@
 }
 .btn-material:hover {
   box-shadow: 0 4px 10px 0px rgba(0,0,0,0.225);
+  background: teal radial-gradient(circle, transparent 1%, teal 1%) center/15000%;
 }
 
 .btn-ripple {
@@ -39,9 +40,6 @@
   transition: background 0.8s;
 }
 
-.btn-ripple:hover {
-  background: teal radial-gradient(circle, transparent 1%, teal 1%) center/15000%;
-}
 .btn-ripple:active {
   background-color: #6eb9f7;
   background-size: 100%;
@@ -52,4 +50,27 @@
   padding: 10px;
   list-style: none;
   font-size: 150%;
+}
+
+.custom-dd-item {
+  display: inline-block;
+  position: relative;
+  cursor: pointer;
+  height: 35px;
+  background-color: #424242;
+  color: white;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: 'Dosis', sans-serif;
+  letter-spacing: 1px;
+  text-align: center!important;
+  vertical-align: middle;
+  transition: all .3s ease-out;
+  margin-bottom: 2px;
+}
+
+.custom-dd-item:hover {
+  box-shadow: 0 4px 10px 0px rgba(0,0,0,0.225);
+  background: teal radial-gradient(circle, transparent 1%, teal 1%) center/15000%;
+  color: white;
 }
