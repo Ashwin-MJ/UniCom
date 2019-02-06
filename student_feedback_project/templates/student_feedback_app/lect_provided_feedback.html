@@ -24,7 +24,6 @@ Provided Feedback
       {% else %}
       <div class="card custom-card">
       {% endif %}
-        <i class="material-icons delete-icon" id="{{ fb.feedback_id }}">delete</i>
         <b class="card-sub-heading">{{ fb.category }}</b>
         <div class="row" style="padding-bottom:1%">
           <div class="column left">
@@ -46,7 +45,6 @@ Provided Feedback
               <h6>POINTS</h6>
               </div>
             </div>
-
           </div>
         </div>
         {% endfor %}
@@ -60,7 +58,3 @@ Provided Feedback
 </div>
 
 {% endblock %}
-
-{% block footer %}
-<script type="text/javascript" src="{% static 'javascript/delete_feedback.js' %}" ></script>
-{% endblock%}

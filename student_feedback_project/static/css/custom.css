@@ -102,11 +102,3 @@ hr {
   background:black;
   background: -webkit-gradient(radial, 50% 50%, 0, 50% 50%, 175, from(#000), to(#fff));
 }
-
-.delete-icon {
-  position: absolute;
-  right:25px;
-  top:25px;
-  font-size: 200%;
-  cursor: pointer;
-}

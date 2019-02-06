@@ -15,9 +15,6 @@ from django.contrib.auth import authenticate
 from django.shortcuts import redirect
 from django.contrib.auth import login
 import json
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from rest_framework import status
 
 from django.urls import reverse
 
@@ -536,25 +533,6 @@ def create_course(request):
         context_dict['error'] = "error"
         return render(request,'student_feedback_app/error_page.html', context_dict)
 
-class FeedbackDetail(APIView):
-    """
-    Retrieve, update or delete a Feedback instance.
-    """
-    def get_object(self, fb_id):
-        try:
-            return Feedback.objects.get(feedback_id=fb_id)
-        except Feedback.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-
-    def get(self, request, fb_id, format=None):
-        fb = self.get_object(fb_id)
-        serializer = FeedbackSerializer(fb)
-        return Response(serializer.data)
-
-    def delete(self, request, fb_id, format=None):
-        fb = self.get_object(fb_id)
-        fb.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class CategoryAutocomplete(autocomplete.Select2QuerySetView):
