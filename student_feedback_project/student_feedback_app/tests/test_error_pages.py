@@ -12,7 +12,7 @@ class StudentHomeErrorTestCase(TestCase):
     def test_no_auth_page(self):
         c = Client()
         response = c.get('/student/home/')
-        self.assertEqual(response.templates[0].name, "student_feedback_app/error_page.html")
+        self.assertEqual(response.templates[0].name, "student_feedback_app/general/error_page.html")
 
     def test_no_auth_message(self):
         c = Client()
@@ -23,7 +23,7 @@ class StudentHomeErrorTestCase(TestCase):
         c = Client()
         c.login(username="00001", password="wrong")
         response = c.get('/student/home/')
-        self.assertEqual(response.templates[0].name, "student_feedback_app/error_page.html")
+        self.assertEqual(response.templates[0].name, "student_feedback_app/general/error_page.html")
         c.logout()
 
     def test_lecturer_wrong_auth_message(self):
@@ -38,10 +38,5 @@ class StudentHomeErrorTestCase(TestCase):
         c.login(username="3015244", password="Bob")
         response = c.get('/student/home/')
         c.logout()
-        #print(response.content)
-        #print(response.context)
-
-
 
 #TODO figure out how to pass info to context dict or otherwise produce error
-

@@ -74,16 +74,16 @@
             <li class="nav-item">
               <a class="nav-link"
                 {% if user.is_lecturer %}
-                  href="{% url 'lecturer_all_courses' %}"
+                  href="{% url 'lecturer_courses' %}"
                 {% else %}
-                  href="{% url 'student_all_courses' %}"
+                  href="{% url 'student_courses' %}"
                 {% endif %}
                 id="title">Courses</a>
             </li>
             <li class="nav-item">
               <a class="nav-link"
                 {% if user.is_lecturer %}
-                  href="{% url 'lect_provided_feedback' %}"
+                  href="{% url 'lecturer_provided_feedback' %}"
                 {% else %}
                   href="{% url 'student_all_feedback' %}"
                 {% endif %}
@@ -133,7 +133,8 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 
-	<script type="text/javascript" src="{% static 'js/sorting.js' %}"></script>
+	  <script type="text/javascript" src="{% static 'javascript/sorting.js' %}"></script>
+
   {% block footer %}
 
   {% endblock %}

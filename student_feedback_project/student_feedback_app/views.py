@@ -29,7 +29,7 @@ def my_profile(request):
                 context_dict['feedback'] = fb
             except:
                 context_dict['error'] = "error"
-                return render(request, 'student_feedback_app/error_page.html', context_dict)
+                return render(request, 'student_feedback_app/general/error_page.html', context_dict)
         elif request.user.is_lecturer:
             try:
                 lect = LecturerProfile.objects.get(lecturer=request.user)
@@ -39,12 +39,12 @@ def my_profile(request):
                 context_dict['feedback'] = fb
             except:
                 context_dict['error'] = "error"
-                return render(request, 'student_feedback_app/error_page.html', context_dict)
+                return render(request, 'student_feedback_app/general/error_page.html', context_dict)
     else:
         # User not authenticated error
         context_dict['error'] = "auth"
-        return render(request, 'student_feedback_app/error_page.html', context_dict)
-    return render(request, 'student_feedback_app/my_profile.html', context_dict)
+        return render(request, 'student_feedback_app/general/error_page.html', context_dict)
+    return render(request, 'student_feedback_app/general/my_profile.html', context_dict)
 
 def edit_bio(request):
     context_dict={}
@@ -65,14 +65,13 @@ def edit_bio(request):
             else:
                 form = EditBioForm()
             context_dict["form"] = form
-            return render(request, 'student_feedback_app/edit_bio.html', context_dict)
+            return render(request, 'student_feedback_app/general/edit_bio.html', context_dict)
         except:
             context_dict['error'] = "error"
-            return render(request, 'student_feedback_app/error_page.html', context_dict)
+            return render(request, 'student_feedback_app/general/error_page.html', context_dict)
     else:
         context_dict['error'] = "auth"
-        return render(request, 'student_feedback_app/error_page.html', context_dict, )
-    return render(request, 'student_feedback_app/student_profile.html', context_dict, )
+        return render(request, 'student_feedback_app/general/error_page.html', context_dict, )
 
 def student_home(request):
     context_dict={}
@@ -95,11 +94,11 @@ def student_home(request):
 
         except:
             context_dict['error'] = "error"
-            return  render(request, 'student_feedback_app/error_page.html', context_dict)
+            return  render(request, 'student_feedback_app/general/error_page.html', context_dict)
     else:
         context_dict['error'] = "auth"
-        return render(request, 'student_feedback_app/error_page.html', context_dict)
-    return render(request, 'student_feedback_app/student_home.html', context_dict)
+        return render(request, 'student_feedback_app/general/error_page.html', context_dict)
+    return render(request, 'student_feedback_app/student/student_home.html', context_dict)
 
 def student_all_feedback(request):
     context_dict = {}
@@ -115,12 +114,12 @@ def student_all_feedback(request):
         context_dict['to_improve'] = stud.get_weaknesses()
     else:
         context_dict['error'] = "auth"
-        return render(request,'student_feedback_app/error_page.html', context_dict)
+        return render(request,'student_feedback_app/general/error_page.html', context_dict)
 
-    return render(request,'student_feedback_app/student_all_feedback.html',context_dict)
+    return render(request,'student_feedback_app/student/student_all_feedback.html',context_dict)
 
 
-def student_all_courses(request):
+def student_courses(request):
     context_dict = {}
     if request.user.is_authenticated and request.user.is_student:
         stud = StudentProfile.objects.get(student=request.user)
@@ -141,18 +140,16 @@ def student_all_courses(request):
                     return student_home(request)
                 except:
                     context_dict['error'] = "no_course"
-                    return render(request, 'student_feedback_app/error_page.html', context_dict)
+                    return render(request, 'student_feedback_app/general/error_page.html', context_dict)
             else:
                 print(form.errors)
         else:
             form = addCourseForm()
         context_dict["form"] = form
-        return render(request, 'student_feedback_app/student_courses.html', context_dict)
+        return render(request, 'student_feedback_app/student/student_courses.html', context_dict)
     else:
         context_dict['error'] = "auth"
-        return render(request,'student_feedback_app/error_page.html', context_dict)
-    return render(request,'student_feedback_app/student_courses.html',context_dict)
-
+        return render(request,'student_feedback_app/general/error_page.html', context_dict)
 
 def student_course(request, subject_slug):
     context_dict = {}
@@ -176,17 +173,17 @@ def student_course(request, subject_slug):
             context_dict['students'] = None
             context_dict['feedback'] = None
             context_dict['error'] = "no_course"
-            return render(request, 'student_feedback_app/error_page.html', context_dict)
+            return render(request, 'student_feedback_app/general/error_page.html', context_dict)
     else:
         context_dict['error'] = "auth"
-        return render(request, 'student_feedback_app/error_page.html', context_dict)
+        return render(request, 'student_feedback_app/general/error_page.html', context_dict)
 
-    return render(request, 'student_feedback_app/student_course.html', context_dict)
+    return render(request, 'student_feedback_app/student/student_course.html', context_dict)
 
-def stud_add_individual_feedback(request,subject_slug,student_number):
+def student_add_individual_feedback(request,subject_slug,student_number):
     if not request.user.is_authenticated or not request.user.is_student:
         context_dict['error'] = "auth"
-        return render(request,'student_feedback_app/error_page.html', context_dict)
+        return render(request,'student_feedback_app/general/error_page.html', context_dict)
     context_dict = {}
     try:
         from_stud = StudentProfile.objects.get(student=request.user)
@@ -223,19 +220,18 @@ def stud_add_individual_feedback(request,subject_slug,student_number):
         else:
             form = FeedbackForm()
         context_dict['form'] = form
-        return render(request,'student_feedback_app/stud_add_individual_feedback.html',context_dict)
+        return render(request,'student_feedback_app/student/student_add_individual_feedback.html',context_dict)
     except:
         context_dict['student'] = None
         context_dict['feedback'] = None
         context_dict['error'] = "no_student"
-        return render(request,'student_feedback_app/error_page.html', context_dict)
-    return render(request,'student_feedback_app/stud_add_individual_feedback.html',context_dict)
+        return render(request,'student_feedback_app/general/error_page.html', context_dict)
 
 def my_provided_feedback(request):
     context_dict = {}
     if not request.user.is_authenticated:
         context_dict['error'] = "auth"
-        return render(request,'student_feedback_app/error_page.html', context_dict)
+        return render(request,'student_feedback_app/general/error_page.html', context_dict)
 
     try:
         if request.user.is_student:
@@ -243,18 +239,18 @@ def my_provided_feedback(request):
             fb = request.user.feedback_set.all().order_by('-datetime_given')
             context_dict['student'] = stud
             context_dict['feedback'] = fb
-            return render(request,'student_feedback_app/student_provided_feedback.html',context_dict)
+            return render(request,'student_feedback_app/student/student_provided_feedback.html',context_dict)
 
         if request.user.is_lecturer:
             lect = LecturerProfile.objects.get(lecturer=request.user)
             fb = request.user.feedback_set.all().order_by('-datetime_given')
             context_dict['lecturer'] = lect
             context_dict['feedback'] = fb
-            return render(request,'student_feedback_app/lect_provided_feedback.html',context_dict)
+            return render(request,'student_feedback_app/lecturer/lecturer_provided_feedback.html',context_dict)
 
     except:
         context_dict['error'] = "error"
-        return render(request,'student_feedback_app/error_page.html', context_dict)
+        return render(request,'student_feedback_app/general/error_page.html', context_dict)
 
 def lecturer_home(request):
     context_dict = {}
@@ -268,13 +264,13 @@ def lecturer_home(request):
             context_dict['feedback'] = fb
         except:
             context_dict['error'] = "error"
-            return render(request,'student_feedback_app/error_page.html', context_dict)
+            return render(request,'student_feedback_app/general/error_page.html', context_dict)
     elif request.user.is_authenticated and request.user.is_student:
         return redirect('student_home')
     else:
         context_dict['error'] = "auth"
-        return render(request,'student_feedback_app/error_page.html', context_dict)
-    return render(request,'student_feedback_app/lecturer_home.html',context_dict)
+        return render(request,'student_feedback_app/general/error_page.html', context_dict)
+    return render(request,'student_feedback_app/lecturer/lecturer_home.html',context_dict)
 
 def lecturer_course(request,subject_slug):
     context_dict = {}
@@ -295,12 +291,12 @@ def lecturer_course(request,subject_slug):
             context_dict['feedback'] = fb
         except:
             context_dict['error'] = "no_course"
-            return render(request,'student_feedback_app/error_page.html', context_dict)
+            return render(request,'student_feedback_app/general/error_page.html', context_dict)
     else:
         context_dict['error'] = "auth"
-        return render(request,'student_feedback_app/error_page.html', context_dict)
+        return render(request,'student_feedback_app/general/error_page.html', context_dict)
 
-    return render(request,'student_feedback_app/lecturer_course.html',context_dict)
+    return render(request,'student_feedback_app/lecturer/lecturer_course.html',context_dict)
 
 
 def lecturer_view_student(request,student_number):
@@ -318,16 +314,16 @@ def lecturer_view_student(request,student_number):
             context_dict['courses'] = stud.get_courses_with_score()
         except:
             context_dict['error'] = "no_student"
-            return render(request,'student_feedback_app/error_page.html', context_dict)
+            return render(request,'student_feedback_app/general/error_page.html', context_dict)
     else:
         context_dict['error'] = "auth"
-        return render(request,'student_feedback_app/error_page.html', context_dict)
-    return render(request,'student_feedback_app/lecturer_view_student.html',context_dict)
+        return render(request,'student_feedback_app/general/error_page.html', context_dict)
+    return render(request,'student_feedback_app/lecturer/lecturer_view_student.html',context_dict)
 
-def lect_add_individual_feedback(request,subject_slug,student_number):
+def lecturer_add_individual_feedback(request,subject_slug,student_number):
     if not request.user.is_authenticated or not request.user.is_lecturer:
         context_dict['error'] = "auth"
-        return render(request,'student_feedback_app/error_page.html', context_dict)
+        return render(request,'student_feedback_app/general/error_page.html', context_dict)
     context_dict = {}
     try:
         # Retrieving student string from cookies
@@ -399,18 +395,17 @@ def lect_add_individual_feedback(request,subject_slug,student_number):
         else:
             form = FeedbackForm()
         context_dict['form'] = form
-        return render(request,'student_feedback_app/lect_add_individual_feedback.html',context_dict)
+        return render(request,'student_feedback_app/lecturer/lecturer_add_individual_feedback.html',context_dict)
     except:
         context_dict['student'] = None
         context_dict['feedback'] = None
         context_dict['error'] = "no_student"
-        return render(request,'student_feedback_app/error_page.html', context_dict)
-    return render(request,'student_feedback_app/lect_add_individual_feedback.html',context_dict)
+        return render(request,'student_feedback_app/general/error_page.html', context_dict)
 
 def add_group_feedback(request,subject_slug):
     if not request.user.is_authenticated or not request.user.is_lecturer:
         context_dict['error'] = "auth"
-        return render(request,'student_feedback_app/error_page.html', context_dict)
+        return render(request,'student_feedback_app/general/error_page.html', context_dict)
     context_dict = {}
 
     try:
@@ -457,15 +452,14 @@ def add_group_feedback(request,subject_slug):
             form = FeedbackForm()
         context_dict['form'] = form
 
-        return render(request,'student_feedback_app/add_group_feedback.html',context_dict)
+        return render(request,'student_feedback_app/lecturer/lecturer_add_group_feedback.html',context_dict)
 
     except:
         context_dict['error'] = "error"
-        return render(request,'student_feedback_app/error_page.html', context_dict)
+        return render(request,'student_feedback_app/general/error_page.html', context_dict)
 
-    return render(request,'student_feedback_app/add_group_feedback.html',context_dict)
 
-def lecturer_all_courses(request):
+def lecturer_courses(request):
     context_dict = {}
     if request.user.is_authenticated and request.user.is_lecturer:
         lect = LecturerProfile.objects.get(lecturer=request.user)
@@ -476,36 +470,37 @@ def lecturer_all_courses(request):
         context_dict['courses'] = courses
         context_dict['feedback'] = fb
         context_dict['top_students'] = top_students
+        return render(request,'student_feedback_app/lecturer/lecturer_courses.html', context_dict)
     else:
         context_dict['error'] = "auth"
-        return render(request,'student_feedback_app/error_page.html', context_dict)
+        return render(request,'student_feedback_app/general/error_page.html', context_dict)
 
     return render(request,'student_feedback_app/lecturer_courses.html',context_dict)
 
 def create_course(request):
-    contextDict = {}
+    context_dict = {}
     if not request.user.is_authenticated or not request.user.is_lecturer:
         context_dict['error'] = "auth"
-        return render(request,'student_feedback_app/error_page.html', context_dict)
+        return render(request,'student_feedback_app/general/error_page.html', context_dict)
     try:
         lect = LecturerProfile.objects.get(lecturer=request.user)
-        contextDict["lecturer"] = lect
+        context_dict["lecturer"] = lect
         if request.method == 'POST':
             form = CourseForm(request.POST)
             if form.is_valid():
                 newCourse = form.save(commit=False)
                 newCourse.lecturer = lect
                 newCourse.save()
-                return lecturer_all_courses(request)
+                return lecturer_courses(request)
             else:
                 print(form.errors)
         else:
             form = CourseForm()
-        contextDict["form"] = form
-        return render(request, 'student_feedback_app/create_course.html', contextDict)
+        context_dict["form"] = form
+        return render(request, 'student_feedback_app/lecturer/lecturer_create_course.html', context_dict)
     except:
         context_dict['error'] = "error"
-        return render(request,'student_feedback_app/error_page.html', context_dict)
+        return render(request,'student_feedback_app/general/error_page.html', context_dict)
 
 
 
