@@ -71,7 +71,7 @@ class LecturerTestCase(TestCase):
         course = Course.objects.get(course_code = "SP3")
         testUser = User.objects.get(username = "Wolf")
         testLecturer = LecturerProfile.objects.get(lecturer=testUser)
-        self.assertEqual(course.lecturer, testLecturer)
+        self.assertTrue(testLecturer in course.lecturers.all())
 
     def test_course_in_lecturer(self):
         course = Course.objects.get(course_code = "SP3")
