@@ -137,15 +137,18 @@ function toggleDataSeries(e) {
     </div>
   </div>
 
-    <div class="" style="width:100%">
-      <div class="card custom-card">
-        <div class="row">
-          
-          <div class="column right-number" style="margin-bottom:0">
-              {{ student.score }}
-            </div>
+  <div class="card scroll-bg">
+      <h3 class="card-body text-center custom-card-title">Achievements</h3>
+      <hr />
+      <div class="card-body scroll">
+        {% for achiev in achievements %}
+          {% if achiev.score > 1 %}
+          <div class="card custom-card">
+            <b class="card-sub-heading">{{ achiev.category }} : {{ achiev.score }}</b>
           </div>
-        </div>
+          {% endif %}
+        {% endfor %}
+      </div>
 </div>
 
 {% endblock %}
