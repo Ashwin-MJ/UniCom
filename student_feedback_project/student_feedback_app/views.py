@@ -146,6 +146,7 @@ def student_all_courses(request):
                     stud.courses.add(course)
                     course.students.add(stud)
                     stud.save()
+                    course.save()
                     return student_home(request)
                 except:
                     context_dict['error'] = "no_course"
@@ -289,7 +290,7 @@ def lecturer_course(request,subject_slug):
     if request.user.is_authenticated and request.user.is_lecturer:
         try:
             course = Course.objects.get(subject_slug=subject_slug)
-            lect = course.lecturer
+            lect = LecturerProfile.objects.get(lecturer=request.user)
             students = course.students.all()
             context_dict['course'] = course
             context_dict['lecturer'] = lect
@@ -484,6 +485,26 @@ def lecturer_all_courses(request):
         context_dict['courses'] = courses
         context_dict['feedback'] = fb
         context_dict['top_students'] = top_students
+        if(request.method == 'POST'):
+            form = addCourseForm(request.POST)
+            lect = LecturerProfile.objects.get(lecturer = request.user)
+            if(form.is_valid()):
+                try:
+                    course = Course.objects.get(course_token=form.cleaned_data["course_token"] )
+                    lect.courses.add(course)
+                    course.lecturers.add(lect)
+                    lect.save()
+                    course.save()
+                    return lecturer_home(request)
+                except:
+                    context_dict['error'] = "no_course"
+                    return render(request, 'student_feedback_app/error_page.html', context_dict)
+            else:
+                print(form.errors)
+        else:
+            form = addCourseForm()
+        context_dict["form"] = form
+        return render(request, 'student_feedback_app/lecturer_courses.html', context_dict)
     else:
         context_dict['error'] = "auth"
         return render(request,'student_feedback_app/error_page.html', context_dict)
