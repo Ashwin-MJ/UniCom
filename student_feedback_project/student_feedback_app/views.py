@@ -1,24 +1,25 @@
-from django.shortcuts import render
-from rest_framework.views import APIView
-from student_feedback_app.serializers import *
-from rest_framework import generics
-from student_feedback_app.models import Feedback
-from .forms import *
-from student_feedback_app.models import *
-from django.shortcuts import render_to_response
-from django.template import RequestContext
-from django.http import HttpResponse,HttpResponseRedirect, JsonResponse
-from dal import autocomplete
-import datetime
 from django import http
-from django.contrib.auth import authenticate
-from django.shortcuts import redirect
-from django.contrib.auth import login
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.shortcuts import render, render_to_response, redirect
+from django.urls import reverse
+from django.template import RequestContext
+from django.contrib.auth import authenticate, login
+
+from student_feedback_app.forms import *
+from student_feedback_app.models import *
+from student_feedback_app.serializers import *
+
+from rest_framework.views import APIView
+from rest_framework import generics
+
+from dal import autocomplete
+
+import datetime
+
 import json
 
-from django.urls import reverse
 
-# Create your views here.
+# Views
 def index(request):
     return HttpResponseRedirect('/accounts/login/')
 
