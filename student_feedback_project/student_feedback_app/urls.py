@@ -2,6 +2,9 @@ from django.conf.urls import re_path, include
 from student_feedback_app import views
 from rest_framework.urlpatterns import format_suffix_patterns
 from student_feedback_app.models import Category, Message
+from student_feedback_app.forms import FeedbackForm
+from dal import autocomplete
+from django.views import generic
 from student_feedback_app.views import CategoryAutocomplete, MessageAutocomplete
 
 

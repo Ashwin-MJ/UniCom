@@ -14,7 +14,6 @@ from dal import autocomplete
 import datetime
 import json
 
-
 def index(request):
     return HttpResponseRedirect('/accounts/login/')
 
@@ -73,6 +72,7 @@ def edit_bio(request):
     else:
         context_dict['error'] = "auth"
         return render(request, 'student_feedback_app/error_page.html', context_dict, )
+    return render(request, 'student_feedback_app/student_profile.html', context_dict, )
 
 def student_home(request):
     context_dict={}
@@ -151,6 +151,8 @@ def student_all_courses(request):
     else:
         context_dict['error'] = "auth"
         return render(request,'student_feedback_app/error_page.html', context_dict)
+    return render(request,'student_feedback_app/student_courses.html',context_dict)
+
 
 def student_course(request, subject_slug):
     context_dict = {}
@@ -227,6 +229,7 @@ def stud_add_individual_feedback(request,subject_slug,student_number):
         context_dict['feedback'] = None
         context_dict['error'] = "no_student"
         return render(request,'student_feedback_app/error_page.html', context_dict)
+    return render(request,'student_feedback_app/stud_add_individual_feedback.html',context_dict)
 
 def my_provided_feedback(request):
     context_dict = {}
@@ -402,6 +405,7 @@ def lect_add_individual_feedback(request,subject_slug,student_number):
         context_dict['feedback'] = None
         context_dict['error'] = "no_student"
         return render(request,'student_feedback_app/error_page.html', context_dict)
+    return render(request,'student_feedback_app/lect_add_individual_feedback.html',context_dict)
 
 def add_group_feedback(request,subject_slug):
     if not request.user.is_authenticated or not request.user.is_lecturer:
@@ -459,6 +463,8 @@ def add_group_feedback(request,subject_slug):
         context_dict['error'] = "error"
         return render(request,'student_feedback_app/error_page.html', context_dict)
 
+    return render(request,'student_feedback_app/add_group_feedback.html',context_dict)
+
 def lecturer_all_courses(request):
     context_dict = {}
     if request.user.is_authenticated and request.user.is_lecturer:
@@ -474,6 +480,7 @@ def lecturer_all_courses(request):
         context_dict['error'] = "auth"
         return render(request,'student_feedback_app/error_page.html', context_dict)
 
+    return render(request,'student_feedback_app/lecturer_courses.html',context_dict)
 
 def create_course(request):
     contextDict = {}
