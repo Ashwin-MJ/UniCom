@@ -94,20 +94,22 @@ def student_home(request):
                 else:
                     fbCat[cat].append([feedback.points, feedback.datetime_given.strftime('%Y-%m-%d %H:%M')])
 
+            stud.achievement_set.all().delete()
             scores = stud.get_score_for_category()
-            # print(scores)
             for attribute in scores:
-                print(attribute)
-                achiev = Achievement.create(student=stud)
-                print(attribute)
+                achiev = Achievement(student=stud)
                 achiev.gen_achievement(attribute, scores[attribute])
-
+                achiev.save()
             print(stud.achievement_set.all())
+            for item in stud.achievement_set.all():
+                print(item.category)
 
             context_dict['student'] = stud
             context_dict['courses'] = courses
             context_dict['feedback'] = fb
             context_dict['feedbackData'] = json.dumps(fbCat)
+            context_dict['achievements'] = stud.achievement_set.all()
+
 
         except:
             context_dict['error'] = "error"
