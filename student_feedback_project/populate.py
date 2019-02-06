@@ -454,7 +454,8 @@ def add_lecturer(name,lecturer_number,password,email,courses):
 
 	for each_course in courses:
 		course = Course.objects.get(course_code=each_course)
-		course.lecturer = lecturer_prof
+		lecturer_prof.courses.add(course)
+		course.lecturers.add (lecturer_prof)
 		course.save()
 
 	lecturer_prof.save()

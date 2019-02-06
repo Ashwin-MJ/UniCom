@@ -65,6 +65,7 @@ class StudentProfile(models.Model):
     score = models.IntegerField(default=0)
     courses = models.ManyToManyField('Course')
 
+    #comparison based on username
     def __lt__(self, other):
         return self.student.username < other.student.username
 
@@ -119,9 +120,9 @@ class Course(models.Model):
     course_description = models.CharField(max_length=200, default="")
     subject_slug = models.SlugField(max_length=50, default='empty_slug')
     students = models.ManyToManyField('StudentProfile')
-    lecturer = models.ForeignKey('LecturerProfile', on_delete=models.CASCADE, null=True, blank=True)
+    lecturers = models.ManyToManyField('LecturerProfile')
     course_code = models.CharField(max_length=20, primary_key=True)
-    course_token = models.CharField(max_length=7, default = "")
+    course_token = models.CharField(max_length=20, default = "")
 
     def save(self, *args, **kwargs):
         self.subject_slug = slugify(self.course_code)
@@ -163,17 +164,18 @@ class Course(models.Model):
 
 class LecturerProfile(models.Model):
     lecturer = models.OneToOneField(User, on_delete=models.CASCADE,primary_key=True)
+    courses = models.ManyToManyField('Course')
 
     def get_my_students(self):
         students = Course.objects.none()
-        for course in self.course_set.all():
+        for course in self.courses.all():
             students = students | course.students.all()
         return students.distinct()
     # Can access lecturers courses using LecturerProfile.course_set.all()
     # Can access lecturers feedback using LectureProfile.feedback_set.all()
     def get_courses_with_students(self):
         courses_with_students = {}
-        for course in self.course_set.all():
+        for course in self.courses.all():
             courses_with_students[course] = len(course.students.all())
 
         return courses_with_students
