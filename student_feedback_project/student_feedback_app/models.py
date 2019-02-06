@@ -114,6 +114,36 @@ class StudentProfile(models.Model):
 
         return courses_with_score
 
+    def get_score_for_category(self):
+        scores = {}
+        for fb in self.feedback_set.all():
+            if fb.category not in scores:
+                scores[fb.category] = fb.points
+            else:
+                scores[fb.category] += fb.points
+        return scores
+
+class Achievement(models.Model):
+    student = models.ForeignKey('StudentProfile', on_delete=models.CASCADE, )
+    category = models.ForeignKey("Category", on_delete=models.CASCADE, )
+    score = models.IntegerField()
+
+    def gen_achievement(self, attribute, score):
+        self.category = Category.objects.get(name=attribute)
+        if score >= 100:
+            self.score = 100
+        elif score >= 50:
+            self.score = 50
+        elif score >= 25:
+            self.score = 25
+        elif score >= 10:
+            self.score = 10
+        elif score >= 5:
+            self.score = 5
+        else:
+            self.score = 0
+
+
 class Course(models.Model):
     subject = models.CharField("Subject", max_length=40,)
     course_description = models.CharField(max_length=200, default="")
