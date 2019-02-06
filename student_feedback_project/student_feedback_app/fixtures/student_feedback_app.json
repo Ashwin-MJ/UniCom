@@ -338,7 +338,7 @@
         "subject": "ArtHistory01",
         "course_description": "A history of art between Middle Ages and High Renaissance periods",
         "subject_slug": "arh01",
-        "lecturer": 9,
+        "lecturers": [9],
         "course_token": "L6022BT",
         "students": [
             1,
@@ -356,7 +356,7 @@
         "subject": "Maths1Q",
         "course_description": "A base look at mathematical functions in the real world",
         "subject_slug": "mat1q",
-        "lecturer": 10,
+        "lecturers": [10],
         "course_token": "DG4IO7R",
         "students": [
             1,
@@ -374,7 +374,7 @@
         "subject": "Polish01",
         "course_description": "An introductory class on the polish language",
         "subject_slug": "pol01",
-        "lecturer": 9,
+        "lecturers": [9],
         "course_token": "HSJH92L",
         "students": [
             1,

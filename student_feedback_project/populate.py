@@ -254,14 +254,14 @@ def populate():
 		]
 
 	categories = [
-		{"name": "Active Participation"},
-		{"name": "Quality of Contribution"},
-		{"name": "Co-operation & Communication"},
-		{"name": "Critical Thinking & Analysis"},
-		{"name": "Understanding & Competence"},
-		{"name": "Hard Work"},
-		{"name": "Intellectual Curiosity"},
-		{"name": "General"}
+		{"name": "Active Participation", "colour" : "#F7D969"},
+		{"name": "Quality of Contribution", "colour": "#F16A43"},
+		{"name": "Co-operation & Communication", "colour": "#EC1C4B"},
+		{"name": "Critical Thinking & Analysis", "colour": "#A6206A"},
+		{"name": "Understanding & Competence", "colour": "#355C7D"},
+		{"name": "Hard Work", "colour": "#F8B195"},
+		{"name": "Intellectual Curiosity", "colour": "#F05053"},
+		{"name": "General", "colour": "#F9CDAE"}
 	]
 
 	saved_messages = [
@@ -363,7 +363,7 @@ def populate():
 							lecturer.get('password'),lecturer.get('email'),lecturer.get('courses'))
 
 	for category in categories:
-		cat = add_category(category.get("name"))
+		cat = add_category(category.get("name"), category.get("colour"))
 
 	for message in saved_messages:
 		mess = add_message(message.get('category'),message.get('messages'))
@@ -454,7 +454,8 @@ def add_lecturer(name,lecturer_number,password,email,courses):
 
 	for each_course in courses:
 		course = Course.objects.get(course_code=each_course)
-		course.lecturer = lecturer_prof
+		lecturer_prof.courses.add(course)
+		course.lecturers.add (lecturer_prof)
 		course.save()
 
 	lecturer_prof.save()
@@ -480,8 +481,8 @@ def add_feedback(feedback_id,category,points,from_user,student,course_code,pre_d
 	return fb
 
 # Helper function to add Category
-def add_category(name):
-	cat = Category.objects.get_or_create(name=name)[0]
+def add_category(name,colour):
+	cat = Category.objects.get_or_create(name=name,colour=colour)[0]
 	cat.save()
 
 # Helper function to add pre defined message #needs categories in db

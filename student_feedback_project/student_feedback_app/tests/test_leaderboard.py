@@ -28,7 +28,7 @@ class LeaderboardTestCase(TestCase):
     #     c.login(username="1402789", password="password")
     #     response = c.get("/student/courses/arh01/")
     #     self.assertTrue(len(response.context['sorted_students']) == 5)
-    #
+
     # def test_student_course_html_dict_order_of_students(self):
     #     c = Client()
     #     c.login(username="1402789", password="password")

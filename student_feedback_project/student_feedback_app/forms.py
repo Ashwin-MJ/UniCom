@@ -47,13 +47,13 @@ class RegisterForm(UserCreationForm):
         self.fields['id_number'].help_text = "This is your student number"
         self.fields['is_lecturer'].help_text = "You can either sign up as a student or a lecturer. If you choose to sign up as a lecturer, an administrator will need to accept your request before your account is activated"
 
+
 class AddCourseForm(forms.ModelForm):
     course_token = forms.CharField(max_length= 20, help_text="Provided Course Token", required=True)
 
     class Meta:
         model = Course
         fields = ('course_token',)
-
 
 
 class EditBioForm(forms.ModelForm):
