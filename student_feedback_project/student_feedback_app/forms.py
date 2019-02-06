@@ -1,9 +1,8 @@
 from dal import autocomplete
 from django import forms
 
-from .models import Course,Feedback,User, StudentProfile, Category,Message
-import datetime
-from django.contrib.auth.forms import UserCreationForm#,AuthenticationForm
+from .models import Course,Feedback,User
+from django.contrib.auth.forms import UserCreationForm
 
 
 class CourseForm(forms.ModelForm):
@@ -49,8 +48,8 @@ class RegisterForm(UserCreationForm):
         self.fields['id_number'].help_text = "This is your student number"
         self.fields['is_lecturer'].help_text = "You can either sign up as a student or a lecturer. If you choose to sign up as a lecturer, an administrator will need to accept your request before your account is activated"
 
-class addCourseForm(forms.ModelForm):
-    course_token = forms.CharField(max_length= 7, help_text="Provided Course Token", required=True)
+class AddCourseForm(forms.ModelForm):
+    course_token = forms.CharField(max_length= 20, help_text="Provided Course Token", required=True)
 
     class Meta:
         model = Course

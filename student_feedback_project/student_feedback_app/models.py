@@ -2,14 +2,10 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import AbstractUser
 from django.template.defaultfilters import slugify
-
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-
 from django.core.mail import send_mail
-from django.core.mail import EmailMultiAlternatives
-from django.template.loader import get_template
-from django.template import Context
+
 
 import datetime
 import random, string
@@ -121,7 +117,7 @@ class Course(models.Model):
     students = models.ManyToManyField('StudentProfile')
     lecturer = models.ForeignKey('LecturerProfile', on_delete=models.CASCADE, null=True, blank=True)
     course_code = models.CharField(max_length=20, primary_key=True)
-    course_token = models.CharField(max_length=7, default = "")
+    course_token = models.CharField(max_length=20, default = "")
 
     def save(self, *args, **kwargs):
         self.subject_slug = slugify(self.course_code)

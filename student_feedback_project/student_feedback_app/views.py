@@ -129,7 +129,7 @@ def student_courses(request):
         context_dict['courses'] = stud.get_courses_with_score()
         context_dict['feedback'] = fb
         if(request.method == 'POST'):
-            form = addCourseForm(request.POST)
+            form = AddCourseForm(request.POST)
             stud = StudentProfile.objects.get(student = request.user)
             if(form.is_valid()):
                 try:
@@ -144,7 +144,7 @@ def student_courses(request):
             else:
                 print(form.errors)
         else:
-            form = addCourseForm()
+            form = AddCourseForm()
         context_dict["form"] = form
         return render(request, 'student_feedback_app/student/student_courses.html', context_dict)
     else:
