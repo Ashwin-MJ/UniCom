@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'student_feedback_app',
     'widget_tweaks',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
