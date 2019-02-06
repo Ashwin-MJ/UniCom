@@ -85,7 +85,7 @@
       <hr />
       <div class="card-body scroll">
         {% for stud,score in sorted_students %}
-        <a href="{% url 'stud_add_individual_feedback' course.subject_slug stud.student.id_number %}">
+        <a href="{% url 'student_add_individual_feedback' course.subject_slug stud.student.id_number %}">
           <div class="card custom-card">
             <div class="row">
               <div class="column left">

@@ -1,7 +1,6 @@
 from dal import autocomplete
 from django import forms
-
-from .models import Course,Feedback,User
+from .models import Course, Feedback, User
 from django.contrib.auth.forms import UserCreationForm
 
 

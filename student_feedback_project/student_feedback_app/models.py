@@ -20,12 +20,9 @@ class User(AbstractUser):
     username = models.CharField(max_length=25,  unique=True)
     is_student = models.BooleanField(default=False)
     is_lecturer = models.BooleanField(default=False)
-
     degree = models.CharField(max_length=60, default="Degree not specified")
     bio = models.CharField(max_length=250, default="Biography not specified")
-
     is_active = models.BooleanField(default=False)
-
     USERNAME_FIELD = 'id_number'
     REQUIRED_FIELDS = ['username', 'email']
 
@@ -43,18 +40,14 @@ def update_user_profile(sender, instance, created, **kwargs):
             superusers = User.objects.filter(is_superuser=True)
             for superuser in superusers:
                 emails.append(superuser.email)
-
             message = 'Lecturer ' + instance.username + ' has registered and needs approval. Approve profiles @ feedbackapp.pythonanywhere.com/admin'
-
             send_mail('Lecturer needs approval',message,'lect.acc.unicom@gmail.com',emails)
-
         else :
             instance.is_active = True
             instance.is_student = True
             instance.save()
             StudentProfile.objects.create(student=instance)
             instance.studentprofile.save()
-
 
 class StudentProfile(models.Model):
     student = models.OneToOneField(User, on_delete=models.CASCADE,primary_key=True)
