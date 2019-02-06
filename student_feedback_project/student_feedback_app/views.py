@@ -1,24 +1,19 @@
-from django.shortcuts import render
-from rest_framework.views import APIView
-from student_feedback_app.serializers import *
-from rest_framework import generics
-from student_feedback_app.models import Feedback
-from .forms import *
-from student_feedback_app.models import *
-from django.shortcuts import render_to_response
+from django import http
+from django.http import HttpResponseRedirect
+from django.shortcuts import render, redirect
+from django.urls import reverse
 from django.template import RequestContext
-from django.http import HttpResponse,HttpResponseRedirect, JsonResponse
+from django.contrib.auth import login
+
+from student_feedback_app.forms import *
+from student_feedback_app.models import *
+from student_feedback_app.serializers import *
+
+from rest_framework import generics
 from dal import autocomplete
 import datetime
-from django import http
-from django.contrib.auth import authenticate
-from django.shortcuts import redirect
-from django.contrib.auth import login
 import json
 
-from django.urls import reverse
-
-# Create your views here.
 def index(request):
     return HttpResponseRedirect('/accounts/login/')
 
@@ -34,7 +29,7 @@ def my_profile(request):
                 context_dict['feedback'] = fb
             except:
                 context_dict['error'] = "error"
-                return render(request, 'student_feedback_app/error_page.html', context_dict)
+                return render(request, 'student_feedback_app/general/error_page.html', context_dict)
         elif request.user.is_lecturer:
             try:
                 lect = LecturerProfile.objects.get(lecturer=request.user)
@@ -44,12 +39,12 @@ def my_profile(request):
                 context_dict['feedback'] = fb
             except:
                 context_dict['error'] = "error"
-                return render(request, 'student_feedback_app/error_page.html', context_dict)
+                return render(request, 'student_feedback_app/general/error_page.html', context_dict)
     else:
         # User not authenticated error
         context_dict['error'] = "auth"
-        return render(request, 'student_feedback_app/error_page.html', context_dict)
-    return render(request, 'student_feedback_app/my_profile.html', context_dict)
+        return render(request, 'student_feedback_app/general/error_page.html', context_dict)
+    return render(request, 'student_feedback_app/general/my_profile.html', context_dict)
 
 def edit_bio(request):
     context_dict={}
@@ -70,14 +65,13 @@ def edit_bio(request):
             else:
                 form = EditBioForm()
             context_dict["form"] = form
-            return render(request, 'student_feedback_app/edit_bio.html', context_dict)
+            return render(request, 'student_feedback_app/general/edit_bio.html', context_dict)
         except:
             context_dict['error'] = "error"
-            return render(request, 'student_feedback_app/error_page.html', context_dict)
+            return render(request, 'student_feedback_app/general/error_page.html', context_dict)
     else:
         context_dict['error'] = "auth"
-        return render(request, 'student_feedback_app/error_page.html', context_dict, )
-    return render(request, 'student_feedback_app/student_profile.html', context_dict, )
+        return render(request, 'student_feedback_app/general/error_page.html', context_dict, )
 
 def student_home(request):
     context_dict={}
@@ -100,11 +94,11 @@ def student_home(request):
 
         except:
             context_dict['error'] = "error"
-            return  render(request, 'student_feedback_app/error_page.html', context_dict)
+            return  render(request, 'student_feedback_app/general/error_page.html', context_dict)
     else:
         context_dict['error'] = "auth"
-        return render(request, 'student_feedback_app/error_page.html', context_dict)
-    return render(request, 'student_feedback_app/student_home.html', context_dict)
+        return render(request, 'student_feedback_app/general/error_page.html', context_dict)
+    return render(request, 'student_feedback_app/student/student_home.html', context_dict)
 
 def student_all_feedback(request):
     context_dict = {}
@@ -120,12 +114,11 @@ def student_all_feedback(request):
         context_dict['to_improve'] = stud.get_weaknesses()
     else:
         context_dict['error'] = "auth"
-        return render(request,'student_feedback_app/error_page.html', context_dict)
+        return render(request,'student_feedback_app/general/error_page.html', context_dict)
+    return render(request,'student_feedback_app/student/student_all_feedback.html',context_dict)
 
-    return render(request,'student_feedback_app/student_all_feedback.html',context_dict)
 
-
-def student_all_courses(request):
+def student_courses(request):
     context_dict = {}
     if request.user.is_authenticated and request.user.is_student:
         stud = StudentProfile.objects.get(student=request.user)
@@ -135,7 +128,7 @@ def student_all_courses(request):
         context_dict['courses'] = stud.get_courses_with_score()
         context_dict['feedback'] = fb
         if(request.method == 'POST'):
-            form = addCourseForm(request.POST)
+            form = AddCourseForm(request.POST)
             stud = StudentProfile.objects.get(student = request.user)
             if(form.is_valid()):
                 try:
@@ -147,18 +140,16 @@ def student_all_courses(request):
                     return student_home(request)
                 except:
                     context_dict['error'] = "no_course"
-                    return render(request, 'student_feedback_app/error_page.html', context_dict)
+                    return render(request, 'student_feedback_app/general/error_page.html', context_dict)
             else:
                 print(form.errors)
         else:
-            form = addCourseForm()
+            form = AddCourseForm()
         context_dict["form"] = form
-        return render(request, 'student_feedback_app/student_courses.html', context_dict)
+        return render(request, 'student_feedback_app/student/student_courses.html', context_dict)
     else:
         context_dict['error'] = "auth"
-        return render(request,'student_feedback_app/error_page.html', context_dict)
-    return render(request,'student_feedback_app/student_courses.html',context_dict)
-
+        return render(request,'student_feedback_app/general/error_page.html', context_dict)
 
 def student_course(request, subject_slug):
     context_dict = {}
@@ -182,17 +173,16 @@ def student_course(request, subject_slug):
             context_dict['students'] = None
             context_dict['feedback'] = None
             context_dict['error'] = "no_course"
-            return render(request, 'student_feedback_app/error_page.html', context_dict)
+            return render(request, 'student_feedback_app/general/error_page.html', context_dict)
     else:
         context_dict['error'] = "auth"
-        return render(request, 'student_feedback_app/error_page.html', context_dict)
+        return render(request, 'student_feedback_app/general/error_page.html', context_dict)
+    return render(request, 'student_feedback_app/student/student_course.html', context_dict)
 
-    return render(request, 'student_feedback_app/student_course.html', context_dict)
-
-def stud_add_individual_feedback(request,subject_slug,student_number):
+def student_add_individual_feedback(request,subject_slug,student_number):
     if not request.user.is_authenticated or not request.user.is_student:
         context_dict['error'] = "auth"
-        return render(request,'student_feedback_app/error_page.html', context_dict)
+        return render(request,'student_feedback_app/general/error_page.html', context_dict)
     context_dict = {}
     try:
         from_stud = StudentProfile.objects.get(student=request.user)
@@ -221,46 +211,40 @@ def stud_add_individual_feedback(request,subject_slug,student_number):
                 stud.save()
                 new_fb.pk = None
                 new_fb.save()
-
                 return student_home(request)
-
             else:
                 print(form.errors)
         else:
             form = FeedbackForm()
         context_dict['form'] = form
-        return render(request,'student_feedback_app/stud_add_individual_feedback.html',context_dict)
+        return render(request,'student_feedback_app/student/student_add_individual_feedback.html',context_dict)
     except:
         context_dict['student'] = None
         context_dict['feedback'] = None
         context_dict['error'] = "no_student"
-        return render(request,'student_feedback_app/error_page.html', context_dict)
-    return render(request,'student_feedback_app/stud_add_individual_feedback.html',context_dict)
+        return render(request,'student_feedback_app/general/error_page.html', context_dict)
 
 def my_provided_feedback(request):
     context_dict = {}
     if not request.user.is_authenticated:
         context_dict['error'] = "auth"
-        return render(request,'student_feedback_app/error_page.html', context_dict)
-
+        return render(request,'student_feedback_app/general/error_page.html', context_dict)
     try:
         if request.user.is_student:
             stud = StudentProfile.objects.get(student=request.user)
             fb = request.user.feedback_set.all().order_by('-datetime_given')
             context_dict['student'] = stud
             context_dict['feedback'] = fb
-            return render(request,'student_feedback_app/student_provided_feedback.html',context_dict)
-
+            return render(request,'student_feedback_app/student/student_provided_feedback.html',context_dict)
         if request.user.is_lecturer:
             lect = LecturerProfile.objects.get(lecturer=request.user)
             fb = request.user.feedback_set.all().order_by('-datetime_given')
             context_dict['lecturer'] = lect
             context_dict['feedback'] = fb
-            return render(request,'student_feedback_app/lect_provided_feedback.html',context_dict)
-
+            return render(request,'student_feedback_app/lecturer/lecturer_provided_feedback.html',context_dict)
     except:
         context_dict['error'] = "error"
-        return render(request,'student_feedback_app/error_page.html', context_dict)
+        return render(request,'student_feedback_app/general/error_page.html', context_dict)
 
 def lecturer_home(request):
     context_dict = {}
@@ -274,13 +258,13 @@ def lecturer_home(request):
             context_dict['feedback'] = fb
         except:
             context_dict['error'] = "error"
-            return render(request,'student_feedback_app/error_page.html', context_dict)
+            return render(request,'student_feedback_app/general/error_page.html', context_dict)
     elif request.user.is_authenticated and request.user.is_student:
         return redirect('student_home')
     else:
         context_dict['error'] = "auth"
-        return render(request,'student_feedback_app/error_page.html', context_dict)
-    return render(request,'student_feedback_app/lecturer_home.html',context_dict)
+        return render(request,'student_feedback_app/general/error_page.html', context_dict)
+    return render(request,'student_feedback_app/lecturer/lecturer_home.html',context_dict)
 
 def lecturer_course(request,subject_slug):
     context_dict = {}
@@ -292,7 +276,6 @@ def lecturer_course(request,subject_slug):
             context_dict['course'] = course
             context_dict['lecturer'] = lect
             context_dict['students_with_score'] = {}
-
             # Add top students for each course. This requires editing models to store course in feedback
             fb = course.feedback_set.all().order_by('-datetime_given')
             students = course.get_students_with_score()
@@ -301,13 +284,11 @@ def lecturer_course(request,subject_slug):
             context_dict['feedback'] = fb
         except:
             context_dict['error'] = "no_course"
-            return render(request,'student_feedback_app/error_page.html', context_dict)
+            return render(request,'student_feedback_app/general/error_page.html', context_dict)
     else:
         context_dict['error'] = "auth"
-        return render(request,'student_feedback_app/error_page.html', context_dict)
-
-    return render(request,'student_feedback_app/lecturer_course.html',context_dict)
-
+        return render(request,'student_feedback_app/general/error_page.html', context_dict)
+    return render(request,'student_feedback_app/lecturer/lecturer_course.html',context_dict)
 
 def lecturer_view_student(request,student_number):
     context_dict = {}
@@ -324,47 +305,40 @@ def lecturer_view_student(request,student_number):
             context_dict['courses'] = stud.get_courses_with_score()
         except:
             context_dict['error'] = "no_student"
-            return render(request,'student_feedback_app/error_page.html', context_dict)
+            return render(request,'student_feedback_app/general/error_page.html', context_dict)
     else:
         context_dict['error'] = "auth"
-        return render(request,'student_feedback_app/error_page.html', context_dict)
-    return render(request,'student_feedback_app/lecturer_view_student.html',context_dict)
+        return render(request,'student_feedback_app/general/error_page.html', context_dict)
+    return render(request,'student_feedback_app/lecturer/lecturer_view_student.html',context_dict)
 
-def lect_add_individual_feedback(request,subject_slug,student_number):
+def lecturer_add_individual_feedback(request,subject_slug,student_number):
     if not request.user.is_authenticated or not request.user.is_lecturer:
         context_dict['error'] = "auth"
-        return render(request,'student_feedback_app/error_page.html', context_dict)
+        return render(request,'student_feedback_app/general/error_page.html', context_dict)
     context_dict = {}
     try:
         # Retrieving student string from cookies
         students_string = request.COOKIES.get("indiv_students")
-
         try:
             students_list = json.loads(students_string)
         except:
             # Seems to be an error in using json.loads for a list with a single element so do this instead
             students_list = students_string
-
         # At this point, the variable students_list contains a list of all students still to be given feedback
         # Remove current student from that list
-
         # Removing first element of list (current student)
         students_list = students_list[1:]
-
         # Saving the above updated list as a cookie 'indiv_students'
         request.COOKIES["indiv_students"] = students_list
-
         lect = LecturerProfile.objects.get(lecturer=request.user)
         stud_user = User.objects.get(id_number=student_number)
         stud = StudentProfile.objects.get(student=stud_user)
-
         fb = stud.feedback_set.all()
         context_dict['lecturer'] = lect
         context_dict['student'] = stud
         context_dict['feedback'] = fb
         course = Course.objects.get(subject_slug=subject_slug)
         context_dict['course'] = course
-
         context = RequestContext(request)
         if request.method == 'POST':
             form = FeedbackForm(request.POST)
@@ -380,13 +354,10 @@ def lect_add_individual_feedback(request,subject_slug,student_number):
                 stud.save()
                 new_fb.pk = None
                 new_fb.save()
-
                 rem_students = students_list
-
                 # Check if there are more students to provide individual fb to
                 if(len(rem_students) >= 1):
                     next_stud = rem_students[0]
-
                     # Get response as url for next student
                     response = HttpResponseRedirect(reverse('lect_add_individual_feedback', args=[course.subject_slug, next_stud]))
                     # Set the cookie in the response so that the next page has the updated cookie
@@ -405,36 +376,30 @@ def lect_add_individual_feedback(request,subject_slug,student_number):
         else:
             form = FeedbackForm()
         context_dict['form'] = form
-        return render(request,'student_feedback_app/lect_add_individual_feedback.html',context_dict)
+        return render(request,'student_feedback_app/lecturer/lecturer_add_individual_feedback.html',context_dict)
     except:
         context_dict['student'] = None
         context_dict['feedback'] = None
         context_dict['error'] = "no_student"
-        return render(request,'student_feedback_app/error_page.html', context_dict)
-    return render(request,'student_feedback_app/lect_add_individual_feedback.html',context_dict)
+        return render(request,'student_feedback_app/general/error_page.html', context_dict)
 
 def add_group_feedback(request,subject_slug):
     if not request.user.is_authenticated or not request.user.is_lecturer:
         context_dict['error'] = "auth"
-        return render(request,'student_feedback_app/error_page.html', context_dict)
+        return render(request,'student_feedback_app/general/error_page.html', context_dict)
     context_dict = {}
-
     try:
         students_string = request.COOKIES.get("students")
-
         students_list = json.loads(students_string)
         stud_profiles = []
-
         for student_id in students_list:
             stud_user = User.objects.get(id_number=student_id)
             stud_profiles.append(StudentProfile.objects.get(student=stud_user))
-
         context_dict['students'] = stud_profiles
         lect = LecturerProfile.objects.get(lecturer=request.user)
         context_dict['lecturer'] = lect
         course = Course.objects.get(subject_slug=subject_slug)
         context_dict['subject'] = course
-
         context = RequestContext(request)
         if request.method == 'POST':
             form = FeedbackForm(request.POST)
@@ -463,15 +428,13 @@ def add_group_feedback(request,subject_slug):
             form = FeedbackForm()
         context_dict['form'] = form
 
-        return render(request,'student_feedback_app/add_group_feedback.html',context_dict)
+        return render(request,'student_feedback_app/lecturer/lecturer_add_group_feedback.html',context_dict)
 
     except:
         context_dict['error'] = "error"
-        return render(request,'student_feedback_app/error_page.html', context_dict)
+        return render(request,'student_feedback_app/general/error_page.html', context_dict)
 
-    return render(request,'student_feedback_app/add_group_feedback.html',context_dict)
-
-def lecturer_all_courses(request):
+def lecturer_courses(request):
     context_dict = {}
     if request.user.is_authenticated and request.user.is_lecturer:
         lect = LecturerProfile.objects.get(lecturer=request.user)
@@ -483,7 +446,7 @@ def lecturer_all_courses(request):
         context_dict['feedback'] = fb
         context_dict['top_students'] = top_students
         if(request.method == 'POST'):
-            form = addCourseForm(request.POST)
+            form = AddCourseForm(request.POST)
             lect = LecturerProfile.objects.get(lecturer = request.user)
             if(form.is_valid()):
                 try:
@@ -495,62 +458,53 @@ def lecturer_all_courses(request):
                     return lecturer_home(request)
                 except:
                     context_dict['error'] = "no_course"
-                    return render(request, 'student_feedback_app/error_page.html', context_dict)
+                    return render(request, 'student_feedback_app/general/error_page.html', context_dict)
             else:
                 print(form.errors)
         else:
-            form = addCourseForm()
+            form = AddCourseForm()
         context_dict["form"] = form
-        return render(request, 'student_feedback_app/lecturer_courses.html', context_dict)
+        return render(request, 'student_feedback_app/lecturer/lecturer_courses.html', context_dict)
     else:
         context_dict['error'] = "auth"
-        return render(request,'student_feedback_app/error_page.html', context_dict)
-
-    return render(request,'student_feedback_app/lecturer_courses.html',context_dict)
+        return render(request,'student_feedback_app/general/error_page.html', context_dict)
 
 def create_course(request):
-    contextDict = {}
+    context_dict = {}
     if not request.user.is_authenticated or not request.user.is_lecturer:
         context_dict['error'] = "auth"
-        return render(request,'student_feedback_app/error_page.html', context_dict)
+        return render(request,'student_feedback_app/general/error_page.html', context_dict)
     try:
         lect = LecturerProfile.objects.get(lecturer=request.user)
-        contextDict["lecturer"] = lect
+        context_dict["lecturer"] = lect
         if request.method == 'POST':
             form = CourseForm(request.POST)
             if form.is_valid():
                 newCourse = form.save(commit=False)
                 newCourse.lecturer = lect
                 newCourse.save()
-                return lecturer_all_courses(request)
+                return lecturer_courses(request)
             else:
                 print(form.errors)
         else:
             form = CourseForm()
-        contextDict["form"] = form
-        return render(request, 'student_feedback_app/create_course.html', contextDict)
+        context_dict["form"] = form
+        return render(request, 'student_feedback_app/lecturer/lecturer_create_course.html', context_dict)
     except:
         context_dict['error'] = "error"
-        return render(request,'student_feedback_app/error_page.html', context_dict)
-
-
+        return render(request,'student_feedback_app/general/error_page.html', context_dict)
 
 class CategoryAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
         if not self.request.user.is_authenticated:
             return Category.objects.none()
-
         query_set = Category.objects.all()
-
         category = self.forwarded.get('category', None)
-
         if self.q:
             query_set = query_set.filter(name__istartswith=self.q)
             return query_set
-
         if category:
             query_set = Message.objects.filter(category=category)
-
         return query_set
 
     def get_create_option(self,context,q):
@@ -560,14 +514,12 @@ class CategoryAutocomplete(autocomplete.Select2QuerySetView):
             page_obj = context.get('page_obj', None)
             if page_obj is None or page_obj.number == 1:
                 display_create_option = True
-
             # Don't offer to create a new option if a
             # case-insensitive) identical one already exists
             existing_options = (self.get_result_label(result).lower()
                                 for result in context['object_list'])
             if q.lower() in existing_options:
                 display_create_option = False
-
         if display_create_option and self.has_add_permission(self.request):
             create_option = [{
                 'id': q,
@@ -611,19 +563,14 @@ class Feedback_with_from_userList(generics.ListAPIView):
     queryset = Feedback_with_from_user.objects.all()
     serializer_class = Feedback_with_from_userSerializer
 
-
 class MessageAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
         if not self.request.user.is_authenticated:
             return Message.objects.none()
-
         query_set = Message.objects.all()
-
         category = self.forwarded.get('category', None)
-
         if category:
             query_set = Message.objects.filter(category=category)
-
         return query_set
 
     def get_create_option(self,context,q):
@@ -633,32 +580,26 @@ class MessageAutocomplete(autocomplete.Select2QuerySetView):
             page_obj = context.get('page_obj', None)
             if page_obj is None or page_obj.number == 1:
                 display_create_option = True
-
             # Don't offer to create a new option if a
             # case-insensitive) identical one already exists
             existing_options = (self.get_result_label(result).lower()
                                 for result in context['object_list'])
             if q.lower() in existing_options:
                 display_create_option = False
-
         if display_create_option and self.has_add_permission(self.request):
             category = self.forwarded.get('category',None)
             cat = Category.objects.get(name=category)
-
             create_option = [{
                 'id': q,
                 'text': ('Create a new message: "%(new_value)s"') % {'new_value': q},
                 'category': category,
                 'create_id': True,
             }]
-
         return create_option
 
     def render_to_response(self, context):
         q = self.request.GET.get('q', None)
-
         create_option = self.get_create_option(context, q)
-
         return http.JsonResponse(
             {
                 'results': self.get_results(context) + create_option,

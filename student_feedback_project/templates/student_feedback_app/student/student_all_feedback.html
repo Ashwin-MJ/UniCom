@@ -1,4 +1,4 @@
-{% extends 'student_feedback_app/base.html' %}
+{% extends 'student_feedback_app/general/base.html' %}
 
 {% block title%}
 My Feedback
@@ -98,7 +98,7 @@ Feedback
     </div>
 
     <div class="button">
-      <a class="btn btn-material btn-ripple" style="color:white" href="{% url 'stud_provided_feedback'%}">
+      <a class="btn btn-material btn-ripple" style="color:white" href="{% url 'student_provided_feedback'%}">
         Click here to view feedback you have given to others
       </a>
     </div>
