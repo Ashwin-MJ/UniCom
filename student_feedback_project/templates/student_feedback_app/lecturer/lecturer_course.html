@@ -6,7 +6,9 @@
 {% endblock %}
 
 {% block current_page %}
-{{ lecturer.lecturer.username }}<br />
+{% for lect in lecturers %}
+{{ lect.lecturer.username }}<br />
+{% endfor %}
 {{ course.subject }}<br />
 {% endblock%}
 

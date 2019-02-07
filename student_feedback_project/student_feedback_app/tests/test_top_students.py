@@ -6,12 +6,12 @@ from populate import *
 class TopStudentsTestCase(TestCase):
     fixtures=['student_feedback_app']
 
-    # def test_lecturer_courses_html_dict_length_is_five(self):
-    #     c = Client()
-    #     c.login(username="00001", password="password")
-    #     response = c.get("/lecturer/courses/")
-    #     self.assertTrue(len(response.context['top_students']) == 5)
-    #
+    def test_lecturer_courses_html_dict_length_is_five(self):
+        c = Client()
+        c.login(username="00001", password="password")
+        response = c.get("/lecturer/courses/")
+        self.assertTrue(len(response.context['top_students']) == 5)
+
     # def test_lecturer_courses_html_dict_order_of_students(self):
     #     c = Client()
     #     c.login(username="00001", password="password")
