@@ -146,23 +146,28 @@ function toggleDataSeries(e) {
             {% if achievM.achiev >= 100  %}
               <div class="card custom-card">
               <b class="card-sub-heading">{{ achievM.category }} : {{ achievM.achiev }}</b>
+                <img src="{% static "trophies/Achiev100.jpg"%}" alt="Picture of ribbon" />
               </div>
             {% else %}
               {% if achievM.achiev >= 50  %}
                 <div class="card custom-card">
                 <b class="card-sub-heading">{{ achievM.category }} : {{ achievM.achiev }}</b>
+                 <img src="{% static "trophies/Achiev50.jpg"%}" alt="Picture of ribbon" />
+
                 </div>
               {% else %}
                 {% if achievM.achiev >= 25  %}
                   <div class="card custom-card">
                   <b class="card-sub-heading">{{ achievM.category }} : {{ achievM.achiev }}</b>
+                  <img src="{% static "trophies/Achiev25.jpg"%}" alt="Picture of ribbon" />
+
                   </div>
                 {% else %}
                   {% if achievM.achiev >= 10  %}
                     <div class="card custom-card">
 
                     <b class="card-sub-heading">{{ achievM.category }} : {{ achievM.achiev }}</b>
-                      <img src="{% static "trophies/Achiev10.jpeg"%}" alt="Picture of ribbon" />
+                      <img src="{% static "trophies/Achiev10.jpg"%}" alt="Picture of ribbon" />
                     </div>
                   {% else %}
                     {% if achievM.achiev >= 5  %}
