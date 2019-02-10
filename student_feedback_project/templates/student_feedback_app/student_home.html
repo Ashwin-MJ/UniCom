@@ -1,5 +1,5 @@
 {% extends 'student_feedback_app/base.html' %}
-
+{% load staticfiles %}
 {% block title%}
 My Homepage
 {% endblock %}
@@ -141,11 +141,40 @@ function toggleDataSeries(e) {
       <h3 class="card-body text-center custom-card-title">Achievements</h3>
       <hr />
       <div class="card-body scroll">
-        {% for achiev in achievements %}
-          {% if achiev.score > 1 %}
-          <div class="card custom-card">
-            <b class="card-sub-heading">{{ achiev.category }} : {{ achiev.score }}</b>
-          </div>
+        {% for achievM in achievements %}
+          {% if achievM.achiev > 1 %}
+            {% if achievM.achiev >= 100  %}
+              <div class="card custom-card">
+              <b class="card-sub-heading">{{ achievM.category }} : {{ achievM.achiev }}</b>
+              </div>
+            {% else %}
+              {% if achievM.achiev >= 50  %}
+                <div class="card custom-card">
+                <b class="card-sub-heading">{{ achievM.category }} : {{ achievM.achiev }}</b>
+                </div>
+              {% else %}
+                {% if achievM.achiev >= 25  %}
+                  <div class="card custom-card">
+                  <b class="card-sub-heading">{{ achievM.category }} : {{ achievM.achiev }}</b>
+                  </div>
+                {% else %}
+                  {% if achievM.achiev >= 10  %}
+                    <div class="card custom-card">
+
+                    <b class="card-sub-heading">{{ achievM.category }} : {{ achievM.achiev }}</b>
+                      <img src="{% static "trophies/Achiev10.jpeg"%}" alt="Picture of ribbon" />
+                    </div>
+                  {% else %}
+                    {% if achievM.achiev >= 5  %}
+                      <div class="card custom-card">
+                      <b class="card-sub-heading">{{ achievM.category }} : {{ achievM.achiev }}</b>
+                        <img src="{% static "trophies/Achiev5.jpeg"%}" alt="Picture of ribbon" />
+                      </div>
+                    {% endif %}
+                  {% endif %}
+                {% endif %}
+              {% endif %}
+            {% endif %}
           {% endif %}
         {% endfor %}
       </div>

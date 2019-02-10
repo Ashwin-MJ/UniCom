@@ -97,9 +97,9 @@ def student_home(request):
             stud.achievement_set.all().delete()
             scores = stud.get_score_for_category()
             for attribute in scores:
-                achiev = Achievement(student=stud)
-                achiev.gen_achievement(attribute, scores[attribute])
-                achiev.save()
+                achievM = Achievement(student=stud)
+                achievM.gen_achievement(attribute, scores[attribute])
+                achievM.save()
             print(stud.achievement_set.all())
             for item in stud.achievement_set.all():
                 print(item.category)
