@@ -469,6 +469,19 @@ def lecturer_courses(request):
         context_dict['error'] = "auth"
         return render(request,'student_feedback_app/general/error_page.html', context_dict)
 
+def lecturer_customise_options(request):
+    context_dict = {}
+    if not request.user.is_authenticated or not request.user.is_lecturer:
+        context_dict['error'] = "auth"
+        return render(request,'student_feedback_app/general/error_page.html', context_dict)
+    try:
+        lect = LecturerProfile.objects.get(lecturer=request.user)
+        context_dict['lecturer'] = lect
+        return render(request, 'student_feedback_app/lecturer/lecturer_customise_options.html', context_dict)
+    except:
+        context_dict['error'] = "error"
+        return render(request,'student_feedback_app/general/error_page.html', context_dict)
+
 def create_course(request):
     context_dict = {}
     if not request.user.is_authenticated or not request.user.is_lecturer:
