@@ -76,6 +76,7 @@ def edit_bio(request):
 def student_home(request):
     context_dict={}
     fbCat = {}
+    catColours = {}
     if request.user.is_authenticated and request.user.is_student:
         try:
             stud = StudentProfile.objects.get(student=request.user)
@@ -85,12 +86,14 @@ def student_home(request):
                 cat = feedback.category.name
                 if cat not in fbCat:
                     fbCat[cat] = [[feedback.points, feedback.datetime_given.strftime('%Y-%m-%d %H:%M')]]
+                    catColours[cat] = [feedback.category.colour]
                 else:
                     fbCat[cat].append([feedback.points, feedback.datetime_given.strftime('%Y-%m-%d %H:%M')])
             context_dict['student'] = stud
             context_dict['courses'] = courses
             context_dict['feedback'] = fb
             context_dict['feedbackData'] = json.dumps(fbCat)
+            context_dict['catColours'] = json.dumps(catColours)
 
         except:
             context_dict['error'] = "error"

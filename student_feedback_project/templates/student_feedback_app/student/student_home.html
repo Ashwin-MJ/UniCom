@@ -16,8 +16,10 @@ Home Page
  window.onload = function () {
      {% autoescape off %}
      catData = {{feedbackData}}
+     catColours = {{catColours}}
      {% endautoescape %}
 
+     console.log(catColours)
      data1 = []
      for(var cat in catData){
          dataPoints1 = []
@@ -28,7 +30,7 @@ Home Page
          data1.push({
              type: "line",
              name: cat,
-             color: "#"+((1<<24)*Math.random()|0).toString(16),
+             color: catColours[cat][0],
              showInLegend: true,
              axisYIndex: 1,
              dataPoints: dataPoints1
