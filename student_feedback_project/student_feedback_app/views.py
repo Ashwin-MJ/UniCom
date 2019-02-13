@@ -111,7 +111,7 @@ def student_home(request):
                         achievs[achvm.category].append(val)
                     else:
                         achievs[achvm.category] = [val]
-
+                achievs[achvm.category].sort()
             print(achievs)
 
             context_dict['student'] = stud
