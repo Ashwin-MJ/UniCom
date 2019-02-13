@@ -14,6 +14,12 @@ from dal import autocomplete
 import datetime
 import json
 
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.views import APIView
+
+
 def index(request):
     return HttpResponseRedirect('/accounts/login/')
 
@@ -160,10 +166,12 @@ def student_course(request, subject_slug):
         try:
             course = Course.objects.get(subject_slug=subject_slug)
             stud = StudentProfile.objects.get(student=request.user)
-            # lect = course.lecturer.all()
+            lecturers = course.lecturers
             students = course.students.all()
             top_students = students.order_by('-score')
             context_dict['course'] = course
+            context_dict['lecturers'] = lecturers
+            # lect = course.lecturer.all()
             # context_dict['lect'] = lect[0]
             context_dict['students'] = students
             context_dict['sorted_students'] = course.get_leaderboard()
@@ -441,7 +449,7 @@ def lecturer_courses(request):
     context_dict = {}
     if request.user.is_authenticated and request.user.is_lecturer:
         lect = LecturerProfile.objects.get(lecturer=request.user)
-        courses = lect.course_set.all()
+        courses = lect.courses.all()
         fb = request.user.feedback_set.all().order_by('-datetime_given')
         top_students = lect.get_my_students().order_by('-score')[:5]
         context_dict['lecturer'] = lect
@@ -499,7 +507,7 @@ def create_course(request):
             form = CourseForm(request.POST)
             if form.is_valid():
                 newCourse = form.save(commit=False)
-                newCourse.lecturer = lect
+                newCourse.lecturers.add(lect)
                 newCourse.save()
                 return lecturer_courses(request)
             else:
@@ -511,6 +519,27 @@ def create_course(request):
     except:
         context_dict['error'] = "error"
         return render(request,'student_feedback_app/general/error_page.html', context_dict)
+
+class FeedbackDetail(APIView):
+    """
+    Retrieve, update or delete a Feedback instance.
+    """
+    def get_object(self, fb_id):
+        try:
+            return Feedback.objects.get(feedback_id=fb_id)
+        except Feedback.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+    def get(self, request, fb_id, format=None):
+        fb = self.get_object(fb_id)
+        serializer = FeedbackSerializer(fb)
+        return Response(serializer.data)
+
+    def delete(self, request, fb_id, format=None):
+        fb = self.get_object(fb_id)
+        fb.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 class CategoryAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
