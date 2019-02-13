@@ -14,6 +14,9 @@ from dal import autocomplete
 import datetime
 import json
 
+from ast import literal_eval
+
+
 def index(request):
     return HttpResponseRedirect('/accounts/login/')
 
@@ -77,6 +80,7 @@ def student_home(request):
     context_dict={}
     fbCat = {}
     catColours = {}
+    achievs = {}
     if request.user.is_authenticated and request.user.is_student:
         try:
             stud = StudentProfile.objects.get(student=request.user)
@@ -99,11 +103,22 @@ def student_home(request):
                 achievM.save()
 
             stud.achievement_set.all()
+
+            for achvm in stud.achievement_set.all():
+                achvm.achiev = literal_eval(achvm.achiev)
+                for val in achvm.achiev:
+                    if achvm.category in achievs:
+                        achievs[achvm.category].append(val)
+                    else:
+                        achievs[achvm.category] = [val]
+
+            print(achievs)
+
             context_dict['student'] = stud
             context_dict['courses'] = courses
             context_dict['feedback'] = fb
             context_dict['feedbackData'] = json.dumps(fbCat)
-            context_dict['achievements'] = stud.achievement_set.all()
+            context_dict['achievements'] = achievs
             context_dict['catColours'] = json.dumps(catColours)
 
         except:

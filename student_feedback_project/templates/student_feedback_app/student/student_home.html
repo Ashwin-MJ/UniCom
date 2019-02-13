@@ -143,11 +143,14 @@ function toggleDataSeries(e) {
       <h3 class="card-body text-center custom-card-title">Achievements</h3>
       <hr />
       <br class="card-body scroll">
-        {% for achievM in achievements %}
 
-          {% for value in achievM.achiev %}
+        {% for key in achievements %}
+          {{ key }}
+          {{ achievements.key }}
+          </br>
+          {% for value in achievements.key %}
 
-            {{ value }} </br>
+            {{ value }}
 
           {% endfor %}
         {% endfor %}
