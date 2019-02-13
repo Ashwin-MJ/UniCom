@@ -13,10 +13,24 @@ Edit Categories and Pre-Defined Messages
 
 {% block body_block %}
 <div class="container">
+  <!-- Trigger/Open The Modal -->
+<button id="myBtn">Open Modal</button>
+
+<!-- The Modal -->
+<div id="myModal" class="modal">
+
+  <!-- Modal content -->
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <p>Some text in the Modal..</p>
+  </div>
+
+</div>
   <div class="card-deck">
 
     <div class="card scroll-bg">
       <h3 class="card-body text-center custom-card-title">My Categories</h3>
+      <i class="material-icons create-cat-icon" title="Add a new Category">playlist_add</i>
       <hr />
       <div class="card-body scroll">
         {% for cat in categories %}
@@ -31,7 +45,7 @@ Edit Categories and Pre-Defined Messages
     </div>
 
     <div class="card scroll-bg">
-      <h3 class="card-body text-center custom-card-title">My Mesages</h3>
+      <h3 class="card-body text-center custom-card-title">My Messages</h3>
       <hr />
       <div class="card-body scroll">
         {% for mess in messages %}
@@ -49,3 +63,7 @@ Edit Categories and Pre-Defined Messages
   </div>
 </div>
 {% endblock %}
+
+{% block footer %}
+<script type="text/javascript" src="{% static 'javascript/create-category.js' %}" ></script>
+{% endblock%}

@@ -110,3 +110,11 @@ hr {
   font-size: 200%;
   cursor: pointer;
 }
+
+.create-cat-icon {
+  position: absolute;
+  right:25px;
+  top:25px;
+  font-size: 200%;
+  cursor: pointer;
+}
