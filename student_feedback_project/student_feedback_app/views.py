@@ -4,6 +4,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.template import RequestContext
 from django.contrib.auth import login
+from django.core import serializers
 
 from student_feedback_app.forms import *
 from student_feedback_app.models import *
@@ -18,6 +19,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
+from rest_framework.renderers import JSONRenderer
 
 
 def index(request):
@@ -489,7 +491,14 @@ def lecturer_customise_options(request):
         lect = LecturerProfile.objects.get(lecturer=request.user)
         context_dict['lecturer'] = lect
         context_dict['categories'] = request.user.category_set.all()
-        context_dict['messages'] = request.user.message_set.all()
+        messages = request.user.message_set.all()
+
+        all_messages = {}
+        for message in messages:
+            all_messages[message.id] = message.text
+            
+        context_dict['messages'] = json.dumps(all_messages)
+        context_dict['messages_qs'] = messages
         return render(request, 'student_feedback_app/lecturer/lecturer_customise_options.html', context_dict)
     except:
         context_dict['error'] = "error"

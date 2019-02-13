@@ -38,4 +38,4 @@ class FeedbackSerializer(serializers.ModelSerializer):
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = ('name', 'user', 'colour')
+        fields = ('name', 'user', 'colour', 'message_set')
