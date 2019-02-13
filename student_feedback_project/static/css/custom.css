@@ -102,3 +102,10 @@ hr {
   background:black;
   background: -webkit-gradient(radial, 50% 50%, 0, 50% 50%, 175, from(#000), to(#fff));
 }
+
+.achievements{
+  width: 200px;
+  height: 200px;
+  border: 1px solid teal;
+  margin: 10px;
+}

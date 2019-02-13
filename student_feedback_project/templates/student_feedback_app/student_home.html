@@ -144,36 +144,34 @@ function toggleDataSeries(e) {
         {% for achievM in achievements %}
           {% if achievM.achiev > 1 %}
             {% if achievM.achiev >= 100  %}
-              <div class="card custom-card">
-              <b class="card-sub-heading">{{ achievM.category }} : {{ achievM.achiev }}</b>
-                <img src="{% static "trophies/Achiev100.jpeg"%}" alt="Picture of ribbon" />
+              <div align="center" class="card custom-card">
+              <b class="card-sub-heading">{{ achievM.category }} : </br>You've reached {{ achievM.achiev }} points!</b>
+                <img class="achievements" src="{% static "trophies/Achiev100.jpeg"%}" alt="Picture of ribbon" />
               </div>
             {% else %}
               {% if achievM.achiev >= 50  %}
-                <div class="card custom-card">
-                <b class="card-sub-heading">{{ achievM.category }} : {{ achievM.achiev }}</b>
-                 <img src="{% static "trophies/Achiev50.jpeg"%}" alt="Picture of ribbon" />
+                <div align="center" class="card custom-card">
+                  <b class="card-sub-heading">{{ achievM.category }} : </br>You've reached {{ achievM.achiev }} points!</b>
+                 <img class="achievements" src="{% static "trophies/Achiev50.jpeg"%}" alt="Picture of ribbon" />
 
                 </div>
               {% else %}
                 {% if achievM.achiev >= 25  %}
-                  <div class="card custom-card">
-                  <b class="card-sub-heading">{{ achievM.category }} : {{ achievM.achiev }}</b>
-                  <img src="{% static "trophies/Achiev25.jpg"%}" alt="Picture of ribbon" />
-
+                  <div align="center" class="card custom-card">
+                  <b class="card-sub-heading">{{ achievM.category }} : </br>You've reached {{ achievM.achiev }} points!</b>
+                  <img class="achievements" src="{% static "trophies/Achiev25.jpg"%}" alt="Picture of ribbon" />
                   </div>
                 {% else %}
                   {% if achievM.achiev >= 10  %}
-                    <div class="card custom-card">
-
-                    <b class="card-sub-heading">{{ achievM.category }} : {{ achievM.achiev }}</b>
-                      <img src="{% static "trophies/Achiev10.jpg"%}" alt="Picture of ribbon" />
+                    <div align="center" class="card custom-card">
+                    <b class="card-sub-heading">{{ achievM.category }} : </br>You've reached {{ achievM.achiev }} points!</b>
+                      <img class="achievements" src="{% static "trophies/Achiev10.jpg"%}" alt="Picture of ribbon" />
                     </div>
                   {% else %}
                     {% if achievM.achiev >= 5  %}
-                      <div class="card custom-card">
-                      <b class="card-sub-heading">{{ achievM.category }} : {{ achievM.achiev }}</b>
-                        <img src="{% static "trophies/Achiev5.jpeg"%}" alt="Picture of ribbon" />
+                      <div align="center" class="card custom-card">
+                        <b class="card-sub-heading">{{ achievM.category }} :</br>You've reached {{ achievM.achiev }} points!</b>
+                        <img class="achievements" src="{% static "trophies/Achiev5.jpeg"%}" alt="Picture of ribbon" />
                       </div>
                     {% endif %}
                   {% endif %}
