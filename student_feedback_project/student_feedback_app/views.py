@@ -160,19 +160,13 @@ def student_course(request, subject_slug):
         try:
             course = Course.objects.get(subject_slug=subject_slug)
             stud = StudentProfile.objects.get(student=request.user)
-<<<<<<< HEAD
             lecturers = course.lecturers
             students = course.students.all()
             top_students = students.order_by('-score')
             context_dict['course'] = course
             context_dict['lecturers'] = lecturers
-=======
             # lect = course.lecturer.all()
-            students = course.students.all()
-            top_students = students.order_by('-score')
-            context_dict['course'] = course
             # context_dict['lect'] = lect[0]
->>>>>>> 092811fa5de78f8c59238c230f14da748447558c
             context_dict['students'] = students
             context_dict['sorted_students'] = course.get_leaderboard()
             context_dict['feedback'] = stud.get_fb_for_course(course.subject)
