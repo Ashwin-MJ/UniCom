@@ -194,7 +194,7 @@ class Feedback(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=20, default="Empty")
-    user = models.ForeignKey('User',on_delete=models.CASCADE)
+    user = models.ForeignKey('User',on_delete=models.CASCADE,null=True)
 
     # Store the hex code for the colour field as a CharField. This can then be retrieved and
     # used later as required

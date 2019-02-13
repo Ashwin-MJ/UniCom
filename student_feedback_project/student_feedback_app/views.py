@@ -489,7 +489,7 @@ def lecturer_customise_options(request):
         lect = LecturerProfile.objects.get(lecturer=request.user)
         context_dict['lecturer'] = lect
         context_dict['categories'] = request.user.category_set.all()
-        context_dict['messages'] = request.user.message_set.all()        
+        context_dict['messages'] = request.user.message_set.all()
         return render(request, 'student_feedback_app/lecturer/lecturer_customise_options.html', context_dict)
     except:
         context_dict['error'] = "error"
@@ -538,6 +538,30 @@ class FeedbackDetail(APIView):
     def delete(self, request, fb_id, format=None):
         fb = self.get_object(fb_id)
         fb.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+class CategoryDetail(APIView):
+    """
+    Retrieve, update or delete a Category instance.
+    """
+    def get_object(self, cat_id):
+        try:
+            return Category.objects.get(id=cat_id)
+        except Category.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+    def get(self, request, cat_id, format=None):
+        cat = self.get_object(cat_id)
+        serializer = CategorySerializer(cat)
+        return Response(serializer.data)
+
+    def delete(self, request, cat_id, format=None):
+        cat = self.get_object(cat_id)
+        messages = cat.message_set.all()
+        for mess in messages:
+            mess.delete()
+        request.user.category_set.remove(cat)
+        cat.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 

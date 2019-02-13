@@ -105,8 +105,24 @@ hr {
 
 .delete-icon {
   position: absolute;
-  right:25px;
+  right:20px;
   top:25px;
+  font-size: 200%;
+  cursor: pointer;
+}
+
+.delete-cat-icon {
+  position: absolute;
+  right:10px;
+  top:10px;
+  font-size: 200%;
+  cursor: pointer;
+}
+
+.delete-mess-icon {
+  position: absolute;
+  right:10px;
+  top:10px;
   font-size: 200%;
   cursor: pointer;
 }

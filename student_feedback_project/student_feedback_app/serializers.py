@@ -34,3 +34,8 @@ class FeedbackSerializer(serializers.ModelSerializer):
         model = Feedback
         fields = ('date_given', 'feedback_id', 'pre_defined_message', 'points', 'from_user',
                     'student', 'which_course', 'datetime_given', 'optional_message', 'category')
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ('name', 'user', 'colour')
