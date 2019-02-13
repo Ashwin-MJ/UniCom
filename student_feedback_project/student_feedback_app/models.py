@@ -5,7 +5,7 @@ from django.template.defaultfilters import slugify
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.core.mail import send_mail
-
+from django.core.validators import int_list_validator
 
 import datetime
 import random, string
@@ -116,22 +116,22 @@ class StudentProfile(models.Model):
 class Achievement(models.Model):
     student = models.ForeignKey('StudentProfile', on_delete=models.CASCADE, )
     category = models.ForeignKey("Category", on_delete=models.CASCADE, )
-    achiev = models.IntegerField()
+    achiev = models.CharField(validators=[int_list_validator], max_length=100)
 
     def gen_achievement(self, attribute, score):
         self.category = Category.objects.get(name=attribute)
         if score >= 100:
-            self.achiev = 100
+            self.achiev =  [100, 50, 25, 10, 5]
         elif score >= 50:
-            self.achiev = 50
+            self.achiev = [50, 25, 10, 5]
         elif score >= 25:
-            self.achiev = 25
+            self.achiev = [25, 10, 5]
         elif score >= 10:
-            self.achiev = 10
+            self.achiev = [10, 5]
         elif score >= 5:
-            self.achiev = 5
+            self.achiev = [5]
         else:
-            self.achiev = 0
+            self.achiev = [0]
 
 
 
