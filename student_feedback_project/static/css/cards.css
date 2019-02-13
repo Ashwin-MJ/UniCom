@@ -118,10 +118,6 @@
   margin: 0.5em;
 }
 
-.border:hover {
-  box-shadow: inset 0 0 0 3px #52c7b8;
-}
-
 .custom-card {
   margin-top: 25px;
   padding: 10px;
@@ -157,4 +153,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.fb-border {
+  border-radius: 25px;
+  border-width: thick;
 }

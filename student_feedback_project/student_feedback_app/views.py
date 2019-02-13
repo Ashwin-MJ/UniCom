@@ -76,6 +76,7 @@ def edit_bio(request):
 def student_home(request):
     context_dict={}
     fbCat = {}
+    catColours = {}
     if request.user.is_authenticated and request.user.is_student:
         try:
             stud = StudentProfile.objects.get(student=request.user)
@@ -85,12 +86,14 @@ def student_home(request):
                 cat = feedback.category.name
                 if cat not in fbCat:
                     fbCat[cat] = [[feedback.points, feedback.datetime_given.strftime('%Y-%m-%d %H:%M')]]
+                    catColours[cat] = [feedback.category.colour]
                 else:
                     fbCat[cat].append([feedback.points, feedback.datetime_given.strftime('%Y-%m-%d %H:%M')])
             context_dict['student'] = stud
             context_dict['courses'] = courses
             context_dict['feedback'] = fb
             context_dict['feedbackData'] = json.dumps(fbCat)
+            context_dict['catColours'] = json.dumps(catColours)
 
         except:
             context_dict['error'] = "error"
@@ -157,11 +160,19 @@ def student_course(request, subject_slug):
         try:
             course = Course.objects.get(subject_slug=subject_slug)
             stud = StudentProfile.objects.get(student=request.user)
+<<<<<<< HEAD
             lecturers = course.lecturers
             students = course.students.all()
             top_students = students.order_by('-score')
             context_dict['course'] = course
             context_dict['lecturers'] = lecturers
+=======
+            # lect = course.lecturer.all()
+            students = course.students.all()
+            top_students = students.order_by('-score')
+            context_dict['course'] = course
+            # context_dict['lect'] = lect[0]
+>>>>>>> 092811fa5de78f8c59238c230f14da748447558c
             context_dict['students'] = students
             context_dict['sorted_students'] = course.get_leaderboard()
             context_dict['feedback'] = stud.get_fb_for_course(course.subject)

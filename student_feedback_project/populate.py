@@ -382,8 +382,8 @@ def populate():
 def create_view_fb_cat():
     with connection.cursor() as cursor:
         cursor.execute("CREATE VIEW student_feedback_app_feedback_with_category \
-                        as select fb.*, ca.name categoryName from student_feedback_app_feedback fb \
-                        INNER JOIN student_feedback_app_category ca ON fb.category_id = ca.id;")
+                        as select fb.*, ca.colour categoryColour from student_feedback_app_feedback fb \
+                        INNER JOIN student_feedback_app_category ca ON fb.category_id = ca.name;")
 
 # function to add the view feedback with student
 def create_view_fb_stud():

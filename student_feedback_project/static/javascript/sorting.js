@@ -22,7 +22,7 @@ function fetchFromUser(fb_keep, students, sort_param, keep_param){
 	httpRequest.onreadystatechange = function(){
 		if (this.readyState == 4 && this.status == 200) {
 			var fromUsers = JSON.parse(this.responseText);
-			sort(fb_keep, students, fromUsers, sort_param, keep_param);
+			fetchCatColour(fb_keep, students, fromUsers, sort_param, keep_param);
 
 		}
 	};
@@ -30,7 +30,22 @@ function fetchFromUser(fb_keep, students, sort_param, keep_param){
 	httpRequest.send();
 }
 
-function sort(fb_keep, students, fromUsers, sort_param, keep_param){
+function fetchCatColour(fb_keep, students, fromUsers, sort_param, keep_param){
+	var host = location.protocol + "//" + window.location.host;
+	const Url = host + "/Feedback_with_categoryList/";
+	var httpRequest = new XMLHttpRequest();
+	httpRequest.onreadystatechange = function(){
+		if (this.readyState == 4 && this.status == 200) {
+			var catColours = JSON.parse(this.responseText);
+			sort(fb_keep, students, fromUsers, catColours, sort_param, keep_param);
+
+		}
+	};
+	httpRequest.open("GET", Url, true);
+	httpRequest.send();
+}
+
+function sort(fb_keep, students, fromUsers, catColours, sort_param, keep_param){
 	var host = location.protocol + "//" + window.location.host;
 	switch(sort_param){
 		case "points":
@@ -49,7 +64,7 @@ function sort(fb_keep, students, fromUsers, sort_param, keep_param){
 		if (this.readyState == 4 && this.status == 200) {
 			var sortedFb = JSON.parse(this.responseText);
 
-			//for every feedback replace the id number given by JSON for student and lecturer to the name and see if feedback is recent (5mins)
+			//for every feedback replace the id number given by JSON for student and from user to the name and see if feedback is recent (5mins)
 			for(var fb of sortedFb){
 				var stud_id = fb["student"];
 				for(var stud of students){
@@ -61,8 +76,8 @@ function sort(fb_keep, students, fromUsers, sort_param, keep_param){
 				var from_user_id = fb["from_user"];
 
 				for(var user of fromUsers){
-					if(user["from_user_id"] == from_user_id){
-						fb["from_user"] = user["fromUserName"];
+					if(user.from_user_id == from_user_id){
+						fb.from_user = user.fromUserName;
 					}
 				}
 
@@ -70,10 +85,19 @@ function sort(fb_keep, students, fromUsers, sort_param, keep_param){
 				var now_date = new Date();
 				var five_mins = new Date(5*60000);
 				if((now_date - fb_date) < five_mins){
-					fb['is_recent'] = true;
+					fb.is_recent = true;
 				}
-				else
-					fb['is_recent'] = false;
+				else{
+					fb.is_recent = false;
+				}
+
+				var fb_cat = fb.category;
+				for(var cat of catColours){
+					if(cat.category_id == fb_cat){
+						fb.catColour = cat.categoryColour;
+					}
+				}
+
 			}
 
 			switch(keep_param){
@@ -128,8 +152,6 @@ function sort(fb_keep, students, fromUsers, sort_param, keep_param){
 				default:
 			}
 
-
-
 			//place this parsed data into the page
 			show(sortedFb, footerType);
 		}
@@ -168,17 +190,17 @@ function show(sorted_fb, footerType){
 			var footer = 'Given to ' + fb.student;
 		else
 			var footer = fb.from_user;
-		if(fb['is_recent']){
-			fb_text += '<div class="card recent custom-card text-white">';
+		if(fb.is_recent){
+			fb_text += '<div class="card recent custom-card text-white fb-border" style="border-color:' + fb.catColour + '">';
 		}
 		else
-			fb_text += '<div class="card custom-card">';
-		fb_text += '<b class="card-sub-heading">' + fb["category"] + `</b>
+			fb_text += '<div class="card custom-card fb-border" style="border-color:' + fb.catColour + '">';
+		fb_text += '<b class="card-sub-heading" style="color:' + fb.catColour + '">' + fb.category + `</b>
           <div class="row" style="padding-bottom:1%">
             <div class="column left">
               <div class="border">
                 <blockquote class="quote">`
-                +  fb["pre_defined_message_id"] +'<br />';
+                +  fb.pre_defined_message_id +'<br />';
                   if (fb.optional_message){
                   fb_text += '<em>"' + fb.optional_message + '"</em>'
 				  }
@@ -188,8 +210,8 @@ function show(sorted_fb, footerType){
               Course: <em>` + fb.courseName + `</em><br />
               <i class="material-icons" style="font-size:70%;">calendar_today</i>` + showDate
             + `</div>
-            <div class="column right-number">
-							<div style="text-align:center">`
+            <div class="column right-number">`
+						+ '<div style="text-align:center; color:' + fb.catColour + '">'
             + fb.points + `<br />`
 						+ `<h6>POINTS</h6>`
 						+ `</div>`
