@@ -91,7 +91,7 @@ function sort(fb_keep, students, fromUsers, catColours, sort_param, keep_param){
 					fb.is_recent = false;
 				}
 
-				var fb_cat = fb.category_id;
+				var fb_cat = fb.category;
 				for(var cat of catColours){
 					if(cat.category_id == fb_cat){
 						fb.catColour = cat.categoryColour;
@@ -191,11 +191,11 @@ function show(sorted_fb, footerType){
 		else
 			var footer = fb.from_user;
 		if(fb.is_recent){
-			fb_text += '<div class="card recent custom-card text-white">';
+			fb_text += '<div class="card recent custom-card text-white fb-border" style="border-color:' + fb.catColour + '">';
 		}
 		else
-			fb_text += '<div class="card custom-card">';
-		fb_text += '<b class="card-sub-heading">' + fb.category + `</b>
+			fb_text += '<div class="card custom-card fb-border" style="border-color:' + fb.catColour + '">';
+		fb_text += '<b class="card-sub-heading" style="color:' + fb.catColour + '">' + fb.category + `</b>
           <div class="row" style="padding-bottom:1%">
             <div class="column left">
               <div class="border">
@@ -210,8 +210,8 @@ function show(sorted_fb, footerType){
               Course: <em>` + fb.courseName + `</em><br />
               <i class="material-icons" style="font-size:70%;">calendar_today</i>` + showDate
             + `</div>
-            <div class="column right-number">
-							<div style="text-align:center">`
+            <div class="column right-number">`
+						+ '<div style="text-align:center; color:' + fb.catColour + '">'
             + fb.points + `<br />`
 						+ `<h6>POINTS</h6>`
 						+ `</div>`

@@ -214,8 +214,8 @@ class Message(models.Model):
         return self.text
 
 class Feedback_with_category(models.Model):
-    categoryName = models.CharField(max_length=200,default="No category")
-    feedback_id = models.IntegerField(primary_key=True,default=0)
+    categoryColour = models.CharField(max_length=200,default="No category colour")
+    category_id = models.CharField(max_length=200, default="No category", primary_key=True)
     class Meta:
         managed = False
         db_table = "student_feedback_app_feedback_with_category"
