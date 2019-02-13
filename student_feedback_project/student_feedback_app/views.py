@@ -477,6 +477,8 @@ def lecturer_customise_options(request):
     try:
         lect = LecturerProfile.objects.get(lecturer=request.user)
         context_dict['lecturer'] = lect
+        context_dict['categories'] = request.user.category_set.all()
+        context_dict['messages'] = request.user.message_set.all()        
         return render(request, 'student_feedback_app/lecturer/lecturer_customise_options.html', context_dict)
     except:
         context_dict['error'] = "error"
@@ -511,13 +513,13 @@ class CategoryAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
         if not self.request.user.is_authenticated:
             return Category.objects.none()
-        query_set = Category.objects.all()
+        query_set = self.request.user.category_set.all()
         category = self.forwarded.get('category', None)
         if self.q:
             query_set = query_set.filter(name__istartswith=self.q)
             return query_set
         if category:
-            query_set = Message.objects.filter(category=category)
+            query_set = Message.objects.filter(user=self.request.user,category=category)
         return query_set
 
     def get_create_option(self,context,q):
@@ -580,7 +582,7 @@ class MessageAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
         if not self.request.user.is_authenticated:
             return Message.objects.none()
-        query_set = Message.objects.all()
+        query_set = self.request.user.message_set.all()
         category = self.forwarded.get('category', None)
         if category:
             query_set = Message.objects.filter(category=category)

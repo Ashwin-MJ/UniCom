@@ -13,18 +13,37 @@ Edit Categories and Pre-Defined Messages
 
 {% block body_block %}
 <div class="container">
-  <div class="card-deck" style="margin-top:25px;">
+  <div class="card-deck">
 
-    <div class="card">
+    <div class="card scroll-bg">
       <h3 class="card-body text-center custom-card-title">My Categories</h3>
       <hr />
-      
+      <div class="card-body scroll">
+        {% for cat in categories %}
+        <div class="card custom-card">
+            <div class="card-body text-center">
+              <b class="card-sub-heading">{{ cat.name }}</b>
+            </div>
+        </div>
+        <br />
+        {% endfor %}
+      </div>
     </div>
 
-    <div class="card">
-      <h3 class="card-body text-center custom-card-title">My Messages</h3>
+    <div class="card scroll-bg">
+      <h3 class="card-body text-center custom-card-title">My Mesages</h3>
       <hr />
-
+      <div class="card-body scroll">
+        {% for mess in messages %}
+        <div class="card custom-card">
+            <div class="card-body text-center">
+              <b class="card-sub-heading">{{ mess.category.name }}</b>
+              <b class="card-sub-heading">{{ mess.text }}</b>
+            </div>
+        </div>
+        <br />
+        {% endfor %}
+      </div>
     </div>
 
   </div>

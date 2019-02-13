@@ -193,7 +193,8 @@ class Feedback(models.Model):
         return self.from_user.is_lecturer and not self.from_user.is_student
 
 class Category(models.Model):
-    name = models.CharField(max_length=20, default="Empty",primary_key=True)
+    name = models.CharField(max_length=20, default="Empty")
+    user = models.ForeignKey('User',on_delete=models.CASCADE)
 
     # Store the hex code for the colour field as a CharField. This can then be retrieved and
     # used later as required
@@ -208,7 +209,8 @@ class Message(models.Model):
     # As per the client's requirements, a Lecturer should first select a category, after which a list of pre-defined messages associated with that category are displayed
     # The Lecturer MUST select one of these messages.
     category = models.ForeignKey('Category',on_delete=models.CASCADE,null=True,blank=True)
-    text = models.CharField(max_length=200,default="No message",primary_key=True)
+    text = models.CharField(max_length=200,default="No message")
+    user = models.ForeignKey('User',on_delete=models.CASCADE)
 
     def __str__(self):
         return self.text
