@@ -2,14 +2,10 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import AbstractUser
 from django.template.defaultfilters import slugify
-
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-
 from django.core.mail import send_mail
-from django.core.mail import EmailMultiAlternatives
-from django.template.loader import get_template
-from django.template import Context
+
 
 import datetime
 import random, string
@@ -24,12 +20,9 @@ class User(AbstractUser):
     username = models.CharField(max_length=25,  unique=True)
     is_student = models.BooleanField(default=False)
     is_lecturer = models.BooleanField(default=False)
-
     degree = models.CharField(max_length=60, default="Degree not specified")
     bio = models.CharField(max_length=250, default="Biography not specified")
-
     is_active = models.BooleanField(default=False)
-
     USERNAME_FIELD = 'id_number'
     REQUIRED_FIELDS = ['username', 'email']
 
@@ -47,11 +40,8 @@ def update_user_profile(sender, instance, created, **kwargs):
             superusers = User.objects.filter(is_superuser=True)
             for superuser in superusers:
                 emails.append(superuser.email)
-
             message = 'Lecturer ' + instance.username + ' has registered and needs approval. Approve profiles @ feedbackapp.pythonanywhere.com/admin'
-
             send_mail('Lecturer needs approval',message,'lect.acc.unicom@gmail.com',emails)
-
         else :
             instance.is_active = True
             instance.is_student = True
@@ -59,12 +49,12 @@ def update_user_profile(sender, instance, created, **kwargs):
             StudentProfile.objects.create(student=instance)
             instance.studentprofile.save()
 
-
 class StudentProfile(models.Model):
     student = models.OneToOneField(User, on_delete=models.CASCADE,primary_key=True)
     score = models.IntegerField(default=0)
     courses = models.ManyToManyField('Course')
 
+    #comparison based on username
     def __lt__(self, other):
         return self.student.username < other.student.username
 
@@ -150,9 +140,9 @@ class Course(models.Model):
     course_description = models.CharField(max_length=200, default="")
     subject_slug = models.SlugField(max_length=50, default='empty_slug')
     students = models.ManyToManyField('StudentProfile')
-    lecturer = models.ForeignKey('LecturerProfile', on_delete=models.CASCADE, null=True, blank=True)
+    lecturers = models.ManyToManyField('LecturerProfile')
     course_code = models.CharField(max_length=20, primary_key=True)
-    course_token = models.CharField(max_length=7, default = "")
+    course_token = models.CharField(max_length=20, default = "")
 
     def save(self, *args, **kwargs):
         self.subject_slug = slugify(self.course_code)
@@ -194,17 +184,18 @@ class Course(models.Model):
 
 class LecturerProfile(models.Model):
     lecturer = models.OneToOneField(User, on_delete=models.CASCADE,primary_key=True)
+    courses = models.ManyToManyField('Course')
 
     def get_my_students(self):
         students = Course.objects.none()
-        for course in self.course_set.all():
+        for course in self.courses.all():
             students = students | course.students.all()
         return students.distinct()
     # Can access lecturers courses using LecturerProfile.course_set.all()
     # Can access lecturers feedback using LectureProfile.feedback_set.all()
     def get_courses_with_students(self):
         courses_with_students = {}
-        for course in self.course_set.all():
+        for course in self.courses.all():
             courses_with_students[course] = len(course.students.all())
 
         return courses_with_students
@@ -234,6 +225,10 @@ class Feedback(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=20, default="Empty",primary_key=True)
+
+    # Store the hex code for the colour field as a CharField. This can then be retrieved and
+    # used later as required
+    colour = models.CharField(max_length=6, default="#009999")
     # Can access messages associated with a given category using Category.message_set.all()
 
     def __str__(self):
@@ -250,8 +245,8 @@ class Message(models.Model):
         return self.text
 
 class Feedback_with_category(models.Model):
-    categoryName = models.CharField(max_length=200,default="No category")
-    feedback_id = models.IntegerField(primary_key=True,default=0)
+    categoryColour = models.CharField(max_length=200,default="No category colour")
+    category_id = models.CharField(max_length=200, default="No category", primary_key=True)
     class Meta:
         managed = False
         db_table = "student_feedback_app_feedback_with_category"

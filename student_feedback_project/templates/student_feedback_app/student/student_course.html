@@ -1,4 +1,4 @@
-{% extends 'student_feedback_app/base.html' %}
+{% extends 'student_feedback_app/general/base.html' %}
 
 {% block title%}
 {{ course.subject }}
@@ -44,11 +44,11 @@
       <div class="card-body scroll" id="fb-list">
         {% for fb in feedback %}
         {% if fb.is_recent %}
-        <div class="card recent custom-card text-white">
+        <div class="card recent custom-card text-white fb-border" style="border-color:{{fb.category.colour}}">
         {% else %}
-        <div class="card custom-card">
+        <div class="card custom-card fb-border" style="border-color:{{fb.category.colour}}">
         {% endif %}
-          <b class="card-sub-heading">{{ fb.category }}</b>
+          <b class="card-sub-heading" style="color:{{fb.category.colour}}">{{ fb.category }}</b>
           <div class="row" style="padding-bottom:1%">
             <div class="column left">
               <div class="border">
@@ -57,14 +57,14 @@
                   {% if fb.optional_message %}
                   <em>"{{ fb.optional_message }}"</em>
                   {% endif %}
-                  <footer>{{fb.from_user.username}}</footer>
+                  <footer>From {{fb.from_user.username}}</footer>
                 </blockquote>
               </div>
               Course:<em> {{fb.which_course.subject}}</em><br />
               <i class="material-icons" style="font-size:70%;">calendar_today</i> {{ fb.datetime_given }}
             </div>
             <div class="column right-number">
-              <div style="text-align:center">
+              <div style="text-align:center; color:{{fb.category.colour}}">
                 {{ fb.points }}<br />
                 <h6>POINTS</h6>
                 </div>
@@ -85,7 +85,7 @@
       <hr />
       <div class="card-body scroll">
         {% for stud,score in sorted_students %}
-        <a href="{% url 'stud_add_individual_feedback' course.subject_slug stud.student.id_number %}">
+        <a href="{% url 'student_add_individual_feedback' course.subject_slug stud.student.id_number %}">
           <div class="card custom-card">
             <div class="row">
               <div class="column left">
