@@ -17,7 +17,7 @@ class CategorySerializer(serializers.ModelSerializer):
 class Feedback_with_categorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Feedback_with_category
-        fields = ('categoryName', 'feedback_id')
+        fields = ('categoryColour', 'feedback_id')
 
 class Feedback_with_studentSerializer(serializers.ModelSerializer):
     class Meta:
