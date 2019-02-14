@@ -672,34 +672,31 @@ def invites(request):
             context_dict['token'] = token
             if token == '' or Course.objects.filter(course_token=token).count() == 0:
                 return redirect('lecturer_courses')
+            course = Course.objects.get(course_token=token)
     except:
         context_dict['error'] = "error"
         return render(request,'student_feedback_app/general/error_page.html', context_dict)
     try:
-        if request.COOKIES.get("students") != []:
-            students_string = request.COOKIES.get("students")
-            students_list = json.loads(students_string)
-            stud_profiles = []
-            for student_id in students_list:
-                stud_user = User.objects.get(id_number=student_id)
-                stud_profiles.append(StudentProfile.objects.get(student=stud_user))
-            context_dict['students'] = stud_profiles
-            #
-            #   email
-            #
-            course = Course.objects.get(course_token=token).subject_slug
-            request.COOKIES['students'] = ""
-            response = lecturer_course(request, course)
-            response.delete_cookie("students")
-            return response
-        else:
-            lect = LecturerProfile.objects.get(lecturer=request.user)
-            context_dict['students'] = lect.get_my_students()
-            return render(request, 'student_feedback_app/lecturer/invites.html', context_dict)
+        
+        students_string = request.COOKIES.get("students")
+        students_list = json.loads(students_string)
+        students = []
+        for student_id in students_list:
+            stud_user = User.objects.get(id_number=student_id)
+            students.append(stud_user)
+        
+        message =  ' lecturer ' + request.user.username + ' has invited you to join ' + course.subject + ' (' + course.course_code + '). To join this course use this token: ' + course.course_token 
+        for student in students:
+            personal_message = 'Dear ' + student.username + message
+            send_mail('You are invited to join a course!',personal_message,'lect.acc.unicom@gmail.com',[student.email])
+        
+        response = lecturer_course(request, course.subject_slug)
+        response.set_cookie('students', '', path="/lecturer/invites/")
+        return response
+        
     except: 
         lect = LecturerProfile.objects.get(lecturer=request.user)
-        context_dict['students'] = lect.get_my_students()
+        students = lect.get_my_students()
+        added_students = course.students.distinct()
+        context_dict['students'] = set(students).difference(set(added_students))
         return render(request, 'student_feedback_app/lecturer/invites.html', context_dict)
-    
-    
-
