@@ -659,3 +659,47 @@ def register(request):
     else:
         form = RegisterForm()
     return render(request, 'registration/registration_form.html', {'form': form})
+    
+    
+def invites(request):
+    context_dict = {}
+    if not request.user.is_authenticated or not request.user.is_lecturer:
+        context_dict['error'] = "auth"
+        return render(request,'student_feedback_app/general/error_page.html', context_dict)
+    try:
+        if request.method == 'GET':
+            token = request.GET.get('token', '')
+            context_dict['token'] = token
+            if token == '' or Course.objects.filter(course_token=token).count() == 0:
+                return redirect('lecturer_courses')
+    except:
+        context_dict['error'] = "error"
+        return render(request,'student_feedback_app/general/error_page.html', context_dict)
+    try:
+        if request.COOKIES.get("students") != []:
+            students_string = request.COOKIES.get("students")
+            students_list = json.loads(students_string)
+            stud_profiles = []
+            for student_id in students_list:
+                stud_user = User.objects.get(id_number=student_id)
+                stud_profiles.append(StudentProfile.objects.get(student=stud_user))
+            context_dict['students'] = stud_profiles
+            #
+            #   email
+            #
+            course = Course.objects.get(course_token=token).subject_slug
+            request.COOKIES['students'] = ""
+            response = lecturer_course(request, course)
+            response.delete_cookie("students")
+            return response
+        else:
+            lect = LecturerProfile.objects.get(lecturer=request.user)
+            context_dict['students'] = lect.get_my_students()
+            return render(request, 'student_feedback_app/lecturer/invites.html', context_dict)
+    except: 
+        lect = LecturerProfile.objects.get(lecturer=request.user)
+        context_dict['students'] = lect.get_my_students()
+        return render(request, 'student_feedback_app/lecturer/invites.html', context_dict)
+    
+    
+
