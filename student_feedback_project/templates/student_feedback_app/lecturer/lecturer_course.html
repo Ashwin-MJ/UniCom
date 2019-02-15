@@ -27,9 +27,13 @@
         <hr />
         <div id="all_students" class="card-body scroll">
           {% for stud,score in students_with_score %}
+          <!-- <i class="material-icons delete-icon" id="{{ stud.student.id_number }}">delete</i> -->
+
           <div class="card students custom-card" id="{{ stud.student.id_number }}">
+            <!-- <i class="material-icons delete-icon" id="{{ stud.student.id_number }}/{{ course.course_code }}">delete</i> -->
             <div class="row">
               <div class="column left">
+                <i class="material-icons delete-icon" id="{{ stud.student.id_number }}/{{ course.course_code }}">delete</i>
                 <b class="card-sub-heading">{{ stud.student.username }}</b>
                 <div class="card-sub-heading">
                   {{ score }}
@@ -144,6 +148,6 @@
 
 {% block footer %}
 
-<script type="text/javascript" src="{% static 'javascript/group_select.js' %}" ></script>
-
+<!-- <script type="text/javascript" src="{% static 'javascript/group_select.js' %}" ></script> -->
+<script type="text/javascript" src="{% static 'javascript/delete_student_from_course.js' %}" ></script>
 {% endblock%}
