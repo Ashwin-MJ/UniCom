@@ -42,31 +42,21 @@ $('.delete-cat-icon').click(function(e) {
 });
 
 $('.edit-cat-icon').click(function(e) {
-
   var cat_id = this.id;
-  alert("Edit")
-  var csrftoken = getCookie("csrftoken");
-  function csrfSafeMethod(method) {
-    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-  }
-  $.ajaxSetup({
-    beforeSend: function(xhr, settings) {
-        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-            xhr.setRequestHeader("X-CSRFToken", csrftoken);
-        }
-    }
-  });
-  $.ajax({
-      url: "/category/"+cat_id+"/",
-      data: {},
-      type: 'POST',
-      contentType: 'application/json',
-      success: function(result) {
-        location.reload();
-      },
+  var cat_name = $(this).parent().find("b").html();
+
+  $('.modal-cat-header').html("Edit \"" + cat_name + "\"");
+
+  $('.submit-cat-form').on('click', function(){
+
+    // Work out how to save new info to model
+    alert("Here");
+
   });
 
 });
+
+
 
 $('.category').on('click', function(){
   var cat_id = $(this).find("i").attr('id');

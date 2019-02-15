@@ -1,6 +1,6 @@
 from dal import autocomplete
 from django import forms
-from .models import Course, Feedback, User
+from .models import Course, Feedback, User, Category
 from django.contrib.auth.forms import UserCreationForm
 
 
@@ -63,3 +63,11 @@ class EditBioForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ('degree', 'bio',)
+
+class EditCategoryForm(forms.ModelForm):
+    name = forms.CharField(max_length=20, help_text="What would you like to change the name of this category to?")
+    colour = forms.CharField(max_length=6, help_text="enter colour")
+
+    class Meta:
+        model = Category
+        fields = ('name','colour',)

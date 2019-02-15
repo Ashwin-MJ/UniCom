@@ -10,7 +10,7 @@ Customise Options
 Edit Categories and Pre-Defined Messages
 {% endblock%}
 
-
+{% load widget_tweaks %}
 {% block body_block %}
 <div class="container">
   <div class="card-deck">
@@ -25,7 +25,7 @@ Edit Categories and Pre-Defined Messages
             <div class="card-body text-center">
               <b class="card-sub-heading">{{ cat.name }}</b>
               <i class="material-icons delete-cat-icon" id={{cat.id}}>delete</i>
-              <i class="material-icons edit-cat-icon" id={{cat.id}}>edit</i>
+              <i class="material-icons edit-cat-icon" data-toggle="modal" data-target="#exampleModalCenter" id={{cat.id}}>edit</i>
             </div>
         </div>
         <br />
@@ -51,6 +51,64 @@ Edit Categories and Pre-Defined Messages
     </div>
 
   </div>
+
+  <!-- Edit Category Modal -->
+  <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title modal-cat-header" id="exampleModalLongTitle">Edit Category</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+          <div class="modal-body">
+
+            {% csrf_token %}
+            {% for hidden_field in form.hidden_fields %}
+              {{ hidden_field }}
+            {% endfor %}
+
+            {% for field in form.visible_fields %}
+              <div class="form-group" style="padding:10px">
+                <h3 class="custom-card-title">
+                  {{ field.label_tag }}
+                </h3>
+                {% if field.help_text %}
+                  <small class="form-text text-muted">{{ field.help_text }}</small>
+                {% endif %}
+
+                {% if form.is_bound %}
+                  {% if field.errors %}
+                    {% render_field field class="form-control is-invalid" %}
+                    {% for error in field.errors %}
+                      <div>
+                        {{ error }}
+                      </div>
+                    {% endfor %}
+                  {% else %}
+                    {% render_field field class="form-control is-valid" %}
+                  {% endif %}
+                {% elif field.label == 'Sign up as:' %}
+                  {% render_field field class="custom-radio-button" %}
+                {% else %}
+                  {% render_field field class="form-control" %}
+                {% endif %}
+
+              </div>
+            {% endfor %}
+
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-material" id="close" data-dismiss="modal">Close</button>
+            <button class="btn btn-material btn-ripple submit-cat-form" type="submit" name="submit" value="Submit">Save changes</button>
+          </div>
+
+      </div>
+    </div>
+  </div>
+
 </div>
 {% endblock %}
 
