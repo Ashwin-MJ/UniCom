@@ -659,3 +659,44 @@ def register(request):
     else:
         form = RegisterForm()
     return render(request, 'registration/registration_form.html', {'form': form})
+    
+    
+def invites(request):
+    context_dict = {}
+    if not request.user.is_authenticated or not request.user.is_lecturer:
+        context_dict['error'] = "auth"
+        return render(request,'student_feedback_app/general/error_page.html', context_dict)
+    try:
+        if request.method == 'GET':
+            token = request.GET.get('token', '')
+            context_dict['token'] = token
+            if token == '' or Course.objects.filter(course_token=token).count() == 0:
+                return redirect('lecturer_courses')
+            course = Course.objects.get(course_token=token)
+    except:
+        context_dict['error'] = "error"
+        return render(request,'student_feedback_app/general/error_page.html', context_dict)
+    try:
+        
+        students_string = request.COOKIES.get("students")
+        students_list = json.loads(students_string)
+        students = []
+        for student_id in students_list:
+            stud_user = User.objects.get(id_number=student_id)
+            students.append(stud_user)
+        
+        message =  ' lecturer ' + request.user.username + ' has invited you to join ' + course.subject + ' (' + course.course_code + '). To join this course use this token: ' + course.course_token 
+        for student in students:
+            personal_message = 'Dear ' + student.username + message
+            send_mail('You are invited to join a course!',personal_message,'lect.acc.unicom@gmail.com',[student.email])
+        
+        response = lecturer_course(request, course.subject_slug)
+        response.set_cookie('students', '', path="/lecturer/invites/")
+        return response
+        
+    except: 
+        lect = LecturerProfile.objects.get(lecturer=request.user)
+        students = lect.get_my_students()
+        added_students = course.students.distinct()
+        context_dict['students'] = set(students).difference(set(added_students))
+        return render(request, 'student_feedback_app/lecturer/invites.html', context_dict)

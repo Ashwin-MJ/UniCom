@@ -21,6 +21,7 @@ urlpatterns = [
     re_path(r'^lecturer/home/$', views.lecturer_home, name='lecturer_home'),
     re_path(r'^lecturer/create-course/$', views.create_course, name='create_course'),
     re_path(r'^lecturer/courses/$', views.lecturer_courses, name='lecturer_courses'),
+    re_path(r'^lecturer/invites/$', views.invites, name='invites'),
     re_path(r'^lecturer/my-provided-feedback/$', views.my_provided_feedback, name='lecturer_provided_feedback'),
     re_path(r'^lecturer/courses/(?P<subject_slug>[\w\-]+)/$', views.lecturer_course, name='lecturer_course'),
     re_path(r'^lecturer/courses/(?P<subject_slug>[\w\-]+)/add-group-feedback/$', views.add_group_feedback,
