@@ -41,6 +41,33 @@ $('.delete-cat-icon').click(function(e) {
   }
 });
 
+$('.edit-cat-icon').click(function(e) {
+
+  var cat_id = this.id;
+  alert("Edit")
+  var csrftoken = getCookie("csrftoken");
+  function csrfSafeMethod(method) {
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+  }
+  $.ajaxSetup({
+    beforeSend: function(xhr, settings) {
+        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        }
+    }
+  });
+  $.ajax({
+      url: "/category/"+cat_id+"/",
+      data: {},
+      type: 'POST',
+      contentType: 'application/json',
+      success: function(result) {
+        location.reload();
+      },
+  });
+
+});
+
 $('.category').on('click', function(){
   var cat_id = $(this).find("i").attr('id');
 
@@ -76,6 +103,7 @@ function updateHtml(colour,message_set,cat_name) {
         cat_messages += `<div class="card custom-card fb-border" style="border-color:` + colour + `">`
                         + `<div class="card-body text-center">`
                         + `<b class="card-sub-heading">` + all_messages[message_id] + `</b>`
+                        + `<i class="material-icons delete-mess-icon"id=` + message_id + `>delete</i>`
                         + `</div></div><br />`
       }
     }

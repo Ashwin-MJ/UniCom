@@ -114,8 +114,16 @@ hr {
 .delete-cat-icon {
   position: absolute;
   right:10px;
-  top:10px;
-  font-size: 200%;
+  top:5px;
+  font-size: 150%;
+  cursor: pointer;
+}
+
+.edit-cat-icon {
+  position: absolute;
+  right:10px;
+  bottom:5px;
+  font-size: 150%;
   cursor: pointer;
 }
 
