@@ -1,5 +1,5 @@
 $('.delete-icon').click(function(e) {
-  var result = confirm("Want to delete?");
+  var result = confirm("Remove student from course?");
   if(result){
 //send request to delete relationship:
 //send student_name and course_code (strings)
