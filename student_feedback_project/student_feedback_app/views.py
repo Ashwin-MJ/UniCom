@@ -525,6 +525,16 @@ class FeedbackDetail(APIView):
         fb.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+class StudentCourseRelDestroy(APIView):
+    def delete(self, request, student_id, course_code, format=None):
+        print ("in delete function\n");
+        course = Course.objects.get(course_code=course_code)
+        user = User.objects.get(id_number=student_id)
+        student = StudentProfile.objects.get(student=user)
+        course.students.remove(student)
+        student.courses.remove(course)
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 class CategoryAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
