@@ -215,6 +215,7 @@ def student_add_individual_feedback(request,subject_slug,student_number):
             if form.is_valid():
                 new_fb = form.save(commit=False)
                 new_fb.pre_defined_message.category = Category.objects.get(user=request.user,name=new_fb.category)
+                new_fb.pre_defined_message.user = request.user
                 new_fb.pre_defined_message.save()
                 new_fb.student = stud
                 stud.score += new_fb.points
@@ -358,6 +359,7 @@ def lecturer_add_individual_feedback(request,subject_slug,student_number):
             if form.is_valid():
                 new_fb = form.save(commit=False)
                 new_fb.pre_defined_message.category = Category.objects.get(user=request.user,name=new_fb.category)
+                new_fb.pre_defined_message.user = request.user
                 new_fb.pre_defined_message.save()
                 new_fb.student = stud
                 stud.score += new_fb.points
@@ -422,6 +424,7 @@ def add_group_feedback(request,subject_slug):
                     created_fb = Feedback(student=student)
                     created_fb.pre_defined_message = new_fb.pre_defined_message
                     created_fb.pre_defined_message.category = Category.objects.get(user=request.user,name=new_fb.category)
+                    created_fb.pre_defined_message.user = request.user
                     created_fb.pre_defined_message.save()
                     created_fb.category = created_fb.pre_defined_message.category
                     student.score += new_fb.points
@@ -728,13 +731,15 @@ class MessageAutocomplete(autocomplete.Select2QuerySetView):
                 display_create_option = False
         if display_create_option and self.has_add_permission(self.request):
             category = self.forwarded.get('category',None)
-            cat = Category.objects.get(name=category)
+            cat = Category.objects.get(user=self.request.user,id=category)
             create_option = [{
                 'id': q,
                 'text': ('Create a new message: "%(new_value)s"') % {'new_value': q},
                 'category': category,
                 'create_id': True,
+                'user': self.request.user.id_number,
             }]
+        print(create_option)
         return create_option
 
     def render_to_response(self, context):

@@ -210,7 +210,7 @@ class Message(models.Model):
     # The Lecturer MUST select one of these messages.
     category = models.ForeignKey('Category',on_delete=models.CASCADE,null=True,blank=True)
     text = models.CharField(max_length=200,default="No message")
-    user = models.ForeignKey('User',on_delete=models.CASCADE)
+    user = models.ForeignKey('User',on_delete=models.CASCADE,null=True)
 
     def __str__(self):
         return self.text
