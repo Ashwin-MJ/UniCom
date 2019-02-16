@@ -17,7 +17,7 @@
 <div class="container" id="{{ course.subject_slug }}">
   <div class="card custom-card">
     <h3 class="card-body text-center custom-card-title token" style="padding:10px;">
-      Course Token: <b>{{ course.course_token}}</b>
+      Course Token: <b>{{ course.course_token }} </b><a class="btn btn-material btn-ripple" href="{% url 'invites' %}?token={{course.course_token}}">Send Invites</a>
     </h3>
   </div>
 
