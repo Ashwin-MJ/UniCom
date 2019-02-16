@@ -46,6 +46,10 @@ $('.edit-cat-icon').click(function(e) {
   var cat_name = $(this).parent().find("b").html();
 
   $('.modal-cat-header').html("Edit \"" + cat_name + "\"");
+  
+  cat_name = cat_name.replace("&amp;", "&")
+
+  document.getElementById("id_name").value = cat_name;
 
   $('.submit-cat-form').on('click', function(){
 

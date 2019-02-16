@@ -493,21 +493,8 @@ def lecturer_customise_options(request):
         context_dict['categories'] = request.user.category_set.all()
         messages = request.user.message_set.all()
 
-        try:
-            if request.method == 'POST':
-                print(request)
-                user = request.user
-                form = EditCategoryForm(request.POST)
-                if form.is_valid():
-                    print("Made it here")
-                else:
-                    print(form.errors)
-            else:
-                form = EditCategoryForm()
-            context_dict["form"] = form
-        except:
-            context_dict['error'] = "error"
-            return render(request, 'student_feedback_app/general/error_page.html', context_dict)
+        form = EditCategoryForm()
+        context_dict["form"] = form
 
         all_messages = {}
         for message in messages:
