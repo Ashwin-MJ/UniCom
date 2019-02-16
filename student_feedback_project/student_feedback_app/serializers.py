@@ -40,9 +40,7 @@ class CategorySerializer(serializers.ModelSerializer):
         model = Category
         fields = ('name', 'user', 'colour', 'message_set')
 
-    def update(self, instance, validated_data):
-        instance.name = validated_data.get('name', instance.name)
-        instance.colour = validated_data.get('colour', instance.colour)
-
-        instance.save()
-        return instance
+class MessageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Message
+        fields = ('category', 'text', 'user')

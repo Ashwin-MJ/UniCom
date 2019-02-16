@@ -591,6 +591,40 @@ class CategoryDetail(APIView):
         cat.save()
         return Response(status=status.HTTP_200_OK)
 
+class MessageDetail(APIView):
+    """
+    Retrieve, create, update or delete a Message instance.
+    """
+    def get_object(self, mess_id):
+        try:
+            return Message.objects.get(id=mess_id)
+        except Message.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+    def get(self, request, mess_id, format=None):
+        message = self.get_object(mess_id)
+        serializer = MessageSerializer(message)
+        return Response(serializer.data)
+
+    # def post(self, request,format=None):
+    #     fb = Message(name=request.data.get('name'),
+    #                     colour=request.data.get('colour'),
+    #                     user=request.user)
+    #     cat.save()
+    #     return Response(status=status.HTTP_200_OK)
+
+    def delete(self, request, mess_id, format=None):
+        message = self.get_object(mess_id)
+        message.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    # def patch(self, request, cat_id, format=None):
+    #     cat = self.get_object(cat_id)
+    #     cat.name = request.data.get('name')
+    #     cat.colour = request.data.get('colour')
+    #     cat.save()
+    #     return Response(status=status.HTTP_200_OK)
+
 class CategoryAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
         if not self.request.user.is_authenticated:

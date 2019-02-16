@@ -167,7 +167,7 @@ function updateHtml(colour,message_set,cat_name) {
         cat_messages += `<div class="card custom-card fb-border" style="border-color:` + colour + `">`
                         + `<div class="card-body text-center">`
                         + `<b class="card-sub-heading">` + all_messages[message_id] + `</b>`
-                        + `<i class="material-icons delete-mess-icon"id=` + message_id + `>delete</i>`
+                        + `<i class="material-icons delete-mess-icon" id=` + message_id + `>delete</i>`
                         + `</div></div><br />`
       }
     }
@@ -176,3 +176,31 @@ function updateHtml(colour,message_set,cat_name) {
   $('.messages').html(cat_messages);
 
 }
+
+$('#all-messages').on('click','.delete-mess-icon', function() {
+  console.log("Here")
+  var result = confirm("If you delete this message then every feedback you have given with this message will be deleted. Do you want to continue?");
+  if(result){
+    var mess_id = this.id;
+    var csrftoken = getCookie("csrftoken");
+    function csrfSafeMethod(method) {
+      return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+    $.ajaxSetup({
+      beforeSend: function(xhr, settings) {
+          if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+              xhr.setRequestHeader("X-CSRFToken", csrftoken);
+          }
+      }
+    });
+    $.ajax({
+        url: "/message/"+mess_id+"/",
+        data: {},
+        type: 'DELETE',
+        contentType: 'application/json',
+        success: function(result) {
+          location.reload();
+        },
+    });
+  }
+});
