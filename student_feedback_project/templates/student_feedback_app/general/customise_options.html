@@ -35,7 +35,8 @@ Edit Categories and Pre-Defined Messages
     </div>
 
     <div class="card scroll-bg"  id="all-messages">
-      <h3 class="card-body text-center custom-card-title cat-title">My Messages</h3>
+      <h3 class="card-body text-center custom-card-title cat-title" id="">My Messages</h3>
+      <i class="material-icons create-mess-icon" id="add-mess-icon" data-toggle="modal" data-target="#addMessageModal" title="Add a new Message"></i>
       <hr />
       <div class="card-body scroll messages">
         {% for mess in messages_qs %}
@@ -158,18 +159,58 @@ Edit Categories and Pre-Defined Messages
     </div>
   </div>
 
+  <!-- New Message Modal -->
+  <div class="modal" id="addMessageModal" tabindex="-1" role="dialog" aria-labelledby="addMessageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title modal-add-mess-header" id="addMessageModalTitle">Add a new Messsage</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+          <div class="modal-body">
+            {% csrf_token %}
+            {% for hidden_field in new_mess_form.hidden_fields %}
+              {{ hidden_field }}
+            {% endfor %}
+
+            {% for field in new_mess_form.visible_fields %}
+              <div class="form-group" style="padding:10px">
+                <h3 class="custom-card-title">
+                  {{ field.label_tag }}
+                </h3>
+                {% if field.help_text %}
+                  <small class="form-text text-muted">{{ field.help_text }}</small>
+                {% endif %}
+                {% render_field field class="form-control" %}
+              </div>
+            {% endfor %}
+
+
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-material" data-dismiss="modal">Close</button>
+            <button class="btn btn-material btn-ripple submit-add-mess-form" type="submit" name="submit" value="Submit">Submit</button>
+          </div>
+
+      </div>
+    </div>
+  </div>
+
 </div>
 {% endblock %}
 
 {% block footer %}
 <script type="text/javascript" src="{% static 'javascript/customise.js' %}" ></script>
 <script type="text/javascript">
-  function displayMessages(data) {
+  function displayMessages(data,cat_id) {
     {% autoescape off %}
     all_messages = {{messages}}
     {% endautoescape %}
     message_set = data.message_set;
-    updateHtml(data.colour,message_set,data.name);
+    updateHtml(data.colour,message_set,data.name,cat_id);
   }
 </script>
 {% endblock%}

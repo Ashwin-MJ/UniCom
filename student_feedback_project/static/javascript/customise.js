@@ -152,13 +152,13 @@ $('.category').on('click', function(){
       type: 'GET',
       contentType: 'application/json',
       success: function(result) {
-        displayMessages(result)
+        displayMessages(result,cat_id)
       },
   });
 
 });
 
-function updateHtml(colour,message_set,cat_name) {
+function updateHtml(colour,message_set,cat_name,cat_id) {
   var cat_messages = "";
 
   for (var retrieved_message in message_set){
@@ -173,6 +173,8 @@ function updateHtml(colour,message_set,cat_name) {
     }
   }
   $('.cat-title').html(cat_name);
+  $('.cat-title').attr("id",cat_id)
+  $('#add-mess-icon').html("add_circle_outline");
   $('.messages').html(cat_messages);
 
 }
@@ -203,4 +205,47 @@ $('#all-messages').on('click','.delete-mess-icon', function() {
         },
     });
   }
+});
+
+$('.create-mess-icon').on('click',function(e) {
+
+  var cat_name = $('.cat-title').html();
+  var cat_id = $('.cat-title').attr('id');;
+
+  $('.modal-add-mess-header').html("Add a new message for \"" + cat_name + "\"");
+
+  $('.submit-add-mess-form').on('click', function(){
+
+    var text = $('#id_text').val();
+
+    var data = {
+             "text": text,
+             "category": cat_id
+           }
+
+    var csrftoken = getCookie("csrftoken");
+    function csrfSafeMethod(method) {
+      return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+    $.ajaxSetup({
+      beforeSend: function(xhr, settings) {
+          if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+              xhr.setRequestHeader("X-CSRFToken", csrftoken);
+          }
+      }
+    });
+    $.ajax({
+        url: "/message/",
+        data: JSON.stringify(data),
+        type: 'POST',
+        contentType: 'application/json',
+        dataType: "json",
+        success: function() {
+        },
+    });
+
+    location.reload()
+
+  });
+
 });

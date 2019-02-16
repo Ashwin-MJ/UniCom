@@ -214,7 +214,7 @@ def student_add_individual_feedback(request,subject_slug,student_number):
             form = FeedbackForm(request.POST)
             if form.is_valid():
                 new_fb = form.save(commit=False)
-                new_fb.pre_defined_message.category = Category.objects.get(name=new_fb.category)
+                new_fb.pre_defined_message.category = Category.objects.get(user=request.user,name=new_fb.category)
                 new_fb.pre_defined_message.save()
                 new_fb.student = stud
                 stud.score += new_fb.points
@@ -357,7 +357,7 @@ def lecturer_add_individual_feedback(request,subject_slug,student_number):
             form = FeedbackForm(request.POST)
             if form.is_valid():
                 new_fb = form.save(commit=False)
-                new_fb.pre_defined_message.category = Category.objects.get(name=new_fb.category)
+                new_fb.pre_defined_message.category = Category.objects.get(user=request.user,name=new_fb.category)
                 new_fb.pre_defined_message.save()
                 new_fb.student = stud
                 stud.score += new_fb.points
@@ -421,7 +421,7 @@ def add_group_feedback(request,subject_slug):
                     new_fb = form.save(commit=False)
                     created_fb = Feedback(student=student)
                     created_fb.pre_defined_message = new_fb.pre_defined_message
-                    created_fb.pre_defined_message.category = Category.objects.get(name=new_fb.category)
+                    created_fb.pre_defined_message.category = Category.objects.get(user=request.user,name=new_fb.category)
                     created_fb.pre_defined_message.save()
                     created_fb.category = created_fb.pre_defined_message.category
                     student.score += new_fb.points
@@ -433,6 +433,7 @@ def add_group_feedback(request,subject_slug):
                     student.save()
                     created_fb.pk = None
                     created_fb.save()
+
             else:
                 print(form.errors)
             request.COOKIES["students"] = ""
@@ -496,6 +497,9 @@ def customise_options(request):
 
         new_cat_form = NewCategoryForm()
         context_dict["new_cat_form"] = new_cat_form
+
+        new_mess_form = NewMessageForm()
+        context_dict["new_mess_form"] = new_mess_form
 
         all_messages = {}
         for message in messages:
@@ -606,12 +610,17 @@ class MessageDetail(APIView):
         serializer = MessageSerializer(message)
         return Response(serializer.data)
 
-    # def post(self, request,format=None):
-    #     fb = Message(name=request.data.get('name'),
-    #                     colour=request.data.get('colour'),
-    #                     user=request.user)
-    #     cat.save()
-    #     return Response(status=status.HTTP_200_OK)
+    def post(self, request,format=None):
+        try:
+            cat = Category.objects.get(id=request.data.get('category'))
+        except Category.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        mess = Message(text=request.data.get('text'),
+                        category=cat,
+                        user=request.user)
+        mess.save()
+        cat.save()
+        return Response(status=status.HTTP_200_OK)
 
     def delete(self, request, mess_id, format=None):
         message = self.get_object(mess_id)

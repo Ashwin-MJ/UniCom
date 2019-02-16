@@ -1,6 +1,6 @@
 from dal import autocomplete
 from django import forms
-from .models import Course, Feedback, User, Category
+from .models import Course, Feedback, User, Category, Message
 from django.contrib.auth.forms import UserCreationForm
 
 
@@ -77,3 +77,10 @@ class NewCategoryForm(forms.ModelForm):
     class Meta:
         model = Category
         fields = ('new_name',)
+
+class NewMessageForm(forms.ModelForm):
+    text = forms.CharField(max_length=30, help_text="Enter the text for the new message:")
+
+    class Meta:
+        model = Message
+        fields = ('text',)
