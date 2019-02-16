@@ -482,14 +482,12 @@ def lecturer_courses(request):
         context_dict['error'] = "auth"
         return render(request,'student_feedback_app/general/error_page.html', context_dict)
 
-def lecturer_customise_options(request):
+def customise_options(request):
     context_dict = {}
-    if not request.user.is_authenticated or not request.user.is_lecturer:
+    if not request.user.is_authenticated:
         context_dict['error'] = "auth"
         return render(request,'student_feedback_app/general/error_page.html', context_dict)
     try:
-        lect = LecturerProfile.objects.get(lecturer=request.user)
-        context_dict['lecturer'] = lect
         context_dict['categories'] = request.user.category_set.all()
         messages = request.user.message_set.all()
 
@@ -502,7 +500,7 @@ def lecturer_customise_options(request):
 
         context_dict['messages'] = json.dumps(all_messages)
         context_dict['messages_qs'] = messages
-        return render(request, 'student_feedback_app/lecturer/lecturer_customise_options.html', context_dict)
+        return render(request, 'student_feedback_app/general/customise_options.html', context_dict)
     except:
         context_dict['error'] = "error"
         return render(request,'student_feedback_app/general/error_page.html', context_dict)
@@ -581,7 +579,6 @@ class CategoryDetail(APIView):
         cat = self.get_object(cat_id)
         cat.name = request.data.get('name')
         cat.colour = request.data.get('colour')
-        print(cat.colour)
         cat.save()
         return Response(status=status.HTTP_200_OK)
 
