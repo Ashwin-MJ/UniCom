@@ -12,6 +12,7 @@ Edit Categories and Pre-Defined Messages
 
 {% load widget_tweaks %}
 {% block body_block %}
+
 <div class="container">
   <div class="card-deck">
 
@@ -96,6 +97,21 @@ Edit Categories and Pre-Defined Messages
 
               </div>
             {% endfor %}
+
+            <div class="form-group" style="padding:10px">
+
+              <h3 class="custom-card-title">
+                Colour
+              </h3>
+              <small class="form-text text-muted">Choose a colour:</small>
+
+              <input class="form-control input-lg" type="text" id="colour"/>
+              <script>
+                  $('#colour').colorpicker({});
+              </script>
+
+            </div>
+
 
           </div>
           <div class="modal-footer">

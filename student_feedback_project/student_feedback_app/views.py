@@ -594,6 +594,7 @@ class CategoryDetail(APIView):
         cat = self.get_object(cat_id)
         cat.name = request.data.get('name')
         cat.colour = request.data.get('colour')
+        print(cat.colour)
         cat.save()
         return Response(status=status.HTTP_200_OK)
 

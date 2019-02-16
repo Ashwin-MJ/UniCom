@@ -50,13 +50,13 @@ $('.edit-cat-icon').click(function(e) {
   $('.submit-cat-form').on('click', function(){
 
     var new_name = $('#id_name').val();
-    var new_colour = $('#id_colour').val()
+    var new_colour = $('#colour').val()
 
     var data = {
              "name": new_name,
-             "colour": "#" + new_colour
+             "colour": new_colour
            }
-           
+
     var csrftoken = getCookie("csrftoken");
     function csrfSafeMethod(method) {
       return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));

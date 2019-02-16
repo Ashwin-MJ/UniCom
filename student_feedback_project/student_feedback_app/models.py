@@ -193,12 +193,12 @@ class Feedback(models.Model):
         return self.from_user.is_lecturer and not self.from_user.is_student
 
 class Category(models.Model):
-    name = models.CharField(max_length=20, default="Empty")
+    name = models.CharField(max_length=30, default="Empty")
     user = models.ForeignKey('User',on_delete=models.CASCADE,null=True)
 
     # Store the hex code for the colour field as a CharField. This can then be retrieved and
     # used later as required
-    colour = models.CharField(max_length=6, default="#009999")
+    colour = models.CharField(max_length=7, default="#009999")
     # Can access messages associated with a given category using Category.message_set.all()
 
     def __str__(self):
