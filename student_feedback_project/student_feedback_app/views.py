@@ -547,7 +547,7 @@ def create_course(request):
 
 class FeedbackDetail(APIView):
     """
-    Retrieve, update or delete a Feedback instance.
+    Retrieve or delete a Feedback instance.
     """
     def get_object(self, fb_id):
         try:
@@ -568,6 +568,7 @@ class FeedbackDetail(APIView):
 class CategoryDetail(APIView):
     """
     Retrieve, update or delete a Category instance.
+    Can add a new method to create a new Category instance
     """
     def get_object(self, cat_id):
         try:
@@ -589,6 +590,12 @@ class CategoryDetail(APIView):
         cat.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+    def patch(self, request, cat_id, format=None):
+        cat = self.get_object(cat_id)
+        cat.name = request.data.get('name')
+        cat.colour = request.data.get('colour')
+        cat.save()
+        return Response(status=status.HTTP_200_OK)
 
 class CategoryAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):

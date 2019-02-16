@@ -49,8 +49,36 @@ $('.edit-cat-icon').click(function(e) {
 
   $('.submit-cat-form').on('click', function(){
 
-    // Work out how to save new info to model
-    alert("Here");
+    var new_name = $('#id_name').val();
+    var new_colour = $('#id_colour').val()
+
+    var data = {
+             "name": new_name,
+             "colour": "#" + new_colour
+           }
+           
+    var csrftoken = getCookie("csrftoken");
+    function csrfSafeMethod(method) {
+      return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+    $.ajaxSetup({
+      beforeSend: function(xhr, settings) {
+          if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+              xhr.setRequestHeader("X-CSRFToken", csrftoken);
+          }
+      }
+    });
+    $.ajax({
+        url: "/category/"+cat_id+"/",
+        data: JSON.stringify(data),
+        type: 'PATCH',
+        contentType: 'application/json',
+        dataType: "json",
+        success: function() {
+        },
+    });
+
+    location.reload()
 
   });
 

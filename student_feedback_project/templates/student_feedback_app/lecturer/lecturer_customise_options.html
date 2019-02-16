@@ -53,7 +53,7 @@ Edit Categories and Pre-Defined Messages
   </div>
 
   <!-- Edit Category Modal -->
-  <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -90,8 +90,6 @@ Edit Categories and Pre-Defined Messages
                   {% else %}
                     {% render_field field class="form-control is-valid" %}
                   {% endif %}
-                {% elif field.label == 'Sign up as:' %}
-                  {% render_field field class="custom-radio-button" %}
                 {% else %}
                   {% render_field field class="form-control" %}
                 {% endif %}
@@ -101,7 +99,7 @@ Edit Categories and Pre-Defined Messages
 
           </div>
           <div class="modal-footer">
-            <button class="btn btn-material" id="close" data-dismiss="modal">Close</button>
+            <button class="btn btn-material" data-dismiss="modal">Close</button>
             <button class="btn btn-material btn-ripple submit-cat-form" type="submit" name="submit" value="Submit">Save changes</button>
           </div>
 

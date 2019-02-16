@@ -66,7 +66,7 @@ class EditBioForm(forms.ModelForm):
 
 class EditCategoryForm(forms.ModelForm):
     name = forms.CharField(max_length=20, help_text="What would you like to change the name of this category to?")
-    colour = forms.CharField(max_length=6, help_text="enter colour")
+    colour = forms.CharField(max_length=6, help_text="Enter colour")
 
     class Meta:
         model = Category
