@@ -45,16 +45,17 @@ $('.edit-cat-icon').click(function(e) {
   var cat_id = this.id;
   var cat_name = $(this).parent().find("b").html();
 
-  $('.modal-cat-header').html("Edit \"" + cat_name + "\"");
-  
+  $('.modal-edit-cat-header').html("Edit \"" + cat_name + "\"");
+
   cat_name = cat_name.replace("&amp;", "&")
 
   document.getElementById("id_name").value = cat_name;
+  document.getElementById("edit_cat_colour").value = "#009999";
 
-  $('.submit-cat-form').on('click', function(){
+  $('.submit-edit-cat-form').on('click', function(){
 
     var new_name = $('#id_name').val();
-    var new_colour = $('#colour').val()
+    var new_colour = $('#edit_cat_colour').val()
 
     var data = {
              "name": new_name,
@@ -76,6 +77,47 @@ $('.edit-cat-icon').click(function(e) {
         url: "/category/"+cat_id+"/",
         data: JSON.stringify(data),
         type: 'PATCH',
+        contentType: 'application/json',
+        dataType: "json",
+        success: function() {
+        },
+    });
+
+    location.reload()
+
+  });
+
+});
+
+$('.create-cat-icon').click(function(e) {
+
+  document.getElementById("new_cat_colour").value = "#009999";
+
+  $('.submit-add-cat-form').on('click', function(){
+
+    var new_name = $('#id_new_name').val();
+    var new_colour = $('#new_cat_colour').val()
+
+    var data = {
+             "name": new_name,
+             "colour": new_colour
+           }
+
+    var csrftoken = getCookie("csrftoken");
+    function csrfSafeMethod(method) {
+      return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+    $.ajaxSetup({
+      beforeSend: function(xhr, settings) {
+          if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+              xhr.setRequestHeader("X-CSRFToken", csrftoken);
+          }
+      }
+    });
+    $.ajax({
+        url: "/category/",
+        data: JSON.stringify(data),
+        type: 'POST',
         contentType: 'application/json',
         dataType: "json",
         success: function() {

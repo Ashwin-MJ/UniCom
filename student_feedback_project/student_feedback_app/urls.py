@@ -7,6 +7,7 @@ from student_feedback_app.views import CategoryAutocomplete, MessageAutocomplete
 
 urlpatterns = [
     re_path(r'^$', views.index, name='index'),
+    re_path(r'^category/$', views.CategoryDetail.as_view(), name="category"),
     re_path(r'^category/(?P<cat_id>[\w\-]+)/$', views.CategoryDetail.as_view(), name="category_detail"),
     re_path(r'^feedback/(?P<fb_id>[\w\-]+)/$', views.FeedbackDetail.as_view(), name="feedback_detail"),
     re_path(r'^my-profile/$', views.my_profile, name='my_profile'),

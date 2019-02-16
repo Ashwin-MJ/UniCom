@@ -491,8 +491,11 @@ def customise_options(request):
         context_dict['categories'] = request.user.category_set.all()
         messages = request.user.message_set.all()
 
-        form = EditCategoryForm()
-        context_dict["form"] = form
+        edit_cat_form = EditCategoryForm()
+        context_dict["edit_cat_form"] = edit_cat_form
+
+        new_cat_form = NewCategoryForm()
+        context_dict["new_cat_form"] = new_cat_form
 
         all_messages = {}
         for message in messages:
@@ -552,8 +555,7 @@ class FeedbackDetail(APIView):
 
 class CategoryDetail(APIView):
     """
-    Retrieve, update or delete a Category instance.
-    Can add a new method to create a new Category instance
+    Retrieve, create, update or delete a Category instance.
     """
     def get_object(self, cat_id):
         try:
@@ -565,6 +567,13 @@ class CategoryDetail(APIView):
         cat = self.get_object(cat_id)
         serializer = CategorySerializer(cat)
         return Response(serializer.data)
+
+    def post(self, request,format=None):
+        cat = Category(name=request.data.get('name'),
+                        colour=request.data.get('colour'),
+                        user=request.user)
+        cat.save()
+        return Response(status=status.HTTP_200_OK)
 
     def delete(self, request, cat_id, format=None):
         cat = self.get_object(cat_id)

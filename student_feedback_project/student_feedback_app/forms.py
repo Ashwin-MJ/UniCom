@@ -70,3 +70,10 @@ class EditCategoryForm(forms.ModelForm):
     class Meta:
         model = Category
         fields = ('name',)
+
+class NewCategoryForm(forms.ModelForm):
+    new_name = forms.CharField(max_length=30, help_text="What should the new category be called?")
+
+    class Meta:
+        model = Category
+        fields = ('new_name',)
