@@ -78,9 +78,16 @@ class NewCategoryForm(forms.ModelForm):
         model = Category
         fields = ('new_name',)
 
-class NewMessageForm(forms.ModelForm):
-    text = forms.CharField(max_length=30, help_text="Enter the text for the new message:")
+class EditMessageForm(forms.ModelForm):
+    text = forms.CharField(max_length=200, help_text="What would you like to change the text of this message to?")
 
     class Meta:
         model = Message
         fields = ('text',)
+
+class NewMessageForm(forms.ModelForm):
+    new_text = forms.CharField(max_length=20, help_text="Enter the text for the new message:")
+
+    class Meta:
+        model = Message
+        fields = ('new_text',)

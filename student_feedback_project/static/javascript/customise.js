@@ -165,6 +165,7 @@ function updateHtml(colour,message_set,cat_name,cat_id) {
                         + `<div class="card-body text-center">`
                         + `<b class="card-sub-heading">` + all_messages[message_id] + `</b>`
                         + `<i class="material-icons delete-mess-icon" id=` + message_id + `>delete</i>`
+                        + `<i class="material-icons edit-mess-icon" data-toggle="modal" data-target="#editMessageModal" id=` + message_id +`>edit</i>`
                         + `</div></div><br />`
       }
     }
@@ -212,7 +213,7 @@ $('.create-mess-icon').on('click',function(e) {
 
   $('.modal-add-mess-header').html("Add a new message for \"" + cat_name + "\"");
   $('.submit-add-mess-form').on('click', function(){
-    var text = $('#id_text').val();
+    var text = $('#id_new_text').val();
     var data = {
              "text": text,
              "category": cat_id
@@ -240,4 +241,41 @@ $('.create-mess-icon').on('click',function(e) {
     location.reload() // Same issue as mentioned above
   });
 
+});
+
+$('#all-messages').on('click','.edit-mess-icon', function() {
+  // This allows a message to be edited (text)
+  var mess_id = this.id;
+  var mess_text = $(this).parent().find("b").html();
+  $('.modal-edit-mess-header').html("Edit \"" + mess_text + "\"");
+  document.getElementById("id_text").value = mess_text;
+
+  $('.submit-edit-mess-form').on('click', function(){
+    var new_text = $('#id_text').val();
+    var data = {
+             "text": new_text,
+           }
+
+    var csrftoken = getCookie("csrftoken");
+    function csrfSafeMethod(method) {
+      return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+    $.ajaxSetup({
+      beforeSend: function(xhr, settings) {
+          if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+              xhr.setRequestHeader("X-CSRFToken", csrftoken);
+          }
+      }
+    });
+    $.ajax({
+        url: "/message/"+mess_id+"/",
+        data: JSON.stringify(data),
+        type: 'PATCH',
+        contentType: 'application/json',
+        dataType: "json",
+        success: function() {
+        },
+    });
+    location.reload() // Same issue as mentioned above
+  });
 });

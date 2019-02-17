@@ -504,6 +504,9 @@ def customise_options(request):
         new_mess_form = NewMessageForm()
         context_dict["new_mess_form"] = new_mess_form
 
+        edit_mess_form = EditMessageForm()
+        context_dict["edit_mess_form"] = edit_mess_form
+
         all_messages = {}
         for message in messages:
             all_messages[message.id] = message.text
@@ -630,12 +633,11 @@ class MessageDetail(APIView):
         message.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    # def patch(self, request, cat_id, format=None):
-    #     cat = self.get_object(cat_id)
-    #     cat.name = request.data.get('name')
-    #     cat.colour = request.data.get('colour')
-    #     cat.save()
-    #     return Response(status=status.HTTP_200_OK)
+    def patch(self, request, mess_id, format=None):
+        message = self.get_object(mess_id)
+        message.text = request.data.get('text')
+        message.save()
+        return Response(status=status.HTTP_200_OK)
 
 class CategoryAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
