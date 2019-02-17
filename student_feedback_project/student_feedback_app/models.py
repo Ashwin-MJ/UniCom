@@ -150,7 +150,6 @@ class Course(models.Model):
         # This is important in the template
         return temp_dict
 
-
 class LecturerProfile(models.Model):
     lecturer = models.OneToOneField(User, on_delete=models.CASCADE,primary_key=True)
     courses = models.ManyToManyField('Course')

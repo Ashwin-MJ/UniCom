@@ -29,6 +29,26 @@ $('#group-feedback-form').submit(function(){
   }
 });
 
+$('#invites-form').submit(function(){
+  var res=[];
+  $('.students').each(function(){
+    if($(this).hasClass('color')){
+      res.push($(this).attr('id'))
+    }
+  })
+
+  if(res.length == 0){
+    alert("Please select at least 1 students to send the course token to.");
+    return false;
+  }
+  else{
+    var jsonText = JSON.stringify(res);
+    var cookieText = "students=" + jsonText + ';'
+    document.cookie = cookieText;
+    return true;
+  }
+});
+
 $('#individual-feedback-form').submit(function(){
   var res=[];
   $('.students').each(function(){
