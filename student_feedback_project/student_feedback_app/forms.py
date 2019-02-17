@@ -86,7 +86,7 @@ class EditMessageForm(forms.ModelForm):
         fields = ('text',)
 
 class NewMessageForm(forms.ModelForm):
-    new_text = forms.CharField(max_length=20, help_text="Enter the text for the new message:")
+    new_text = forms.CharField(max_length=200, help_text="Enter the text for the new message:")
 
     class Meta:
         model = Message

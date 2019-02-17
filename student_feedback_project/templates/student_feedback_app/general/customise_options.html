@@ -22,7 +22,7 @@ Edit Categories and Pre-Defined Messages
       <hr />
       <div class="card-body scroll">
         {% for cat in categories %}
-        <div class="card custom-card fb-border category"style="border-color:{{cat.colour}}">
+        <div class="card custom-card fb-border category"style="border-color:{{cat.colour}};cursor: pointer;">
             <div class="card-body text-center">
               <b class="card-sub-heading">{{ cat.name }}</b>
               <i class="material-icons delete-cat-icon" id={{cat.id}}>delete</i>
