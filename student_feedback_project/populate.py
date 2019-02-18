@@ -374,9 +374,10 @@ def populate():
 								someFeedback.get('pre_defined_message'), someFeedback.get('optional_message'))
 
 	create_view_fb_cat()
-	create_view_fb_stud()
-	create_view_fb_course()
-	create_view_fb_from_user()
+	create_view_fb_cat_mss()
+	create_view_fb_cat_mss_stud()
+	create_view_fb_cat_mss_stud_course()
+	create_view_fb_full()
 
 # function to add the view feedback with category
 def create_view_fb_cat():
@@ -384,6 +385,30 @@ def create_view_fb_cat():
         cursor.execute("CREATE VIEW student_feedback_app_feedback_with_category \
                         as select fb.*, ca.colour categoryColour from student_feedback_app_feedback fb \
                         INNER JOIN student_feedback_app_category ca ON fb.category_id = ca.name;")
+
+def create_view_fb_cat_mss():
+    with connection.cursor() as cursor:
+        cursor.execute("CREATE VIEW student_feedback_app_feedback_with_cat_mss \
+                        as select fbc.*, mss.text preDefMessageText from student_feedback_app_feedback_with_category fbc \
+                        INNER JOIN student_feedback_app_message mss ON fbc.pre_defined_message_id = mss.id;")
+
+def create_view_fb_cat_mss_stud():
+    with connection.cursor() as cursor:
+        cursor.execute("CREATE VIEW student_feedback_app_feedback_with_cat_mss_stud \
+                        as select fbcm.*, user.username studentName from student_feedback_app_feedback_with_cat_mss fbcm \
+                        INNER JOIN student_feedback_app_user user ON fbcm.student_id = user.id;")
+
+def create_view_fb_cat_mss_stud_course():
+    with connection.cursor() as cursor:
+        cursor.execute("CREATE VIEW student_feedback_app_feedback_with_cat_mss_stud_course \
+                        as select fbcms.*, crs.subject courseName from student_feedback_app_feedback_with_cat_mss_stud fbcms \
+                        INNER JOIN student_feedback_app_course crs ON fbcms.which_course_id = crs.course_code;")
+
+def create_view_fb_full():
+    with connection.cursor() as cursor:
+        cursor.execute("CREATE VIEW student_feedback_app_feedback_full \
+                        as select fbcmsc.*, usr.username fromUserName from student_feedback_app_feedback_with_cat_mss_stud_course fbcmsc \
+                        INNER JOIN student_feedback_app_user usr ON fbcmsc.from_user_id = usr.id;")
 
 # function to add the view feedback with student
 def create_view_fb_stud():
