@@ -114,12 +114,12 @@ class StudentProfile(models.Model):
         return scores
 
 class Achievement(models.Model):
-    student = models.ForeignKey('StudentProfile', on_delete=models.CASCADE, )
-    category = models.ForeignKey("Category", on_delete=models.CASCADE, )
+    student = models.ForeignKey('StudentProfile', on_delete=models.CASCADE)
+    category = models.ForeignKey("Category", on_delete=models.CASCADE)
     achiev = models.CharField(validators=[int_list_validator], max_length=100, default=0)
 
-    def gen_achievement(self, attribute, score):
-        self.category = Category.objects.get(name=attribute)
+    def gen_achievement(self, attribute, score, user):
+        self.category = Category.objects.get(name=attribute,user=user)
         if score >= 100:
             self.achiev = [100,50,25,10,5]
         elif score >= 50:
@@ -132,8 +132,6 @@ class Achievement(models.Model):
             self.achiev = [5]
         else:
             self.achiev = [0]
-
-
 
 class Course(models.Model):
     subject = models.CharField("Subject", max_length=40,)

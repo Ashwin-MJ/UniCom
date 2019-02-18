@@ -107,15 +107,32 @@ hr {
 }
 
 .achievements{
-  width: 200px;
-  height: 200px;
+  width: 75px;
+  height: 75px;
   border: 1px solid teal;
   margin: 10px;
 }
 
-div.horizontal_scroll {
-  overflow: auto;
-  white-space: nowrap;
+.achiev-heading{
+  font-size: 10%;
+}
+
+.achiev-title{
+  font-family: 'Dosis', sans-serif;
+}
+
+.achiev-border{
+  border-width: thick;
+}
+
+.horizontal-scroll {
+  display: flex;
+  overflow-x: auto;
+  height:300px;
+  overflow-y: hidden;
+  align-items: center;
+  margin-left:25px;
+  margin-right: 25px;
 }
 
 .delete-icon {

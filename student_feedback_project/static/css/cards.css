@@ -166,13 +166,15 @@
   margin: 0;
 }
 
-.row {
-  margin: 0 -5px;
+.horizontal-card {
+  min-width: 150px;
+  width: 200px;
+  height:250px;
+  margin: 25px;
+  align-items: center;
+  vertical-align: middle;
 }
 
-.horizontal-card {
-  max-width: 300px;
-  margin-top: 25px;
-  padding: 10px;
-  align-items: center;
+.bg-grey{
+  background-color: grey;
 }

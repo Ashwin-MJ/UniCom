@@ -141,7 +141,7 @@ def student_home(request):
 
             for attribute in scores:
                 achievM = Achievement(student=stud)
-                achievM.gen_achievement(attribute, scores[attribute])
+                achievM.gen_achievement(attribute, scores[attribute],request.user)
                 achievM.save()
 
             stud.achievement_set.all()
@@ -154,7 +154,6 @@ def student_home(request):
                     else:
                         achievs[achvm.category] = [val]
                 achievs[achvm.category].sort()
-            print(achievs)
 
             context_dict['student'] = stud
             context_dict['courses'] = courses
