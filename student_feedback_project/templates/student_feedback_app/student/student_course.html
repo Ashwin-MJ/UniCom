@@ -17,9 +17,12 @@
       <h3 class="text-center custom-card-title">Course Info</h3>
       <hr />
       <div class="card-body">
+
           <div class="card card-padding custom-card">
-              <b class="custom-card-title" style="padding-top:0">Lecturer:</b>
-              <em>{{lect.lecturer.username }}</em>
+              <b class="custom-card-title" style="padding-top:0">Lecturer(s):</b>
+              {% for lecturer in lecturers %}
+              <em>{{lecturer.lecturer.username }}</em>
+              {% endfor %}
           </div>
           <div class="card card-padding custom-card">
               <b class="custom-card-title" style="padding-top:0">Course Description:</b>
@@ -95,7 +98,7 @@
                   </div>
                 </div>
               <div class="column right">
-                <a href="{% url 'lecturer_view_student' stud.student.id_number%}">
+                <a href="{% url 'view_profile' stud.student.id_number%}">
                   <img class="picture" src="{{stud.student.profile_picture.url}}"/>
                 </a>
                 </div>

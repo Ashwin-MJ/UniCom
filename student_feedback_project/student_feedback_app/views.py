@@ -53,6 +53,42 @@ def my_profile(request):
         return render(request, 'student_feedback_app/general/error_page.html', context_dict)
     return render(request, 'student_feedback_app/general/my_profile.html', context_dict)
 
+def view_profile(request,student_number):
+    context_dict = {}
+    if request.user.is_authenticated:
+        if request.user.is_student:
+            # Case 1 - Student view another Student
+            ## The student should only see feedback given by themself
+            try:
+                stud_user = User.objects.get(id_number=student_number)
+                stud = StudentProfile.objects.get(student=stud_user)
+                fb = stud.feedback_set.all().filter(from_user=request.user)
+                context_dict['student'] = stud
+                context_dict['courses'] = stud.get_courses_with_score()
+                context_dict['feedback'] = fb
+            except:
+                context_dict['error'] = "error"
+                return render(request, 'student_feedback_app/general/error_page.html', context_dict)
+        elif request.user.is_lecturer:
+            # Case 2 - Lecturer view Student
+            ## The lecturer should be able to see all feedback given to the student
+            try:
+                lect = LecturerProfile.objects.get(lecturer=request.user)
+                stud_user = User.objects.get(id_number=student_number)
+                stud = StudentProfile.objects.get(student=stud_user)
+                fb = stud.feedback_set.all()
+                context_dict['student'] = stud
+                context_dict['courses'] = stud.get_courses_with_score()
+                context_dict['feedback'] = fb
+            except:
+                context_dict['error'] = "error"
+                return render(request, 'student_feedback_app/general/error_page.html', context_dict)
+    else:
+        context_dict['error'] = "auth"
+        return render(request, 'student_feedback_app/general/error_page.html', context_dict)
+    return render(request, 'student_feedback_app/general/view_profile.html', context_dict)
+
+
 def edit_bio(request):
     context_dict={}
     if request.user.is_authenticated:
@@ -167,7 +203,7 @@ def student_course(request, subject_slug):
         try:
             course = Course.objects.get(subject_slug=subject_slug)
             stud = StudentProfile.objects.get(student=request.user)
-            lecturers = course.lecturers
+            lecturers = course.lecturers.all()
             students = course.students.all()
             top_students = students.order_by('-score')
             context_dict['course'] = course
@@ -201,7 +237,7 @@ def student_add_individual_feedback(request,subject_slug,student_number):
         stud_user = User.objects.get(id_number=student_number)
         stud = StudentProfile.objects.get(student=stud_user)
 
-        fb = stud.feedback_set.all()
+        fb = stud.feedback_set.all().filter(from_user=request.user).order_by('-datetime_given')
         context_dict['from_student'] = from_stud
         context_dict['student'] = stud
         context_dict['feedback'] = fb
@@ -785,8 +821,8 @@ def register(request):
     else:
         form = RegisterForm()
     return render(request, 'registration/registration_form.html', {'form': form})
-    
-    
+
+
 def invites(request):
     context_dict = {}
     if not request.user.is_authenticated or not request.user.is_lecturer:
@@ -803,24 +839,24 @@ def invites(request):
         context_dict['error'] = "error"
         return render(request,'student_feedback_app/general/error_page.html', context_dict)
     try:
-        
+
         students_string = request.COOKIES.get("students")
         students_list = json.loads(students_string)
         students = []
         for student_id in students_list:
             stud_user = User.objects.get(id_number=student_id)
             students.append(stud_user)
-        
-        message =  ' lecturer ' + request.user.username + ' has invited you to join ' + course.subject + ' (' + course.course_code + '). To join this course use this token: ' + course.course_token 
+
+        message =  ' lecturer ' + request.user.username + ' has invited you to join ' + course.subject + ' (' + course.course_code + '). To join this course use this token: ' + course.course_token
         for student in students:
             personal_message = 'Dear ' + student.username + message
             send_mail('You are invited to join a course!',personal_message,'lect.acc.unicom@gmail.com',[student.email])
-        
+
         response = lecturer_course(request, course.subject_slug)
         response.set_cookie('students', '', path="/lecturer/invites/")
         return response
-        
-    except: 
+
+    except:
         lect = LecturerProfile.objects.get(lecturer=request.user)
         students = lect.get_my_students()
         added_students = course.students.distinct()

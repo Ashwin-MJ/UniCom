@@ -168,3 +168,15 @@ hr {
   font-size: 150%;
   cursor: pointer;
 }
+
+.select2-dropdown.select2-dropdown--below{
+    width: 400px !important;
+}
+
+.select2-container--default .select2-selection--single{
+    padding:6px;
+    height: 37px;
+    width: 400px;
+    font-size: 1.2em;
+    position: relative;
+}

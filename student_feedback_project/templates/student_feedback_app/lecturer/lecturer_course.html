@@ -17,7 +17,11 @@
 <div class="container" id="{{ course.subject_slug }}">
   <div class="card custom-card">
     <h3 class="card-body text-center custom-card-title token" style="padding:10px;">
-      Course Token: <b>{{ course.course_token }} </b><a class="btn btn-material btn-ripple" href="{% url 'invites' %}?token={{course.course_token}}">Send Invites</a>
+      Course Token: <b>{{ course.course_token }} </b><a href="{% url 'invites' %}?token={{course.course_token}}">
+        <div class="button" style="margin:0; padding-top:5px">
+          <button class="btn btn-material btn-ripple">Send Token</button>
+        </div>
+      </a>
     </h3>
   </div>
 
@@ -37,7 +41,7 @@
                   </div>
                 </div>
               <div class="column right">
-                <a href="{% url 'lecturer_view_student' stud.student.id_number%}">
+                <a href="{% url 'view_profile' stud.student.id_number%}">
                   <img class="picture" src="{{stud.student.profile_picture.url}}"/>
                 </a>
                 <i class="material-icons delete-student-icon" id="{{ stud.student.id_number }}/{{ course.course_code }}">delete</i>
@@ -126,7 +130,7 @@
                   </div>
                 </div>
               <div class="column right">
-                <a href="{% url 'lecturer_view_student' stud.student.id_number%}">
+                <a href="{% url 'view_profile' stud.student.id_number%}">
                   <img class="picture" src="{{stud.student.profile_picture.url}}"/>
                 </a>
                 </div>
