@@ -339,27 +339,6 @@ def lecturer_course(request,subject_slug):
         return render(request,'student_feedback_app/general/error_page.html', context_dict)
     return render(request,'student_feedback_app/lecturer/lecturer_course.html',context_dict)
 
-def lecturer_view_student(request,student_number):
-    context_dict = {}
-    if request.user.is_authenticated and request.user.is_lecturer:
-        try:
-            lect = LecturerProfile.objects.get(lecturer=request.user)
-            stud_user = User.objects.get(id_number=student_number)
-            stud = StudentProfile.objects.get(student=stud_user)
-            fb = stud.feedback_set.all()
-            courses = stud.courses.all()
-            context_dict['lecturer'] = lect
-            context_dict['student'] = stud
-            context_dict['feedback'] = fb
-            context_dict['courses'] = stud.get_courses_with_score()
-        except:
-            context_dict['error'] = "no_student"
-            return render(request,'student_feedback_app/general/error_page.html', context_dict)
-    else:
-        context_dict['error'] = "auth"
-        return render(request,'student_feedback_app/general/error_page.html', context_dict)
-    return render(request,'student_feedback_app/lecturer/lecturer_view_student.html',context_dict)
-
 def lecturer_add_individual_feedback(request,subject_slug,student_number):
     if not request.user.is_authenticated or not request.user.is_lecturer:
         context_dict['error'] = "auth"
