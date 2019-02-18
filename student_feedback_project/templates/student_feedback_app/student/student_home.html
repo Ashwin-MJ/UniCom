@@ -149,31 +149,31 @@ function toggleDataSeries(e) {
             {% for value in values %}
               {% if value > 1%}
                 {% if value >= 100  %}
-                  <div align="center" class="card custom-card">
+                  <div align="center" class="card horizontal-card">
                   <b class="card-sub-heading">{{ key }} : </br>You've reached {{ value }} points!</b>
                   <img class="achievements" src="{% static "trophies/Achiev100.jpeg"%}" alt="Picture of ribbon" />
                   </div>
                 {% else %}
                   {% if value >= 50  %}
-                    <div align="center" class="card custom-card">
+                    <div align="center" class="card horizontal-card">
                     <b class="card-sub-heading">{{ key }} : </br>You've reached {{ value }} points!</b>
                     <img class="achievements" src="{% static "trophies/Achiev50.jpeg"%}" alt="Picture of ribbon" />
                     </div>
                   {% else %}
                     {% if value >= 25  %}
-                      <div align="center" class="card custom-card">
+                      <div align="center" class="card horizontal-card">
                       <b class="card-sub-heading">{{ key }} : </br>You've reached {{ value }} points!</b>
                       <img class="achievements" src="{% static "trophies/Achiev25.jpg"%}" alt="Picture of ribbon" />
                       </div>
                     {% else %}
                       {% if value >= 10  %}
-                        <div align="center" class="card custom-card">
+                        <div align="center" class="card horizontal-card">
                         <b class="card-sub-heading">{{ key }} : </br>You've reached {{ value }} points!</b>
                         <img class="achievements" src="{% static "trophies/Achiev10.jpg"%}" alt="Picture of ribbon" />
                         </div>
                       {% else %}
                         {% if value >= 5  %}
-                          <div align="center" class="card custom-card">
+                          <div align="center" class="card horizontal-card">
                           <b class="card-sub-heading">{{ key}} :</br>You've reached {{ value }} points!</b>
                           <img class="achievements" src="{% static "trophies/Achiev5.jpeg"%}" alt="Picture of ribbon" />
                           </div>
@@ -184,7 +184,7 @@ function toggleDataSeries(e) {
                 {% endif %}
 
               {% else %}
-                <div align="center" class="card custom-card">
+                <div align="center" class="card horizontal-card">
                   <b class="card-sub-heading">Haven't unlocked achievments yet for: <br> {{ key }}</b>
                   <img class="achievements" src="{% static "trophies/no_achiev.jpg"%}" alt="Picture of ribbon" />
                 </div>
