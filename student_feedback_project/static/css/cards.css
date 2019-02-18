@@ -165,3 +165,14 @@
   padding:0;
   margin: 0;
 }
+
+.row {
+  margin: 0 -5px;
+}
+
+.horizontal-card {
+  max-width: 300px;
+  margin-top: 25px;
+  padding: 10px;
+  align-items: center;
+}
