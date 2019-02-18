@@ -160,3 +160,11 @@ hr {
   font-size: 200%;
   cursor: pointer;
 }
+
+.delete-student-icon {
+  position: absolute;
+  right:5px;
+  top:5px;
+  font-size: 150%;
+  cursor: pointer;
+}

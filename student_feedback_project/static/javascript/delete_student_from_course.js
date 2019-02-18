@@ -1,4 +1,4 @@
-$('.delete-icon').click(function(e) {
+$('.delete-student-icon').click(function(e) {
   var result = confirm("Remove student from course?");
   if(result){
 //send request to delete relationship:
@@ -27,6 +27,11 @@ $('.delete-icon').click(function(e) {
       },
   });
   }
+  else{
+    // Ensure student doesn't become highlighted 
+    $(this).parent().parent().parent().toggleClass(addclass);
+  }
+
 });
 
 function getCookie(cname) {

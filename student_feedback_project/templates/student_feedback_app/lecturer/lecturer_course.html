@@ -40,7 +40,7 @@
                 <a href="{% url 'lecturer_view_student' stud.student.id_number%}">
                   <img class="picture" src="{{stud.student.profile_picture.url}}"/>
                 </a>
-                <i class="material-icons delete-icon pull-right" id="{{ stud.student.id_number }}/{{ course.course_code }}">delete</i>
+                <i class="material-icons delete-student-icon" id="{{ stud.student.id_number }}/{{ course.course_code }}">delete</i>
                 </div>
               </div>
             </div>
