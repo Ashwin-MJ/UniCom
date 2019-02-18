@@ -1,5 +1,5 @@
 {% extends 'student_feedback_app/general/base.html' %}
-
+{% load staticfiles %}}
 {% block title%}
 My Homepage
 {% endblock %}
@@ -133,6 +133,63 @@ function toggleDataSeries(e) {
         <div class="card custom-card">
           <div id="chartContainer" style="height: 400px; width: 100%;"></div>
             <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-deck">
+    <div class="card scroll-bg">
+      <h3 class="card-body text-center custom-card-title">Achievements</h3>
+      <hr />
+      <div class="horizontal_scroll">
+        <div class="row">
+          {% for key,values in achievements.items %}
+            {% for value in values %}
+              {% if value > 1%}
+                {% if value >= 100  %}
+                  <div align="center" class="card horizontal-card">
+                  <b class="card-sub-heading">{{ key }} : </br>You've reached {{ value }} points!</b>
+                  <img class="achievements" src="{% static "trophies/Achiev100.jpeg"%}" alt="Picture of ribbon" />
+                  </div>
+                {% else %}
+                  {% if value >= 50  %}
+                    <div align="center" class="card horizontal-card">
+                    <b class="card-sub-heading">{{ key }} : </br>You've reached {{ value }} points!</b>
+                    <img class="achievements" src="{% static "trophies/Achiev50.jpeg"%}" alt="Picture of ribbon" />
+                    </div>
+                  {% else %}
+                    {% if value >= 25  %}
+                      <div align="center" class="card horizontal-card">
+                      <b class="card-sub-heading">{{ key }} : </br>You've reached {{ value }} points!</b>
+                      <img class="achievements" src="{% static "trophies/Achiev25.jpg"%}" alt="Picture of ribbon" />
+                      </div>
+                    {% else %}
+                      {% if value >= 10  %}
+                        <div align="center" class="card horizontal-card">
+                        <b class="card-sub-heading">{{ key }} : </br>You've reached {{ value }} points!</b>
+                        <img class="achievements" src="{% static "trophies/Achiev10.jpg"%}" alt="Picture of ribbon" />
+                        </div>
+                      {% else %}
+                        {% if value >= 5  %}
+                          <div align="center" class="card horizontal-card">
+                          <b class="card-sub-heading">{{ key}} :</br>You've reached {{ value }} points!</b>
+                          <img class="achievements" src="{% static "trophies/Achiev5.jpeg"%}" alt="Picture of ribbon" />
+                          </div>
+                        {% endif %}
+                      {% endif %}
+                    {% endif %}
+                  {% endif %}
+                {% endif %}
+
+              {% else %}
+                <div align="center" class="card horizontal-card">
+                  <b class="card-sub-heading">Haven't unlocked achievments yet for: <br> {{ key }}</b>
+                  <img class="achievements" src="{% static "trophies/no_achiev.jpg"%}" alt="Picture of ribbon" />
+                </div>
+              {% endif %}
+            {% endfor %}
+          {% endfor %}
         </div>
       </div>
     </div>

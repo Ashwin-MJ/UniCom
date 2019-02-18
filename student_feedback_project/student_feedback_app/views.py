@@ -15,6 +15,8 @@ from dal import autocomplete
 import datetime
 import json
 
+from ast import literal_eval
+
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
@@ -84,6 +86,7 @@ def student_home(request):
     context_dict={}
     fbCat = {}
     catColours = {}
+    achievs = {}
     if request.user.is_authenticated and request.user.is_student:
         try:
             stud = StudentProfile.objects.get(student=request.user)
@@ -96,10 +99,32 @@ def student_home(request):
                     catColours[cat] = [feedback.category.colour]
                 else:
                     fbCat[cat].append([feedback.points, feedback.datetime_given.strftime('%Y-%m-%d %H:%M')])
+
+            stud.achievement_set.all().delete()
+            scores = stud.get_score_for_category()
+
+            for attribute in scores:
+                achievM = Achievement(student=stud)
+                achievM.gen_achievement(attribute, scores[attribute])
+                achievM.save()
+
+            stud.achievement_set.all()
+
+            for achvm in stud.achievement_set.all():
+                achvm.achiev = literal_eval(achvm.achiev)
+                for val in achvm.achiev:
+                    if achvm.category in achievs:
+                        achievs[achvm.category].append(val)
+                    else:
+                        achievs[achvm.category] = [val]
+                achievs[achvm.category].sort()
+            print(achievs)
+
             context_dict['student'] = stud
             context_dict['courses'] = courses
             context_dict['feedback'] = fb
             context_dict['feedbackData'] = json.dumps(fbCat)
+            context_dict['achievements'] = achievs
             context_dict['catColours'] = json.dumps(catColours)
 
         except:

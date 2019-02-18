@@ -160,3 +160,14 @@
   border-radius: 25px;
   border-width: thick;
 }
+
+.row {
+  margin: 0 -5px;
+}
+
+.horizontal-card {
+  max-width: 300px;
+  margin-top: 25px;
+  padding: 10px;
+  align-items: center;
+}
