@@ -6,7 +6,9 @@
 {% endblock %}
 
 {% block current_page %}
-{{ lecturer.lecturer.username }}<br />
+{% for lect in lecturers %}
+{{ lect.lecturer.username }}<br />
+{% endfor %}
 {{ course.subject }}<br />
 {% endblock%}
 
@@ -15,16 +17,17 @@
 <div class="container" id="{{ course.subject_slug }}">
   <div class="card custom-card">
     <h3 class="card-body text-center custom-card-title token" style="padding:10px;">
-      Course Token: <b>{{ course.course_token}}</b>
+      Course Token: <b>{{ course.course_token }} </b><a class="btn btn-material btn-ripple" href="{% url 'invites' %}?token={{course.course_token}}">Send Invites</a>
     </h3>
   </div>
 
   <div class="card-deck" style="margin-bottom:25px;">
       <div class="card scroll-bg">
-        <h3 class="card-body text-center custom-card-title">Students</h3>
+        <h3 class="text-center custom-card-title">Students</h3>
         <hr />
         <div id="all_students" class="card-body scroll">
           {% for stud,score in students_with_score %}
+
           <div class="card students custom-card" id="{{ stud.student.id_number }}">
             <div class="row">
               <div class="column left">
@@ -37,8 +40,8 @@
                 <a href="{% url 'lecturer_view_student' stud.student.id_number%}">
                   <img class="picture" src="{{stud.student.profile_picture.url}}"/>
                 </a>
+                <i class="material-icons delete-icon pull-right" id="{{ stud.student.id_number }}/{{ course.course_code }}">delete</i>
                 </div>
-
               </div>
             </div>
             <br />
@@ -67,7 +70,7 @@
       </div>
 
       <div class="card scroll-bg">
-        <h3 class="card-body text-center custom-card-title">Recent Feedback</h3>
+        <h3 class="text-center custom-card-title">Recent Feedback</h3>
         <hr />
         <div class="card-body scroll" id="fb-list">
           {% for fb in feedback %}
@@ -110,7 +113,7 @@
       </div>
 
       <div class="card scroll-bg">
-        <h3 class="card-body text-center custom-card-title">Leaderboard</h3>
+        <h3 class="text-center custom-card-title">Leaderboard</h3>
         <hr />
         <div class="card-body scroll">
           {% for stud,score in sorted_students %}
@@ -143,5 +146,5 @@
 {% block footer %}
 
 <script type="text/javascript" src="{% static 'javascript/group_select.js' %}" ></script>
-
+<script type="text/javascript" src="{% static 'javascript/delete_student_from_course.js' %}" ></script>
 {% endblock%}

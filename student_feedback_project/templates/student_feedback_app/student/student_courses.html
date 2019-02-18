@@ -13,7 +13,7 @@ Courses
 <div class="container">
   <div class="card-deck">
     <div class="card scroll-bg">
-      <h3 class="card-body text-center custom-card-title">My Courses</h3>
+      <h3 class="text-center custom-card-title">My Courses</h3>
       <hr />
       <div class="card-body scroll">
         {% for course,score in courses.items %}
@@ -47,7 +47,7 @@ Courses
     </div>
 
     <div class="card" style="height: 300px; margin-top:25px;">
-      <h3 class="card-body text-center custom-card-title">Add a Course</h3>
+      <h3 class="text-center custom-card-title">Add a Course</h3>
       <div class="card-body">
         <form id="" method="post" action="">
           {% csrf_token %}

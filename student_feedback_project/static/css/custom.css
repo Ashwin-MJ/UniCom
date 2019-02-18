@@ -115,4 +115,57 @@ div.horizontal_scroll {
   white-space: nowrap;
 }
 
+.delete-icon {
+  position: absolute;
+  right:20px;
+  top:25px;
+  font-size: 200%;
+  cursor: pointer;
+}
 
+.delete-cat-icon {
+  position: absolute;
+  right:10px;
+  top:5px;
+  font-size: 150%;
+  cursor: pointer;
+}
+
+.edit-cat-icon {
+  position: absolute;
+  right:10px;
+  bottom:5px;
+  font-size: 150%;
+  cursor: pointer;
+}
+
+.create-cat-icon {
+  position: absolute;
+  right:25px;
+  top:25px;
+  font-size: 200%;
+  cursor: pointer;
+}
+.delete-mess-icon {
+  position: absolute;
+  right:10px;
+  top:5px;
+  font-size: 150%;
+  cursor: pointer;
+}
+
+.edit-mess-icon {
+  position: absolute;
+  right:10px;
+  bottom:5px;
+  font-size: 150%;
+  cursor: pointer;
+}
+
+.create-mess-icon {
+  position: absolute;
+  right:25px;
+  top:25px;
+  font-size: 200%;
+  cursor: pointer;
+}

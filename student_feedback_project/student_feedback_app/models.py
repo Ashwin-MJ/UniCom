@@ -181,7 +181,6 @@ class Course(models.Model):
         # This is important in the template
         return temp_dict
 
-
 class LecturerProfile(models.Model):
     lecturer = models.OneToOneField(User, on_delete=models.CASCADE,primary_key=True)
     courses = models.ManyToManyField('Course')
@@ -224,11 +223,12 @@ class Feedback(models.Model):
         return self.from_user.is_lecturer and not self.from_user.is_student
 
 class Category(models.Model):
-    name = models.CharField(max_length=20, default="Empty",primary_key=True)
+    name = models.CharField(max_length=30, default="Empty")
+    user = models.ForeignKey('User',on_delete=models.CASCADE,null=True)
 
     # Store the hex code for the colour field as a CharField. This can then be retrieved and
     # used later as required
-    colour = models.CharField(max_length=6, default="#009999")
+    colour = models.CharField(max_length=7, default="#009999")
     # Can access messages associated with a given category using Category.message_set.all()
 
     def __str__(self):
@@ -239,7 +239,8 @@ class Message(models.Model):
     # As per the client's requirements, a Lecturer should first select a category, after which a list of pre-defined messages associated with that category are displayed
     # The Lecturer MUST select one of these messages.
     category = models.ForeignKey('Category',on_delete=models.CASCADE,null=True,blank=True)
-    text = models.CharField(max_length=200,default="No message",primary_key=True)
+    text = models.CharField(max_length=200,default="No message")
+    user = models.ForeignKey('User',on_delete=models.CASCADE,null=True)
 
     def __str__(self):
         return self.text

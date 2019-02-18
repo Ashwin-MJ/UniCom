@@ -38,19 +38,19 @@ My Profile
     <div class="right-profile">
       <div class="card-body">
         <div class="card bg-primary text-white card-padding custom-card">
-          <b class="custom-card-title">Email: </b>
+          <b class="custom-card-title" style="padding-top:0">Email: </b>
             <p>
                 {{user.email}}
             </p>
         </div>
         <div class="card bg-success text-white card-padding custom-card">
-          <b class="custom-card-title">Degree: </b>
+          <b class="custom-card-title" style="padding-top:0">Degree: </b>
             <p>
                 {{user.degree}}
             </p>
         </div>
         <div class="card bg-info text-white card-padding custom-card">
-          <b class="custom-card-title">Bio:</b>
+          <b class="custom-card-title" style="padding-top:0">Bio:</b>
             <p>
                  {{user.bio}}
             </p>
@@ -64,7 +64,7 @@ My Profile
   <div class="card-deck">
 
     <div class="card scroll-bg">
-      <h3 class="card-body text-center custom-card-title">Courses</h3>
+      <h3 class="text-center custom-card-title">Courses</h3>
       <hr />
       <div class="card-body scroll">
         {% for course,value in courses.items %}
@@ -104,7 +104,7 @@ My Profile
 
 
     <div class="card scroll-bg">
-      <h3 class="card-body text-center custom-card-title">Recent Feedback</h3>
+      <h3 class="text-center custom-card-title">Recent Feedback</h3>
       <hr />
       <div class="card-body scroll" id="fb-list" >
         {% for fb in feedback %}
