@@ -4,7 +4,7 @@
 }
 
 .custom-navbar-header {
-  background-color: teal!important;
+  background-color: #06A4BD!important;
 }
 
 body{
@@ -26,6 +26,9 @@ body{
   background-color: inherit;
 }
 
+#logo {
+  max-height:60px
+}
 .scroll {
   max-height: 80vh;
   overflow-y: scroll;
