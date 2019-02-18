@@ -109,3 +109,10 @@ hr {
   border: 1px solid teal;
   margin: 10px;
 }
+
+div.horizontal_scroll {
+  overflow: auto;
+  white-space: nowrap;
+}
+
+
