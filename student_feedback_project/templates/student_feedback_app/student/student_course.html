@@ -14,21 +14,21 @@
   <div class="card-deck">
 
     <div class="card scroll-bg" style="margin-top:25px;">
-      <h3 class="card-body text-center custom-card-title">Course Info</h3>
+      <h3 class="text-center custom-card-title">Course Info</h3>
       <hr />
       <div class="card-body">
           <div class="card card-padding custom-card">
-              <b class="custom-card-title">Lecturer:</b>
+              <b class="custom-card-title" style="padding-top:0">Lecturer:</b>
               <em>{{lect.lecturer.username }}</em>
           </div>
           <div class="card card-padding custom-card">
-              <b class="custom-card-title">Course Description:</b>
+              <b class="custom-card-title" style="padding-top:0">Course Description:</b>
               <em>{{course.course_description }}</em>
           </div>
           <div class="card custom-card">
             <div class="row">
               <div class="column left-category">
-                <b class="custom-card-title">Current Score:</b>
+                <b class="custom-card-title" style="padding-top:0">Current Score:</b>
                 </div>
               <div class="column right-number" style="margin-bottom:0">
                   {{ score }}
@@ -39,7 +39,7 @@
     </div>
 
     <div class="card scroll-bg">
-      <h3 class="card-body text-center custom-card-title">Recent Feedback</h3>
+      <h3 class="text-center custom-card-title">Recent Feedback</h3>
       <hr />
       <div class="card-body scroll" id="fb-list">
         {% for fb in feedback %}
@@ -81,7 +81,7 @@
     </div>
 
     <div class="card scroll-bg">
-      <h3 class="card-body text-center custom-card-title">Leaderboard</h3>
+      <h3 class="text-center custom-card-title">Leaderboard</h3>
       <hr />
       <div class="card-body scroll">
         {% for stud,score in sorted_students %}

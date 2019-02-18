@@ -59,37 +59,18 @@ class IndividualFeedbackTestCase(TestCase):
         stud.save()
         lect.save()
 
-        speaking = Category(name="Speaking")
+        speaking = Category(name="Speaking",user=lect_user)
         speaking.save()
 
         speak_message = Message(category=speaking,
-                                text="Good speech today!")
+                                text="Good speech today!",
+                                user=lect_user)
         speak_message.save()
 
         course = Course(subject="Systems Programming 3",
                         course_description="Introduction to Systems Programming using C and C++",
                         course_code="SP3")
         course.save()
-
-    def test_feedback_form_true(self):
-        form_data = { "optional_message": "You made excellent points about ...",
-                        "category" : "Speaking",
-                        "points" : 5,
-                        "pre_defined_message" : "Good speech today!"}
-
-        fb_form = FeedbackForm(data=form_data)
-        self.assertTrue(fb_form.is_valid())
-
-    def test_feedback_form_false(self):
-        form_data = { "optional_message": "You were top of the class!",
-                        "category" : "Participation",
-                        "points" : 5,
-                        "pre_defined_message" : "Great marks in the quiz"}
-
-        fb_form = FeedbackForm(data=form_data)
-        # This test should fail as the category Participation and the pre defined message
-        # is not saved in the database
-        self.assertFalse(fb_form.is_valid())
 
     def test_feedback_saved_for_student(self):
         fb = Feedback(optional_message="You made excellent points about ...",
@@ -104,15 +85,3 @@ class IndividualFeedbackTestCase(TestCase):
 
         self.assertEqual(len(stud.feedback_set.all()),1)
         self.assertEqual(stud.feedback_set.all()[0].optional_message, "You made excellent points about ...")
-
-
-#class GroupFeedbackTestCase(TestCase):
-
-#    def test_feedback_created(self):
-        # Ensure that a feedback object is saved correctly in the database
-        #fb = Feedback()
-
-        # Upon clicking "Submit Feedback" ensure the feedback is created correctly
-
-    # Ensure that upon submitting group feedback, that feedback is given to
-    # all students

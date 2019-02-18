@@ -7,10 +7,14 @@ from student_feedback_app.views import CategoryAutocomplete, MessageAutocomplete
 
 urlpatterns = [
     re_path(r'^$', views.index, name='index'),
-
+    re_path(r'^category/$', views.CategoryDetail.as_view(), name="category"),
+    re_path(r'^message/$', views.MessageDetail.as_view(), name="message"),
+    re_path(r'^message/(?P<mess_id>[\w\-]+)/$', views.MessageDetail.as_view(), name="message_detail"),
+    re_path(r'^category/(?P<cat_id>[\w\-]+)/$', views.CategoryDetail.as_view(), name="category_detail"),
     re_path(r'^feedback/(?P<fb_id>[\w\-]+)/$', views.FeedbackDetail.as_view(), name="feedback_detail"),
     re_path(r'^my-profile/$', views.my_profile, name='my_profile'),
     re_path(r'^edit-bio/$', views.edit_bio, name='edit_bio'),
+    re_path(r'^customise-options/$', views.customise_options, name='customise_options'),
     re_path(r'^student/home/$', views.student_home, name='student_home'),
     re_path(r'^student/all-feedback/$', views.student_all_feedback, name='student_all_feedback'),
     re_path(r'^student/my-provided-feedback/$', views.my_provided_feedback, name='student_provided_feedback'),

@@ -19,7 +19,6 @@ $('.delete-icon').click(function(e) {
   if(result){
     var fb_id = this.id;
     var csrftoken = getCookie("csrftoken");
-    console.log(csrftoken);
     function csrfSafeMethod(method) {
       return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
     }

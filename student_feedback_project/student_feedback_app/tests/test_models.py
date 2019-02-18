@@ -88,6 +88,8 @@ class LecturerTestCase(TestCase):
 class CategoryTestCase(TestCase):
 
     def setUp(self):
+        add_course("Systems Programming 3", "SP3", "Introduction to Systems Programming using C and C++")
+        add_lecturer("Wolf", "00001", "star", "wolf@star.com", ["SP3"])
         add_category("listening", "#008080")
 
     def test_category_added_to_db(self):
@@ -97,17 +99,22 @@ class CategoryTestCase(TestCase):
 class MessageTestCase(TestCase):
 
     def setUp(self):
+        add_course("Systems Programming 3", "SP3", "Introduction to Systems Programming using C and C++")
+        add_lecturer("Wolf", "00001", "star", "wolf@star.com", ["SP3"])
         add_category("listening", "#2F9395")
         add_message("listening", ["listened well"])
 
     def test_message_correct(self):
-        message = Message.objects.get(category="listening")
+        user = User.objects.get(id_number="00001")
+        cat = Category.objects.get(name="listening",user=user)
+        message = Message.objects.get(category=cat,user=user)
         self.assertEqual(message.text, "listened well")
 
     def test_cat_in_message(self):
-        message = Message.objects.get(category="listening")
-        cat = Category.objects.get(name="listening")
-        self.assertEqual(message.category, cat)
+        user = User.objects.get(id_number="00001")
+        cat = Category.objects.get(name="listening",user=user)
+        message = Message.objects.get(category=cat,user=user)
+        self.assertEqual(message.category.name, cat.name)
 
     def test_default_message(self):
         #TODO

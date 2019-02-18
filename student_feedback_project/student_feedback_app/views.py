@@ -4,6 +4,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.template import RequestContext
 from django.contrib.auth import login
+from django.core import serializers
 
 from student_feedback_app.forms import *
 from student_feedback_app.models import *
@@ -212,7 +213,8 @@ def student_add_individual_feedback(request,subject_slug,student_number):
             form = FeedbackForm(request.POST)
             if form.is_valid():
                 new_fb = form.save(commit=False)
-                new_fb.pre_defined_message.category = Category.objects.get(name=new_fb.category)
+                new_fb.pre_defined_message.category = Category.objects.get(user=request.user,name=new_fb.category)
+                new_fb.pre_defined_message.user = request.user
                 new_fb.pre_defined_message.save()
                 new_fb.student = stud
                 stud.score += new_fb.points
@@ -355,7 +357,8 @@ def lecturer_add_individual_feedback(request,subject_slug,student_number):
             form = FeedbackForm(request.POST)
             if form.is_valid():
                 new_fb = form.save(commit=False)
-                new_fb.pre_defined_message.category = Category.objects.get(name=new_fb.category)
+                new_fb.pre_defined_message.category = Category.objects.get(user=request.user,name=new_fb.category)
+                new_fb.pre_defined_message.user = request.user
                 new_fb.pre_defined_message.save()
                 new_fb.student = stud
                 stud.score += new_fb.points
@@ -419,7 +422,8 @@ def add_group_feedback(request,subject_slug):
                     new_fb = form.save(commit=False)
                     created_fb = Feedback(student=student)
                     created_fb.pre_defined_message = new_fb.pre_defined_message
-                    created_fb.pre_defined_message.category = Category.objects.get(name=new_fb.category)
+                    created_fb.pre_defined_message.category = Category.objects.get(user=request.user,name=new_fb.category)
+                    created_fb.pre_defined_message.user = request.user
                     created_fb.pre_defined_message.save()
                     created_fb.category = created_fb.pre_defined_message.category
                     student.score += new_fb.points
@@ -431,6 +435,7 @@ def add_group_feedback(request,subject_slug):
                     student.save()
                     created_fb.pk = None
                     created_fb.save()
+
             else:
                 print(form.errors)
             request.COOKIES["students"] = ""
@@ -480,6 +485,38 @@ def lecturer_courses(request):
         context_dict['error'] = "auth"
         return render(request,'student_feedback_app/general/error_page.html', context_dict)
 
+def customise_options(request):
+    context_dict = {}
+    if not request.user.is_authenticated:
+        context_dict['error'] = "auth"
+        return render(request,'student_feedback_app/general/error_page.html', context_dict)
+    try:
+        context_dict['categories'] = request.user.category_set.all()
+        messages = request.user.message_set.all()
+
+        edit_cat_form = EditCategoryForm()
+        context_dict["edit_cat_form"] = edit_cat_form
+
+        new_cat_form = NewCategoryForm()
+        context_dict["new_cat_form"] = new_cat_form
+
+        new_mess_form = NewMessageForm()
+        context_dict["new_mess_form"] = new_mess_form
+
+        edit_mess_form = EditMessageForm()
+        context_dict["edit_mess_form"] = edit_mess_form
+
+        all_messages = {}
+        for message in messages:
+            all_messages[message.id] = message.text
+
+        context_dict['messages'] = json.dumps(all_messages)
+        context_dict['messages_qs'] = messages
+        return render(request, 'student_feedback_app/general/customise_options.html', context_dict)
+    except:
+        context_dict['error'] = "error"
+        return render(request,'student_feedback_app/general/error_page.html', context_dict)
+
 def create_course(request):
     context_dict = {}
     if not request.user.is_authenticated or not request.user.is_lecturer:
@@ -507,7 +544,7 @@ def create_course(request):
 
 class FeedbackDetail(APIView):
     """
-    Retrieve, update or delete a Feedback instance.
+    Retrieve or delete a Feedback instance.
     """
     def get_object(self, fb_id):
         try:
@@ -525,6 +562,83 @@ class FeedbackDetail(APIView):
         fb.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+
+class CategoryDetail(APIView):
+    """
+    Retrieve, create, update or delete a Category instance.
+    """
+    def get_object(self, cat_id):
+        try:
+            return Category.objects.get(id=cat_id)
+        except Category.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+    def get(self, request, cat_id, format=None):
+        cat = self.get_object(cat_id)
+        serializer = CategorySerializer(cat)
+        return Response(serializer.data)
+
+    def post(self, request,format=None):
+        cat = Category(name=request.data.get('name'),
+                        colour=request.data.get('colour'),
+                        user=request.user)
+        cat.save()
+        return Response(status=status.HTTP_200_OK)
+
+    def delete(self, request, cat_id, format=None):
+        cat = self.get_object(cat_id)
+        messages = cat.message_set.all()
+        for mess in messages:
+            mess.delete()
+        request.user.category_set.remove(cat)
+        cat.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    def patch(self, request, cat_id, format=None):
+        cat = self.get_object(cat_id)
+        cat.name = request.data.get('name')
+        cat.colour = request.data.get('colour')
+        cat.save()
+        return Response(status=status.HTTP_200_OK)
+
+class MessageDetail(APIView):
+    """
+    Retrieve, create, update or delete a Message instance.
+    """
+    def get_object(self, mess_id):
+        try:
+            return Message.objects.get(id=mess_id)
+        except Message.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+    def get(self, request, mess_id, format=None):
+        message = self.get_object(mess_id)
+        serializer = MessageSerializer(message)
+        return Response(serializer.data)
+
+    def post(self, request,format=None):
+        try:
+            cat = Category.objects.get(id=request.data.get('category'))
+        except Category.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        mess = Message(text=request.data.get('text'),
+                        category=cat,
+                        user=request.user)
+        mess.save()
+        cat.save()
+        return Response(status=status.HTTP_200_OK)
+
+    def delete(self, request, mess_id, format=None):
+        message = self.get_object(mess_id)
+        message.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    def patch(self, request, mess_id, format=None):
+        message = self.get_object(mess_id)
+        message.text = request.data.get('text')
+        message.save()
+        return Response(status=status.HTTP_200_OK)
+
 class StudentCourseRelDestroy(APIView):
     def delete(self, request, student_id, course_code, format=None):
         print ("in delete function\n");
@@ -540,13 +654,13 @@ class CategoryAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
         if not self.request.user.is_authenticated:
             return Category.objects.none()
-        query_set = Category.objects.all()
+        query_set = self.request.user.category_set.all()
         category = self.forwarded.get('category', None)
         if self.q:
             query_set = query_set.filter(name__istartswith=self.q)
             return query_set
         if category:
-            query_set = Message.objects.filter(category=category)
+            query_set = Message.objects.filter(user=self.request.user,category=category)
         return query_set
 
     def get_create_option(self,context,q):
@@ -609,7 +723,7 @@ class MessageAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
         if not self.request.user.is_authenticated:
             return Message.objects.none()
-        query_set = Message.objects.all()
+        query_set = self.request.user.message_set.all()
         category = self.forwarded.get('category', None)
         if category:
             query_set = Message.objects.filter(category=category)
@@ -630,13 +744,15 @@ class MessageAutocomplete(autocomplete.Select2QuerySetView):
                 display_create_option = False
         if display_create_option and self.has_add_permission(self.request):
             category = self.forwarded.get('category',None)
-            cat = Category.objects.get(name=category)
+            cat = Category.objects.get(user=self.request.user,id=category)
             create_option = [{
                 'id': q,
                 'text': ('Create a new message: "%(new_value)s"') % {'new_value': q},
                 'category': category,
                 'create_id': True,
+                'user': self.request.user.id_number,
             }]
+        print(create_option)
         return create_option
 
     def render_to_response(self, context):

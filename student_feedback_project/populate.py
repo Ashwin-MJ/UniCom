@@ -464,14 +464,13 @@ def add_lecturer(name,lecturer_number,password,email,courses):
 # Helper function to add feedback #needs categories, (pre defined) messages, courses, users in db
 def add_feedback(feedback_id,category,points,from_user,student,course_code,pre_defined_message,optional_message):
 	fb = Feedback.objects.get_or_create(feedback_id=feedback_id)[0]
-	fb.category = Category.objects.get(name=category)
-	fb.pre_defined_message = Message.objects.get(text=pre_defined_message)
 	fb.points = points
 	fb.optional_message = optional_message
 	fb.which_course = Course.objects.get(course_code=course_code)
 	from_user_model = User.objects.get(id_number=from_user)
 	fb.from_user = from_user_model
-	# fb.lecturer = LecturerProfile.objects.get(lecturer=lect_user)
+	fb.category = Category.objects.get(name=category,user=from_user_model)
+	fb.pre_defined_message = Message.objects.get(text=pre_defined_message,user=from_user_model)
 	student_user = User.objects.get(id_number=student)
 	stud = StudentProfile.objects.get(student=student_user)
 	fb.student = stud
@@ -482,16 +481,22 @@ def add_feedback(feedback_id,category,points,from_user,student,course_code,pre_d
 
 # Helper function to add Category
 def add_category(name,colour):
-	cat = Category.objects.get_or_create(name=name,colour=colour)[0]
-	cat.save()
+	# Since the the category needs to be associated uniquely for each lecturer
+	# (To allow them to customise) this needs to be saved as follows
+	users = User.objects.all()
+	for user in users:
+		cat = Category(user=user,colour=colour,name=name)
+		cat.save()
 
 # Helper function to add pre defined message #needs categories in db
 def add_message(category,messages):
-	cat = Category.objects.get(name=category)
-	for text in messages:
-		mess = Message.objects.get_or_create(category=cat,text=text)[0]
-		mess.save()
-		cat.save()
+	users = User.objects.all()
+	for user in users:
+		cat = Category.objects.get(name=category,user=user)
+		for text in messages:
+			mess = Message(category=cat,text=text,user=user)
+			mess.save()
+			cat.save()
 	return messages
 
 def print_database():

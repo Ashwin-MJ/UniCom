@@ -21,7 +21,8 @@ Create A Course
           {{ hidden }}
       {% endfor %}
 
-      <h3 class="card-body text-center custom-card-title">Create A Course</h3>
+      <h3 class="text-center custom-card-title">Create A Course</h3>
+      <hr />
 
       {% if form.non_field_errors %}
         <div class="alert alert-danger" role="alert">
@@ -33,7 +34,7 @@ Create A Course
 
       {% for field in form.visible_fields %}
         <div class="form-group card custom-card">
-          <h3 class="custom-card-title">
+          <h3 class="custom-card-title" style="padding-top:0">
             {{ field.help_text }}:
           </h3>
             {% render_field field class="form-control" %}
