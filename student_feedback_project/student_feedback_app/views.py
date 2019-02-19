@@ -64,7 +64,7 @@ def view_profile(request,student_number):
             try:
                 stud_user = User.objects.get(id_number=student_number)
                 stud = StudentProfile.objects.get(student=stud_user)
-                fb = stud.feedback_set.all().filter(from_user=request.user)
+                fb = stud.feedback_set.all().filter(from_user=request.user).order_by('-datetime_given')
                 context_dict['student'] = stud
                 context_dict['courses'] = stud.get_courses_with_score()
                 context_dict['feedback'] = fb
@@ -78,7 +78,7 @@ def view_profile(request,student_number):
                 lect = LecturerProfile.objects.get(lecturer=request.user)
                 stud_user = User.objects.get(id_number=student_number)
                 stud = StudentProfile.objects.get(student=stud_user)
-                fb = stud.feedback_set.all()
+                fb = stud.feedback_set.all().order_by('-datetime_given')
                 context_dict['student'] = stud
                 context_dict['courses'] = stud.get_courses_with_score()
                 context_dict['feedback'] = fb
@@ -380,20 +380,6 @@ def lecturer_add_individual_feedback(request,subject_slug,student_number):
         return render(request,'student_feedback_app/general/error_page.html', context_dict)
     context_dict = {}
     try:
-        # Retrieving student string from cookies
-        students_string = request.COOKIES.get("indiv_students")
-        try:
-            students_list = json.loads(students_string)
-        except:
-            # Seems to be an error in using json.loads for a list with a single element so do this instead
-            students_list = students_string
-        # At this point, the variable students_list contains a list of all students still to be given feedback
-        # Remove current student from that list
-        # Removing first element of list (current student)
-
-        students_list = students_list[1:]
-        # Saving the above updated list as a cookie 'indiv_students'
-        request.COOKIES["indiv_students"] = students_list
         lect = LecturerProfile.objects.get(lecturer=request.user)
         stud_user = User.objects.get(id_number=student_number)
         stud = StudentProfile.objects.get(student=stud_user)

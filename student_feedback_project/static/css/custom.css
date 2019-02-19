@@ -232,3 +232,13 @@ hr {
 .list-text{
   font-family: 'Dosis', sans-serif;
 }
+
+.mess-item {
+  cursor: pointer;
+}
+
+.give-fb-scroll {
+  max-height: 120vh;
+  overflow-y: scroll;
+  padding-top:0px;
+}
