@@ -414,7 +414,7 @@ def lecturer_add_individual_feedback(request,subject_slug,student_number):
 
         context_dict['messages'] = json.dumps(all_messages)
         context_dict['messages_qs'] = messages
-        
+
         form = FeedbackForm()
         context_dict['form'] = form
         return render(request,'student_feedback_app/lecturer/lecturer_add_individual_feedback.html',context_dict)
@@ -441,34 +441,18 @@ def add_group_feedback(request,subject_slug):
         context_dict['lecturer'] = lect
         course = Course.objects.get(subject_slug=subject_slug)
         context_dict['subject'] = course
-        context = RequestContext(request)
-        if request.method == 'POST':
-            form = FeedbackForm(request.POST)
-            if form.is_valid():
-                for student in stud_profiles:
-                    new_fb = form.save(commit=False)
-                    created_fb = Feedback(student=student)
-                    created_fb.pre_defined_message = new_fb.pre_defined_message
-                    created_fb.pre_defined_message.category = Category.objects.get(user=request.user,name=new_fb.category)
-                    created_fb.pre_defined_message.user = request.user
-                    created_fb.pre_defined_message.save()
-                    created_fb.category = created_fb.pre_defined_message.category
-                    student.score += new_fb.points
-                    created_fb.from_user = request.user
-                    created_fb.which_course = course
-                    created_fb.points = new_fb.points
-                    created_fb.optional_message = new_fb.optional_message
-                    created_fb.datetime_given = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                    student.save()
-                    created_fb.pk = None
-                    created_fb.save()
 
-            else:
-                print(form.errors)
-            request.COOKIES["students"] = ""
-            return my_provided_feedback(request)
-        else:
-            form = FeedbackForm()
+        context_dict['categories'] = request.user.category_set.all()
+
+        messages = request.user.message_set.all()
+        all_messages = {}
+        for message in messages:
+            all_messages[message.id] = message.text
+
+        context_dict['messages'] = json.dumps(all_messages)
+        context_dict['messages_qs'] = messages
+
+        form = FeedbackForm()
         context_dict['form'] = form
 
         return render(request,'student_feedback_app/lecturer/lecturer_add_group_feedback.html',context_dict)
@@ -592,27 +576,53 @@ class FeedbackDetail(APIView):
     def post(self, request,format=None):
         cat = Category.objects.get(id=request.data.get('cat_id'),user=request.user)
         mess = Message.objects.get(id=request.data.get('mess_id'),user=request.user)
-        stud_user = User.objects.get(id_number=request.data.get('student'))
-        stud = StudentProfile.objects.get(student=stud_user)
-        course = Course.objects.get(subject_slug=request.data.get('subject_slug'))
 
-        fb = Feedback(pre_defined_message=mess,
-                        category=cat,
-                        optional_message = request.data.get('optional_message'),
-                        student = stud,
-                        points = request.data.get('points'),
-                        from_user=request.user,
-                        which_course = course)
+        if(request.data.get('type') == "GROUP"):
+            # If providing group feedback then create a feedback object for every student
+            students = request.data.get('students')
+            for stud in students:
+                stud_user = User.objects.get(id_number=stud)
+                stud = StudentProfile.objects.get(student=stud_user)
+                course = Course.objects.get(subject_slug=request.data.get('subject_slug'))
 
-        stud.score += int(request.data.get('points'))
-        fb.save()
-        cat.save()
-        mess.save()
-        stud_user.save()
-        stud.save()
-        course.save()
-        return Response(status=status.HTTP_200_OK)
+                fb = Feedback(pre_defined_message=mess,
+                                category=cat,
+                                optional_message = request.data.get('optional_message'),
+                                student = stud,
+                                points = request.data.get('points'),
+                                from_user=request.user,
+                                which_course = course)
 
+                stud.score += int(request.data.get('points'))
+                fb.save()
+                cat.save()
+                mess.save()
+                stud_user.save()
+                stud.save()
+                course.save()
+            return Response(status=status.HTTP_200_OK)
+        else:
+            # Otherwise just make one feedback for the individual student
+            stud_user = User.objects.get(id_number=request.data.get('student'))
+            stud = StudentProfile.objects.get(student=stud_user)
+            course = Course.objects.get(subject_slug=request.data.get('subject_slug'))
+
+            fb = Feedback(pre_defined_message=mess,
+                            category=cat,
+                            optional_message = request.data.get('optional_message'),
+                            student = stud,
+                            points = request.data.get('points'),
+                            from_user=request.user,
+                            which_course = course)
+
+            stud.score += int(request.data.get('points'))
+            fb.save()
+            cat.save()
+            mess.save()
+            stud_user.save()
+            stud.save()
+            course.save()
+            return Response(status=status.HTTP_200_OK)
 
 class CategoryDetail(APIView):
     """

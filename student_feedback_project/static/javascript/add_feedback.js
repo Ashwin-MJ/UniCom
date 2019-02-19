@@ -63,7 +63,7 @@ $('#submit-fb-form').click(function(e) {
   if(students_list != ""){
     students_list = JSON.parse(students_list);
     students_list.shift()
-    var next_stud_id = students_list[0]    
+    var next_stud_id = students_list[0]
     if(next_stud_id == undefined){
       redirect_url = "/lecturer/my-provided-feedback/";
     }else{
@@ -96,7 +96,8 @@ $('#submit-fb-form').click(function(e) {
     "student": student_id,
     "points": points,
     "optional_message": optional_message,
-    "subject_slug":course
+    "subject_slug":course,
+    "type":"INDIVIDUAL"
   }
 
   var csrftoken = getCookie("csrftoken");
@@ -121,6 +122,69 @@ $('#submit-fb-form').click(function(e) {
 
   });
   window.location.replace(redirect_url);
+
+});
+
+$('#submit-group-fb-form').click(function(e) {
+
+  var location = window.location.href;
+  var course = location.split("/")[5];
+
+  var cat_id = $('.cat-border').attr("id");
+  var mess_id = $('.mess-border').attr("id");
+
+  var points = $('#id_points').val();
+  var optional_message = $('#id_optional_message').val();
+
+  var students_list = getCookie("students");
+
+  students_list = JSON.parse(students_list);
+
+  if(cat_id == null){
+    alert("You must select a category");
+    return;
+  }
+  else if (mess_id == null) {
+    alert("You must select a pre defined message");
+    return;
+  }
+  else if (points == ""){
+    alert("You must add in some points");
+    return;
+  }
+
+  var data = {
+    "cat_id": cat_id,
+    "mess_id": mess_id,
+    "students": students_list,
+    "points": points,
+    "optional_message": optional_message,
+    "subject_slug":course,
+    "type":"GROUP"
+  }
+
+  var csrftoken = getCookie("csrftoken");
+  function csrfSafeMethod(method) {
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+  }
+  $.ajaxSetup({
+    beforeSend: function(xhr, settings) {
+        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        }
+    }
+  });
+  $.ajax({
+      url: "/feedback/",
+      data: JSON.stringify(data),
+      type: 'POST',
+      contentType: 'application/json',
+      dataType: "json",
+      success: function() {
+      },
+
+  });
+  window.location.replace("/lecturer/my-provided-feedback/");
 
 });
 

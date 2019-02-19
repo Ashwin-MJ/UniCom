@@ -10,7 +10,6 @@ Add Feedback for {{ student.student.username }}
 Add Feedback
 {% endblock%}
 
-
 {% block body_block %}
 {% load widget_tweaks %}
 <div class="container">
@@ -32,7 +31,7 @@ Add Feedback
 
       <h3 class="fb-form-heading">Select a Message:</h3>
       <div class="card-body messages-scroll messages">
-        
+
       </div>
       <form method="">
         {% csrf_token %}

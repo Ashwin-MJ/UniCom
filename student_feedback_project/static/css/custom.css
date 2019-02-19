@@ -227,5 +227,8 @@ hr {
   border-width: medium;
   color:white!important;
   background-color: teal!important;
+}
 
+.list-text{
+  font-family: 'Dosis', sans-serif;
 }
