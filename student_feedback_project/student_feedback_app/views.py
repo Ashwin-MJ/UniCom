@@ -252,12 +252,10 @@ def student_course(request, subject_slug):
             context_dict['sorted_students'] = course.get_leaderboard()
             fb = stud.get_fb_for_course(course.subject)
 
-
             fb_with_colour = {}
             for feedback in fb:
                 stud_cat = Category.objects.get(name=feedback.category.name,user=request.user)
                 fb_with_colour[feedback] = stud_cat.colour
-
 
             context_dict['feedback'] = fb_with_colour
             context_dict['score'] = stud.get_score_for_course(course.subject)
@@ -392,55 +390,32 @@ def lecturer_add_individual_feedback(request,subject_slug,student_number):
         # At this point, the variable students_list contains a list of all students still to be given feedback
         # Remove current student from that list
         # Removing first element of list (current student)
+
         students_list = students_list[1:]
         # Saving the above updated list as a cookie 'indiv_students'
         request.COOKIES["indiv_students"] = students_list
         lect = LecturerProfile.objects.get(lecturer=request.user)
         stud_user = User.objects.get(id_number=student_number)
         stud = StudentProfile.objects.get(student=stud_user)
-        fb = stud.feedback_set.all()
+
+        fb = stud.feedback_set.all().order_by('-datetime_given')
         context_dict['lecturer'] = lect
         context_dict['student'] = stud
         context_dict['feedback'] = fb
         course = Course.objects.get(subject_slug=subject_slug)
         context_dict['course'] = course
-        context = RequestContext(request)
-        if request.method == 'POST':
-            form = FeedbackForm(request.POST)
-            if form.is_valid():
-                new_fb = form.save(commit=False)
-                new_fb.pre_defined_message.category = Category.objects.get(user=request.user,name=new_fb.category)
-                new_fb.pre_defined_message.user = request.user
-                new_fb.pre_defined_message.save()
-                new_fb.student = stud
-                stud.score += new_fb.points
-                new_fb.from_user = request.user
-                new_fb.which_course = course
-                new_fb.datetime_given = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                stud.save()
-                new_fb.pk = None
-                new_fb.save()
-                rem_students = students_list
-                # Check if there are more students to provide individual fb to
-                if(len(rem_students) >= 1):
-                    next_stud = rem_students[0]
-                    # Get response as url for next student
-                    response = HttpResponseRedirect(reverse('lect_add_individual_feedback', args=[course.subject_slug, next_stud]))
-                    # Set the cookie in the response so that the next page has the updated cookie
-                    # i.e the updated list of students
-                    response.set_cookie("indiv_students",json.dumps(rem_students))
-                    return response
-                else:
-                    # Delete cookies so there are no issues the next time group/individual feedback is given
-                    request.COOKIES["indiv_students"] = ""
-                    request.COOKIES['students'] = ""
-                    response = my_provided_feedback(request)
-                    response.delete_cookie('indiv_students')
-                    return response
-            else:
-                print(form.errors)
-        else:
-            form = FeedbackForm()
+
+        context_dict['categories'] = request.user.category_set.all()
+
+        messages = request.user.message_set.all()
+        all_messages = {}
+        for message in messages:
+            all_messages[message.id] = message.text
+
+        context_dict['messages'] = json.dumps(all_messages)
+        context_dict['messages_qs'] = messages
+        
+        form = FeedbackForm()
         context_dict['form'] = form
         return render(request,'student_feedback_app/lecturer/lecturer_add_individual_feedback.html',context_dict)
     except:

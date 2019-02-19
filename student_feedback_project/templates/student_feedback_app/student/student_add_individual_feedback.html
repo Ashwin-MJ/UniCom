@@ -33,14 +33,7 @@ Add Feedback
 
       <h3 class="fb-form-heading">Select a Message:</h3>
       <div class="card-body messages-scroll messages">
-        {% for mess in messages_qs %}
-        <div class="card message-card fb-border mess-item" style="border-color:{{mess.category.colour}}">
-            <div class="card-body text-center">
-              <b class="card-sub-heading">{{ mess.text }}</b>
-            </div>
-        </div>
-        <br />
-        {% endfor %}
+
       </div>
       <form method="">
         {% csrf_token %}
