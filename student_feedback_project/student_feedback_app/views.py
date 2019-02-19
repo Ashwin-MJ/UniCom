@@ -16,6 +16,7 @@ import datetime
 import json
 
 from ast import literal_eval
+from populate import *
 
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -729,6 +730,7 @@ def register(request):
         form = RegisterForm(request.POST)
         if form.is_valid():
             user = form.save()
+            populate_categories_and_messages(user)
             login(request, user)
             if user.is_lecturer:
                 return redirect('lecturer_home')
@@ -755,7 +757,6 @@ def invites(request):
         context_dict['error'] = "error"
         return render(request,'student_feedback_app/general/error_page.html', context_dict)
     try:
-
         students_string = request.COOKIES.get("students")
         students_list = json.loads(students_string)
         students = []
@@ -778,3 +779,9 @@ def invites(request):
         added_students = course.students.distinct()
         context_dict['students'] = set(students).difference(set(added_students))
         return render(request, 'student_feedback_app/lecturer/invites.html', context_dict)
+
+def populate_categories_and_messages(user):
+    # This uses newly created methods in the population script to ensure that
+    # every user gets the list of categories and messages upon registration
+    add_categories_for_user(user)
+    add_messages_for_user(user)

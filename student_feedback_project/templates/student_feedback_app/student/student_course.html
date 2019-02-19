@@ -1,4 +1,5 @@
 {% extends 'student_feedback_app/general/base.html' %}
+{% load staticfiles %}
 
 {% block title%}
 {{ course.subject }}
@@ -11,7 +12,7 @@
 
 {% block body_block %}
 <div class="container">
-  <div class="card-deck">
+  <div class="card-deck" id="{{user.id_number}}">
 
     <div class="card scroll-bg" style="margin-top:25px;">
       <h3 class="text-center custom-card-title">Course Info</h3>
@@ -84,12 +85,11 @@
     </div>
 
     <div class="card scroll-bg">
-      <h3 class="text-center custom-card-title">Leaderboard</h3>
+      <h3 class="text-center custom-card-title leaderboard">Leaderboard</h3>
       <hr />
       <div class="card-body scroll">
         {% for stud,score in sorted_students %}
-        <a href="{% url 'student_add_individual_feedback' course.subject_slug stud.student.id_number %}">
-          <div class="card custom-card">
+          <div class="card custom-card leaderboard-stud" id="{{stud.student.id_number}}">
             <div class="row">
               <div class="column left">
                 <b class="card-sub-heading">{{ stud.student.username }}</b>
@@ -102,16 +102,17 @@
                   <img class="picture" src="{{stud.student.profile_picture.url}}"/>
                 </a>
                 </div>
-
               </div>
             </div>
             <br />
-          </a>
           {% endfor %}
       </div>
     </div>
 
   </div>
 </div>
-
 {% endblock %}
+
+{% block footer %}
+<script type="text/javascript" src="{% static 'javascript/group_select.js' %}" ></script>
+{% endblock%}

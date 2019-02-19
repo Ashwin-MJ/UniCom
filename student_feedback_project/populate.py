@@ -253,104 +253,6 @@ def populate():
 		 "optional_message": ""},
 		]
 
-	categories = [
-		{"name": "Active Participation", "colour" : "#F7D969"},
-		{"name": "Quality of Contribution", "colour": "#F16A43"},
-		{"name": "Co-operation & Communication", "colour": "#EC1C4B"},
-		{"name": "Critical Thinking & Analysis", "colour": "#A6206A"},
-		{"name": "Understanding & Competence", "colour": "#355C7D"},
-		{"name": "Hard Work", "colour": "#F8B195"},
-		{"name": "Intellectual Curiosity", "colour": "#F05053"},
-		{"name": "General", "colour": "#F9CDAE"}
-	]
-
-	saved_messages = [
-		{"category" : "Active Participation",
-		 "messages" : ["Great participation in class",
-		 				"You were really engaged in the discussion",
-						"You gave lots of ideas!",
-						"You did lots of listening",
-						"Would love to hear your ideas more"
-						]
-		},
-
-		{"category" : "Quality of Contribution",
-		 "messages" : ["Marvellous work in discussion!",
-		 				"Great quality contribution",
-						"You made an excellent point that showed deep thinking",
-						"What a great idea!",
-						"You were very reflective",
-						"Try to dig deeper into the issue in your discussion"
-						]
-		},
-
-		{"category" : "Co-operation & Communication",
-		 "messages" : ["Outstanding teamwork!",
-		 				"You really listened to your classmates!",
-						"Kindly helped others",
-						"Great leadership in discussions",
-						"You communicate really well",
-						"Brilliant in expressing your ideas",
-						"You bring out the best in others",
-						"What a great team!",
-						"Make sure you listen to other people",
-						"Try to include others’ views in your discussions"
-						]
-		},
-
-		{"category" : "Critical Thinking & Analysis",
-		 "messages" : ["You showed great critical reflections",
-		 				"Excellent application of concepts to the real-world!",
-						"Good awareness of different perspectives of the topic",
-						"Outstanding analysis of the topic",
-						"Brilliant analytical skills!",
-						"Good use of evidence to inform your thinking",
-						"Great synthesis of the literature",
-						"Try to engage with wider perspectives on the topic"
-						]
-		},
-
-		{"category" : "Understanding & Competence",
-		 "messages" : ["Impressive understanding of concepts and theories",
-		 				"Excellent understanding of the literature",
-						"Very good grasp of key materials",
-						"Basic understanding of concepts",
-						"Remember to do more readings next class",
-						"Make sure you understand the readings better"
-						]
-		},
-
-		{"category" : "Hard Work",
-		 "messages" : ["Always trying your best",
-		 				"Great attitude in class",
-						"Awesome improvements and glad to hear more!",
-						"Lots of preparation for class",
-						"You did lots of readings!",
-						"Remember to complete your work next class"
-						]
-		},
-
-		{"category" : "Intellectual Curiosity",
-		 "messages" : ["You asked a really good question",
-		 				"You are not afraid to challenge and question others’ ideas",
-						"You really challenged the status quo",
-						"Highly innovative way of thinking",
-						"You were very open to new ideas",
-						"A very reflective thinker",
-						"It’s good to think out of the box sometimes"
-						]
-		},
-
-		{"category" : "General",
-		 "messages" : ["Welcome to the class!",
-		 				"Remember to give feedback to other students and lecturers!",
-						"Thank you for your feedback",
-						"Thank you for your help!"
-						]
-		},
-		]
-
-
 	for presentCourse in courses:
 		course = add_course(presentCourse.get('subject'),presentCourse.get('course_code'), presentCourse.get('course_description'))
 
@@ -377,6 +279,103 @@ def populate():
 	create_view_fb_stud()
 	create_view_fb_course()
 	create_view_fb_from_user()
+
+categories = [
+	{"name": "Active Participation", "colour" : "#F7D969"},
+	{"name": "Quality of Contribution", "colour": "#F16A43"},
+	{"name": "Co-operation & Communication", "colour": "#EC1C4B"},
+	{"name": "Critical Thinking & Analysis", "colour": "#A6206A"},
+	{"name": "Understanding & Competence", "colour": "#355C7D"},
+	{"name": "Hard Work", "colour": "#F8B195"},
+	{"name": "Intellectual Curiosity", "colour": "#F05053"},
+	{"name": "General", "colour": "#F9CDAE"}
+]
+
+saved_messages = [
+	{"category" : "Active Participation",
+	 "messages" : ["Great participation in class",
+					"You were really engaged in the discussion",
+					"You gave lots of ideas!",
+					"You did lots of listening",
+					"Would love to hear your ideas more"
+					]
+	},
+
+	{"category" : "Quality of Contribution",
+	 "messages" : ["Marvellous work in discussion!",
+					"Great quality contribution",
+					"You made an excellent point that showed deep thinking",
+					"What a great idea!",
+					"You were very reflective",
+					"Try to dig deeper into the issue in your discussion"
+					]
+	},
+
+	{"category" : "Co-operation & Communication",
+	 "messages" : ["Outstanding teamwork!",
+					"You really listened to your classmates!",
+					"Kindly helped others",
+					"Great leadership in discussions",
+					"You communicate really well",
+					"Brilliant in expressing your ideas",
+					"You bring out the best in others",
+					"What a great team!",
+					"Make sure you listen to other people",
+					"Try to include others’ views in your discussions"
+					]
+	},
+
+	{"category" : "Critical Thinking & Analysis",
+	 "messages" : ["You showed great critical reflections",
+					"Excellent application of concepts to the real-world!",
+					"Good awareness of different perspectives of the topic",
+					"Outstanding analysis of the topic",
+					"Brilliant analytical skills!",
+					"Good use of evidence to inform your thinking",
+					"Great synthesis of the literature",
+					"Try to engage with wider perspectives on the topic"
+					]
+	},
+
+	{"category" : "Understanding & Competence",
+	 "messages" : ["Impressive understanding of concepts and theories",
+					"Excellent understanding of the literature",
+					"Very good grasp of key materials",
+					"Basic understanding of concepts",
+					"Remember to do more readings next class",
+					"Make sure you understand the readings better"
+					]
+	},
+
+	{"category" : "Hard Work",
+	 "messages" : ["Always trying your best",
+					"Great attitude in class",
+					"Awesome improvements and glad to hear more!",
+					"Lots of preparation for class",
+					"You did lots of readings!",
+					"Remember to complete your work next class"
+					]
+	},
+
+	{"category" : "Intellectual Curiosity",
+	 "messages" : ["You asked a really good question",
+					"You are not afraid to challenge and question others’ ideas",
+					"You really challenged the status quo",
+					"Highly innovative way of thinking",
+					"You were very open to new ideas",
+					"A very reflective thinker",
+					"It’s good to think out of the box sometimes"
+					]
+	},
+
+	{"category" : "General",
+	 "messages" : ["Welcome to the class!",
+					"Remember to give feedback to other students and lecturers!",
+					"Thank you for your feedback",
+					"Thank you for your help!"
+					]
+	},
+	]
 
 # function to add the view feedback with category
 def create_view_fb_cat():
@@ -487,6 +486,21 @@ def add_category(name,colour):
 	for user in users:
 		cat = Category(user=user,colour=colour,name=name)
 		cat.save()
+
+def add_categories_for_user(user):
+	for category in categories:
+		cat = Category(user=user,colour=category["colour"],name=category["name"])
+		cat.save()
+		user.save()
+
+def add_messages_for_user(user):
+	for message in saved_messages:
+		cat = Category.objects.get(user=user,name=message["category"])
+		for text in message["messages"]:
+			mess = Message(category=cat,text=text,user=user)
+			mess.save()
+			cat.save()
+		user.save()
 
 # Helper function to add pre defined message #needs categories in db
 def add_message(category,messages):
