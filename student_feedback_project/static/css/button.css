@@ -22,8 +22,8 @@
   vertical-align: middle;
   border-radius: 15px;
   transition: all .3s ease-out;
-
 }
+
 .btn-material:hover {
   box-shadow: 0 4px 10px 0px rgba(0,0,0,0.225);
   background: teal radial-gradient(circle, transparent 1%, teal 1%) center/15000%;
@@ -73,4 +73,14 @@
   box-shadow: 0 4px 10px 0px rgba(0,0,0,0.225);
   background: teal radial-gradient(circle, transparent 1%, teal 1%) center/15000%;
   color: white;
+}
+
+.cat-options{
+  width:500px;
+  overflow: auto;
+  display: flex;
+}
+
+.cat-item{
+  margin: 5px;
 }

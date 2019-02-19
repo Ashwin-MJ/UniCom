@@ -178,3 +178,24 @@
 .bg-grey{
   background-color: grey;
 }
+
+.message-card{
+
+}
+
+.message-heading{
+  text-align: center;
+  font-family: 'Dosis', sans-serif;
+  padding-top: 3%;
+  padding-bottom: 3%;
+  font-size: 100%;
+}
+
+
+.fb-form-heading{
+  font-family: 'Patrick Hand SC', cursive;
+  font-size: 200%;
+  margin-bottom: 0;
+  padding-bottom: 0;
+  padding-left: 10px;
+}

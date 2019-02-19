@@ -2,13 +2,13 @@ from django.conf.urls import re_path, include
 from student_feedback_app import views
 from rest_framework.urlpatterns import format_suffix_patterns
 from student_feedback_app.models import Category, Message
-from student_feedback_app.views import CategoryAutocomplete, MessageAutocomplete
 
 
 urlpatterns = [
     re_path(r'^$', views.index, name='index'),
     re_path(r'^category/$', views.CategoryDetail.as_view(), name="category"),
     re_path(r'^message/$', views.MessageDetail.as_view(), name="message"),
+    re_path(r'^feedback/$', views.FeedbackDetail.as_view(), name="feedback"),
     re_path(r'^message/(?P<mess_id>[\w\-]+)/$', views.MessageDetail.as_view(), name="message_detail"),
     re_path(r'^category/(?P<cat_id>[\w\-]+)/$', views.CategoryDetail.as_view(), name="category_detail"),
     re_path(r'^feedback/(?P<fb_id>[\w\-]+)/$', views.FeedbackDetail.as_view(), name="feedback_detail"),
@@ -43,8 +43,6 @@ urlpatterns = [
     re_path(r'^Feedback_with_studentList/$', views.Feedback_with_studentList.as_view()),
     re_path(r'^Feedback_with_from_userList/$', views.Feedback_with_from_userList.as_view()),
     re_path(r'^StudentCourseRelDestroy/(?P<student_id>[\w\-]+)/(?P<course_code>[\w\-]+)/$', views.StudentCourseRelDestroy.as_view()),
-    re_path(r'^category-autocomplete/$', CategoryAutocomplete.as_view(model=Category,create_field='name'), name='category_autocomplete'),
-    re_path(r'^message-autocomplete/$', MessageAutocomplete.as_view(model=Message,create_field='text'), name='message_autocomplete'),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

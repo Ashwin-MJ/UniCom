@@ -21,15 +21,7 @@ class FeedbackForm(autocomplete.FutureModelForm):
 
     class Meta:
         model = Feedback
-        fields = ('category', 'pre_defined_message','optional_message','points')
-        widgets = {
-            'pre_defined_message': autocomplete.ModelSelect2(url='message_autocomplete',forward=['category']),
-            'category': autocomplete.ModelSelect2(url='category_autocomplete')
-        }
-        help_texts = {
-            'pre_defined_message': "Select a Message",
-            'category': 'Category'
-        }
+        fields = ('optional_message','points')
 
 
 class RegisterForm(UserCreationForm):

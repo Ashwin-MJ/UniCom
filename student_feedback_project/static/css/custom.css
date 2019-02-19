@@ -107,7 +107,7 @@ hr {
 }
 
 .achievements{
-  width: 75px;
+  width: auto;
   height: 75px;
   border: 1px solid teal;
   margin: 10px;
@@ -208,4 +208,24 @@ hr {
     width: 400px;
     font-size: 1.2em;
     position: relative;
+}
+
+.cat-border {
+  border-color: teal;
+  border-width: medium;
+  color:teal!important;
+}
+
+.messages-scroll {
+  max-height: 40vh;
+  overflow-y: scroll;
+  padding-top:0px;
+}
+
+.mess-border {
+  border-color: teal!important;
+  border-width: medium;
+  color:white!important;
+  background-color: teal!important;
+
 }

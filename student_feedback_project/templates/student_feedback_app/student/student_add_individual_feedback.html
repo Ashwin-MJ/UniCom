@@ -18,14 +18,31 @@ Add Feedback
   <div class="card-deck" style="margin-top:25px; margin-bottom:25px">
     <div class="container card">
 
-    <h3 class="card-body text-center custom-card-title">
-      Adding Feedback for:
-      {{ student.student.username}}
+    <h3 class="text-center custom-card-title">
+      Adding Feedback for: {{ student.student.username}}
     </h3>
     <hr />
 
     <div class="custom-card" style="margin:0; padding:0">
-      <form method="post">
+      <div class="cat-option">
+        <h3 class="fb-form-heading">Select a Category:</h3>
+        {% for cat in categories %}
+        <div class="btn btn-material btn-ripple cat-item" id="{{cat.id}}" style="background-color:{{cat.colour}}">{{cat.name}}</div>
+        {% endfor %}
+      </div>
+
+      <h3 class="fb-form-heading">Select a Message:</h3>
+      <div class="card-body messages-scroll messages">
+        {% for mess in messages_qs %}
+        <div class="card message-card fb-border mess-item" style="border-color:{{mess.category.colour}}">
+            <div class="card-body text-center">
+              <b class="card-sub-heading">{{ mess.text }}</b>
+            </div>
+        </div>
+        <br />
+        {% endfor %}
+      </div>
+      <form method="">
         {% csrf_token %}
 
         {% for hidden_field in form.hidden_fields %}
@@ -66,13 +83,13 @@ Add Feedback
 
           </div>
         {% endfor %}
-
-        <div class="button">
-          <input id="submit-fb-form" class="btn btn-material btn-ripple" type="submit" name="submit" value="Submit Feedback" />
-        </div>
       </form>
+      <div class="button">
+        <input id="submit-fb-form" class="btn btn-material btn-ripple" type="submit" name="submit" value="Submit Feedback" />
+      </div>
 
     </div>
+
   </div>
 
 
@@ -128,6 +145,15 @@ Add Feedback
 
 {% block footer %}
 <script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
-
+<script type="text/javascript" src="{% static 'javascript/add_feedback.js' %}"></script>
+<script type="text/javascript">
+  function displayMessages(data,cat_id) {
+    {% autoescape off %}
+    all_messages = {{messages}}
+    {% endautoescape %}
+    message_set = data.message_set;
+    updateHtml(data.colour,message_set,data.name,cat_id);
+  }
+</script>
 {{ form.media }}
 {% endblock %}
