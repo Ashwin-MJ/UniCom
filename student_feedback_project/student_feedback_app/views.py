@@ -152,15 +152,15 @@ def student_home(request):
                     ## TODO: Figure out how to handle this error
                     print("Doesn't exit")
 
-            stud.achievement_set.all()
             for achvm in stud.achievement_set.all():
                 achvm.achiev = literal_eval(achvm.achiev)
                 for val in achvm.achiev:
-                    if achvm.category in achievs:
+                    if achvm.category.name in achievs:
                         achievs[achvm.category].append(val)
                     else:
                         achievs[achvm.category] = [val]
                 achievs[achvm.category].sort()
+            print(achievs)
 
 
             # The follow dictionary is required to ensure the colour displayed for a given feedback
