@@ -199,8 +199,11 @@ def student_all_feedback(request):
 
         fb_with_colour = {}
         for feedback in fb:
-            stud_cat = Category.objects.get(name=feedback.category.name,user=request.user)
-            fb_with_colour[feedback] = stud_cat.colour
+            try:
+                stud_cat = Category.objects.get(name=feedback.category.name,user=request.user)
+                fb_with_colour[feedback] = stud_cat.colour
+            except:
+                fb_with_colour[feedback] = feedback.category.colour
 
         context_dict['feedback'] = fb_with_colour
         top_attributes = stud.get_top_attributes()
@@ -265,8 +268,11 @@ def student_course(request, subject_slug):
 
             fb_with_colour = {}
             for feedback in fb:
-                stud_cat = Category.objects.get(name=feedback.category.name,user=request.user)
-                fb_with_colour[feedback] = stud_cat.colour
+                try:
+                    stud_cat = Category.objects.get(name=feedback.category.name,user=request.user)
+                    fb_with_colour[feedback] = stud_cat.colour
+                except:
+                    fb_with_colour[feedback] = feedback.category.colour
 
             context_dict['feedback'] = fb_with_colour
             context_dict['score'] = stud.get_score_for_course(course.subject)
