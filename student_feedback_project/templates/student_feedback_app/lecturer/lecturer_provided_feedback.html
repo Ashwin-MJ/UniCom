@@ -50,12 +50,17 @@ Provided Feedback
         </div>
         {% endfor %}
 		</div>
-		<div class="button" style="padding-bottom:0px; padding-top:10px;">
-          <button onclick="sort('{{ lecturer.lecturer.username }}', 'points', 'from_user')" type="button" class="btn btn-material btn-ripple">Sort by points</button>
-          <button onclick="sort('{{ lecturer.lecturer.username }}', 'date', 'from_user')" type="button" class="btn btn-material btn-ripple">Sort by date</button>
-          <button onclick="sort('{{ lecturer.lecturer.username }}', 'course', 'from_user')" type="button" class="btn btn-material btn-ripple">Sort by course</button>
+    <div class="btn-group dropright button">
+        <button class="btn btn-material dropdown-toggle" type="button"data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Sort by
+        </button>
+        <div class="dropdown-menu custom-dd-menu">
+          <button onclick="sort('{{ lecturer.lecturer.username }}', 'points', 'from_user')" type="button" class="btn btn-material btn-ripple">Points</button>
+          <button onclick="sort('{{ lecturer.lecturer.username }}', 'date', 'from_user')" type="button" class="btn btn-material btn-ripple">Date</button>
+          <button onclick="sort('{{ lecturer.lecturer.username }}', 'course', 'from_user')" type="button" class="btn btn-material btn-ripple">Course</button> <br />
+
         </div>
-  </div>
+    </div>
 </div>
 
 {% endblock %}
@@ -63,4 +68,4 @@ Provided Feedback
 
 {% block footer %}
 <script type="text/javascript" src="{% static 'javascript/delete_feedback.js' %}" ></script>
-{% endblock%}
+{%  endblock%}
