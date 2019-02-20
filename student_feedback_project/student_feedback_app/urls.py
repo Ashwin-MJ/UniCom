@@ -2,19 +2,20 @@ from django.conf.urls import re_path, include
 from student_feedback_app import views
 from rest_framework.urlpatterns import format_suffix_patterns
 from student_feedback_app.models import Category, Message
-from student_feedback_app.views import CategoryAutocomplete, MessageAutocomplete
 
 
 urlpatterns = [
     re_path(r'^$', views.index, name='index'),
     re_path(r'^category/$', views.CategoryDetail.as_view(), name="category"),
     re_path(r'^message/$', views.MessageDetail.as_view(), name="message"),
+    re_path(r'^feedback/$', views.FeedbackDetail.as_view(), name="feedback"),
     re_path(r'^message/(?P<mess_id>[\w\-]+)/$', views.MessageDetail.as_view(), name="message_detail"),
     re_path(r'^category/(?P<cat_id>[\w\-]+)/$', views.CategoryDetail.as_view(), name="category_detail"),
     re_path(r'^feedback/(?P<fb_id>[\w\-]+)/$', views.FeedbackDetail.as_view(), name="feedback_detail"),
     re_path(r'^my-profile/$', views.my_profile, name='my_profile'),
     re_path(r'^edit-bio/$', views.edit_bio, name='edit_bio'),
     re_path(r'^customise-options/$', views.customise_options, name='customise_options'),
+    re_path(r'^view-profile/(?P<student_number>[\w\-]+)/$', views.view_profile, name='view_profile'),
     re_path(r'^student/home/$', views.student_home, name='student_home'),
     re_path(r'^student/all-feedback/$', views.student_all_feedback, name='student_all_feedback'),
     re_path(r'^student/my-provided-feedback/$', views.my_provided_feedback, name='student_provided_feedback'),
@@ -39,9 +40,6 @@ urlpatterns = [
     re_path(r'^FeedbackSortedByCourse/$', views.FeedbackSortedByCourse.as_view()),
     re_path(r'^Fedback_full/$', views.Feedback_full.as_view()),
     re_path(r'^StudentCourseRelDestroy/(?P<student_id>[\w\-]+)/(?P<course_code>[\w\-]+)/$', views.StudentCourseRelDestroy.as_view()),
-    re_path(r'^lecturer/view-student/(?P<student_number>[\w\-]+)/$', views.lecturer_view_student, name='lecturer_view_student'),
-    re_path(r'^category-autocomplete/$', CategoryAutocomplete.as_view(model=Category,create_field='name'), name='category_autocomplete'),
-    re_path(r'^message-autocomplete/$', MessageAutocomplete.as_view(model=Message,create_field='text'), name='message_autocomplete'),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

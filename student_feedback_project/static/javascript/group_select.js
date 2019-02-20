@@ -73,3 +73,13 @@ $('#individual-feedback-form').submit(function(){
   document.getElementById("individual-feedback-form").setAttribute("action",act);
   return true;
 });
+
+$('.leaderboard-stud').click(function(e) {
+  var stud_id = $(this).attr("id");
+  var my_id = $(".card-deck").attr("id");
+  console.log(my_id)
+  if(stud_id == my_id){
+    alert("You cannot give yourself feedback.")
+  }
+
+});

@@ -114,12 +114,12 @@ class StudentProfile(models.Model):
         return scores
 
 class Achievement(models.Model):
-    student = models.ForeignKey('StudentProfile', on_delete=models.CASCADE, )
-    category = models.ForeignKey("Category", on_delete=models.CASCADE, )
+    student = models.ForeignKey('StudentProfile', on_delete=models.CASCADE)
+    category = models.ForeignKey("Category", on_delete=models.CASCADE)
     achiev = models.CharField(validators=[int_list_validator], max_length=100, default=0)
 
-    def gen_achievement(self, attribute, score):
-        self.category = Category.objects.get(name=attribute)
+    def gen_achievement(self, attribute, score, user):
+        self.category = Category.objects.get(name=attribute,user=user)
         if score >= 100:
             self.achiev = [100,50,25,10,5]
         elif score >= 50:
@@ -132,8 +132,6 @@ class Achievement(models.Model):
             self.achiev = [5]
         else:
             self.achiev = [0]
-
-
 
 class Course(models.Model):
     subject = models.CharField("Subject", max_length=40,)
@@ -168,7 +166,7 @@ class Course(models.Model):
         return temp_dict
 
     def get_leaderboard(self):
-        temp_dict = self.get_students_with_score()
+        temp_dict = self.get_students_with_score()    
         # The dictionary stored in the retrieved dictionary has
         # each student as key and their score for this course as value
         # To get leaderboard, simply sort this dictionary by value and reverse
@@ -201,7 +199,7 @@ class LecturerProfile(models.Model):
 
 class Feedback(models.Model):
     date_given = models.DateTimeField(default=timezone.now)
-    feedback_id = models.IntegerField(primary_key=True,default=0)
+    feedback_id = models.IntegerField(primary_key=True)
     pre_defined_message = models.ForeignKey('Message',on_delete=models.CASCADE,null=True,blank=True) # Selected from a pre defined list depending on selected category
     points = models.IntegerField(default=0)
     from_user = models.ForeignKey('User', on_delete=models.CASCADE, null=True, blank=True)

@@ -1,5 +1,6 @@
-$('.delete-icon').click(function(e) {
-  var result = confirm("Remove student from course?");
+$('.delete-student-icon').click(function(e) {
+  var stud_name = $(this).parent().parent().find("b").html()
+  var result = confirm("Remove " + stud_name + " from this course?");
   if(result){
 //send request to delete relationship:
 //send student_name and course_code (strings)
@@ -27,6 +28,11 @@ $('.delete-icon').click(function(e) {
       },
   });
   }
+  else{
+    // Ensure student doesn't become highlighted
+    $(this).parent().parent().parent().toggleClass(addclass);
+  }
+
 });
 
 function getCookie(cname) {

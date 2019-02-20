@@ -14,80 +14,90 @@ Add Feedback
 {% block body_block %}
 {% load widget_tweaks %}
 
-<div style="width:100%; display: table;">
-  <div style="display: table-row;">
-    <div style="display:table-cell">
+<div class="container">
+  <div class="card-deck" style="margin-top:25px; margin-bottom:25px">
+    <div class="container card">
 
-      <div class="card custom-card" style="margin-left:25px; padding-bottom:25px">
-        <h3 class="card-body text-left custom-card-title">
-          Adding Group Feedback for:
-          <div class="card custom-card">
-            {% for student in students %}
-            <ul class="list-group list-group-flush">
-              <li class="list-group-item">
-                {{ student.student.username}}
-              </li>
-            </ul>
+
+        <h3 class="text-center custom-card-title">Adding Group Feedback for:</h3>
+        <hr />
+
+        <div class="card">
+          {% for student in students %}
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item list-text">
+              {{ student.student.username}}
+            </li>
+          </ul>
+          {% endfor %}
+        </div>
+
+
+        <div class="custom-card" style="margin:0; padding:0">
+          <div class="cat-option">
+            <h3 class="fb-form-heading">Select a Category:</h3>
+            {% for cat in categories %}
+            <div class="btn btn-material btn-ripple cat-item" id="{{cat.id}}" style="background-color:{{cat.colour}}">{{cat.name}}</div>
             {% endfor %}
           </div>
-        </h3>
+
+          <h3 class="fb-form-heading">Select a Message:</h3>
+          <div class="card-body messages-scroll messages">
+
+          </div>
+          <form method="">
+            {% csrf_token %}
+
+            {% for hidden_field in form.hidden_fields %}
+              {{ hidden_field }}
+            {% endfor %}
+
+            {% if form.non_field_errors %}
+              <div class="alert alert-danger" role="alert">
+                {% for error in form.non_field_errors %}
+                  {{ error }}
+                {% endfor %}
+              </div>
+            {% endif %}
+
+            {% for field in form.visible_fields %}
+              <div class="form-group" style="padding:10px">
+                <h3 class="custom-card-title">
+                  {{ field.label_tag }}
+                </h3>
+                {% if field.help_text %}
+                  <small class="form-text text-muted">{{ field.help_text }}</small>
+                {% endif %}
+
+                {% if form.is_bound %}
+                  {% if field.errors %}
+                    {% render_field field class="form-control is-invalid" %}
+                    {% for error in field.errors %}
+                      <div class="invalid-feedback">
+                        {{ error }}
+                      </div>
+                    {% endfor %}
+                  {% else %}
+                    {% render_field field class="form-control is-valid" %}
+                  {% endif %}
+                {% else %}
+                  {% render_field field class="form-control" %}
+                {% endif %}
+
+              </div>
+            {% endfor %}
+          </form>
+          <div class="button">
+            <input id="submit-group-fb-form" class="btn btn-material btn-ripple" type="submit" name="submit" value="Submit Feedback" />
+          </div>
+
+        </div>
+
       </div>
 
-    <div class="card custom-card" style="margin-left:25px; margin-bottom:25px;">
-      <form method="post">
-        {% csrf_token %}
-
-        {% for hidden_field in form.hidden_fields %}
-          {{ hidden_field }}
-        {% endfor %}
-
-        {% if form.non_field_errors %}
-          <div class="alert alert-danger" role="alert">
-            {% for error in form.non_field_errors %}
-              {{ error }}
-            {% endfor %}
-          </div>
-        {% endif %}
-
-        {% for field in form.visible_fields %}
-          <div class="form-group" style="padding:10px">
-            <h3 class="custom-card-title">
-              {{ field.label_tag }}
-            </h3>
-            {% if field.help_text %}
-              <small class="form-text text-muted">{{ field.help_text }}</small>
-            {% endif %}
-
-            {% if form.is_bound %}
-              {% if field.errors %}
-                {% render_field field class="form-control is-invalid" %}
-                {% for error in field.errors %}
-                  <div class="invalid-feedback">
-                    {{ error }}
-                  </div>
-                {% endfor %}
-              {% else %}
-                {% render_field field class="form-control is-valid" %}
-              {% endif %}
-            {% else %}
-              {% render_field field class="form-control" %}
-            {% endif %}
-
-          </div>
-        {% endfor %}
-
-        <div class="button">
-          <input class="btn btn-material btn-ripple" type="submit" name="submit" value="Submit Feedback" />
-        </div>
-      </form>
-
-    </div>
-  </div>
+  <div class="card">
 
 
-  <div class="container" style="width:40rem; display:table-cell">
-
-    <div class="card text-center custom-card">
       <div class="card-header">
         <ul class="nav nav-tabs card-header-tabs" id="title">
           {% for student in students%}
@@ -101,20 +111,14 @@ Add Feedback
         <div class="tab-content">
           {% for student in students %}
           <div id="{{student.student.slug}}" class="tab-pane">
-            <div class="card custom-card">
-              <div class="row">
-                <div class="column left-category">
-                  <b class="custom-card-title">Total Score:</b>
-                  </div>
-                <div class="column right-number" style="margin-bottom:0">
-                    {{ student.score }}
-                  </div>
-                </div>
-              </div>
+
+            <h3 class="text-center custom-card-title">Total Score: {{ student.score }}</h3>
+            <hr />
+
             <div class="card scroll-bg">
               <h5 class="text-center custom-card-title">Recent Feedback for {{ student.student.username }}</h5>
               <hr />
-              <div class="card-body scroll">
+              <div class="card-body give-fb-scroll">
                 <p class="card-text"></p>
                 {% for fb in student.feedback_set.all %}
                 {% if fb.is_recent %}
@@ -152,13 +156,22 @@ Add Feedback
           {% endfor %}
         </div>
       </div>
-    </div>
+
   </div>
 </div>
 {% endblock %}
 
 {% block footer %}
 <script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
-
+<script type="text/javascript" src="{% static 'javascript/add_feedback.js' %}"></script>
+<script type="text/javascript">
+  function displayMessages(data,cat_id) {
+    {% autoescape off %}
+    all_messages = {{messages}}
+    {% endautoescape %}
+    message_set = data.message_set;
+    updateHtml(data.colour,message_set,data.name,cat_id);
+  }
+</script>
 {{ form.media }}
 {% endblock %}

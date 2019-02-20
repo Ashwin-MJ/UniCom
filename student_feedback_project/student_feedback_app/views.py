@@ -16,6 +16,7 @@ import datetime
 import json
 
 from ast import literal_eval
+from populate import *
 
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -54,6 +55,42 @@ def my_profile(request):
         context_dict['error'] = "auth"
         return render(request, 'student_feedback_app/general/error_page.html', context_dict)
     return render(request, 'student_feedback_app/general/my_profile.html', context_dict)
+
+def view_profile(request,student_number):
+    context_dict = {}
+    if request.user.is_authenticated:
+        if request.user.is_student:
+            # Case 1 - Student view another Student
+            ## The student should only see feedback given by themself
+            try:
+                stud_user = User.objects.get(id_number=student_number)
+                stud = StudentProfile.objects.get(student=stud_user)
+                fb = stud.feedback_set.all().filter(from_user=request.user).order_by('-datetime_given')
+                context_dict['student'] = stud
+                context_dict['courses'] = stud.get_courses_with_score()
+                context_dict['feedback'] = fb
+            except:
+                context_dict['error'] = "error"
+                return render(request, 'student_feedback_app/general/error_page.html', context_dict)
+        elif request.user.is_lecturer:
+            # Case 2 - Lecturer view Student
+            ## The lecturer should be able to see all feedback given to the student
+            try:
+                lect = LecturerProfile.objects.get(lecturer=request.user)
+                stud_user = User.objects.get(id_number=student_number)
+                stud = StudentProfile.objects.get(student=stud_user)
+                fb = stud.feedback_set.all().order_by('-datetime_given')
+                context_dict['student'] = stud
+                context_dict['courses'] = stud.get_courses_with_score()
+                context_dict['feedback'] = fb
+            except:
+                context_dict['error'] = "error"
+                return render(request, 'student_feedback_app/general/error_page.html', context_dict)
+    else:
+        context_dict['error'] = "auth"
+        return render(request, 'student_feedback_app/general/error_page.html', context_dict)
+    return render(request, 'student_feedback_app/general/view_profile.html', context_dict)
+
 
 def edit_bio(request):
     context_dict={}
@@ -96,7 +133,11 @@ def student_home(request):
                 cat = feedback.category.name
                 if cat not in fbCat:
                     fbCat[cat] = [[feedback.points, feedback.datetime_given.strftime('%Y-%m-%d %H:%M')]]
-                    catColours[cat] = [feedback.category.colour]
+                    try:
+                        stud_cat = Category.objects.get(name=feedback.category.name,user=request.user)
+                        catColours[cat] = [stud_cat.colour]
+                    except:
+                        catColours[cat] = [feedback.category.colour]
                 else:
                     fbCat[cat].append([feedback.points, feedback.datetime_given.strftime('%Y-%m-%d %H:%M')])
             stud.achievement_set.all().delete()
@@ -105,10 +146,12 @@ def student_home(request):
             for attribute in scores:
                 achievM = Achievement(student=stud)
                 try:
-                    achievM.gen_achievement(attribute, scores[attribute])
+                    achievM.gen_achievement(attribute, scores[attribute],request.user)
                     achievM.save()
                 except:
-                    print("doesn't exist")
+                    ## TODO: Figure out how to handle this error
+                    print("Doesn't exit")
+
             stud.achievement_set.all()
             for achvm in stud.achievement_set.all():
                 achvm.achiev = literal_eval(achvm.achiev)
@@ -118,11 +161,23 @@ def student_home(request):
                     else:
                         achievs[achvm.category] = [val]
                 achievs[achvm.category].sort()
-            print(achievs)
+
+
+            # The follow dictionary is required to ensure the colour displayed for a given feedback
+            # corresponds to the student's colour of that category and NOT the lecturers
+            fb_with_colour = {}
+            stud_cats = request.user.category_set.all()
+
+            for feedback in fb:
+                try:
+                    stud_cat = Category.objects.get(name=feedback.category.name,user=request.user)
+                    fb_with_colour[feedback] = stud_cat.colour
+                except:
+                    fb_with_colour[feedback] = feedback.category.colour
 
             context_dict['student'] = stud
             context_dict['courses'] = courses
-            context_dict['feedback'] = fb
+            context_dict['feedback'] = fb_with_colour
             context_dict['feedbackData'] = json.dumps(fbCat)
             context_dict['achievements'] = achievs
             context_dict['catColours'] = json.dumps(catColours)
@@ -141,7 +196,13 @@ def student_all_feedback(request):
         stud= StudentProfile.objects.get(student=request.user)
         fb = stud.feedback_set.all().order_by('-datetime_given')
         context_dict['student'] = stud
-        context_dict['feedback'] = fb
+
+        fb_with_colour = {}
+        for feedback in fb:
+            stud_cat = Category.objects.get(name=feedback.category.name,user=request.user)
+            fb_with_colour[feedback] = stud_cat.colour
+
+        context_dict['feedback'] = fb_with_colour
         top_attributes = stud.get_top_attributes()
         if len(top_attributes) > 4:
             top_attributes =  top_attributes[:4]
@@ -158,10 +219,10 @@ def student_courses(request):
     if request.user.is_authenticated and request.user.is_student:
         stud = StudentProfile.objects.get(student=request.user)
         courses = stud.courses.all()
-        fb = stud.feedback_set.all()
+
         context_dict['stud'] = stud
         context_dict['courses'] = stud.get_courses_with_score()
-        context_dict['feedback'] = fb
+
         if(request.method == 'POST'):
             form = AddCourseForm(request.POST)
             stud = StudentProfile.objects.get(student = request.user)
@@ -192,16 +253,22 @@ def student_course(request, subject_slug):
         try:
             course = Course.objects.get(subject_slug=subject_slug)
             stud = StudentProfile.objects.get(student=request.user)
-            lecturers = course.lecturers
+            lecturers = course.lecturers.all()
             students = course.students.all()
             top_students = students.order_by('-score')
             context_dict['course'] = course
             context_dict['lecturers'] = lecturers
-            # lect = course.lecturer.all()
-            # context_dict['lect'] = lect[0]
+
             context_dict['students'] = students
             context_dict['sorted_students'] = course.get_leaderboard()
-            context_dict['feedback'] = stud.get_fb_for_course(course.subject)
+            fb = stud.get_fb_for_course(course.subject)
+
+            fb_with_colour = {}
+            for feedback in fb:
+                stud_cat = Category.objects.get(name=feedback.category.name,user=request.user)
+                fb_with_colour[feedback] = stud_cat.colour
+
+            context_dict['feedback'] = fb_with_colour
             context_dict['score'] = stud.get_score_for_course(course.subject)
             context_dict['student'] = stud
         except:
@@ -226,35 +293,25 @@ def student_add_individual_feedback(request,subject_slug,student_number):
         stud_user = User.objects.get(id_number=student_number)
         stud = StudentProfile.objects.get(student=stud_user)
 
-        fb = stud.feedback_set.all()
+        fb = stud.feedback_set.all().filter(from_user=request.user).order_by('-datetime_given')
         context_dict['from_student'] = from_stud
         context_dict['student'] = stud
         context_dict['feedback'] = fb
         course = Course.objects.get(subject_slug=subject_slug)
         context_dict['course'] = course
 
-        context = RequestContext(request)
-        if request.method == 'POST':
-            form = FeedbackForm(request.POST)
-            if form.is_valid():
-                new_fb = form.save(commit=False)
-                new_fb.pre_defined_message.category = Category.objects.get(user=request.user,name=new_fb.category)
-                new_fb.pre_defined_message.user = request.user
-                new_fb.pre_defined_message.save()
-                new_fb.student = stud
-                stud.score += new_fb.points
-                new_fb.from_user = request.user
-                new_fb.which_course = course
-                new_fb.datetime_given = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                stud.save()
-                new_fb.pk = None
-                new_fb.save()
-                return student_home(request)
-            else:
-                print(form.errors)
-        else:
-            form = FeedbackForm()
+        context_dict['categories'] = request.user.category_set.all()
+
+        messages = request.user.message_set.all()
+        all_messages = {}
+        for message in messages:
+            all_messages[message.id] = message.text
+
+        context_dict['messages'] = json.dumps(all_messages)
+
+        form = FeedbackForm()
         context_dict['form'] = form
+
         return render(request,'student_feedback_app/student/student_add_individual_feedback.html',context_dict)
     except:
         context_dict['student'] = None
@@ -328,92 +385,34 @@ def lecturer_course(request,subject_slug):
         return render(request,'student_feedback_app/general/error_page.html', context_dict)
     return render(request,'student_feedback_app/lecturer/lecturer_course.html',context_dict)
 
-def lecturer_view_student(request,student_number):
-    context_dict = {}
-    if request.user.is_authenticated and request.user.is_lecturer:
-        try:
-            lect = LecturerProfile.objects.get(lecturer=request.user)
-            stud_user = User.objects.get(id_number=student_number)
-            stud = StudentProfile.objects.get(student=stud_user)
-            fb = stud.feedback_set.all()
-            courses = stud.courses.all()
-            context_dict['lecturer'] = lect
-            context_dict['student'] = stud
-            context_dict['feedback'] = fb
-            context_dict['courses'] = stud.get_courses_with_score()
-        except:
-            context_dict['error'] = "no_student"
-            return render(request,'student_feedback_app/general/error_page.html', context_dict)
-    else:
-        context_dict['error'] = "auth"
-        return render(request,'student_feedback_app/general/error_page.html', context_dict)
-    return render(request,'student_feedback_app/lecturer/lecturer_view_student.html',context_dict)
-
 def lecturer_add_individual_feedback(request,subject_slug,student_number):
     if not request.user.is_authenticated or not request.user.is_lecturer:
         context_dict['error'] = "auth"
         return render(request,'student_feedback_app/general/error_page.html', context_dict)
     context_dict = {}
     try:
-        # Retrieving student string from cookies
-        students_string = request.COOKIES.get("indiv_students")
-        try:
-            students_list = json.loads(students_string)
-        except:
-            # Seems to be an error in using json.loads for a list with a single element so do this instead
-            students_list = students_string
-        # At this point, the variable students_list contains a list of all students still to be given feedback
-        # Remove current student from that list
-        # Removing first element of list (current student)
-        students_list = students_list[1:]
-        # Saving the above updated list as a cookie 'indiv_students'
-        request.COOKIES["indiv_students"] = students_list
         lect = LecturerProfile.objects.get(lecturer=request.user)
         stud_user = User.objects.get(id_number=student_number)
         stud = StudentProfile.objects.get(student=stud_user)
-        fb = stud.feedback_set.all()
+
+        fb = stud.feedback_set.all().order_by('-datetime_given')
         context_dict['lecturer'] = lect
         context_dict['student'] = stud
         context_dict['feedback'] = fb
         course = Course.objects.get(subject_slug=subject_slug)
         context_dict['course'] = course
-        context = RequestContext(request)
-        if request.method == 'POST':
-            form = FeedbackForm(request.POST)
-            if form.is_valid():
-                new_fb = form.save(commit=False)
-                new_fb.pre_defined_message.category = Category.objects.get(user=request.user,name=new_fb.category)
-                new_fb.pre_defined_message.user = request.user
-                new_fb.pre_defined_message.save()
-                new_fb.student = stud
-                stud.score += new_fb.points
-                new_fb.from_user = request.user
-                new_fb.which_course = course
-                new_fb.datetime_given = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                stud.save()
-                new_fb.pk = None
-                new_fb.save()
-                rem_students = students_list
-                # Check if there are more students to provide individual fb to
-                if(len(rem_students) >= 1):
-                    next_stud = rem_students[0]
-                    # Get response as url for next student
-                    response = HttpResponseRedirect(reverse('lect_add_individual_feedback', args=[course.subject_slug, next_stud]))
-                    # Set the cookie in the response so that the next page has the updated cookie
-                    # i.e the updated list of students
-                    response.set_cookie("indiv_students",json.dumps(rem_students))
-                    return response
-                else:
-                    # Delete cookies so there are no issues the next time group/individual feedback is given
-                    request.COOKIES["indiv_students"] = ""
-                    request.COOKIES['students'] = ""
-                    response = my_provided_feedback(request)
-                    response.delete_cookie('indiv_students')
-                    return response
-            else:
-                print(form.errors)
-        else:
-            form = FeedbackForm()
+
+        context_dict['categories'] = request.user.category_set.all()
+
+        messages = request.user.message_set.all()
+        all_messages = {}
+        for message in messages:
+            all_messages[message.id] = message.text
+
+        context_dict['messages'] = json.dumps(all_messages)
+        context_dict['messages_qs'] = messages
+
+        form = FeedbackForm()
         context_dict['form'] = form
         return render(request,'student_feedback_app/lecturer/lecturer_add_individual_feedback.html',context_dict)
     except:
@@ -439,34 +438,18 @@ def add_group_feedback(request,subject_slug):
         context_dict['lecturer'] = lect
         course = Course.objects.get(subject_slug=subject_slug)
         context_dict['subject'] = course
-        context = RequestContext(request)
-        if request.method == 'POST':
-            form = FeedbackForm(request.POST)
-            if form.is_valid():
-                for student in stud_profiles:
-                    new_fb = form.save(commit=False)
-                    created_fb = Feedback(student=student)
-                    created_fb.pre_defined_message = new_fb.pre_defined_message
-                    created_fb.pre_defined_message.category = Category.objects.get(user=request.user,name=new_fb.category)
-                    created_fb.pre_defined_message.user = request.user
-                    created_fb.pre_defined_message.save()
-                    created_fb.category = created_fb.pre_defined_message.category
-                    student.score += new_fb.points
-                    created_fb.from_user = request.user
-                    created_fb.which_course = course
-                    created_fb.points = new_fb.points
-                    created_fb.optional_message = new_fb.optional_message
-                    created_fb.datetime_given = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                    student.save()
-                    created_fb.pk = None
-                    created_fb.save()
 
-            else:
-                print(form.errors)
-            request.COOKIES["students"] = ""
-            return my_provided_feedback(request)
-        else:
-            form = FeedbackForm()
+        context_dict['categories'] = request.user.category_set.all()
+
+        messages = request.user.message_set.all()
+        all_messages = {}
+        for message in messages:
+            all_messages[message.id] = message.text
+
+        context_dict['messages'] = json.dumps(all_messages)
+        context_dict['messages_qs'] = messages
+
+        form = FeedbackForm()
         context_dict['form'] = form
 
         return render(request,'student_feedback_app/lecturer/lecturer_add_group_feedback.html',context_dict)
@@ -587,6 +570,56 @@ class FeedbackDetail(APIView):
         fb.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+    def post(self, request,format=None):
+        cat = Category.objects.get(id=request.data.get('cat_id'),user=request.user)
+        mess = Message.objects.get(id=request.data.get('mess_id'),user=request.user)
+
+        if(request.data.get('type') == "GROUP"):
+            # If providing group feedback then create a feedback object for every student
+            students = request.data.get('students')
+            for stud in students:
+                stud_user = User.objects.get(id_number=stud)
+                stud = StudentProfile.objects.get(student=stud_user)
+                course = Course.objects.get(subject_slug=request.data.get('subject_slug'))
+
+                fb = Feedback(pre_defined_message=mess,
+                                category=cat,
+                                optional_message = request.data.get('optional_message'),
+                                student = stud,
+                                points = request.data.get('points'),
+                                from_user=request.user,
+                                which_course = course)
+
+                stud.score += int(request.data.get('points'))
+                fb.save()
+                cat.save()
+                mess.save()
+                stud_user.save()
+                stud.save()
+                course.save()
+            return Response(status=status.HTTP_200_OK)
+        else:
+            # Otherwise just make one feedback for the individual student
+            stud_user = User.objects.get(id_number=request.data.get('student'))
+            stud = StudentProfile.objects.get(student=stud_user)
+            course = Course.objects.get(subject_slug=request.data.get('subject_slug'))
+
+            fb = Feedback(pre_defined_message=mess,
+                            category=cat,
+                            optional_message = request.data.get('optional_message'),
+                            student = stud,
+                            points = request.data.get('points'),
+                            from_user=request.user,
+                            which_course = course)
+
+            stud.score += int(request.data.get('points'))
+            fb.save()
+            cat.save()
+            mess.save()
+            stud_user.save()
+            stud.save()
+            course.save()
+            return Response(status=status.HTTP_200_OK)
 
 class CategoryDetail(APIView):
     """
@@ -666,54 +699,12 @@ class MessageDetail(APIView):
 
 class StudentCourseRelDestroy(APIView):
     def delete(self, request, student_id, course_code, format=None):
-        print ("in delete function\n");
         course = Course.objects.get(course_code=course_code)
         user = User.objects.get(id_number=student_id)
         student = StudentProfile.objects.get(student=user)
         course.students.remove(student)
         student.courses.remove(course)
         return Response(status=status.HTTP_204_NO_CONTENT)
-
-
-class CategoryAutocomplete(autocomplete.Select2QuerySetView):
-    def get_queryset(self):
-        if not self.request.user.is_authenticated:
-            return Category.objects.none()
-        query_set = self.request.user.category_set.all()
-        category = self.forwarded.get('category', None)
-        if self.q:
-            query_set = query_set.filter(name__istartswith=self.q)
-            return query_set
-        if category:
-            query_set = Message.objects.filter(user=self.request.user,category=category)
-        return query_set
-
-    def get_create_option(self,context,q):
-        create_option = []
-        display_create_option = False
-        if self.create_field and q:
-            page_obj = context.get('page_obj', None)
-            if page_obj is None or page_obj.number == 1:
-                display_create_option = True
-            # Don't offer to create a new option if a
-            # case-insensitive) identical one already exists
-            existing_options = (self.get_result_label(result).lower()
-                                for result in context['object_list'])
-            if q.lower() in existing_options:
-                display_create_option = False
-        if display_create_option and self.has_add_permission(self.request):
-            create_option = [{
-                'id': q,
-                'text': ('Create a new category: "%(new_value)s"') % {'new_value': q},
-                'create_id': True,
-            }]
-        return create_option
-
-    def has_add_permission(self, request):
-        if self.request.user.is_authenticated:
-            return True
-        else:
-            return False
 
 
 class FeedbackSortedByPoints(generics.ListAPIView):
@@ -732,64 +723,12 @@ class Feedback_full(generics.ListAPIView):
     queryset = Feedback_full.objects.all()
     serializer_class = Feedback_fullSerializer
 
-class MessageAutocomplete(autocomplete.Select2QuerySetView):
-    def get_queryset(self):
-        if not self.request.user.is_authenticated:
-            return Message.objects.none()
-        query_set = self.request.user.message_set.all()
-        category = self.forwarded.get('category', None)
-        if category:
-            query_set = Message.objects.filter(category=category)
-        return query_set
-
-    def get_create_option(self,context,q):
-        create_option = []
-        display_create_option = False
-        if self.create_field and q:
-            page_obj = context.get('page_obj', None)
-            if page_obj is None or page_obj.number == 1:
-                display_create_option = True
-            # Don't offer to create a new option if a
-            # case-insensitive) identical one already exists
-            existing_options = (self.get_result_label(result).lower()
-                                for result in context['object_list'])
-            if q.lower() in existing_options:
-                display_create_option = False
-        if display_create_option and self.has_add_permission(self.request):
-            category = self.forwarded.get('category',None)
-            cat = Category.objects.get(user=self.request.user,id=category)
-            create_option = [{
-                'id': q,
-                'text': ('Create a new message: "%(new_value)s"') % {'new_value': q},
-                'category': category,
-                'create_id': True,
-                'user': self.request.user.id_number,
-            }]
-        print(create_option)
-        return create_option
-
-    def render_to_response(self, context):
-        q = self.request.GET.get('q', None)
-        create_option = self.get_create_option(context, q)
-        return http.JsonResponse(
-            {
-                'results': self.get_results(context) + create_option,
-                'pagination': {
-                    'more': self.has_more(context)
-                }
-            })
-
-    def has_add_permission(self, request):
-        if self.request.user.is_authenticated:
-            return True
-        else:
-            return False
-
 def register(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST)
         if form.is_valid():
             user = form.save()
+            populate_categories_and_messages(user)
             login(request, user)
             if user.is_lecturer:
                 return redirect('lecturer_home')
@@ -816,7 +755,6 @@ def invites(request):
         context_dict['error'] = "error"
         return render(request,'student_feedback_app/general/error_page.html', context_dict)
     try:
-
         students_string = request.COOKIES.get("students")
         students_list = json.loads(students_string)
         students = []
@@ -839,3 +777,9 @@ def invites(request):
         added_students = course.students.distinct()
         context_dict['students'] = set(students).difference(set(added_students))
         return render(request, 'student_feedback_app/lecturer/invites.html', context_dict)
+
+def populate_categories_and_messages(user):
+    # This uses newly created methods in the population script to ensure that
+    # every user gets the list of categories and messages upon registration
+    add_categories_for_user(user)
+    add_messages_for_user(user)
