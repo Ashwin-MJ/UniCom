@@ -754,29 +754,50 @@ def invites(request):
     except:
         context_dict['error'] = "error"
         return render(request,'student_feedback_app/general/error_page.html', context_dict)
-    try:
-        students_string = request.COOKIES.get("students")
+      
+    
+    mode = 0
+    message =  ' lecturer ' + request.user.username + ' has invited you to join ' + course.subject + ' (' + course.course_code + '). To join this course use this token: ' + course.course_token 
+    students_string = request.COOKIES.get("students")
+    if is_json(students_string):
+        mode += 1
         students_list = json.loads(students_string)
         students = []
         for student_id in students_list:
             stud_user = User.objects.get(id_number=student_id)
             students.append(stud_user)
-
-        message =  ' lecturer ' + request.user.username + ' has invited you to join ' + course.subject + ' (' + course.course_code + '). To join this course use this token: ' + course.course_token
+        
         for student in students:
             personal_message = 'Dear ' + student.username + message
             send_mail('You are invited to join a course!',personal_message,'lect.acc.unicom@gmail.com',[student.email])
-
-        response = lecturer_course(request, course.subject_slug)
-        response.set_cookie('students', '', path="/lecturer/invites/")
-        return response
-
-    except:
+    message =  ' Lecturer ' + request.user.username + ' has invited you to join ' + course.subject + ' (' + course.course_code + '). To join this course use this token: ' + course.course_token 
+    students_emails_string = request.COOKIES.get("emails")
+    if is_json(students_emails_string):
+        mode += 1
+        emails_list = json.loads(students_emails_string)
+        emails = []
+        for email in emails_list:
+            if email != "example@university.com":
+                emails.append(email)
+        message = message + "; Register online to joint UniCom."
+        send_mail('You are invited to join a course!',message,'lect.acc.unicom@gmail.com',emails)
+    if mode == 0:
         lect = LecturerProfile.objects.get(lecturer=request.user)
         students = lect.get_my_students()
         added_students = course.students.distinct()
         context_dict['students'] = set(students).difference(set(added_students))
-        return render(request, 'student_feedback_app/lecturer/invites.html', context_dict)
+        return render(request, 'student_feedback_app/lecturer/invites.html', context_dict)       
+    response = lecturer_course(request, course.subject_slug)
+    response.set_cookie('students', '', path="/lecturer/invites/")
+    response.set_cookie('emails', '', path="/lecturer/invites/")
+    return response
+    
+def is_json(myjson):
+    try:
+        json_object = json.loads(myjson)
+    except ValueError as e:
+        return False
+    return True
 
 def populate_categories_and_messages(user):
     # This uses newly created methods in the population script to ensure that
