@@ -242,3 +242,17 @@ hr {
   overflow-y: scroll;
   padding-top:0px;
 }
+
+.select-cat-first {
+  /* Fix this */
+}
+
+.add-cat-redirect {
+  font-size: 150%;
+  cursor: pointer;
+}
+
+#form-title {
+  font-family: 'Patrick Hand SC', cursive;
+  font-size: 200%;
+}
