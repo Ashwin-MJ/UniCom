@@ -198,6 +198,13 @@
   margin-bottom: 0;
   padding-bottom: 0;
   padding-left: 10px;
+  text-decoration: underline;
+}
+
+.heading-for-label label{
+  font-family: 'Patrick Hand SC', cursive;
+  font-size: 120%;
+  text-decoration: underline;
 }
 
 .leaderboard-stud{
