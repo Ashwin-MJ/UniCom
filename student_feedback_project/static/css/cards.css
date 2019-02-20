@@ -199,3 +199,7 @@
   padding-bottom: 0;
   padding-left: 10px;
 }
+
+.leaderboard-stud{
+  cursor: pointer;
+}
