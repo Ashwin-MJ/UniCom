@@ -91,7 +91,7 @@ def student_home(request):
         try:
             stud = StudentProfile.objects.get(student=request.user)
             fb = stud.feedback_set.all().order_by('-datetime_given')
-            courses=stud.courses.all()
+            courses = stud.courses.all()
             for feedback in fb:
                 cat = feedback.category.name
                 if cat not in fbCat:
@@ -99,17 +99,17 @@ def student_home(request):
                     catColours[cat] = [feedback.category.colour]
                 else:
                     fbCat[cat].append([feedback.points, feedback.datetime_given.strftime('%Y-%m-%d %H:%M')])
-
             stud.achievement_set.all().delete()
             scores = stud.get_score_for_category()
 
             for attribute in scores:
                 achievM = Achievement(student=stud)
-                achievM.gen_achievement(attribute, scores[attribute])
-                achievM.save()
-
+                try:
+                    achievM.gen_achievement(attribute, scores[attribute])
+                    achievM.save()
+                except:
+                    print("doesn't exist")
             stud.achievement_set.all()
-
             for achvm in stud.achievement_set.all():
                 achvm.achiev = literal_eval(achvm.achiev)
                 for val in achvm.achiev:
