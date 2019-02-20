@@ -152,6 +152,7 @@ def student_home(request):
                     achievM.gen_achievement(attribute, scores[attribute],request.user)
                     achievM.save()
                 except:
+                    ## TODO: Figure out how to handle this error
                     print("Doesn't exit")
 
             stud.achievement_set.all()
