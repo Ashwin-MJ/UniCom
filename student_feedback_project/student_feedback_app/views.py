@@ -129,22 +129,30 @@ def student_home(request):
             stud = StudentProfile.objects.get(student=request.user)
             fb = stud.feedback_set.all().order_by('-datetime_given')
             courses=stud.courses.all()
+
             for feedback in fb:
                 cat = feedback.category.name
                 if cat not in fbCat:
                     fbCat[cat] = [[feedback.points, feedback.datetime_given.strftime('%Y-%m-%d %H:%M')]]
-                    stud_cat = Category.objects.get(name=feedback.category.name,user=request.user)
-                    catColours[cat] = [stud_cat.colour]
+                    try:
+                        stud_cat = Category.objects.get(name=feedback.category.name,user=request.user)
+                        catColours[cat] = [stud_cat.colour]
+                    except:
+                        catColours[cat] = [feedback.category.colour]
                 else:
                     fbCat[cat].append([feedback.points, feedback.datetime_given.strftime('%Y-%m-%d %H:%M')])
+
 
             stud.achievement_set.all().delete()
             scores = stud.get_score_for_category()
 
             for attribute in scores:
                 achievM = Achievement(student=stud)
-                achievM.gen_achievement(attribute, scores[attribute],request.user)
-                achievM.save()
+                try:
+                    achievM.gen_achievement(attribute, scores[attribute],request.user)
+                    achievM.save()
+                except:
+                    print("Doesn't exit")
 
             stud.achievement_set.all()
 
@@ -161,9 +169,14 @@ def student_home(request):
             # The follow dictionary is required to ensure the colour displayed for a given feedback
             # corresponds to the student's colour of that category and NOT the lecturers
             fb_with_colour = {}
+            stud_cats = request.user.category_set.all()
+
             for feedback in fb:
-                stud_cat = Category.objects.get(name=feedback.category.name,user=request.user)
-                fb_with_colour[feedback] = stud_cat.colour
+                try:
+                    stud_cat = Category.objects.get(name=feedback.category.name,user=request.user)
+                    fb_with_colour[feedback] = stud_cat.colour
+                except:
+                    fb_with_colour[feedback] = feedback.category.colour
 
             context_dict['student'] = stud
             context_dict['courses'] = courses
