@@ -128,8 +128,7 @@ def student_home(request):
         try:
             stud = StudentProfile.objects.get(student=request.user)
             fb = stud.feedback_set.all().order_by('-datetime_given')
-            courses=stud.courses.all()
-
+            courses = stud.courses.all()
             for feedback in fb:
                 cat = feedback.category.name
                 if cat not in fbCat:
@@ -141,8 +140,6 @@ def student_home(request):
                         catColours[cat] = [feedback.category.colour]
                 else:
                     fbCat[cat].append([feedback.points, feedback.datetime_given.strftime('%Y-%m-%d %H:%M')])
-
-
             stud.achievement_set.all().delete()
             scores = stud.get_score_for_category()
 
@@ -156,7 +153,6 @@ def student_home(request):
                     print("Doesn't exit")
 
             stud.achievement_set.all()
-
             for achvm in stud.achievement_set.all():
                 achvm.achiev = literal_eval(achvm.achiev)
                 for val in achvm.achiev:
@@ -712,32 +708,20 @@ class StudentCourseRelDestroy(APIView):
 
 
 class FeedbackSortedByPoints(generics.ListAPIView):
-    queryset = Feedback_with_course.objects.all().order_by('-points')
-    serializer_class = Feedback_with_courseSerializer
+    queryset = Feedback_full.objects.all().order_by('-points')
+    serializer_class = Feedback_fullSerializer
 
 class FeedbackSortedByDate(generics.ListAPIView):
-    queryset = Feedback_with_course.objects.all().order_by('-datetime_given')
-    serializer_class = Feedback_with_courseSerializer
+    queryset = Feedback_full.objects.all().order_by('-datetime_given')
+    serializer_class = Feedback_fullSerializer
 
 class FeedbackSortedByCourse(generics.ListAPIView):
-    queryset = Feedback_with_course.objects.all().order_by('courseName')
-    serializer_class = Feedback_with_courseSerializer
+    queryset = Feedback_full.objects.all().order_by('courseName')
+    serializer_class = Feedback_fullSerializer
 
-class CategoryList(generics.ListAPIView):
-    queryset = Category.objects.all()
-    serializer_class = CategorySerializer
-
-class Feedback_with_categoryList(generics.ListAPIView):
-    queryset = Feedback_with_category.objects.all()
-    serializer_class = Feedback_with_categorySerializer
-
-class Feedback_with_studentList(generics.ListAPIView):
-    queryset = Feedback_with_student.objects.all()
-    serializer_class = Feedback_with_studentSerializer
-
-class Feedback_with_from_userList(generics.ListAPIView):
-    queryset = Feedback_with_from_user.objects.all()
-    serializer_class = Feedback_with_from_userSerializer
+class Feedback_full(generics.ListAPIView):
+    queryset = Feedback_full.objects.all()
+    serializer_class = Feedback_fullSerializer
 
 def register(request):
     if request.method == 'POST':

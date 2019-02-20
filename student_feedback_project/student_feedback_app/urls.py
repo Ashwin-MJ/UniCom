@@ -38,10 +38,7 @@ urlpatterns = [
     re_path(r'^FeedbackSortedByPoints/$', views.FeedbackSortedByPoints.as_view()),
     re_path(r'^FeedbackSortedByDate/$', views.FeedbackSortedByDate.as_view()),
     re_path(r'^FeedbackSortedByCourse/$', views.FeedbackSortedByCourse.as_view()),
-    re_path(r'^CategoryList/$', views.CategoryList.as_view()),
-    re_path(r'^Feedback_with_categoryList/$', views.Feedback_with_categoryList.as_view()),
-    re_path(r'^Feedback_with_studentList/$', views.Feedback_with_studentList.as_view()),
-    re_path(r'^Feedback_with_from_userList/$', views.Feedback_with_from_userList.as_view()),
+    re_path(r'^Fedback_full/$', views.Feedback_full.as_view()),
     re_path(r'^StudentCourseRelDestroy/(?P<student_id>[\w\-]+)/(?P<course_code>[\w\-]+)/$', views.StudentCourseRelDestroy.as_view()),
 ]
 

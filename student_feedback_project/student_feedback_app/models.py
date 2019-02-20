@@ -243,39 +243,17 @@ class Message(models.Model):
     def __str__(self):
         return self.text
 
-class Feedback_with_category(models.Model):
-    categoryColour = models.CharField(max_length=200,default="No category colour")
-    category_id = models.CharField(max_length=200, default="No category", primary_key=True)
-    class Meta:
-        managed = False
-        db_table = "student_feedback_app_feedback_with_category"
-
-class Feedback_with_student(models.Model):
-    studentName = models.CharField(max_length=200,default="No student")
-    student_id = models.IntegerField(primary_key=True,default=0)
-    class Meta:
-        managed = False
-        db_table = "student_feedback_app_feedback_with_student"
-
-class Feedback_with_from_user(models.Model):
-    fromUserName = models.CharField(max_length=200,default="No giving user")
-    from_user_id = models.IntegerField(primary_key=True,default=0)
-    class Meta:
-        managed = False
-        db_table = "student_feedback_app_feedback_with_from_user"
-
-class Feedback_with_course(models.Model):
-    courseName = models.CharField(max_length=200,default="No course")
-    date_given = models.DateTimeField(default=timezone.now)
-    feedback_id = models.IntegerField(primary_key=True,default=0)
-    pre_defined_message_id = models.CharField(max_length=200,default="No message")
+class Feedback_full(models.Model):
+    feedback_id = models.IntegerField(primary_key=True, default=0)
     points = models.IntegerField(default=0)
-    from_user = models.ForeignKey('User', on_delete=models.CASCADE, null=True, blank=True)
-    student = models.ForeignKey('StudentProfile', on_delete=models.CASCADE, null=True, blank=True)
-    which_course = models.ForeignKey('Course', on_delete=models.CASCADE, null=True, blank=True)
     datetime_given = models.DateTimeField(default=timezone.now, blank=False)
     optional_message = models.CharField(max_length=200,default="")
-    category = models.ForeignKey('Category', on_delete=models.CASCADE, null=True, blank=True)
+    categoryColour = models.CharField(max_length=200,default="No category colour")
+    categoryName = models.CharField(max_length=200, default="No category")
+    preDefMessageText = models.CharField(max_length=200,default="No message")
+    studentName = models.CharField(max_length=200,default="No student")
+    courseName = models.CharField(max_length=200,default="No course")
+    fromUserName = models.CharField(max_length=200,default="No from user")
     class Meta:
         managed = False
-        db_table = "student_feedback_app_feedback_with_course"
+        db_table = "student_feedback_app_feedback_full"

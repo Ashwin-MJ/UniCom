@@ -276,9 +276,10 @@ def populate():
 								someFeedback.get('pre_defined_message'), someFeedback.get('optional_message'))
 
 	create_view_fb_cat()
-	create_view_fb_stud()
-	create_view_fb_course()
-	create_view_fb_from_user()
+	create_view_fb_cat_mss()
+	create_view_fb_cat_mss_stud()
+	create_view_fb_cat_mss_stud_course()
+	create_view_fb_full()
 
 categories = [
 	{"name": "Active Participation", "colour" : "#F7D969"},
@@ -381,29 +382,32 @@ saved_messages = [
 def create_view_fb_cat():
     with connection.cursor() as cursor:
         cursor.execute("CREATE VIEW student_feedback_app_feedback_with_category \
-                        as select fb.*, ca.colour categoryColour from student_feedback_app_feedback fb \
-                        INNER JOIN student_feedback_app_category ca ON fb.category_id = ca.name;")
+                        as select fb.*, ca.colour categoryColour, ca.name categoryName from student_feedback_app_feedback fb \
+                        INNER JOIN student_feedback_app_category ca ON fb.category_id = ca.id;")
 
-# function to add the view feedback with student
-def create_view_fb_stud():
+def create_view_fb_cat_mss():
     with connection.cursor() as cursor:
-        cursor.execute("CREATE VIEW student_feedback_app_feedback_with_student \
-                        as select fb.*, stud.username studentName from student_feedback_app_feedback fb \
-                        INNER JOIN student_feedback_app_user stud ON fb.student_id = stud.id;")
+        cursor.execute("CREATE VIEW student_feedback_app_feedback_with_cat_mss \
+                        as select fbc.*, mss.text preDefMessageText from student_feedback_app_feedback_with_category fbc \
+                        INNER JOIN student_feedback_app_message mss ON fbc.pre_defined_message_id = mss.id;")
 
-# function to add the view feedback with giving user
-def create_view_fb_from_user():
+def create_view_fb_cat_mss_stud():
     with connection.cursor() as cursor:
-        cursor.execute("CREATE VIEW student_feedback_app_feedback_with_from_user \
-                        as select fb.*, from_user.username fromUserName from student_feedback_app_feedback fb \
-                        INNER JOIN student_feedback_app_user from_user ON fb.from_user_id = from_user.id;")
+        cursor.execute("CREATE VIEW student_feedback_app_feedback_with_cat_mss_stud \
+                        as select fbcm.*, user.username studentName from student_feedback_app_feedback_with_cat_mss fbcm \
+                        INNER JOIN student_feedback_app_user user ON fbcm.student_id = user.id;")
 
-# function to add the view feedback with course
-def create_view_fb_course():
+def create_view_fb_cat_mss_stud_course():
     with connection.cursor() as cursor:
-        cursor.execute("CREATE VIEW student_feedback_app_feedback_with_course \
-                        as select fb.*, course.subject courseName from student_feedback_app_feedback fb \
-                        INNER JOIN student_feedback_app_course course ON fb.which_course_id = course.course_code;")
+        cursor.execute("CREATE VIEW student_feedback_app_feedback_with_cat_mss_stud_course \
+                        as select fbcms.*, crs.subject courseName from student_feedback_app_feedback_with_cat_mss_stud fbcms \
+                        INNER JOIN student_feedback_app_course crs ON fbcms.which_course_id = crs.course_code;")
+
+def create_view_fb_full():
+    with connection.cursor() as cursor:
+        cursor.execute("CREATE VIEW student_feedback_app_feedback_full \
+                        as select fbcmsc.*, usr.username fromUserName from student_feedback_app_feedback_with_cat_mss_stud_course fbcmsc \
+                        INNER JOIN student_feedback_app_user usr ON fbcmsc.from_user_id = usr.id;")
 
 #to add new view: make function and execute line, add model in models.py, test in DB browser SQLite
 
@@ -570,10 +574,8 @@ def print_database():
 
 	print("-----------------")
 	print("Views Added:")
-	print("Feedback_with_category")
-	print("Feedback_with_student")
-	print("Feedback_with_course")
-	print("Feedback_with_from_user")
+	print("Feedback_full")
+
 
 
 if __name__ == '__main__':
