@@ -91,7 +91,7 @@ def student_home(request):
         try:
             stud = StudentProfile.objects.get(student=request.user)
             fb = stud.feedback_set.all().order_by('-datetime_given')
-            courses=stud.courses.all()
+            courses = stud.courses.all()
             for feedback in fb:
                 cat = feedback.category.name
                 if cat not in fbCat:
@@ -99,17 +99,17 @@ def student_home(request):
                     catColours[cat] = [feedback.category.colour]
                 else:
                     fbCat[cat].append([feedback.points, feedback.datetime_given.strftime('%Y-%m-%d %H:%M')])
-
             stud.achievement_set.all().delete()
             scores = stud.get_score_for_category()
 
             for attribute in scores:
                 achievM = Achievement(student=stud)
-                achievM.gen_achievement(attribute, scores[attribute])
-                achievM.save()
-
+                try:
+                    achievM.gen_achievement(attribute, scores[attribute])
+                    achievM.save()
+                except:
+                    print("doesn't exist")
             stud.achievement_set.all()
-
             for achvm in stud.achievement_set.all():
                 achvm.achiev = literal_eval(achvm.achiev)
                 for val in achvm.achiev:
@@ -717,32 +717,20 @@ class CategoryAutocomplete(autocomplete.Select2QuerySetView):
 
 
 class FeedbackSortedByPoints(generics.ListAPIView):
-    queryset = Feedback_with_course.objects.all().order_by('-points')
-    serializer_class = Feedback_with_courseSerializer
+    queryset = Feedback_full.objects.all().order_by('-points')
+    serializer_class = Feedback_fullSerializer
 
 class FeedbackSortedByDate(generics.ListAPIView):
-    queryset = Feedback_with_course.objects.all().order_by('-datetime_given')
-    serializer_class = Feedback_with_courseSerializer
+    queryset = Feedback_full.objects.all().order_by('-datetime_given')
+    serializer_class = Feedback_fullSerializer
 
 class FeedbackSortedByCourse(generics.ListAPIView):
-    queryset = Feedback_with_course.objects.all().order_by('courseName')
-    serializer_class = Feedback_with_courseSerializer
+    queryset = Feedback_full.objects.all().order_by('courseName')
+    serializer_class = Feedback_fullSerializer
 
-class CategoryList(generics.ListAPIView):
-    queryset = Category.objects.all()
-    serializer_class = CategorySerializer
-
-class Feedback_with_categoryList(generics.ListAPIView):
-    queryset = Feedback_with_category.objects.all()
-    serializer_class = Feedback_with_categorySerializer
-
-class Feedback_with_studentList(generics.ListAPIView):
-    queryset = Feedback_with_student.objects.all()
-    serializer_class = Feedback_with_studentSerializer
-
-class Feedback_with_from_userList(generics.ListAPIView):
-    queryset = Feedback_with_from_user.objects.all()
-    serializer_class = Feedback_with_from_userSerializer
+class Feedback_full(generics.ListAPIView):
+    queryset = Feedback_full.objects.all()
+    serializer_class = Feedback_fullSerializer
 
 class MessageAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
@@ -810,8 +798,8 @@ def register(request):
     else:
         form = RegisterForm()
     return render(request, 'registration/registration_form.html', {'form': form})
-    
-    
+
+
 def invites(request):
     context_dict = {}
     if not request.user.is_authenticated or not request.user.is_lecturer:
@@ -828,24 +816,24 @@ def invites(request):
         context_dict['error'] = "error"
         return render(request,'student_feedback_app/general/error_page.html', context_dict)
     try:
-        
+
         students_string = request.COOKIES.get("students")
         students_list = json.loads(students_string)
         students = []
         for student_id in students_list:
             stud_user = User.objects.get(id_number=student_id)
             students.append(stud_user)
-        
-        message =  ' lecturer ' + request.user.username + ' has invited you to join ' + course.subject + ' (' + course.course_code + '). To join this course use this token: ' + course.course_token 
+
+        message =  ' lecturer ' + request.user.username + ' has invited you to join ' + course.subject + ' (' + course.course_code + '). To join this course use this token: ' + course.course_token
         for student in students:
             personal_message = 'Dear ' + student.username + message
             send_mail('You are invited to join a course!',personal_message,'lect.acc.unicom@gmail.com',[student.email])
-        
+
         response = lecturer_course(request, course.subject_slug)
         response.set_cookie('students', '', path="/lecturer/invites/")
         return response
-        
-    except: 
+
+    except:
         lect = LecturerProfile.objects.get(lecturer=request.user)
         students = lect.get_my_students()
         added_students = course.students.distinct()

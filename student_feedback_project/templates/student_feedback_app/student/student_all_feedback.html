@@ -52,9 +52,9 @@ Feedback
             {% endfor %}
         </div>
 		<div class="button" style="padding-bottom:0px; padding-top:10px;">
-          <button onclick="fetchStud('{{ student.student.username }}', 'points', 'student')" type="button" class="btn btn-material btn-ripple">Sort by points</button>
-          <button onclick="fetchStud('{{ student.student.username }}', 'date', 'student')" type="button" class="btn btn-material btn-ripple">Sort by date</button>
-          <button onclick="fetchStud('{{ student.student.username }}', 'course', 'student')" type="button" class="btn btn-material btn-ripple">Sort by course</button>
+          <button onclick="sort('{{ student.student.username }}', 'points', 'student')" type="button" class="btn btn-material btn-ripple">Sort by points</button>
+          <button onclick="sort('{{ student.student.username }}', 'date', 'student')" type="button" class="btn btn-material btn-ripple">Sort by date</button>
+          <button onclick="sort('{{ student.student.username }}', 'course', 'student')" type="button" class="btn btn-material btn-ripple">Sort by course</button>
         </div>
       </div>
 
