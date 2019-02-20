@@ -125,8 +125,10 @@ function show(sorted_fb, footerType){
 		if(fb.is_recent){
 			fb_text += '<div class="card recent custom-card text-white fb-border" style="border-color:' + fb.categoryColour + '">';
 		}
-		else
+		else{
 			fb_text += '<div class="card custom-card fb-border" style="border-color:' + fb.categoryColour + '">';
+		}
+		fb_text += '<i class="material-icons delete-icon" id="' + fb.feedback_id + '">delete</i>';
 		fb_text += '<b class="card-sub-heading" style="color:' + fb.categoryColour + '">' + fb.categoryName + `</b>
           <div class="row" style="padding-bottom:1%">
             <div class="column left">
@@ -135,7 +137,7 @@ function show(sorted_fb, footerType){
                 +  fb.preDefMessageText +'<br />';
                   if (fb.optional_message){
                   fb_text += '<em>"' + fb.optional_message + '"</em>'
-				  }
+				  				}
                   fb_text += '<footer>' + footer + '</footer>'
                 + `</blockquote>
               </div>
