@@ -121,7 +121,7 @@ function show(sorted_fb, footerType){
 		if(footerType == "student")
 			var footer = 'Given to ' + fb.studentName;
 		else
-			var footer = fb.fromUserName;
+			var footer = 'From' + fb.fromUserName;
 		if(fb.is_recent){
 			fb_text += '<div class="card recent custom-card text-white fb-border" style="border-color:' + fb.categoryColour + '">';
 		}
