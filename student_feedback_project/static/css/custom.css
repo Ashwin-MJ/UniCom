@@ -97,15 +97,6 @@ body{
   margin: 10px;
 }
 
-hr {
-  display:block;
-  border:none;
-  color:white;
-  height:1px;
-  background:black;
-  background: -webkit-gradient(radial, 50% 50%, 0, 50% 50%, 175, from(#000), to(#fff));
-}
-
 .achievements{
   width: auto;
   height: 75px;
@@ -220,6 +211,8 @@ hr {
   max-height: 40vh;
   overflow-y: scroll;
   padding-top:0px;
+  margin:10px;
+  padding:10px;
 }
 
 .mess-border {
@@ -241,4 +234,14 @@ hr {
   max-height: 120vh;
   overflow-y: scroll;
   padding-top:0px;
+}
+
+.add-cat-redirect {
+  font-size: 150%;
+  cursor: pointer;
+}
+
+#form-title {
+  font-family: 'Patrick Hand SC', cursive;
+  font-size: 200%;
 }

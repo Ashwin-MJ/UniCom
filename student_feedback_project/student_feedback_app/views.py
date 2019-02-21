@@ -199,8 +199,11 @@ def student_all_feedback(request):
 
         fb_with_colour = {}
         for feedback in fb:
-            stud_cat = Category.objects.get(name=feedback.category.name,user=request.user)
-            fb_with_colour[feedback] = stud_cat.colour
+            try:
+                stud_cat = Category.objects.get(name=feedback.category.name,user=request.user)
+                fb_with_colour[feedback] = stud_cat.colour
+            except:
+                fb_with_colour[feedback] = feedback.category.colour
 
         context_dict['feedback'] = fb_with_colour
         top_attributes = stud.get_top_attributes()
@@ -265,8 +268,11 @@ def student_course(request, subject_slug):
 
             fb_with_colour = {}
             for feedback in fb:
-                stud_cat = Category.objects.get(name=feedback.category.name,user=request.user)
-                fb_with_colour[feedback] = stud_cat.colour
+                try:
+                    stud_cat = Category.objects.get(name=feedback.category.name,user=request.user)
+                    fb_with_colour[feedback] = stud_cat.colour
+                except:
+                    fb_with_colour[feedback] = feedback.category.colour
 
             context_dict['feedback'] = fb_with_colour
             context_dict['score'] = stud.get_score_for_course(course.subject)
@@ -301,6 +307,7 @@ def student_add_individual_feedback(request,subject_slug,student_number):
         context_dict['course'] = course
 
         context_dict['categories'] = request.user.category_set.all()
+        context_dict['new_mess_form'] = NewMessageForm()
 
         messages = request.user.message_set.all()
         all_messages = {}
@@ -402,6 +409,8 @@ def lecturer_add_individual_feedback(request,subject_slug,student_number):
         course = Course.objects.get(subject_slug=subject_slug)
         context_dict['course'] = course
 
+        context_dict['new_mess_form'] = NewMessageForm()
+
         context_dict['categories'] = request.user.category_set.all()
 
         messages = request.user.message_set.all()
@@ -440,6 +449,8 @@ def add_group_feedback(request,subject_slug):
         context_dict['subject'] = course
 
         context_dict['categories'] = request.user.category_set.all()
+
+        context_dict['new_mess_form'] = NewMessageForm()
 
         messages = request.user.message_set.all()
         all_messages = {}

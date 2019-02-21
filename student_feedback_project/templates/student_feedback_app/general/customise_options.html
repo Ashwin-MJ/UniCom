@@ -74,7 +74,7 @@ Edit Categories and Pre-Defined Messages
 
             {% for field in new_cat_form.visible_fields %}
               <div class="form-group" style="padding:10px">
-                <h3 class="custom-card-title">
+                <h3 id="form-title">
                   {{ field.label_tag }}
                 </h3>
                 {% if field.help_text %}
@@ -85,7 +85,7 @@ Edit Categories and Pre-Defined Messages
             {% endfor %}
 
             <div class="form-group" style="padding:10px">
-              <h3 class="custom-card-title">
+              <h3 id="form-title">
                 Colour
               </h3>
               <small class="form-text text-muted">Choose a colour (default is teal):</small>
@@ -125,7 +125,7 @@ Edit Categories and Pre-Defined Messages
 
             {% for field in edit_cat_form.visible_fields %}
               <div class="form-group" style="padding:10px">
-                <h3 class="custom-card-title">
+                <h3 id="form-title">
                   {{ field.label_tag }}
                 </h3>
                 {% if field.help_text %}
@@ -136,7 +136,7 @@ Edit Categories and Pre-Defined Messages
             {% endfor %}
 
             <div class="form-group" style="padding:10px">
-              <h3 class="custom-card-title">
+              <h3 id="form-title">
                 Colour
               </h3>
               <small class="form-text text-muted">Choose a colour (default is teal):</small>
@@ -176,7 +176,7 @@ Edit Categories and Pre-Defined Messages
 
             {% for field in new_mess_form.visible_fields %}
               <div class="form-group" style="padding:10px">
-                <h3 class="custom-card-title">
+                <h3 id="form-title">
                   {{ field.label_tag }}
                 </h3>
                 {% if field.help_text %}
@@ -215,7 +215,7 @@ Edit Categories and Pre-Defined Messages
 
             {% for field in edit_mess_form.visible_fields %}
               <div class="form-group" style="padding:10px">
-                <h3 class="custom-card-title">
+                <h3 id="form-title">
                   {{ field.label_tag }}
                 </h3>
                 {% if field.help_text %}
