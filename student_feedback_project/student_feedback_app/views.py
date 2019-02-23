@@ -380,7 +380,7 @@ def lecturer_course(request,subject_slug):
                     for key in data:
                         date_str = re.split('[()]', str(key))[0]
                         if cat not in fbCat:
-                            fbCat[cat] = [data[key], date_str]
+                            fbCat[cat] = [[data[key], date_str]]
                             try:
                                 lect_cat = Category.objects.get(name=feedback.category.name, user=request.user)
                                 catColours[cat] = [lect_cat.colour]
@@ -390,7 +390,7 @@ def lecturer_course(request,subject_slug):
                             if feedback.date_only != key:
                                 fbCat[cat].append([data[key], date_str])
                             else:
-                                fbCat[cat] = [data[key], date_str]
+                                fbCat[cat] = [[data[key], date_str]]
 
 
 

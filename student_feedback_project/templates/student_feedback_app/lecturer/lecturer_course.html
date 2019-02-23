@@ -21,11 +21,11 @@
      catData = {{feedbackData}}
      catColours = {{catColours}}
      {% endautoescape %}
-      console.log(catData);
      data1 = []
      for(var cat in catData){
          dataPoints1 = []
          for(var i=0; i < catData[cat].length; i++){
+             console.log(catData[cat]);
              dataPoints1.push({x: new Date(catData[cat][i][1].replace(/-/g, "/")), y: catData[cat][i][0]})
          }
 
