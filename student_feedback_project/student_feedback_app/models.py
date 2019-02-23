@@ -179,6 +179,25 @@ class Course(models.Model):
         # This is important in the template
         return temp_dict
 
+    # Used for the graph implementation, gives the total score for lecturers
+    # categories in a course
+    def get_total_for_course_attributes(self):
+        fbTotals={}
+        for feedback in self.feedback_set.all():
+            if feedback.category.name in fbTotals:
+                for data in fbTotals[feedback.category.name]:
+                    if feedback.date_only not in data:
+                        fbTotals[feedback.category.name] = [{feedback.date_only : feedback.points}]
+
+                    else:
+                        for key in data:
+                            newTotal = feedback.points + data[key]
+                        fbTotals[feedback.category.name] = [{feedback.date_only : newTotal}]
+            else:
+                fbTotals[feedback.category.name] = [{feedback.date_only : feedback.points}]
+        return fbTotals
+
+
 class LecturerProfile(models.Model):
     lecturer = models.OneToOneField(User, on_delete=models.CASCADE,primary_key=True)
     courses = models.ManyToManyField('Course')
@@ -194,10 +213,13 @@ class LecturerProfile(models.Model):
         courses_with_students = {}
         for course in self.courses.all():
             courses_with_students[course] = len(course.students.all())
-
         return courses_with_students
 
+
+
+
 class Feedback(models.Model):
+    date_only = models.DateField(default=timezone.now)
     date_given = models.DateTimeField(default=timezone.now)
     feedback_id = models.IntegerField(primary_key=True)
     pre_defined_message = models.ForeignKey('Message',on_delete=models.CASCADE,null=True,blank=True) # Selected from a pre defined list depending on selected category
