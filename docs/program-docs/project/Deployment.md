@@ -9,6 +9,8 @@ The details for the pythonanywhere account are below:
 Insert here
 ```
 
-As the application has already been deployed using this, it can be accessed by navigating to [feedbackapp.pythonanywhere.com](feedbackapp.pythonanywhere.com).
+As the application has already been deployed using this, it can be accessed by navigating to:
+
+http://feedbackapp.pythonanywhere.com
 
 This is functional on both mobile devices and on computers.
