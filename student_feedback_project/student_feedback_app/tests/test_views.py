@@ -1,6 +1,8 @@
 from django.test import TestCase
 from django.urls import reverse
 
+from rest_framework.test import APIRequestFactory
+
 from populate import *
 
 def login_lecturer(self):
@@ -23,7 +25,7 @@ class MyProfileViewTest(TestCase):
     def test_error_if_not_logged_in(self):
         response = self.client.get(reverse('my_profile'))
         self.assertTemplateUsed(response, 'student_feedback_app/general/error_page.html')
-        self.assertTrue(response.context['error'] == "auth")
+        self.assertEqual(response.context['error'],"auth")
 
     def test_logged_in_lect_correct(self):
         login = login_lecturer(self)
@@ -61,7 +63,7 @@ class ViewProfileViewTest(TestCase):
     def test_error_if_not_logged_in(self):
         response = self.client.get(reverse('view_profile',kwargs={'student_number':1402781}))
         self.assertTemplateUsed(response, 'student_feedback_app/general/error_page.html')
-        self.assertTrue(response.context['error'] == "auth")
+        self.assertEqual(response.context['error'],"auth")
 
     def test_view_as_lecturer(self):
         login = login_lecturer(self)
@@ -171,7 +173,7 @@ class MyProvidedFeedbackViewTest(TestCase):
     def test_error_if_not_logged_in(self):
         response = self.client.get(reverse('student_provided_feedback'))
         self.assertTemplateUsed(response, 'student_feedback_app/general/error_page.html')
-        self.assertTrue(response.context['error'] == "auth")
+        self.assertEqual(response.context['error'],"auth")
 
 class LecturerHomeViewTest(TestCase):
     fixtures = ['student_feedback_app']
@@ -180,3 +182,136 @@ class LecturerHomeViewTest(TestCase):
         login = login_student(self)
         response = self.client.get(reverse('lecturer_home'))
         self.assertRedirects(response, '/student/home/')
+
+    def test_error_if_not_logged_in(self):
+        response = self.client.get(reverse('lecturer_home'))
+        self.assertTemplateUsed(response, 'student_feedback_app/general/error_page.html')
+        self.assertEqual(response.context['error'],"auth")
+
+class LecturerCourseViewTest(TestCase):
+    fixtures = ['student_feedback_app']
+
+    def test_error_if_student(self):
+        login = login_student(self)
+        response = self.client.get(reverse('lecturer_course',kwargs={'subject_slug': "arh01"}))
+        self.assertTemplateUsed(response, 'student_feedback_app/general/error_page.html')
+        self.assertEqual(response.context['error'],"auth")
+
+    def test_course_does_not_exist(self):
+        login = login_lecturer(self)
+        response = self.client.get(reverse('lecturer_course',kwargs={'subject_slug': "random"}))
+        self.assertTemplateUsed(response, 'student_feedback_app/general/error_page.html')
+        self.assertEqual(response.context['error'],"no_course")
+
+class LecturerAddIndividualFeedbackViewTest(TestCase):
+    fixtures = ['student_feedback_app']
+
+    def test_error_if_student(self):
+        login = login_student(self)
+        response = self.client.get(reverse('lect_add_individual_feedback',kwargs={'subject_slug': "arh01",'student_number':1402781}))
+        self.assertTemplateUsed(response, 'student_feedback_app/general/error_page.html')
+        self.assertEqual(response.context['error'],"auth")
+
+    def test_logged_in_lect_correct(self):
+        login = login_lecturer(self)
+        response = self.client.get(reverse('lect_add_individual_feedback',kwargs={'subject_slug': "arh01",'student_number':1402781}))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'student_feedback_app/lecturer/lecturer_add_individual_feedback.html')
+
+    def test_student_does_not_exist(self):
+        login = login_lecturer(self)
+        response = self.client.get(reverse('lect_add_individual_feedback',kwargs={'subject_slug': "arh01",'student_number':1234567}))
+        self.assertTemplateUsed(response, 'student_feedback_app/general/error_page.html')
+        self.assertEqual(response.context['error'],"no_student")
+
+class LecturerAddGroupFeedbackViewTest(TestCase):
+    fixtures = ['student_feedback_app']
+
+    def test_error_if_student(self):
+        login = login_student(self)
+        response = self.client.get(reverse('add_group_feedback',kwargs={'subject_slug': "arh01"}))
+        self.assertTemplateUsed(response, 'student_feedback_app/general/error_page.html')
+        self.assertEqual(response.context['error'],"auth")
+
+    def test_logged_in_lect_correct(self):
+        login = login_lecturer(self)
+        response = self.client.get(reverse('add_group_feedback',kwargs={'subject_slug': "arh01"}))
+        self.assertEqual(response.status_code, 200)
+
+    def test_course_does_not_exist(self):
+        login = login_lecturer(self)
+        response = self.client.get(reverse('add_group_feedback',kwargs={'subject_slug': "random"}))
+        self.assertTemplateUsed(response, 'student_feedback_app/general/error_page.html')
+        self.assertEqual(response.context['error'],"error")
+
+class CustomiseOptionsViewTest(TestCase):
+    fixtures = ['student_feedback_app']
+
+    def test_error_if_not_logged_in(self):
+        response = self.client.get(reverse('customise_options'))
+        self.assertTemplateUsed(response, 'student_feedback_app/general/error_page.html')
+        self.assertEqual(response.context['error'], "auth")
+
+    def test_works_if_logged_in(self):
+        login = login_lecturer(self)
+        response = self.client.get(reverse('customise_options'))
+        self.assertTemplateUsed(response, 'student_feedback_app/general/customise_options.html')
+        self.assertEqual(response.status_code,200)
+
+class CreateCourseViewTest(TestCase):
+    fixtures = ['student_feedback_app']
+
+    def test_works_if_logged_in(self):
+        login = login_lecturer(self)
+        response = self.client.get(reverse('create_course'))
+        self.assertTrue(response.status_code,200)
+
+    def test_error_if_student(self):
+        login = login_student(self)
+        response = self.client.get(reverse('create_course'))
+        self.assertTemplateUsed(response, 'student_feedback_app/general/error_page.html')
+        self.assertEqual(response.context['error'],"auth")
+
+class FeedbackDetailView(TestCase):
+    fixtures = ['student_feedback_app']
+
+    def test_fb_exists(self):
+        response = self.client.get(reverse('feedback_detail',kwargs={'fb_id': "10"}))
+        self.assertEqual(response.status_code,200)
+
+    def test_get_fb_works(self):
+        response = self.client.get(reverse('feedback_detail',kwargs={'fb_id': "10"}))
+        # Get the category associated with this feedback and assert they are equal
+        self.assertEqual(29,response.data['category'])
+
+    def test_delete_fb_works(self):
+        response = self.client.delete(reverse('feedback_detail',kwargs={'fb_id': "10"}))
+        self.assertEqual(response.status_code,204)
+
+    def test_post_individual_fb_works(self):
+        login = login_lecturer(self)
+        data = {
+            'cat_id': 29,
+            'mess_id': 195,
+            'type': "INDIVIDUAL",
+            'student': 1402001,
+            'subject_slug': "mat1q",
+            'optional_message': "test",
+            'points': 5,
+        }
+        response = self.client.post(reverse('feedback'),data)
+        self.assertEqual(response.status_code,200)
+
+    def test_post_group_fb_works(self):
+        login = login_lecturer(self)
+        students = [1402001, 1402781]
+        data = {'cat_id': 29,
+                'mess_id': 195,
+                'students': students,
+                'points': 3,
+                'optional_message': "test",
+                'subject_slug': 'mat1q',
+                'type': "GROUP"
+        }        
+        response = self.client.post(reverse('feedback'),data)
+        self.assertEqual(response.status_code,200)
