@@ -290,10 +290,12 @@ def student_course(request, subject_slug):
     return render(request, 'student_feedback_app/student/student_course.html', context_dict)
 
 def student_add_individual_feedback(request,subject_slug,student_number):
+    context_dict = {}
+
     if not request.user.is_authenticated or not request.user.is_student:
         context_dict['error'] = "auth"
         return render(request,'student_feedback_app/general/error_page.html', context_dict)
-    context_dict = {}
+
     try:
         from_stud = StudentProfile.objects.get(student=request.user)
         stud_user = User.objects.get(id_number=student_number)
@@ -765,10 +767,10 @@ def invites(request):
     except:
         context_dict['error'] = "error"
         return render(request,'student_feedback_app/general/error_page.html', context_dict)
-      
-    
+
+
     mode = 0
-    message =  ' lecturer ' + request.user.username + ' has invited you to join ' + course.subject + ' (' + course.course_code + '). To join this course use this token: ' + course.course_token 
+    message =  ' lecturer ' + request.user.username + ' has invited you to join ' + course.subject + ' (' + course.course_code + '). To join this course use this token: ' + course.course_token
     students_string = request.COOKIES.get("students")
     if is_json(students_string):
         mode += 1
@@ -777,11 +779,11 @@ def invites(request):
         for student_id in students_list:
             stud_user = User.objects.get(id_number=student_id)
             students.append(stud_user)
-        
+
         for student in students:
             personal_message = 'Dear ' + student.username + message
             send_mail('You are invited to join a course!',personal_message,'lect.acc.unicom@gmail.com',[student.email])
-    message =  ' Lecturer ' + request.user.username + ' has invited you to join ' + course.subject + ' (' + course.course_code + '). To join this course use this token: ' + course.course_token 
+    message =  ' Lecturer ' + request.user.username + ' has invited you to join ' + course.subject + ' (' + course.course_code + '). To join this course use this token: ' + course.course_token
     students_emails_string = request.COOKIES.get("emails")
     if is_json(students_emails_string):
         mode += 1
@@ -797,12 +799,12 @@ def invites(request):
         students = lect.get_my_students()
         added_students = course.students.distinct()
         context_dict['students'] = set(students).difference(set(added_students))
-        return render(request, 'student_feedback_app/lecturer/invites.html', context_dict)       
+        return render(request, 'student_feedback_app/lecturer/invites.html', context_dict)
     response = lecturer_course(request, course.subject_slug)
     response.set_cookie('students', '', path="/lecturer/invites/")
     response.set_cookie('emails', '', path="/lecturer/invites/")
     return response
-    
+
 def is_json(myjson):
     try:
         json_object = json.loads(myjson)

@@ -26,3 +26,6 @@ static/admin/
 static/autocomplete_light/
 
 **/migrations/
+
+*.coverage
+**/htmlcov/
