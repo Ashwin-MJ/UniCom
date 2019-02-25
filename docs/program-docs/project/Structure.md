@@ -2,7 +2,7 @@
 
 This is the state of the project structure as of 24/02/2019:
 
-```bash
+```
  ├── Contributing.md
  ├── LICENSE
  ├── Procfile
