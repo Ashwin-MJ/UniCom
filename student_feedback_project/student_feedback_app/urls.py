@@ -39,7 +39,7 @@ urlpatterns = [
     re_path(r'^FeedbackSortedByDate/$', views.FeedbackSortedByDate.as_view()),
     re_path(r'^FeedbackSortedByCourse/$', views.FeedbackSortedByCourse.as_view()),
     re_path(r'^Fedback_full/$', views.Feedback_full.as_view()),
-    re_path(r'^StudentCourseRelDestroy/(?P<student_id>[\w\-]+)/(?P<course_code>[\w\-]+)/$', views.StudentCourseRelDestroy.as_view()),
+    re_path(r'^StudentCourseRelDestroy/(?P<student_id>[\w\-]+)/(?P<course_code>[\w\-]+)/$', views.StudentCourseRelDestroy.as_view(), name='student_rel_destroy'),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

@@ -1,6 +1,8 @@
 from django.test import TestCase
 from django.urls import reverse
 
+import json
+
 from rest_framework.test import APIRequestFactory
 
 from populate import *
@@ -85,6 +87,21 @@ class ViewProfileViewTest(TestCase):
         for fb in response.context['feedback']:
             self.assertEqual(fb.from_user.id_number,"1402001")
 
+class EditBioViewTest(TestCase):
+    fixtures = ['student_feedback_app']
+
+    def test_error_if_not_logged_in(self):
+        response = self.client.get(reverse('edit_bio'))
+        self.assertTemplateUsed(response, 'student_feedback_app/general/error_page.html')
+        self.assertEqual(response.context['error'],"auth")
+
+    def test_stud_works(self):
+        login = login_student(self)
+        response = self.client.get(reverse('edit_bio'))
+        self.assertTemplateUsed(response, 'student_feedback_app/general/edit_bio.html')
+        self.assertEqual(response.status_code,200)
+
+
 class StudentHomeViewTest(TestCase):
     fixtures = ['student_feedback_app']
 
@@ -132,6 +149,12 @@ class StudentCourseViewTest(TestCase):
         response = self.client.get(reverse('student_course',kwargs={'subject_slug': "random"}))
         self.assertTemplateUsed(response, 'student_feedback_app/general/error_page.html')
         self.assertEqual(response.context['error'],"no_course")
+
+    def test_error_if_lecturer(self):
+        login = login_lecturer(self)
+        response = self.client.get(reverse('student_course',kwargs={'subject_slug': "arh01"}))
+        self.assertTemplateUsed(response, 'student_feedback_app/general/error_page.html')
+        self.assertEqual(response.context['error'],"auth")
 
 class StudentAddIndividualFeedbackViewTest(TestCase):
     fixtures = ['student_feedback_app']
@@ -281,7 +304,7 @@ class FeedbackDetailView(TestCase):
 
     def test_get_fb_works(self):
         response = self.client.get(reverse('feedback_detail',kwargs={'fb_id': "10"}))
-        # Get the category associated with this feedback and assert they are equal
+        # Got this information from the database
         self.assertEqual(29,response.data['category'])
 
     def test_delete_fb_works(self):
@@ -312,6 +335,85 @@ class FeedbackDetailView(TestCase):
                 'optional_message': "test",
                 'subject_slug': 'mat1q',
                 'type': "GROUP"
-        }        
+        }
         response = self.client.post(reverse('feedback'),data)
         self.assertEqual(response.status_code,200)
+
+class CategoryDetailView(TestCase):
+    fixtures = ['student_feedback_app']
+
+    def test_category_exists(self):
+        response = self.client.get(reverse('category_detail',kwargs={'cat_id': "10"}))
+        self.assertEqual(response.status_code,200)
+
+    def test_get_category_works(self):
+        response = self.client.get(reverse('category_detail',kwargs={'cat_id': "10"}))
+        # Got this information from the database
+        self.assertEqual(response.data['name'], "Active Participation")
+
+    def test_delete_category_works(self):
+        login = login_lecturer(self)
+        # Checked database to get correct ID for this lecturer
+        response = self.client.delete(reverse('category_detail',kwargs={'cat_id': "9"}))
+        self.assertEqual(response.status_code,204)
+
+    def test_post_category_works(self):
+        login = login_lecturer(self)
+        data = {
+            'name': "Test Category",
+            'colour': "#FFFFFF"
+        }
+        response = self.client.post(reverse('category'),data)
+        self.assertEqual(response.status_code,200)
+
+    def test_patch_category_works(self):
+        login = login_lecturer(self)
+        data = {
+            'name': "Test Category",
+            'colour': "#FFFFFF"
+        }
+        response = self.client.patch(reverse('category_detail',kwargs={'cat_id': "9"}),json.dumps(data),content_type='application/json')
+        self.assertEqual(response.status_code,200)
+
+class MessageDetailView(TestCase):
+    fixtures = ['student_feedback_app']
+
+    def test_message_exists(self):
+        response = self.client.get(reverse('message_detail',kwargs={'mess_id': "10"}))
+        self.assertEqual(response.status_code,200)
+
+    def test_get_category_works(self):
+        response = self.client.get(reverse('message_detail',kwargs={'mess_id': "41"}))
+        # Got this information from the database
+        self.assertEqual(response.data['text'], "Great participation in class")
+
+    def test_delete_category_works(self):
+        login = login_lecturer(self)
+        # Checked database to get correct ID for this lecturer
+        response = self.client.delete(reverse('message_detail',kwargs={'mess_id': "41"}))
+        self.assertEqual(response.status_code,204)
+
+    def test_post_category_works(self):
+        login = login_lecturer(self)
+        data = {
+            'category': 9,
+            'text': "Test Message"
+        }
+        response = self.client.post(reverse('message'),data)
+        self.assertEqual(response.status_code,200)
+
+    def test_patch_category_works(self):
+        login = login_lecturer(self)
+        data = {
+            'text': "Test Message"
+        }
+        response = self.client.patch(reverse('message_detail',kwargs={'mess_id': "41"}),json.dumps(data),content_type='application/json')
+        self.assertEqual(response.status_code,200)
+
+class StudentCourseRelDestroyViewTest(TestCase):
+    fixtures = ['student_feedback_app']
+
+    def test_remove_student(self):
+        login = login_lecturer(self)
+        response = self.client.delete(reverse('student_rel_destroy',kwargs={'student_id': "1402001", "course_code":"MAT1Q"}))
+        self.assertEqual(response.status_code,204)
