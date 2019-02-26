@@ -160,7 +160,6 @@ def student_home(request):
                     else:
                         achievs[achvm.category] = [val]
                 achievs[achvm.category].sort()
-            print(achievs)
 
 
             # The follow dictionary is required to ensure the colour displayed for a given feedback
