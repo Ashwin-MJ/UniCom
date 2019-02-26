@@ -299,6 +299,11 @@ def student_add_individual_feedback(request,subject_slug,student_number):
     try:
         from_stud = StudentProfile.objects.get(student=request.user)
         stud_user = User.objects.get(id_number=student_number)
+
+        if student_number == request.user.id_number:
+            context_dict['error'] = "auth"
+            return render(request,'student_feedback_app/general/error_page.html', context_dict)
+
         stud = StudentProfile.objects.get(student=stud_user)
 
         fb = stud.feedback_set.all().filter(from_user=request.user).order_by('-datetime_given')
