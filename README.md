@@ -15,29 +15,7 @@ There is also limited flexibility for students to send customised feedback to ea
 
 ## Using the Application
 
-### Getting Started
-
-As of now (28/11/18), the application is currently in development. The repository can be cloned locally using:
-
-```
-git clone http://stgit.dcs.gla.ac.uk/tp3-2018-ese1/dissertation.git
-```
-
-### Prerequisites
-
-The application uses the Django Web Framework (Version 2.1.2) and Python3 (Python 3.70). All dependencies can be installed using the requirements.txt file inside the /student_feedback_project/ folder:
-
-```
-pip3 install -r requirements.txt
-```
-
-### Running the tests
-
-The tests for this application have been broken down into separate files within the student_feedback_project/student_feedback_app/tests directory. These tests can be easily run using:
-
-```
-python3 manage.py test student_feedback_app
-```
+View the [design documentation](docs/program-docs/README.md) to find out more information about how to use the application.
 
 ## Contributing
 
