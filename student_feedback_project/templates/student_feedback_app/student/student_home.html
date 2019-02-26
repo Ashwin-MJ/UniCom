@@ -139,11 +139,11 @@ function toggleDataSeries(e) {
     <div class="card-header">
       <ul class="nav nav-tabs card-header-tabs" id="title">
         <li class="nav-item">
-          <a data-toggle="tab" class="nav-link" href="#AllCats">All acheivements</a>
+          <a data-toggle="tab" class="nav-link active" style="color:black" id="defaultOpen" href="#AllCats">All acheivements</a>
         </li>
         {% for category in achievements.keys %}
         <li class="nav-item">
-          <a data-toggle="tab" class="nav-link" href="#{{category.id}}">{{ category }}</a>
+          <a data-toggle="tab" class="nav-link" style="color:{{category.colour}}" href="#{{category.id}}">{{ category }}</a>
         </li>
         {% endfor %}
       </ul>
@@ -207,7 +207,7 @@ function toggleDataSeries(e) {
           </div>
           </section>
         {% endfor %}
-        <div id="AllCats" class="tab-pane">
+        <div id="AllCats" class="tab-pane active">
           <section class="horizontal-scroll">
           {% for key,values in achievements.items %}
             {% for value in values %}
