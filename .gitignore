@@ -27,5 +27,5 @@ static/autocomplete_light/
 
 **/migrations/
 
-**/htmlcov/
 *.coverage
+**/htmlcov/

@@ -290,10 +290,12 @@ def student_course(request, subject_slug):
     return render(request, 'student_feedback_app/student/student_course.html', context_dict)
 
 def student_add_individual_feedback(request,subject_slug,student_number):
+    context_dict = {}
+
     if not request.user.is_authenticated or not request.user.is_student:
         context_dict['error'] = "auth"
         return render(request,'student_feedback_app/general/error_page.html', context_dict)
-    context_dict = {}
+
     try:
         from_stud = StudentProfile.objects.get(student=request.user)
         stud_user = User.objects.get(id_number=student_number)
@@ -398,10 +400,11 @@ def lecturer_course(request,subject_slug):
     return render(request,'student_feedback_app/lecturer/lecturer_course.html',context_dict)
 
 def lecturer_add_individual_feedback(request,subject_slug,student_number):
+    context_dict = {}
     if not request.user.is_authenticated or not request.user.is_lecturer:
         context_dict['error'] = "auth"
         return render(request,'student_feedback_app/general/error_page.html', context_dict)
-    context_dict = {}
+
     try:
         lect = LecturerProfile.objects.get(lecturer=request.user)
         stud_user = User.objects.get(id_number=student_number)
@@ -436,10 +439,10 @@ def lecturer_add_individual_feedback(request,subject_slug,student_number):
         return render(request,'student_feedback_app/general/error_page.html', context_dict)
 
 def add_group_feedback(request,subject_slug):
+    context_dict = {}
     if not request.user.is_authenticated or not request.user.is_lecturer:
         context_dict['error'] = "auth"
         return render(request,'student_feedback_app/general/error_page.html', context_dict)
-    context_dict = {}
     try:
         students_string = request.COOKIES.get("students")
         students_list = json.loads(students_string)
@@ -589,10 +592,11 @@ class FeedbackDetail(APIView):
     def post(self, request,format=None):
         cat = Category.objects.get(id=request.data.get('cat_id'),user=request.user)
         mess = Message.objects.get(id=request.data.get('mess_id'),user=request.user)
-
         if(request.data.get('type') == "GROUP"):
             # If providing group feedback then create a feedback object for every student
-            students = request.data.get('students')
+            # students = request.data.get('students')
+            req_dict = dict(request.data)
+            students = req_dict['students']
             for stud in students:
                 stud_user = User.objects.get(id_number=stud)
                 stud = StudentProfile.objects.get(student=stud_user)
