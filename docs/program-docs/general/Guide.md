@@ -78,3 +78,14 @@ Upon clicking "Submit Feedback", the same feedback is given to all selected stud
 <img src="docs/program-docs/general/screenshots/lecturer_all_fb.png">
 
 This page simply shows all the feedback you have given. Here you have the additional option of deleting a feedback, as well as the standard sorting options.
+
+
+## Student
+
+### Home Page
+
+### Courses
+
+### Course
+
+### Feedback
