@@ -140,7 +140,7 @@ function toggleDataSeries(e) {
       <ul class="nav nav-tabs card-header-tabs" id="title">
         {% for category in achievements.keys %}
         <li class="nav-item">
-          <a data-toggle="tab" class="nav-link" href="#{{category}}">{{ category }}</a>
+          <a data-toggle="tab" class="nav-link" href="#{{category.id}}">{{ category }}</a>
         </li>
         {% endfor %}
       </ul>
@@ -149,42 +149,42 @@ function toggleDataSeries(e) {
     <div class="card-body">
       <div class="tab-content">
         {% for category, values in achievements.items %}
-        <div id="{{category}}" class="tab-pane">
+        <div id="{{category.id}}" class="tab-pane">
           {% for value in values %}
             {% if value > 1%}
               {% if value >= 100  %}
-              <div class="card horizontal-card achiev-border" style="border-color:{{key.colour}}">
+              <div class="card horizontal-card achiev-border" style="border-color:{{category.colour}}">
                 <h5 class="text-center achiev-title">You've reached {{ value }} points!</h5>
                 <img class="achievements" src="{% static 'trophies/Achiev100.jpeg' %}" alt="100 Points" />
-                <h5 class="text-center achiev-title">{{key}}</h5>
+                <h5 class="text-center achiev-title">{{category}}</h5>
               </div>
               {% else %}
                 {% if value >= 50  %}
-                <div class="card horizontal-card achiev-border" style="border-color:{{key.colour}}">
+                <div class="card horizontal-card achiev-border" style="border-color:{{category.colour}}">
                   <h5 class="text-center achiev-title">You've reached {{ value }} points!</h5>
                   <img class="achievements" src="{% static 'trophies/Achiev50.jpeg' %}" alt="50 Points" />
-                  <h5 class="text-center achiev-title">{{key}}</h5>
+                  <h5 class="text-center achiev-title">{{category}}</h5>
                 </div>
                 {% else %}
                   {% if value >= 25  %}
-                  <div class="card horizontal-card achiev-border" style="border-color:{{key.colour}}">
+                  <div class="card horizontal-card achiev-border" style="border-color:{{category.colour}}">
                     <h5 class="text-center achiev-title">You've reached {{ value }} points!</h5>
                     <img class="achievements" src="{% static 'trophies/Achiev25.jpg' %}" alt="25 Points" />
-                    <h5 class="text-center achiev-title">{{key}}</h5>
+                    <h5 class="text-center achiev-title">{{category}}</h5>
                   </div>
                   {% else %}
                     {% if value >= 10  %}
-                    <div class="card horizontal-card achiev-border" style="border-color:{{key.colour}}">
+                    <div class="card horizontal-card achiev-border" style="border-color:{{category.colour}}">
                       <h5 class="text-center achiev-title">You've reached {{ value }} points!</h5>
                       <img class="achievements" src="{% static 'trophies/Achiev10.jpg' %}" alt="10 Points" />
-                      <h5 class="text-center achiev-title">{{key}}</h5>
+                      <h5 class="text-center achiev-title">{{category}}</h5>
                     </div>
                     {% else %}
                       {% if value >= 5  %}
-                        <div class="card horizontal-card achiev-border" style="border-color:{{key.colour}}">
+                        <div class="card horizontal-card achiev-border" style="border-color:{{category.colour}}">
                           <h5 class="text-center achiev-title">You've reached {{ value }} points!</h5>
                           <img class="achievements" src="{% static 'trophies/Achiev5.jpeg' %}" alt="5 Points" />
-                          <h5 class="text-center achiev-title">{{key}}</h5>
+                          <h5 class="text-center achiev-title">{{category}}</h5>
                         </div>
                       {% endif %}
                     {% endif %}
@@ -200,8 +200,8 @@ function toggleDataSeries(e) {
             </div>
             {% endif %}
           {% endfor %}
-        </div>
-          {% endfor %}
+          </div>
+        {% endfor %}
       </div>
     </div>
     <section class="horizontal-scroll">
