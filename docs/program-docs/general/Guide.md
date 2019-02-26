@@ -14,7 +14,7 @@ The application allows a lecturer to provide students in their course with feedb
 
 If you sign-up/login as a Lecturer the first page you will see is the home page:
 
-<img src="http://stgit.dcs.gla.ac.uk/tp3-2018-ese1/dissertation/blob/131-improve-program-documentation/docs/program-docs/general/screenshots/lecturer_home.png">
+<img src="docs/program-docs/general/screenshots/lecturer_home.png">
 
 Here you can view the different courses you are part of, and recent feedback you have given to different students. You can either directly click on a course to view more information about it, or click "Courses" in the navbar to be directed to another page:
 
