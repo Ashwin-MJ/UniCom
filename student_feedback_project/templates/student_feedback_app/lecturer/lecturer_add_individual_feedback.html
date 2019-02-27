@@ -24,14 +24,26 @@ Add Feedback
     <div class="custom-card" style="margin:0; padding:0">
       <div class="cat-option">
         <h3 class="fb-form-heading">Select a Category:</h3>
-        {% for cat in categories %}
-        <div class="btn btn-material btn-ripple cat-item" id="{{cat.id}}" style="background-color:{{cat.colour}}">{{cat.name}}</div>
-        {% endfor %}
+        <div style="margin:10px">
+          {% for cat in categories %}
+          <div class="btn btn-material btn-ripple cat-item" id="{{cat.id}}" style="background-color:{{cat.colour}}">{{cat.name}}</div>
+          {% endfor %}
+          <a href="{%url 'customise_options' %}">
+            <div class="btn btn-material btn-ripple cat-item" id="{{cat.id}}" style="background-color:{{cat.colour}}">
+              {{cat.name}}
+              <i class="material-icons add-cat-redirect">add</i>
+            </div>
+          </a>
+        </div>
       </div>
 
       <h3 class="fb-form-heading">Select a Message:</h3>
-      <div class="card-body messages-scroll messages">
-
+      <div class="messages-scroll messages">
+        <div class="card fb-border">
+          <div class="card-body text-center">
+            <b class="message-heading">Select a category first</b>
+          </div>
+        </div>
       </div>
       <form method="">
         {% csrf_token %}
@@ -50,7 +62,7 @@ Add Feedback
 
         {% for field in form.visible_fields %}
           <div class="form-group" style="padding:10px">
-            <h3 class="custom-card-title">
+            <h3 class="heading-for-label">
               {{ field.label_tag }}
             </h3>
             {% if field.help_text %}
@@ -89,7 +101,7 @@ Add Feedback
     <h3 class="text-center custom-card-title">Total Score: {{ student.score }}</h3>
     <hr />
 
-    <div class="custom-card"style="margin-bottom:25px; padding:0">
+    <div class="custom-card"style="margin-bottom:25px; padding:0; margin-top:0">
       <div class="card">
         <h5 class="text-center custom-card-title">Recent Feedback for {{ student.student.username }}</h5>
         <hr />
@@ -131,6 +143,46 @@ Add Feedback
       </div>
     </div>
   </div>
+
+  <!-- New Message Modal -->
+  <div class="modal" id="addMessageModal" tabindex="-1" role="dialog" aria-labelledby="addMessageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title modal-add-mess-header" id="addMessageModalTitle">Add a new Message</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+          <div class="modal-body">
+            {% csrf_token %}
+            {% for hidden_field in new_mess_form.hidden_fields %}
+              {{ hidden_field }}
+            {% endfor %}
+
+            {% for field in new_mess_form.visible_fields %}
+              <div class="form-group" style="padding:10px">
+                <h3 id="form-title">
+                  {{ field.label_tag }}
+                </h3>
+                {% if field.help_text %}
+                  <small class="form-text text-muted">{{ field.help_text }}</small>
+                {% endif %}
+                {% render_field field class="form-control" %}
+              </div>
+            {% endfor %}
+
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-material" data-dismiss="modal">Close</button>
+            <button class="btn btn-material btn-ripple submit-add-mess-form" type="submit" name="submit" value="Submit">Submit</button>
+          </div>
+
+      </div>
+    </div>
+  </div>
+
 </div>
 {% endblock %}
 

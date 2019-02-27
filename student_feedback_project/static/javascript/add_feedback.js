@@ -202,8 +202,43 @@ function updateHtml(colour,message_set,cat_name,cat_id) {
       }
     }
   }
+  cat_messages += `<div class="add-mess button" data-toggle="modal" data-target="#addMessageModal">`
+                  + `<button class="btn btn-material btn-ripple">Add a new Message</button`
+                  + `</div>`
+
   $('.messages').html(cat_messages);
 }
+
+$('.submit-add-mess-form').on('click', function(){
+  var text = $('#id_new_text').val();
+  var cat_id = $('.cat-border').attr("id");
+
+  var data = {
+           "text": text,
+           "category": cat_id
+         }
+  var csrftoken = getCookie("csrftoken");
+  function csrfSafeMethod(method) {
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+  }
+  $.ajaxSetup({
+    beforeSend: function(xhr, settings) {
+        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        }
+    }
+  });
+  $.ajax({
+      url: "/message/",
+      data: JSON.stringify(data),
+      type: 'POST',
+      contentType: 'application/json',
+      dataType: "json",
+      success: function() {
+      },
+  });
+  location.reload() 
+});
 
 function getCookie(cname) {
   var name = cname + "=";

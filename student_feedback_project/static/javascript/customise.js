@@ -209,7 +209,7 @@ $('.create-mess-icon').on('click',function(e) {
   // Dynamically update modal for this option
   // Then send POST request from here
   var cat_name = $('.cat-title').html();
-  var cat_id = $('.cat-title').attr('id');;
+  var cat_id = $('.cat-title').attr('id');
 
   $('.modal-add-mess-header').html("Add a new message for \"" + cat_name + "\"");
   $('.submit-add-mess-form').on('click', function(){

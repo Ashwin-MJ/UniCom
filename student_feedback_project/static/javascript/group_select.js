@@ -29,26 +29,6 @@ $('#group-feedback-form').submit(function(){
   }
 });
 
-$('#invites-form').submit(function(){
-  var res=[];
-  $('.students').each(function(){
-    if($(this).hasClass('color')){
-      res.push($(this).attr('id'))
-    }
-  })
-
-  if(res.length == 0){
-    alert("Please select at least 1 students to send the course token to.");
-    return false;
-  }
-  else{
-    var jsonText = JSON.stringify(res);
-    var cookieText = "students=" + jsonText + ';'
-    document.cookie = cookieText;
-    return true;
-  }
-});
-
 $('#individual-feedback-form').submit(function(){
   var res=[];
   $('.students').each(function(){
@@ -77,9 +57,11 @@ $('#individual-feedback-form').submit(function(){
 $('.leaderboard-stud').click(function(e) {
   var stud_id = $(this).attr("id");
   var my_id = $(".card-deck").attr("id");
-  console.log(my_id)
   if(stud_id == my_id){
     alert("You cannot give yourself feedback.")
+  } else{
+    var course_slug = window.location.href.split("/")[5];
+    window.location.replace("/student/" + course_slug + "/" + stud_id + "/add-individual-feedback/");
   }
 
 });
