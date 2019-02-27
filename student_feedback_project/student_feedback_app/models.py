@@ -189,56 +189,26 @@ class Course(models.Model):
 
             if feedback.category.name in fbTotals:
                 dates = []
-                print(' ')
-                print(feedback.category.name)
                 for i in range(len(fbTotals[feedback.category.name])):
-
-
                     # populate dates with all the dates saved in fbTotal for this feedback category.
                     for data in fbTotals[feedback.category.name]:
                         for key in data:
                             if key not in dates:
                                 dates.append(key)
-                    print('////////////////////////')
-                    print(dates)
-                    print('////////////////////////')
 
-
-                    # print('--------')
-                    # print(fbTotals[feedback.category.name][i])
-                    # print('--------')
-
+                    # checking if we have already added the same date before
                     if feedback.date_only in dates:
-                        print('Date is same')
-                        # print(feedback.category.name)
-                        # print(feedback.points)
-                        # print('Values for this cat: ', fbTotals[feedback.category.name][i].keys())
-                        # print('new feedback date: ', feedback.date_only)
-                        print(feedback.date_only)
-                        print(fbTotals[feedback.category.name][i])
+                        # if we have added the same date, check that the one in the list that we're viewing
+                        # is the date that matches the one we want to add points too
                         if feedback.date_only in fbTotals[feedback.category.name][i]:
+                            # increase points
                             fbTotals[feedback.category.name][i][feedback.date_only] += feedback.points
-                        print(fbTotals[feedback.category.name])
-                        # print(' ')
+                    # if its not the same date, add a new dict entry
                     else:
-
-                        print("new date")
-                        # print(feedback.category.name)
-                        # print(feedback.points)
-                        # print('Values for this cat: ', fbTotals[feedback.category.name][i].keys())
-                        # print('new feedback date: ', feedback.date_only)
                         fbTotals[feedback.category.name].append({feedback.date_only : feedback.points})
-                        print(fbTotals[feedback.category.name])
-                        # print(" ")
-
-
+            # create a new outer dict entry
             else:
-                print('category didnt exist')
-                print(feedback.category.name)
                 fbTotals[feedback.category.name] = [{feedback.date_only: feedback.points}]
-
-        print('finished')
-        # print(fbTotals)
         return fbTotals
 
 

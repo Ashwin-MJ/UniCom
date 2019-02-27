@@ -392,8 +392,6 @@ def lecturer_course(request,subject_slug):
                             else:
                                 fbCat[cat] = [[data[key], date_str]]
 
-
-
             fb_with_colour={}
             for feedback in fb:
                 try:
