@@ -8,6 +8,10 @@ from django.template.defaultfilters import slugify
 from django.contrib.auth import get_user_model
 from django.db import connection
 
+from datetime import date, timedelta,datetime
+import pytz
+import random
+
 User = get_user_model()
 
 
@@ -479,7 +483,16 @@ def add_feedback(feedback_id,category,points,from_user,student,course_code,pre_d
 	fb.student = stud
 	stud.score += points
 	stud.save()
+
+	rand_date = date.today() - timedelta(random.randint(1,7))
+	rand_date_with_tzinfo = datetime(rand_date.year, rand_date.month,
+	 				rand_date.day, tzinfo=pytz.timezone('GMT'))
+
+
+	fb.datetime_given = rand_date_with_tzinfo
+	
 	fb.save()
+
 	return fb
 
 # Helper function to add Category
