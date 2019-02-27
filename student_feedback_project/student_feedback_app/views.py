@@ -266,13 +266,6 @@ def student_course(request, subject_slug):
             context_dict['sorted_students'] = course.get_leaderboard()
             fb = stud.get_fb_for_course(course.subject)
 
-<<<<<<< Updated upstream
-            categories = []
-            fb_with_colour = {}
-            for feedback in fb:
-                stud_cat = Category.objects.get(name=feedback.category.name,user=request.user)
-                categories.append(stud_cat)
-=======
             categories = request.user.category_set.all()
             students_and_scores_for_cat = {}
             for cat in categories:
@@ -287,17 +280,13 @@ def student_course(request, subject_slug):
             fb_with_colour = {}
             for feedback in fb:
                 stud_cat = Category.objects.get(name=feedback.category.name,user=request.user)
->>>>>>> Stashed changes
                 fb_with_colour[feedback] = stud_cat.colour
 
             context_dict['feedback'] = fb_with_colour
             context_dict['score'] = stud.get_score_for_course(course.subject)
             context_dict['student'] = stud
             context_dict['categories'] = categories
-<<<<<<< Updated upstream
-=======
             context_dict['cat_stud_and_score'] = students_and_scores_for_cat
->>>>>>> Stashed changes
         except:
             context_dict['course'] = None
             context_dict['lect'] = None
