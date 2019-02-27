@@ -45,7 +45,7 @@ $('.messages').on('click','.mess-item',function() {
   $(this).toggleClass(messborder);
 });
 
-$('#submit-fb-form').click(function(e) {
+$('.submit-fb-form').click(function(e) {
 
   var location = window.location.href;
   var student_id = location.split("/")[5];
@@ -58,23 +58,27 @@ $('#submit-fb-form').click(function(e) {
   var optional_message = $('#id_optional_message').val();
 
   var students_list = getCookie("indiv_students");
-  var redirect_url = "";
+  var redirect_url = "";  
 
-  if(students_list != ""){
-    students_list = JSON.parse(students_list);
-    students_list.shift()
-    var next_stud_id = students_list[0]
-    if(next_stud_id == undefined){
-      redirect_url = "/lecturer/my-provided-feedback/";
-    }else{
-      // If there are more students to give individual feedback to then set redirect url
-      var jsonText = JSON.stringify(students_list)
-      var cookieText = "indiv_students=" + jsonText + ';path=/lecturer/'+course + "/";
-      document.cookie = cookieText;
-      redirect_url = "/lecturer/" + course + "/" + next_stud_id + "/add-individual-feedback/";
-    }
+  if($(this).attr("id") == "add-another"){
+    redirect_url = "/lecturer/" + course + "/" + student_id + "/add-individual-feedback/"
   }else{
-    redirect_url = "/lecturer/my-provided-feedback/";
+    if(students_list != ""){
+      students_list = JSON.parse(students_list);
+      students_list.shift()
+      var next_stud_id = students_list[0]
+      if(next_stud_id == undefined){
+        redirect_url = "/lecturer/my-provided-feedback/";
+      }else{
+        // If there are more students to give individual feedback to then set redirect url
+        var jsonText = JSON.stringify(students_list)
+        var cookieText = "indiv_students=" + jsonText + ';path=/lecturer/'+course + "/";
+        document.cookie = cookieText;
+        redirect_url = "/lecturer/" + course + "/" + next_stud_id + "/add-individual-feedback/";
+      }
+    }else{
+      redirect_url = "/lecturer/my-provided-feedback/";
+    }
   }
 
   if(cat_id == null){
@@ -237,7 +241,7 @@ $('.submit-add-mess-form').on('click', function(){
       success: function() {
       },
   });
-  location.reload() 
+  location.reload()
 });
 
 function getCookie(cname) {
