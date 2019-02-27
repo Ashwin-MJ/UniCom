@@ -261,7 +261,6 @@ def student_course(request, subject_slug):
             top_students = students.order_by('-score')
             context_dict['course'] = course
             context_dict['lecturers'] = lecturers
-
             context_dict['students'] = students
             context_dict['sorted_students'] = course.get_leaderboard()
             fb = stud.get_fb_for_course(course.subject)
