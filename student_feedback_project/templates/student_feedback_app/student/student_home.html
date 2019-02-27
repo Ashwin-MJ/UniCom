@@ -109,10 +109,16 @@ function toggleDataSeries(e) {
           {% endfor %}
       </div>
 
-	  <div class="button" style="padding-bottom:0px; padding-top:10px;">
-          <button onclick="sort('{{ student.student.username }}', 'points', 'student')" type="button" class="btn btn-material btn-ripple">Sort by points</button>
-          <button onclick="sort('{{ student.student.username }}', 'date', 'student')" type="button" class="btn btn-material btn-ripple">Sort by date</button>
-          <button onclick="sort('{{ student.student.username }}', 'course', 'student')" type="button" class="btn btn-material btn-ripple">Sort by course</button>
+      <br/>
+      <div class="btn-group dropright button">
+          <button class="btn btn-material dropdown-toggle" type="button"data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Sort by
+          </button>
+          <div class="dropdown-menu custom-dd-menu">
+            <button onclick="sort('{{ student.student.username }}', 'points', 'student')" type="button" class="btn btn-material btn-ripple">Points</button>
+            <button onclick="sort('{{ student.student.username }}', 'date', 'student')" type="button" class="btn btn-material btn-ripple">Date</button>
+            <button onclick="sort('{{ student.student.username }}', 'course', 'student')" type="button" class="btn btn-material btn-ripple">Course</button>
+          </div>
       </div>
     </div>
 
