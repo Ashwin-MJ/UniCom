@@ -266,17 +266,17 @@ def student_course(request, subject_slug):
             context_dict['sorted_students'] = course.get_leaderboard()
             fb = stud.get_fb_for_course(course.subject)
 
+            categories = []
             fb_with_colour = {}
             for feedback in fb:
-                try:
-                    stud_cat = Category.objects.get(name=feedback.category.name,user=request.user)
-                    fb_with_colour[feedback] = stud_cat.colour
-                except:
-                    fb_with_colour[feedback] = feedback.category.colour
+                stud_cat = Category.objects.get(name=feedback.category.name,user=request.user)
+                categories.append(stud_cat)
+                fb_with_colour[feedback] = stud_cat.colour
 
             context_dict['feedback'] = fb_with_colour
             context_dict['score'] = stud.get_score_for_course(course.subject)
             context_dict['student'] = stud
+            context_dict['categories'] = categories
         except:
             context_dict['course'] = None
             context_dict['lect'] = None

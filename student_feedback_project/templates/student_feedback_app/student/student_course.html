@@ -87,6 +87,20 @@
     <div class="card scroll-bg">
       <h3 class="text-center custom-card-title leaderboard">Leaderboard</h3>
       <hr />
+
+      <div class="card-header">
+        <ul class="nav nav-tabs card-header-tabs" id="title">
+          <li class="nav-item">
+            <a data-toggle="tab" class="nav-link active" style="color:black" href="#AllCats">All acheivements</a>
+          </li>
+          {% for category in categories %}
+          <li class="nav-item">
+            <a data-toggle="tab" class="nav-link" style="color:{{category.colour}}" href="#{{category.id}}">{{ category }}</a>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+
       <div class="card-body scroll">
         {% for stud,score in sorted_students %}
           <div class="card custom-card leaderboard-stud" id="{{stud.student.id_number}}">

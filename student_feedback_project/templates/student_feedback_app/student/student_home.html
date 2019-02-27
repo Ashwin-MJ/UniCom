@@ -136,7 +136,25 @@ function toggleDataSeries(e) {
     <hr />
     <section class="horizontal-scroll">
 
-        {% for key,values in achievements.items %}
+<!-- Headers for acheivement categories tabs-->
+    <div class="card-header">
+      <ul class="nav nav-tabs card-header-tabs" id="title">
+        <li class="nav-item">
+          <a data-toggle="tab" class="nav-link active" style="color:black" href="#AllCats">All acheivements</a>
+        </li>
+        {% for category in achievements.keys %}
+        <li class="nav-item">
+          <a data-toggle="tab" class="nav-link" style="color:{{category.colour}}" href="#{{category.id}}">{{ category }}</a>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+  <!-- Content of tabs -->
+    <div class="card-body">
+      <div class="tab-content">
+        {% for category, values in achievements.items %}
+        <div id="{{category.id}}" class="tab-pane">
+          <section class="horizontal-scroll">
           {% for value in values %}
             {% if value > 1%}
               {% if value >= 100  %}
