@@ -179,6 +179,39 @@ class Course(models.Model):
         # This is important in the template
         return temp_dict
 
+    # Used for the graph implementation, gives the total score for lecturers
+    # categories in a course
+    def get_total_for_course_attributes(self):
+        fbTotals={}
+
+
+        for feedback in self.feedback_set.all():
+
+            if feedback.category.name in fbTotals:
+                dates = []
+                for i in range(len(fbTotals[feedback.category.name])):
+                    # populate dates with all the dates saved in fbTotal for this feedback category.
+                    for data in fbTotals[feedback.category.name]:
+                        for key in data:
+                            if key not in dates:
+                                dates.append(key)
+
+                    # checking if we have already added the same date before
+                    if feedback.date_only in dates:
+                        # if we have added the same date, check that the one in the list that we're viewing
+                        # is the date that matches the one we want to add points too
+                        if feedback.date_only in fbTotals[feedback.category.name][i]:
+                            # increase points
+                            fbTotals[feedback.category.name][i][feedback.date_only] += feedback.points
+                    # if its not the same date, add a new dict entry
+                    else:
+                        fbTotals[feedback.category.name].append({feedback.date_only : feedback.points})
+            # create a new outer dict entry
+            else:
+                fbTotals[feedback.category.name] = [{feedback.date_only: feedback.points}]
+        return fbTotals
+
+
 class LecturerProfile(models.Model):
     lecturer = models.OneToOneField(User, on_delete=models.CASCADE,primary_key=True)
     courses = models.ManyToManyField('Course')
@@ -194,10 +227,13 @@ class LecturerProfile(models.Model):
         courses_with_students = {}
         for course in self.courses.all():
             courses_with_students[course] = len(course.students.all())
-
         return courses_with_students
 
+
+
+
 class Feedback(models.Model):
+    date_only = models.DateField(default=timezone.now)
     date_given = models.DateTimeField(default=timezone.now)
     feedback_id = models.IntegerField(primary_key=True)
     pre_defined_message = models.ForeignKey('Message',on_delete=models.CASCADE,null=True,blank=True) # Selected from a pre defined list depending on selected category
