@@ -199,8 +199,11 @@ def student_all_feedback(request):
 
         fb_with_colour = {}
         for feedback in fb:
-            stud_cat = Category.objects.get(name=feedback.category.name,user=request.user)
-            fb_with_colour[feedback] = stud_cat.colour
+            try:
+                stud_cat = Category.objects.get(name=feedback.category.name,user=request.user)
+                fb_with_colour[feedback] = stud_cat.colour
+            except:
+                fb_with_colour[feedback] = feedback.category.colour
 
         context_dict['feedback'] = fb_with_colour
         top_attributes = stud.get_top_attributes()
@@ -265,8 +268,11 @@ def student_course(request, subject_slug):
 
             fb_with_colour = {}
             for feedback in fb:
-                stud_cat = Category.objects.get(name=feedback.category.name,user=request.user)
-                fb_with_colour[feedback] = stud_cat.colour
+                try:
+                    stud_cat = Category.objects.get(name=feedback.category.name,user=request.user)
+                    fb_with_colour[feedback] = stud_cat.colour
+                except:
+                    fb_with_colour[feedback] = feedback.category.colour
 
             context_dict['feedback'] = fb_with_colour
             context_dict['score'] = stud.get_score_for_course(course.subject)
@@ -284,13 +290,20 @@ def student_course(request, subject_slug):
     return render(request, 'student_feedback_app/student/student_course.html', context_dict)
 
 def student_add_individual_feedback(request,subject_slug,student_number):
+    context_dict = {}
+
     if not request.user.is_authenticated or not request.user.is_student:
         context_dict['error'] = "auth"
         return render(request,'student_feedback_app/general/error_page.html', context_dict)
-    context_dict = {}
+
     try:
         from_stud = StudentProfile.objects.get(student=request.user)
         stud_user = User.objects.get(id_number=student_number)
+
+        if student_number == request.user.id_number:
+            context_dict['error'] = "auth"
+            return render(request,'student_feedback_app/general/error_page.html', context_dict)
+
         stud = StudentProfile.objects.get(student=stud_user)
 
         fb = stud.feedback_set.all().filter(from_user=request.user).order_by('-datetime_given')
@@ -301,6 +314,7 @@ def student_add_individual_feedback(request,subject_slug,student_number):
         context_dict['course'] = course
 
         context_dict['categories'] = request.user.category_set.all()
+        context_dict['new_mess_form'] = NewMessageForm()
 
         messages = request.user.message_set.all()
         all_messages = {}
@@ -386,10 +400,11 @@ def lecturer_course(request,subject_slug):
     return render(request,'student_feedback_app/lecturer/lecturer_course.html',context_dict)
 
 def lecturer_add_individual_feedback(request,subject_slug,student_number):
+    context_dict = {}
     if not request.user.is_authenticated or not request.user.is_lecturer:
         context_dict['error'] = "auth"
         return render(request,'student_feedback_app/general/error_page.html', context_dict)
-    context_dict = {}
+
     try:
         lect = LecturerProfile.objects.get(lecturer=request.user)
         stud_user = User.objects.get(id_number=student_number)
@@ -401,6 +416,8 @@ def lecturer_add_individual_feedback(request,subject_slug,student_number):
         context_dict['feedback'] = fb
         course = Course.objects.get(subject_slug=subject_slug)
         context_dict['course'] = course
+
+        context_dict['new_mess_form'] = NewMessageForm()
 
         context_dict['categories'] = request.user.category_set.all()
 
@@ -422,10 +439,10 @@ def lecturer_add_individual_feedback(request,subject_slug,student_number):
         return render(request,'student_feedback_app/general/error_page.html', context_dict)
 
 def add_group_feedback(request,subject_slug):
+    context_dict = {}
     if not request.user.is_authenticated or not request.user.is_lecturer:
         context_dict['error'] = "auth"
         return render(request,'student_feedback_app/general/error_page.html', context_dict)
-    context_dict = {}
     try:
         students_string = request.COOKIES.get("students")
         students_list = json.loads(students_string)
@@ -440,6 +457,8 @@ def add_group_feedback(request,subject_slug):
         context_dict['subject'] = course
 
         context_dict['categories'] = request.user.category_set.all()
+
+        context_dict['new_mess_form'] = NewMessageForm()
 
         messages = request.user.message_set.all()
         all_messages = {}
@@ -573,10 +592,11 @@ class FeedbackDetail(APIView):
     def post(self, request,format=None):
         cat = Category.objects.get(id=request.data.get('cat_id'),user=request.user)
         mess = Message.objects.get(id=request.data.get('mess_id'),user=request.user)
-
         if(request.data.get('type') == "GROUP"):
             # If providing group feedback then create a feedback object for every student
-            students = request.data.get('students')
+            # students = request.data.get('students')
+            req_dict = dict(request.data)
+            students = req_dict['students']
             for stud in students:
                 stud_user = User.objects.get(id_number=stud)
                 stud = StudentProfile.objects.get(student=stud_user)
@@ -754,29 +774,50 @@ def invites(request):
     except:
         context_dict['error'] = "error"
         return render(request,'student_feedback_app/general/error_page.html', context_dict)
-    try:
-        students_string = request.COOKIES.get("students")
+
+
+    mode = 0
+    message =  ' lecturer ' + request.user.username + ' has invited you to join ' + course.subject + ' (' + course.course_code + '). To join this course use this token: ' + course.course_token
+    students_string = request.COOKIES.get("students")
+    if is_json(students_string):
+        mode += 1
         students_list = json.loads(students_string)
         students = []
         for student_id in students_list:
             stud_user = User.objects.get(id_number=student_id)
             students.append(stud_user)
 
-        message =  ' lecturer ' + request.user.username + ' has invited you to join ' + course.subject + ' (' + course.course_code + '). To join this course use this token: ' + course.course_token
         for student in students:
             personal_message = 'Dear ' + student.username + message
             send_mail('You are invited to join a course!',personal_message,'lect.acc.unicom@gmail.com',[student.email])
-
-        response = lecturer_course(request, course.subject_slug)
-        response.set_cookie('students', '', path="/lecturer/invites/")
-        return response
-
-    except:
+    message =  ' Lecturer ' + request.user.username + ' has invited you to join ' + course.subject + ' (' + course.course_code + '). To join this course use this token: ' + course.course_token
+    students_emails_string = request.COOKIES.get("emails")
+    if is_json(students_emails_string):
+        mode += 1
+        emails_list = json.loads(students_emails_string)
+        emails = []
+        for email in emails_list:
+            if email != "example@university.com":
+                emails.append(email)
+        message = message + "; Register online to joint UniCom."
+        send_mail('You are invited to join a course!',message,'lect.acc.unicom@gmail.com',emails)
+    if mode == 0:
         lect = LecturerProfile.objects.get(lecturer=request.user)
         students = lect.get_my_students()
         added_students = course.students.distinct()
         context_dict['students'] = set(students).difference(set(added_students))
         return render(request, 'student_feedback_app/lecturer/invites.html', context_dict)
+    response = lecturer_course(request, course.subject_slug)
+    response.set_cookie('students', '', path="/lecturer/invites/")
+    response.set_cookie('emails', '', path="/lecturer/invites/")
+    return response
+
+def is_json(myjson):
+    try:
+        json_object = json.loads(myjson)
+    except ValueError as e:
+        return False
+    return True
 
 def populate_categories_and_messages(user):
     # This uses newly created methods in the population script to ensure that
