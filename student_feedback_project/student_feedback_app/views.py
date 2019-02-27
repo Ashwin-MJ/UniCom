@@ -274,7 +274,6 @@ def student_course(request, subject_slug):
                     all_stud_and_score.append(stud_and_score)
                 all_stud_and_score = sorted(all_stud_and_score, key = lambda x: x[1], reverse = True)
                 students_and_scores_for_cat[cat] = all_stud_and_score
-            print("final product: ", students_and_scores_for_cat)
 
             fb_with_colour = {}
             for feedback in fb:
@@ -391,6 +390,16 @@ def lecturer_course(request,subject_slug):
             course = Course.objects.get(subject_slug=subject_slug)
             lect = LecturerProfile.objects.get(lecturer=request.user)
             students = course.students.all()
+            categories = request.user.category_set.all()
+            students_and_scores_for_cat = {}
+            for cat in categories:
+                all_stud_and_score = []
+                for stud in students:
+                    stud_and_score = [stud, stud.get_score_for_one_category(cat)]
+                    all_stud_and_score.append(stud_and_score)
+                all_stud_and_score = sorted(all_stud_and_score, key = lambda x: x[1], reverse = True)
+                students_and_scores_for_cat[cat] = all_stud_and_score
+            print(students_and_scores_for_cat)
             context_dict['course'] = course
             context_dict['lecturer'] = lect
             context_dict['students_with_score'] = {}
@@ -400,6 +409,8 @@ def lecturer_course(request,subject_slug):
             context_dict['students_with_score'] = [(k, students[k]) for k in sorted(students)]
             context_dict['sorted_students'] = course.get_leaderboard()
             context_dict['feedback'] = fb
+            context_dict['cat_stud_and_score'] = students_and_scores_for_cat
+            context_dict['categories'] = categories
         except:
             context_dict['error'] = "no_course"
             return render(request,'student_feedback_app/general/error_page.html', context_dict)
