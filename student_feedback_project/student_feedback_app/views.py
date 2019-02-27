@@ -25,6 +25,7 @@ from rest_framework.views import APIView
 
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import get_template
+import re
 
 
 def index(request):
@@ -61,6 +62,8 @@ def my_profile(request):
 
 def view_profile(request,student_number):
     context_dict = {}
+    fbCat = {}
+    catColours = {}
     if request.user.is_authenticated:
         if request.user.is_student:
             # Case 1 - Student view another Student
@@ -83,9 +86,33 @@ def view_profile(request,student_number):
                 stud_user = User.objects.get(id_number=student_number)
                 stud = StudentProfile.objects.get(student=stud_user)
                 fb = stud.feedback_set.all().order_by('-datetime_given')
+                for feedback in fb:
+                    cat = feedback.category.name
+                    if cat not in fbCat:
+                        fbCat[cat] = [[feedback.points, feedback.datetime_given.strftime('%Y-%m-%d %H:%M')]]
+                        try:
+                            stud_cat = Category.objects.get(name=feedback.category.name, user=request.user)
+                            catColours[cat] = [stud_cat.colour]
+                        except:
+                            catColours[cat] = [feedback.category.colour]
+                    else:
+                        fbCat[cat].append([feedback.points, feedback.datetime_given.strftime('%Y-%m-%d %H:%M')])
+
+                fb_with_colour = {}
+                for feedback in fb:
+                    try:
+                        stud_cat = Category.objects.get(name=feedback.category.name, user=request.user)
+                        fb_with_colour[feedback] = stud_cat.colour
+                    except:
+                        fb_with_colour[feedback] = feedback.category.colour
+
+
                 context_dict['student'] = stud
                 context_dict['courses'] = stud.get_courses_with_score()
                 context_dict['feedback'] = fb
+                context_dict['feedback'] = fb_with_colour
+                context_dict['feedbackData'] = json.dumps(fbCat)
+                context_dict['catColours'] = json.dumps(catColours)
             except:
                 context_dict['error'] = "error"
                 return render(request, 'student_feedback_app/general/error_page.html', context_dict)
@@ -143,6 +170,8 @@ def student_home(request):
                         catColours[cat] = [feedback.category.colour]
                 else:
                     fbCat[cat].append([feedback.points, feedback.datetime_given.strftime('%Y-%m-%d %H:%M')])
+
+            print(fbCat)
             stud.achievement_set.all().delete()
             scores = stud.get_score_for_category()
 
@@ -155,11 +184,10 @@ def student_home(request):
                     ## TODO: Figure out how to handle this error
                     print("Doesn't exit")
 
-            stud.achievement_set.all()
             for achvm in stud.achievement_set.all():
                 achvm.achiev = literal_eval(achvm.achiev)
                 for val in achvm.achiev:
-                    if achvm.category in achievs:
+                    if achvm.category.name in achievs:
                         achievs[achvm.category].append(val)
                     else:
                         achievs[achvm.category] = [val]
@@ -169,8 +197,6 @@ def student_home(request):
             # The follow dictionary is required to ensure the colour displayed for a given feedback
             # corresponds to the student's colour of that category and NOT the lecturers
             fb_with_colour = {}
-            stud_cats = request.user.category_set.all()
-
             for feedback in fb:
                 try:
                     stud_cat = Category.objects.get(name=feedback.category.name,user=request.user)
@@ -255,6 +281,8 @@ def student_courses(request):
 
 def student_course(request, subject_slug):
     context_dict = {}
+    fbCat = {}
+    catColours = {}
     if request.user.is_authenticated and request.user.is_student:
         try:
             course = Course.objects.get(subject_slug=subject_slug)
@@ -267,7 +295,27 @@ def student_course(request, subject_slug):
 
             context_dict['students'] = students
             context_dict['sorted_students'] = course.get_leaderboard()
+            fbTotal = course.get_total_for_course_attributes()
+
             fb = stud.get_fb_for_course(course.subject)
+            for feedback in fb:
+                cat = feedback.category.name
+                for data in fbTotal[cat]:
+                    for key in data:
+                        date_str = re.split('[()]', str(key))[0]
+                        if cat not in fbCat:
+                            fbCat[cat] = [[data[key], date_str]]
+                            try:
+                                lect_cat = Category.objects.get(name=feedback.category.name, user=request.user)
+                                catColours[cat] = [lect_cat.colour]
+                            except:
+                                catColours[cat] = [feedback.category.colour]
+                        else:
+                            if feedback.date_only not in data:
+                                fbCat[cat].append([data[key], date_str])
+                            else:
+                                fbCat[cat] = [[data[key], date_str]]
+
 
             fb_with_colour = {}
             for feedback in fb:
@@ -277,9 +325,12 @@ def student_course(request, subject_slug):
                 except:
                     fb_with_colour[feedback] = feedback.category.colour
 
-            context_dict['feedback'] = fb_with_colour
             context_dict['score'] = stud.get_score_for_course(course.subject)
             context_dict['student'] = stud
+            context_dict['feedback'] = fb_with_colour
+            context_dict['feedbackData'] = json.dumps(fbCat)
+            context_dict['catColours'] = json.dumps(catColours)
+
         except:
             context_dict['course'] = None
             context_dict['lect'] = None
@@ -380,20 +431,49 @@ def lecturer_home(request):
 
 def lecturer_course(request,subject_slug):
     context_dict = {}
+    fbCat={}
+    catColours = {}
     if request.user.is_authenticated and request.user.is_lecturer:
         try:
             course = Course.objects.get(subject_slug=subject_slug)
             lect = LecturerProfile.objects.get(lecturer=request.user)
-            students = course.students.all()
+            fbTotal = course.get_total_for_course_attributes()
+            fb = course.feedback_set.all().order_by('-datetime_given')
+            for feedback in fb:
+                cat = feedback.category.name
+                for data in fbTotal[cat]:
+                    for key in data:
+                        date_str = re.split('[()]', str(key))[0]
+                        if cat not in fbCat:
+                            fbCat[cat] = [[data[key], date_str]]
+                            try:
+                                lect_cat = Category.objects.get(name=feedback.category.name, user=request.user)
+                                catColours[cat] = [lect_cat.colour]
+                            except:
+                                catColours[cat] = [feedback.category.colour]
+                        else:
+                            if feedback.date_only not in data:
+                                fbCat[cat].append([data[key], date_str])
+                            else:
+                                fbCat[cat] = [[data[key], date_str]]
+
+            fb_with_colour={}
+            for feedback in fb:
+                try:
+                    lect_cat = Category.objects.get(name=feedback.category.name,user=request.user)
+                    fb_with_colour[feedback] = lect_cat.colour
+                except:
+                    fb_with_colour[feedback] = feedback.category.colour
+
             context_dict['course'] = course
             context_dict['lecturer'] = lect
             context_dict['students_with_score'] = {}
-            # Add top students for each course. This requires editing models to store course in feedback
-            fb = course.feedback_set.all().order_by('-datetime_given')
             students = course.get_students_with_score()
             context_dict['students_with_score'] = [(k, students[k]) for k in sorted(students)]
             context_dict['sorted_students'] = course.get_leaderboard()
-            context_dict['feedback'] = fb
+            context_dict['feedback'] = fb_with_colour
+            context_dict['feedbackData'] = fbCat
+            context_dict['catColours'] = json.dumps(catColours)
         except:
             context_dict['error'] = "no_course"
             return render(request,'student_feedback_app/general/error_page.html', context_dict)
