@@ -1,0 +1,1 @@
+{{lecturer}}{{subject}}{{course_code}}{{token}}
