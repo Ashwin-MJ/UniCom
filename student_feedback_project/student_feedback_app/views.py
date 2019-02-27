@@ -59,6 +59,8 @@ def my_profile(request):
 
 def view_profile(request,student_number):
     context_dict = {}
+    fbCat = {}
+    catColours = {}
     if request.user.is_authenticated:
         if request.user.is_student:
             # Case 1 - Student view another Student
@@ -81,9 +83,34 @@ def view_profile(request,student_number):
                 stud_user = User.objects.get(id_number=student_number)
                 stud = StudentProfile.objects.get(student=stud_user)
                 fb = stud.feedback_set.all().order_by('-datetime_given')
+                courses = stud.courses.all()
+                for feedback in fb:
+                    cat = feedback.category.name
+                    if cat not in fbCat:
+                        fbCat[cat] = [[feedback.points, feedback.datetime_given.strftime('%Y-%m-%d %H:%M')]]
+                        try:
+                            stud_cat = Category.objects.get(name=feedback.category.name, user=request.user)
+                            catColours[cat] = [stud_cat.colour]
+                        except:
+                            catColours[cat] = [feedback.category.colour]
+                    else:
+                        fbCat[cat].append([feedback.points, feedback.datetime_given.strftime('%Y-%m-%d %H:%M')])
+
+                fb_with_colour = {}
+                for feedback in fb:
+                    try:
+                        stud_cat = Category.objects.get(name=feedback.category.name, user=request.user)
+                        fb_with_colour[feedback] = stud_cat.colour
+                    except:
+                        fb_with_colour[feedback] = feedback.category.colour
+
+
                 context_dict['student'] = stud
                 context_dict['courses'] = stud.get_courses_with_score()
                 context_dict['feedback'] = fb
+                context_dict['feedback'] = fb_with_colour
+                context_dict['feedbackData'] = json.dumps(fbCat)
+                context_dict['catColours'] = json.dumps(catColours)
             except:
                 context_dict['error'] = "error"
                 return render(request, 'student_feedback_app/general/error_page.html', context_dict)
@@ -169,8 +196,6 @@ def student_home(request):
             # The follow dictionary is required to ensure the colour displayed for a given feedback
             # corresponds to the student's colour of that category and NOT the lecturers
             fb_with_colour = {}
-            stud_cats = request.user.category_set.all()
-
             for feedback in fb:
                 try:
                     stud_cat = Category.objects.get(name=feedback.category.name,user=request.user)
