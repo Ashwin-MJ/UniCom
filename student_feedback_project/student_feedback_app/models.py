@@ -92,9 +92,8 @@ class StudentProfile(models.Model):
     def get_fb_for_course(self,course):
         fb_for_course = []
         for fb in self.feedback_set.all():
-            if fb.which_course.subject == course:
+            if fb.which_course.subject == course.subject:
                 fb_for_course += [fb]
-
         return fb_for_course
 
     def get_courses_with_score(self):
@@ -147,6 +146,12 @@ class Course(models.Model):
         self.course_token = self.token_gen()
         super(Course, self).save(*args, **kwargs)
 
+    def get_feedback_list(self):
+        feedback_list = []
+        for student in self.students.all():
+            feedback_list.extend(student.get_fb_for_course(self))
+        return feedback_list
+
     def token_gen(self):
         size = 4
         chars = string.ascii_uppercase + string.digits
@@ -166,7 +171,7 @@ class Course(models.Model):
         return temp_dict
 
     def get_leaderboard(self):
-        temp_dict = self.get_students_with_score()    
+        temp_dict = self.get_students_with_score()
         # The dictionary stored in the retrieved dictionary has
         # each student as key and their score for this course as value
         # To get leaderboard, simply sort this dictionary by value and reverse
