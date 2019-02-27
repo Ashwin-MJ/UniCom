@@ -322,7 +322,6 @@ def student_course(request, subject_slug):
                 except:
                     fb_with_colour[feedback] = feedback.category.colour
 
-            context_dict['feedback'] = fb_with_colour
             context_dict['score'] = stud.get_score_for_course(course.subject)
             context_dict['student'] = stud
             context_dict['feedback'] = fb_with_colour
