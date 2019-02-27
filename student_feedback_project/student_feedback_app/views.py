@@ -387,7 +387,7 @@ def lecturer_course(request,subject_slug):
                             except:
                                 catColours[cat] = [feedback.category.colour]
                         else:
-                            if feedback.date_only != key:
+                            if feedback.date_only not in data:
                                 fbCat[cat].append([data[key], date_str])
                             else:
                                 fbCat[cat] = [[data[key], date_str]]

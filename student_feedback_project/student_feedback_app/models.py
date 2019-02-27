@@ -183,18 +183,58 @@ class Course(models.Model):
     # categories in a course
     def get_total_for_course_attributes(self):
         fbTotals={}
-        for feedback in self.feedback_set.all():
-            if feedback.category.name in fbTotals:
-                for data in fbTotals[feedback.category.name]:
-                    if feedback.date_only not in data:
-                        fbTotals[feedback.category.name] = [{feedback.date_only : feedback.points}]
 
-                    else:
+
+        for feedback in self.feedback_set.all():
+
+            if feedback.category.name in fbTotals:
+                dates = []
+                print(' ')
+                print(feedback.category.name)
+                for i in range(len(fbTotals[feedback.category.name])):
+
+
+                    # populate dates with all the dates saved in fbTotal for this feedback category.
+                    for data in fbTotals[feedback.category.name]:
                         for key in data:
-                            newTotal = feedback.points + data[key]
-                        fbTotals[feedback.category.name] = [{feedback.date_only : newTotal}]
+                            if key not in dates:
+                                dates.append(key)
+                    print('////////////////////////')
+                    print(dates)
+                    print('////////////////////////')
+
+
+                    # print('--------')
+                    # print(fbTotals[feedback.category.name][i])
+                    # print('--------')
+
+                    if feedback.date_only in dates:
+                        print('Date is same')
+                        # print(feedback.category.name)
+                        # print(feedback.points)
+                        # print('Values for this cat: ', fbTotals[feedback.category.name][i].keys())
+                        # print('new feedback date: ', feedback.date_only)
+                        print(fbTotals[feedback.category.name][i])
+                        fbTotals[feedback.category.name][i][feedback.date_only] += feedback.points
+                        print(fbTotals[feedback.category.name])
+                        # print(' ')
+                    else:
+
+                        print("new date")
+                        # print(feedback.category.name)
+                        # print(feedback.points)
+                        # print('Values for this cat: ', fbTotals[feedback.category.name][i].keys())
+                        # print('new feedback date: ', feedback.date_only)
+                        fbTotals[feedback.category.name].append({feedback.date_only : feedback.points})
+                        print(fbTotals[feedback.category.name])
+                        # print(" ")
+
+
             else:
-                fbTotals[feedback.category.name] = [{feedback.date_only : feedback.points}]
+                fbTotals[feedback.category.name] = [{feedback.date_only: feedback.points}]
+
+        # print('finished')
+        # print(fbTotals)
         return fbTotals
 
 
