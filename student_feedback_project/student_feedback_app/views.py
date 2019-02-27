@@ -399,7 +399,6 @@ def lecturer_course(request,subject_slug):
                     all_stud_and_score.append(stud_and_score)
                 all_stud_and_score = sorted(all_stud_and_score, key = lambda x: x[1], reverse = True)
                 students_and_scores_for_cat[cat] = all_stud_and_score
-            print(students_and_scores_for_cat)
             context_dict['course'] = course
             context_dict['lecturer'] = lect
             context_dict['students_with_score'] = {}
