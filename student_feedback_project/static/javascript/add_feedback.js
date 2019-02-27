@@ -58,7 +58,7 @@ $('.submit-fb-form').click(function(e) {
   var optional_message = $('#id_optional_message').val();
 
   var students_list = getCookie("indiv_students");
-  var redirect_url = "";  
+  var redirect_url = "";
 
   if($(this).attr("id") == "add-another"){
     redirect_url = "/lecturer/" + course + "/" + student_id + "/add-individual-feedback/"
@@ -129,7 +129,7 @@ $('.submit-fb-form').click(function(e) {
 
 });
 
-$('#submit-group-fb-form').click(function(e) {
+$('.submit-group-fb-form').click(function(e) {
 
   var location = window.location.href;
   var course = location.split("/")[5];
@@ -143,6 +143,13 @@ $('#submit-group-fb-form').click(function(e) {
   var students_list = getCookie("students");
 
   students_list = JSON.parse(students_list);
+  var redirect_url = "";
+
+  if($(this).attr("id") == "add-another"){
+    redirect_url = "/lecturer/courses/" + course + "/add-group-feedback/";
+  }else{
+    redirect_url = "/lecturer/my-provided-feedback/";
+  }
 
   if(cat_id == null){
     alert("You must select a category");
@@ -188,7 +195,7 @@ $('#submit-group-fb-form').click(function(e) {
       },
 
   });
-  window.location.replace("/lecturer/my-provided-feedback/");
+  window.location.replace(redirect_url);
 
 });
 
@@ -259,3 +266,72 @@ function getCookie(cname) {
   }
   return "";
 }
+
+
+$('.submit-fb-form-stud').click(function(e) {
+
+  var location = window.location.href;
+  var student_id = location.split("/")[5];
+  var course = location.split("/")[4];
+
+  var cat_id = $('.cat-border').attr("id");
+  var mess_id = $('.mess-border').attr("id");
+
+  var points = $('#id_points').val();
+  var optional_message = $('#id_optional_message').val();
+
+  var redirect_url = "";
+
+  if($(this).attr("id") == "add-another"){
+    redirect_url = "/student/" + course + "/" + student_id + "/add-individual-feedback/"
+  }else{
+    redirect_url = "/lecturer/my-provided-feedback/";    
+  }
+
+  if(cat_id == null){
+    alert("You must select a category");
+    return;
+  }
+  else if (mess_id == null) {
+    alert("You must select a pre defined message");
+    return;
+  }
+  else if (points == ""){
+    alert("You must add in some points");
+    return;
+  }
+
+  var data = {
+    "cat_id": cat_id,
+    "mess_id": mess_id,
+    "student": student_id,
+    "points": points,
+    "optional_message": optional_message,
+    "subject_slug":course,
+    "type":"INDIVIDUAL"
+  }
+
+  var csrftoken = getCookie("csrftoken");
+  function csrfSafeMethod(method) {
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+  }
+  $.ajaxSetup({
+    beforeSend: function(xhr, settings) {
+        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        }
+    }
+  });
+  $.ajax({
+      url: "/feedback/",
+      data: JSON.stringify(data),
+      type: 'POST',
+      contentType: 'application/json',
+      dataType: "json",
+      success: function() {
+      },
+
+  });
+  window.location.replace(redirect_url);
+
+});
