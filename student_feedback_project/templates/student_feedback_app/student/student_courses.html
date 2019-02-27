@@ -23,11 +23,14 @@ Courses
 
                 <div class="row" style="padding-bottom:1%">
                   <div class="column left">
-                    <div class="border">
+                    <div class="card">
                       <div class="course-info">
                         {{ course.course_description }}<br />
                         <footer>
-                          {{course.lecturer.lecturer.username}}
+                          {% for lect in course.lecturers.all %}
+                            {{lect.lecturer.username}}
+                            <br />
+                          {% endfor %}
                           </footer>
                           <br />
                         </div>

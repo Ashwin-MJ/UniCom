@@ -78,7 +78,11 @@ My Profile
                       <div class="course-info">
                         {{ course.course_description }}<br />
                         <footer>
-                          {{course.lecturer.lecturer.username}}
+                          <footer>
+                            {% for lect in course.lecturers.all %}
+                              {{lect.lecturer.username}},
+                            {% endfor %}
+                            </footer>
                           </footer>
                           <br />
                         </div>
