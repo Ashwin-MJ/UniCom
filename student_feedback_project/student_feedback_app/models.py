@@ -214,8 +214,10 @@ class Course(models.Model):
                         # print(feedback.points)
                         # print('Values for this cat: ', fbTotals[feedback.category.name][i].keys())
                         # print('new feedback date: ', feedback.date_only)
+                        print(feedback.date_only)
                         print(fbTotals[feedback.category.name][i])
-                        fbTotals[feedback.category.name][i][feedback.date_only] += feedback.points
+                        if feedback.date_only in fbTotals[feedback.category.name][i]:
+                            fbTotals[feedback.category.name][i][feedback.date_only] += feedback.points
                         print(fbTotals[feedback.category.name])
                         # print(' ')
                     else:
@@ -231,9 +233,11 @@ class Course(models.Model):
 
 
             else:
+                print('category didnt exist')
+                print(feedback.category.name)
                 fbTotals[feedback.category.name] = [{feedback.date_only: feedback.points}]
 
-        # print('finished')
+        print('finished')
         # print(fbTotals)
         return fbTotals
 
