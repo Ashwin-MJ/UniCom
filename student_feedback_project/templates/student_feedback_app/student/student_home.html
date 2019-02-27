@@ -133,44 +133,61 @@ function toggleDataSeries(e) {
   <div class="card scroll-bg">
     <h3 class="text-center custom-card-title">Achievements</h3>
     <hr />
-    <section class="horizontal-scroll">
 
-        {% for key,values in achievements.items %}
+<!-- Headers for acheivement categories tabs-->
+    <div class="card-header">
+      <ul class="nav nav-tabs card-header-tabs" id="title">
+        <li class="nav-item">
+          <a data-toggle="tab" class="nav-link active" style="color:black" id="defaultOpen" href="#AllCats">All acheivements</a>
+        </li>
+        {% for category in achievements.keys %}
+        <li class="nav-item">
+          <a data-toggle="tab" class="nav-link" style="color:{{category.colour}}" href="#{{category.id}}">{{ category }}</a>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+  <!-- Content of tabs -->
+    <div class="card-body">
+      <div class="tab-content">
+        {% for category, values in achievements.items %}
+        <div id="{{category.id}}" class="tab-pane">
+          <section class="horizontal-scroll">
           {% for value in values %}
             {% if value > 1%}
               {% if value >= 100  %}
-              <div class="card horizontal-card achiev-border" style="border-color:{{key.colour}}">
+              <div class="card horizontal-card achiev-border" style="border-color:{{category.colour}}">
                 <h5 class="text-center achiev-title">You've reached {{ value }} points!</h5>
                 <img class="achievements" src="{% static 'trophies/Achiev100.jpeg' %}" alt="100 Points" />
-                <h5 class="text-center achiev-title">{{key}}</h5>
+                <h5 class="text-center achiev-title">{{category}}</h5>
               </div>
               {% else %}
                 {% if value >= 50  %}
-                <div class="card horizontal-card achiev-border" style="border-color:{{key.colour}}">
+                <div class="card horizontal-card achiev-border" style="border-color:{{category.colour}}">
                   <h5 class="text-center achiev-title">You've reached {{ value }} points!</h5>
                   <img class="achievements" src="{% static 'trophies/Achiev50.jpeg' %}" alt="50 Points" />
-                  <h5 class="text-center achiev-title">{{key}}</h5>
+                  <h5 class="text-center achiev-title">{{category}}</h5>
                 </div>
                 {% else %}
                   {% if value >= 25  %}
-                  <div class="card horizontal-card achiev-border" style="border-color:{{key.colour}}">
+                  <div class="card horizontal-card achiev-border" style="border-color:{{category.colour}}">
                     <h5 class="text-center achiev-title">You've reached {{ value }} points!</h5>
                     <img class="achievements" src="{% static 'trophies/Achiev25.jpg' %}" alt="25 Points" />
-                    <h5 class="text-center achiev-title">{{key}}</h5>
+                    <h5 class="text-center achiev-title">{{category}}</h5>
                   </div>
                   {% else %}
                     {% if value >= 10  %}
-                    <div class="card horizontal-card achiev-border" style="border-color:{{key.colour}}">
+                    <div class="card horizontal-card achiev-border" style="border-color:{{category.colour}}">
                       <h5 class="text-center achiev-title">You've reached {{ value }} points!</h5>
                       <img class="achievements" src="{% static 'trophies/Achiev10.jpg' %}" alt="10 Points" />
-                      <h5 class="text-center achiev-title">{{key}}</h5>
+                      <h5 class="text-center achiev-title">{{category}}</h5>
                     </div>
                     {% else %}
                       {% if value >= 5  %}
-                        <div class="card horizontal-card achiev-border" style="border-color:{{key.colour}}">
+                        <div class="card horizontal-card achiev-border" style="border-color:{{category.colour}}">
                           <h5 class="text-center achiev-title">You've reached {{ value }} points!</h5>
                           <img class="achievements" src="{% static 'trophies/Achiev5.jpeg' %}" alt="5 Points" />
-                          <h5 class="text-center achiev-title">{{key}}</h5>
+                          <h5 class="text-center achiev-title">{{category}}</h5>
                         </div>
                       {% endif %}
                     {% endif %}
@@ -179,16 +196,74 @@ function toggleDataSeries(e) {
               {% endif %}
 
             {% else %}
-            <div class="card horizontal-card achiev-border bg-grey" style="border-color:{{key.colour}}">
-              <h5 class="text-center achiev-title">Haven't unlocked achievements yet</h5>
+            <div class="card horizontal-card achiev-border bg-grey" style="border-color:{{category.colour}}">
+              <h5 class="text-center achiev-title">Haven't unlocked achievement yet</h5>
               <img class="achievements bg-grey" src="{% static 'trophies/no_achiev.svg' %}" alt="No Achievement" />
-              <h5 class="text-center achiev-title">{{key}}</h5>
+              <h5 class="text-center achiev-title">{{category}}</h5>
             </div>
             {% endif %}
           {% endfor %}
+          </div>
+          </section>
         {% endfor %}
+        <div id="AllCats" class="tab-pane active">
+          <section class="horizontal-scroll">
+          {% for key,values in achievements.items %}
+            {% for value in values %}
+              {% if value > 1%}
+                {% if value >= 100  %}
+                <div class="card horizontal-card achiev-border" style="border-color:{{key.colour}}">
+                  <h5 class="text-center achiev-title">You've reached {{ value }} points!</h5>
+                  <img class="achievements" src="{% static 'trophies/Achiev100.jpeg' %}" alt="100 Points" />
+                  <h5 class="text-center achiev-title">{{key}}</h5>
+                </div>
+                {% else %}
+                  {% if value >= 50  %}
+                  <div class="card horizontal-card achiev-border" style="border-color:{{key.colour}}">
+                    <h5 class="text-center achiev-title">You've reached {{ value }} points!</h5>
+                    <img class="achievements" src="{% static 'trophies/Achiev50.jpeg' %}" alt="50 Points" />
+                    <h5 class="text-center achiev-title">{{key}}</h5>
+                  </div>
+                  {% else %}
+                    {% if value >= 25  %}
+                    <div class="card horizontal-card achiev-border" style="border-color:{{key.colour}}">
+                      <h5 class="text-center achiev-title">You've reached {{ value }} points!</h5>
+                      <img class="achievements" src="{% static 'trophies/Achiev25.jpg' %}" alt="25 Points" />
+                      <h5 class="text-center achiev-title">{{key}}</h5>
+                    </div>
+                    {% else %}
+                      {% if value >= 10  %}
+                      <div class="card horizontal-card achiev-border" style="border-color:{{key.colour}}">
+                        <h5 class="text-center achiev-title">You've reached {{ value }} points!</h5>
+                        <img class="achievements" src="{% static 'trophies/Achiev10.jpg' %}" alt="10 Points" />
+                        <h5 class="text-center achiev-title">{{key}}</h5>
+                      </div>
+                      {% else %}
+                        {% if value >= 5  %}
+                          <div class="card horizontal-card achiev-border" style="border-color:{{key.colour}}">
+                            <h5 class="text-center achiev-title">You've reached {{ value }} points!</h5>
+                            <img class="achievements" src="{% static 'trophies/Achiev5.jpeg' %}" alt="5 Points" />
+                            <h5 class="text-center achiev-title">{{key}}</h5>
+                          </div>
+                        {% endif %}
+                      {% endif %}
+                    {% endif %}
+                  {% endif %}
+                {% endif %}
 
-    </section>
+              {% else %}
+              <div class="card horizontal-card achiev-border bg-grey" style="border-color:{{key.colour}}">
+                <h5 class="text-center achiev-title">Haven't unlocked achievement yet</h5>
+                <img class="achievements bg-grey" src="{% static 'trophies/no_achiev.svg' %}" alt="No Achievement" />
+                <h5 class="text-center achiev-title">{{key}}</h5>
+              </div>
+              {% endif %}
+            {% endfor %}
+          {% endfor %}
+        </div>
+        </section>
+      </div>
+    </div>
   </div>
 
 </div>
