@@ -29,3 +29,14 @@ static/autocomplete_light/
 
 *.coverage
 **/htmlcov/
+
+## Ignore temporary latex files
+*.aux
+*.bbl
+*.bib
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.synctex.gz
