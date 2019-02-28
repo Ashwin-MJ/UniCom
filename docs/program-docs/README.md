@@ -12,5 +12,5 @@ See [Model-View-Controller](docs/program-docs/general/Model-View-Controller.md) 
 
 The documentation for this project has been separated into two sections:
 
-* [Project documentation](http://stgit.dcs.gla.ac.uk/tp3-2018-ese1/dissertation/blob/131-improve-program-documentation/docs/program-docs/project/README.md)
-* [General documentation](http://stgit.dcs.gla.ac.uk/tp3-2018-ese1/dissertation/blob/131-improve-program-documentation/docs/program-docs/general/README.md)
+* [Project documentation](docs/program-docs/project/README.md)
+* [General documentation](docs/program-docs/general/README.md)

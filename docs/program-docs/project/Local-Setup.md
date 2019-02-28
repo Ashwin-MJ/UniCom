@@ -9,7 +9,7 @@ The repository can be cloned into a local machine using:
 git clone http://stgit.dcs.gla.ac.uk/tp3-2018-ese1/dissertation.git
 ```
 
-The project structure can be analysed [here](http://stgit.dcs.gla.ac.uk/tp3-2018-ese1/dissertation/blob/131-improve-program-documentation/docs/program-docs/project/Structure.md)
+The project structure can be analysed [here](docs/program-docs/project/Structure.md)
 
 ## 2. Requirements
 Requirements to use this application include Python3, pip3 and the following:
@@ -62,4 +62,4 @@ Lecturer (Prof. Roy) - ID Number: 00001 Password: password
 
 Student (James Smith) - ID Number: 1402001 Password: password
 
-See [Application Guide](http://stgit.dcs.gla.ac.uk/tp3-2018-ese1/dissertation/blob/131-improve-program-documentation/docs/program-docs/general/Guide.md) for more information about how to use the application.
+See [Application Guide](docs/program-docs/general/Guide.md) for more information about how to use the application.
