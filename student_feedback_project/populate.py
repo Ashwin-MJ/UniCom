@@ -265,7 +265,7 @@ def populate():
 							lecturer.get('password'),lecturer.get('email'),lecturer.get('courses'))
 
 	for category in categories:
-		cat = add_category(category.get("name"), category.get("colour"))
+		cat = add_category(category.get("name"), category.get("colour"),category.get('icon_url'))
 
 	for message in saved_messages:
 		mess = add_message(message.get('category'),message.get('messages'))
@@ -282,14 +282,14 @@ def populate():
 	create_view_fb_full()
 
 categories = [
-	{"name": "Active Participation", "colour" : "#F7D969"},
-	{"name": "Quality of Contribution", "colour": "#F16A43"},
-	{"name": "Co-operation & Communication", "colour": "#EC1C4B"},
-	{"name": "Critical Thinking & Analysis", "colour": "#A6206A"},
-	{"name": "Understanding & Competence", "colour": "#355C7D"},
-	{"name": "Hard Work", "colour": "#F8B195"},
-	{"name": "Intellectual Curiosity", "colour": "#F05053"},
-	{"name": "General", "colour": "#F9CDAE"}
+	{"name": "Active Participation", "colour" : "#F7D969", 'icon_url': "attribute_icons/participation.png"},
+	{"name": "Quality of Contribution", "colour": "#F16A43", 'icon_url': "attribute_icons/quality.png"},
+	{"name": "Co-operation & Communication", "colour": "#EC1C4B", 'icon_url': "attribute_icons/cooperation.png"},
+	{"name": "Critical Thinking & Analysis", "colour": "#A6206A", 'icon_url': "attribute_icons/critical_thinking.png"},
+	{"name": "Understanding & Competence", "colour": "#355C7D", 'icon_url': "attribute_icons/understanding.png"},
+	{"name": "Hard Work", "colour": "#F8B195", 'icon_url': "attribute_icons/hardwork.png"},
+	{"name": "Intellectual Curiosity", "colour": "#F05053", 'icon_url': "attribute_icons/curiosity.png"},
+	{"name": "General", "colour": "#F9CDAE", 'icon_url': "attribute_icons/general.png"}
 ]
 
 saved_messages = [
@@ -483,12 +483,12 @@ def add_feedback(feedback_id,category,points,from_user,student,course_code,pre_d
 	return fb
 
 # Helper function to add Category
-def add_category(name,colour):
+def add_category(name,colour,icon_url):
 	# Since the the category needs to be associated uniquely for each lecturer
 	# (To allow them to customise) this needs to be saved as follows
 	users = User.objects.all()
 	for user in users:
-		cat = Category(user=user,colour=colour,name=name)
+		cat = Category(user=user,colour=colour,name=name,icon=icon_url)
 		cat.save()
 
 def add_categories_for_user(user):
