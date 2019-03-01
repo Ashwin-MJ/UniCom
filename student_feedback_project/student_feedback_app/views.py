@@ -168,7 +168,6 @@ def student_home(request):
                 else:
                     fbCat[cat].append([feedback.points, feedback.datetime_given.strftime('%Y-%m-%d %H:%M')])
 
-            print(fbCat)
             stud.achievement_set.all().delete()
             scores = stud.get_score_for_category()
 

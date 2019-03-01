@@ -265,7 +265,7 @@ def populate():
 							lecturer.get('password'),lecturer.get('email'),lecturer.get('courses'))
 
 	for category in categories:
-		cat = add_category(category.get("name"), category.get("colour"),category.get('icon_url'))
+		cat = add_category_with_image(category.get("name"), category.get("colour"),category.get('icon_url'))
 
 	for message in saved_messages:
 		mess = add_message(message.get('category'),message.get('messages'))
@@ -483,7 +483,16 @@ def add_feedback(feedback_id,category,points,from_user,student,course_code,pre_d
 	return fb
 
 # Helper function to add Category
-def add_category(name,colour,icon_url):
+def add_category(name,colour):
+	# Since the the category needs to be associated uniquely for each lecturer
+	# (To allow them to customise) this needs to be saved as follows
+	users = User.objects.all()
+	for user in users:
+		cat = Category(user=user,colour=colour,name=name)
+		cat.save()
+
+# Helper function to add Category
+def add_category_with_image(name,colour,icon_url):
 	# Since the the category needs to be associated uniquely for each lecturer
 	# (To allow them to customise) this needs to be saved as follows
 	users = User.objects.all()
