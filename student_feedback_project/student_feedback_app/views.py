@@ -23,7 +23,10 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
 
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import get_template
 import re
+
 
 def index(request):
     return HttpResponseRedirect('/accounts/login/')
@@ -856,7 +859,6 @@ def invites(request):
 
 
     mode = 0
-    message =  ' lecturer ' + request.user.username + ' has invited you to join ' + course.subject + ' (' + course.course_code + '). To join this course use this token: ' + course.course_token
     students_string = request.COOKIES.get("students")
     if is_json(students_string):
         mode += 1
@@ -867,9 +869,16 @@ def invites(request):
             students.append(stud_user)
 
         for student in students:
-            personal_message = 'Dear ' + student.username + message
-            send_mail('You are invited to join a course!',personal_message,'lect.acc.unicom@gmail.com',[student.email])
-    message =  ' Lecturer ' + request.user.username + ' has invited you to join ' + course.subject + ' (' + course.course_code + '). To join this course use this token: ' + course.course_token
+            plaintext = get_template('emails/invite_registered.txt')
+            htmly     = get_template('emails/invite_registered.html')
+            d = { 'lecturer': request.user.username, 'subject':  course.subject, 'course_code': course.course_code, 'token': course.course_token, 'student': student.username }
+            text_content = plaintext.render(d)
+            html_content = htmly.render(d)
+            msg = EmailMultiAlternatives('You are invited to join a course!', text_content, 'lect.acc.unicom@gmail.com',[student.email])
+            msg.attach_alternative(html_content, "text/html")
+            msg.send()
+
+            
     students_emails_string = request.COOKIES.get("emails")
     if is_json(students_emails_string):
         mode += 1
@@ -878,8 +887,16 @@ def invites(request):
         for email in emails_list:
             if email != "example@university.com":
                 emails.append(email)
-        message = message + "; Register online to joint UniCom."
-        send_mail('You are invited to join a course!',message,'lect.acc.unicom@gmail.com',emails)
+        plaintext = get_template('emails/invite_unregistered.txt')
+        htmly     = get_template('emails/invite_unregistered.html')
+        d = { 'lecturer': request.user.username, 'subject':  course.subject, 'course_code': course.course_code, 'token': course.course_token }
+        text_content = plaintext.render(d)
+        html_content = htmly.render(d)
+        msg = EmailMultiAlternatives('You are invited to join a course!', text_content, 'lect.acc.unicom@gmail.com',emails)
+        msg.attach_alternative(html_content, "text/html")
+        msg.send()
+        
+        
     if mode == 0:
         lect = LecturerProfile.objects.get(lecturer=request.user)
         students = lect.get_my_students()

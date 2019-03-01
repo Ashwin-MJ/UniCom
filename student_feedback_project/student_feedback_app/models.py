@@ -7,6 +7,9 @@ from django.dispatch import receiver
 from django.core.mail import send_mail
 from django.core.validators import int_list_validator
 
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import get_template
+
 import datetime
 import random, string
 
@@ -40,8 +43,14 @@ def update_user_profile(sender, instance, created, **kwargs):
             superusers = User.objects.filter(is_superuser=True)
             for superuser in superusers:
                 emails.append(superuser.email)
-            message = 'Lecturer ' + instance.username + ' has registered and needs approval. Approve profiles @ feedbackapp.pythonanywhere.com/admin'
-            send_mail('Lecturer needs approval',message,'lect.acc.unicom@gmail.com',emails)
+            plaintext = get_template('emails/approve.txt')
+            htmly = get_template('emails/approve.html')
+            d = { 'lecturer': instance.username }
+            text_content = plaintext.render(d)
+            html_content = htmly.render(d)
+            msg = EmailMultiAlternatives('Lecturer pending approval!', text_content, 'lect.acc.unicom@gmail.com',emails)
+            msg.attach_alternative(html_content, "text/html")
+            msg.send()
         else :
             instance.is_active = True
             instance.is_student = True
