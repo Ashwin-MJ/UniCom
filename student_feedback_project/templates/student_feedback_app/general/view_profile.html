@@ -157,7 +157,10 @@ function toggleDataSeries(e) {
         {% else %}
         <div class="card custom-card fb-border" style="border-color:{{fb.category.colour}}">
         {% endif %}
-          <b class="card-sub-heading" style="color:{{fb.category.colour}}">{{ fb.category }}</b>
+          <b class="card-sub-heading" style="color:{{fb.category.colour}}">
+            <img class="icon" src="{{fb.category.icon.url}}"/>
+            {{ fb.category }}
+          </b>
           <div class="row" style="padding-bottom:1%">
             <div class="column left">
               <div class="border">
