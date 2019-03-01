@@ -170,9 +170,15 @@ function toggleDataSeries(e) {
             {% endfor %}
         </div>
         <hr />
-		<div class="button" style="padding-bottom:0px; padding-top:10px;">
-          <button onclick="sort('{{ course.subject }}', 'points', 'course')" type="button" class="btn btn-material btn-ripple">Sort by points</button>
-          <button onclick="sort('{{ course.subject }}', 'date', 'course')" type="button" class="btn btn-material btn-ripple">Sort by date</button>
+        <br/>
+        <div class="btn-group dropright button">
+            <button class="btn btn-material dropdown-toggle" type="button"data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Sort by
+            </button>
+            <div class="dropdown-menu custom-dd-menu">
+              <button onclick="sort('{{ course.subject }}', 'points', 'course')" type="button" class="btn btn-material btn-ripple">Points</button>
+              <button onclick="sort('{{ course.subject }}', 'date', 'course')" type="button" class="btn btn-material btn-ripple">Date</button>
+            </div>
         </div>
       </div>
 
