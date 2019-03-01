@@ -16,7 +16,7 @@ class FeedbackSerializer(serializers.ModelSerializer):
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = ('name', 'user', 'colour', 'message_set')
+        fields = ('name', 'user', 'colour', 'message_set', 'icon')
 
 class MessageSerializer(serializers.ModelSerializer):
     class Meta:
