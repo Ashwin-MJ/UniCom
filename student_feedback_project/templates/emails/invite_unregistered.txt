@@ -1,0 +1,5 @@
+Hi student!
+
+{{lecturer}} has invited you to join a UniCom course {{subject}} ({{course_code}})
+To join this course go to feedbackapp.pythonanywhere.com and use this token "{{token}}".
+If you are not yet a member registration is quick and easy!
