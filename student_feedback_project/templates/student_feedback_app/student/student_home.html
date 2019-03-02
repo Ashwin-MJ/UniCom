@@ -151,8 +151,8 @@ function toggleDataSeries(e) {
         </li>
         {% for category in achievements.keys %}
         <li class="nav-item">
-          <a data-toggle="tab" class="nav-link" style="color:{{category.colour}}" href="#{{category.id}}">
-            <img class="icon" src="{{category.icon.image.url}}"/>            
+          <a data-toggle="tab" class="nav-link" style="color:{{category.colour}}" href="#{{category.id}}" title="{{category.name}}">
+            <img class="icon" src="{{category.icon.image.url}}"/>
           </a>
         </li>
         {% endfor %}

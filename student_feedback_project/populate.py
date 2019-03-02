@@ -495,7 +495,7 @@ def add_lecturer(name,lecturer_number,password,email,courses):
 	return lecturer_prof
 
 # Helper function to add feedback #needs categories, (pre defined) messages, courses, users in db
-def add_feedback(feedback_id,category,points,from_user,student,course_code,pre_defined_message,optional_message,random):
+def add_feedback(feedback_id,category,points,from_user,student,course_code,pre_defined_message,optional_message,random_bool):
 	fb = Feedback.objects.get_or_create(feedback_id=feedback_id)[0]
 	fb.points = points
 	fb.optional_message = optional_message
@@ -510,7 +510,7 @@ def add_feedback(feedback_id,category,points,from_user,student,course_code,pre_d
 	stud.score += points
 	stud.save()
 
-	if random:
+	if random_bool:
 		rand_date = date.today() - timedelta(random.randint(1,7))
 		rand_date_with_tzinfo = datetime(rand_date.year, rand_date.month,
 	 				rand_date.day, tzinfo=pytz.timezone('GMT'))

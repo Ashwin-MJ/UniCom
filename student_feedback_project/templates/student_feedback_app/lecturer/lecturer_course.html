@@ -197,7 +197,7 @@ function toggleDataSeries(e) {
                 </li>
                 {% for category in categories %}
                 <li class="nav-item">
-                  <a data-toggle="tab" class="nav-link" style="color:{{category.colour}}" href="#{{category.id}}">
+                  <a data-toggle="tab" class="nav-link" style="color:{{category.colour}}" href="#{{category.id}}" title="{{category.name}}">
                     <img class="leaderboard-icon" src="{{category.icon.image.url}}"/>
                   </a>
                 </li>
