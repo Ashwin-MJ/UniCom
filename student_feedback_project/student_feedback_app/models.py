@@ -122,6 +122,13 @@ class StudentProfile(models.Model):
                 scores[fb.category] += fb.points
         return scores
 
+    def get_score_for_one_category(self, category):
+        score = 0
+        for fb in self.feedback_set.all():
+            if fb.category == category:
+                score += fb.points
+        return score
+
 class Achievement(models.Model):
     student = models.ForeignKey('StudentProfile', on_delete=models.CASCADE)
     category = models.ForeignKey("Category", on_delete=models.CASCADE)
@@ -175,7 +182,7 @@ class Course(models.Model):
         return temp_dict
 
     def get_leaderboard(self):
-        temp_dict = self.get_students_with_score()    
+        temp_dict = self.get_students_with_score()
         # The dictionary stored in the retrieved dictionary has
         # each student as key and their score for this course as value
         # To get leaderboard, simply sort this dictionary by value and reverse
