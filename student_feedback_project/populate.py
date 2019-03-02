@@ -303,7 +303,19 @@ icons = [
 	{"name": "Understanding & Competence", 'url': "attribute_icons/understanding.png"},
 	{"name": "Hard Work", 'url': "attribute_icons/hardwork.png"},
 	{"name": "Intellectual Curiosity", 'url': "attribute_icons/curiosity.png"},
-	{"name": "General",'url': "attribute_icons/general.png"}
+	{"name": "General",'url': "attribute_icons/general.png"},
+	{"name": "Graduation",'url': "attribute_icons/graduation.png"},
+	{"name": "Badge",'url': "attribute_icons/badge.png"},
+	{"name": "Trophy",'url': "attribute_icons/trophy.png"},
+	{"name": "Calculation",'url': "attribute_icons/calculation.png"},
+	{"name": "Conference",'url': "attribute_icons/conference.png"},
+	{"name": "Studying",'url': "attribute_icons/studying.png"},
+	{"name": "Lecture",'url': "attribute_icons/lecture.png"},
+	{"name": "Presentation",'url': "attribute_icons/presentation.png"},
+	{"name": "Certificate",'url': "attribute_icons/certificate.png"},
+	{"name": "Hourglass",'url': "attribute_icons/hourglass.png"},
+	{"name": "Target",'url': "attribute_icons/target.png"},
+	{"name": "Notebook",'url': "attribute_icons/notebook.png"}
 ]
 
 saved_messages = [

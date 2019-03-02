@@ -624,9 +624,10 @@ def customise_options(request):
 
         all_icons = {}
         for icon in Icon.objects.all():
-            all_icons[icon.name] = icon.image.url
+            all_icons[icon.id] = icon.image.url
 
-        context_dict['icons'] = json.dumps(all_icons)
+        context_dict['icons_json'] = json.dumps(all_icons)
+        context_dict['icons'] = Icon.objects.all()
 
         return render(request, 'student_feedback_app/general/customise_options.html', context_dict)
     except:
@@ -746,9 +747,11 @@ class CategoryDetail(APIView):
         return Response(serializer.data)
 
     def post(self, request,format=None):
+        icon = Icon.objects.get(name=request.data.get("icon"))
         cat = Category(name=request.data.get('name'),
                         colour=request.data.get('colour'),
-                        user=request.user)
+                        user=request.user,
+                        icon=icon)
         cat.save()
         return Response(status=status.HTTP_200_OK)
 

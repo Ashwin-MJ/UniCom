@@ -101,8 +101,8 @@ Edit Categories and Pre-Defined Messages
                 Icon
               </h3>
               <small class="form-text text-muted">Choose from our list of icons:</small>
-              {% for icon in icons.values %}
-                {{icon}}
+              {% for icon in icons %}
+                <img class="all-icons" id="{{icon.name}}"src="{{icon.image.url}}" alt="{{icon.name}}"/>
               {% endfor%}
 
             </div>
@@ -254,10 +254,10 @@ Edit Categories and Pre-Defined Messages
   function displayMessages(data,cat_id) {
     {% autoescape off %}
     all_messages = {{messages}}
-    icons = {{icons}}
+    icons = {{icons_json}}
     {% endautoescape %}
     message_set = data.message_set;
-    updateHtml(data.colour,icons,message_set,data.name,cat_id);
+    updateHtml(data.colour,data.icon,message_set,data.name,cat_id);
   }
 </script>
 {% endblock%}
