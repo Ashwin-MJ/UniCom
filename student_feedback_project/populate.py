@@ -3,7 +3,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE',
 			'student_feedback_project.settings')
 import django
 django.setup()
-from student_feedback_app.models import StudentProfile, Course, LecturerProfile, Feedback, Category, Message
+from student_feedback_app.models import *
 from django.template.defaultfilters import slugify
 from django.contrib.auth import get_user_model
 from django.db import connection
@@ -264,8 +264,11 @@ def populate():
 		lect = add_lecturer(lecturer.get('name'),lecturer.get('lecturer_number'),
 							lecturer.get('password'),lecturer.get('email'),lecturer.get('courses'))
 
+	for icon in icons:
+		icon = add_icon(icon.get("name"),icon.get("url"))
+
 	for category in categories:
-		cat = add_category_with_image(category.get("name"), category.get("colour"),category.get('icon_url'))
+		cat = add_category_with_icon(category.get("name"), category.get("colour"))
 
 	for message in saved_messages:
 		mess = add_message(message.get('category'),message.get('messages'))
@@ -282,14 +285,25 @@ def populate():
 	create_view_fb_full()
 
 categories = [
-	{"name": "Active Participation", "colour" : "#F7D969", 'icon_url': "attribute_icons/participation.png"},
-	{"name": "Quality of Contribution", "colour": "#F16A43", 'icon_url': "attribute_icons/quality.png"},
-	{"name": "Co-operation & Communication", "colour": "#EC1C4B", 'icon_url': "attribute_icons/cooperation.png"},
-	{"name": "Critical Thinking & Analysis", "colour": "#A6206A", 'icon_url': "attribute_icons/critical_thinking.png"},
-	{"name": "Understanding & Competence", "colour": "#355C7D", 'icon_url': "attribute_icons/understanding.png"},
-	{"name": "Hard Work", "colour": "#F8B195", 'icon_url': "attribute_icons/hardwork.png"},
-	{"name": "Intellectual Curiosity", "colour": "#F05053", 'icon_url': "attribute_icons/curiosity.png"},
-	{"name": "General", "colour": "#F9CDAE", 'icon_url': "attribute_icons/general.png"}
+	{"name": "Active Participation", "colour" : "#F7D969"},
+	{"name": "Quality of Contribution", "colour": "#F16A43"},
+	{"name": "Co-operation & Communication", "colour": "#EC1C4B"},
+	{"name": "Critical Thinking & Analysis", "colour": "#A6206A"},
+	{"name": "Understanding & Competence", "colour": "#355C7D"},
+	{"name": "Hard Work", "colour": "#F8B195"},
+	{"name": "Intellectual Curiosity", "colour": "#F05053"},
+	{"name": "General", "colour": "#F9CDAE"}
+]
+
+icons = [
+	{"name": "Active Participation", 'url': "attribute_icons/participation.png"},
+	{"name": "Quality of Contribution", 'url': "attribute_icons/quality.png"},
+	{"name": "Co-operation & Communication", 'url': "attribute_icons/cooperation.png"},
+	{"name": "Critical Thinking & Analysis", 'url': "attribute_icons/critical_thinking.png"},
+	{"name": "Understanding & Competence", 'url': "attribute_icons/understanding.png"},
+	{"name": "Hard Work", 'url': "attribute_icons/hardwork.png"},
+	{"name": "Intellectual Curiosity", 'url': "attribute_icons/curiosity.png"},
+	{"name": "General",'url': "attribute_icons/general.png"}
 ]
 
 saved_messages = [
@@ -482,6 +496,11 @@ def add_feedback(feedback_id,category,points,from_user,student,course_code,pre_d
 	fb.save()
 	return fb
 
+def add_icon(name,url):
+	icon = Icon.objects.get_or_create(name=name,image=url)[0]
+	icon.save()
+	return icon
+
 # Helper function to add Category
 def add_category(name,colour):
 	# Since the the category needs to be associated uniquely for each lecturer
@@ -492,12 +511,15 @@ def add_category(name,colour):
 		cat.save()
 
 # Helper function to add Category
-def add_category_with_image(name,colour,icon_url):
+def add_category_with_icon(name,colour):
 	# Since the the category needs to be associated uniquely for each lecturer
 	# (To allow them to customise) this needs to be saved as follows
 	users = User.objects.all()
 	for user in users:
-		cat = Category(user=user,colour=colour,name=name,icon=icon_url)
+		cat = Category(user=user,colour=colour,name=name)
+		icon = Icon.objects.get(name=name)
+		cat.icon = icon
+		icon.save()
 		cat.save()
 
 def add_categories_for_user(user):

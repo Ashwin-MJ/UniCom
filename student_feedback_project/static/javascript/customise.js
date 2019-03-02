@@ -154,7 +154,7 @@ $('.category').on('click', function(){
 
 });
 
-function updateHtml(colour,icon,message_set,cat_name,cat_id) {
+function updateHtml(colour,icons,message_set,cat_name,cat_id) {
   // Updates the cards shown in the message card. This allows the messages shown to change dependent
   // on which category is selected
   var cat_messages = "";
@@ -163,7 +163,7 @@ function updateHtml(colour,icon,message_set,cat_name,cat_id) {
       if (message_set[retrieved_message] == message_id){
         cat_messages += `<div class="card custom-card fb-border" style="border-color:` + colour + `">`
                         + `<div class="card-body text-center">`
-                        + `<b class="card-sub-heading"><img class="icon" src="` + icon + `"/>` +  all_messages[message_id] + `</b>`
+                        + `<b class="card-sub-heading"><img class="icon" src="` + icons[cat_name] + `"/> ` +  all_messages[message_id] + `</b>`
                         + `<i class="material-icons delete-mess-icon" id=` + message_id + `>delete</i>`
                         + `<i class="material-icons edit-mess-icon" data-toggle="modal" data-target="#editMessageModal" id=` + message_id +`>edit</i>`
                         + `</div></div><br />`

@@ -621,6 +621,13 @@ def customise_options(request):
 
         context_dict['messages'] = json.dumps(all_messages)
         context_dict['messages_qs'] = messages
+
+        all_icons = {}
+        for icon in Icon.objects.all():
+            all_icons[icon.name] = icon.image.url
+
+        context_dict['icons'] = json.dumps(all_icons)
+
         return render(request, 'student_feedback_app/general/customise_options.html', context_dict)
     except:
         context_dict['error'] = "error"
@@ -878,7 +885,7 @@ def invites(request):
             msg.attach_alternative(html_content, "text/html")
             msg.send()
 
-            
+
     students_emails_string = request.COOKIES.get("emails")
     if is_json(students_emails_string):
         mode += 1
@@ -895,8 +902,8 @@ def invites(request):
         msg = EmailMultiAlternatives('You are invited to join a course!', text_content, 'lect.acc.unicom@gmail.com',emails)
         msg.attach_alternative(html_content, "text/html")
         msg.send()
-        
-        
+
+
     if mode == 0:
         lect = LecturerProfile.objects.get(lecturer=request.user)
         students = lect.get_my_students()

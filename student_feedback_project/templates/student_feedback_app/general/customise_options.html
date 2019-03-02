@@ -24,7 +24,7 @@ Edit Categories and Pre-Defined Messages
         {% for cat in categories %}
         <div class="card custom-card fb-border category"style="border-color:{{cat.colour}};cursor: pointer;">
             <div class="card-body text-center">
-              <b class="card-sub-heading"><img class="icon" src="{{cat.icon.url}}"/>{{ cat.name }}</b>
+              <b class="card-sub-heading"><img class="icon" src="{{cat.icon.image.url}}"/> {{ cat.name }}</b>
               <i class="material-icons delete-cat-icon" id={{cat.id}}>delete</i>
               <i class="material-icons edit-cat-icon" data-toggle="modal" data-target="#editCategoryModal" id={{cat.id}}>edit</i>
             </div>
@@ -42,7 +42,7 @@ Edit Categories and Pre-Defined Messages
         {% for mess in messages_qs %}
         <div class="card custom-card fb-border" style="border-color:{{mess.category.colour}}">
             <div class="card-body text-center">
-              <b class="card-sub-heading"><img class="icon" src="{{mess.category.icon.url}}"/>{{ mess.text }}</b>
+              <b class="card-sub-heading"><img class="icon" src="{{mess.category.icon.image.url}}"/> {{ mess.text }}</b>
               <i class="material-icons delete-mess-icon" id={{mess.id}}>delete</i>
               <i class="material-icons edit-mess-icon" data-toggle="modal" data-target="#editMessageModal" id={{mess.id}}>edit</i>
             </div>
@@ -94,6 +94,17 @@ Edit Categories and Pre-Defined Messages
               <script>
                   $('#new_cat_colour').colorpicker({});
               </script>
+            </div>
+
+            <div class="form-group" style="padding:10px">
+              <h3 id="form-title">
+                Icon
+              </h3>
+              <small class="form-text text-muted">Choose from our list of icons:</small>
+              {% for icon in icons.values %}
+                {{icon}}
+              {% endfor%}
+
             </div>
 
           </div>
@@ -243,9 +254,10 @@ Edit Categories and Pre-Defined Messages
   function displayMessages(data,cat_id) {
     {% autoescape off %}
     all_messages = {{messages}}
+    icons = {{icons}}
     {% endautoescape %}
     message_set = data.message_set;
-    updateHtml(data.colour,data.icon,message_set,data.name,cat_id);
+    updateHtml(data.colour,icons,message_set,data.name,cat_id);
   }
 </script>
 {% endblock%}
