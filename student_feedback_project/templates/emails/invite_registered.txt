@@ -1,0 +1,4 @@
+Hi {{student}}!
+
+{{lecturer}} has invited you to join a UniCom course {{subject}} ({{course_code}})
+To join this course go to feedbackapp.pythonanywhere.com and use this token {{token}}
