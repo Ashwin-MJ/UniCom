@@ -28,11 +28,11 @@ Home Page
 
                 <div class="row">
                   <div class="column left">
-                    <div class="border">
+                    <div class="card custom-border">
                       <div class="course-info">
                         {{ course.course_description }}<br />
                         <footer>
-                          Add a footer here?
+                          Code - {{ course.course_code }}
                           </footer>
                           <br />
                         </div>
@@ -67,7 +67,7 @@ Home Page
         </b>
           <div class="row" style="padding-bottom:1%">
             <div class="column left">
-              <div class="border">
+              <div class="card custom-border">
                 <blockquote class="quote">
                   {{ fb.pre_defined_message.text }}<br />
                   {% if fb.optional_message %}

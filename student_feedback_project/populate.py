@@ -8,6 +8,10 @@ from django.template.defaultfilters import slugify
 from django.contrib.auth import get_user_model
 from django.db import connection
 
+from datetime import date, timedelta,datetime
+import pytz
+import random
+
 User = get_user_model()
 
 
@@ -276,7 +280,7 @@ def populate():
 	for someFeedback in feedback:
 		feedback = add_feedback(someFeedback.get('feedback_id'),someFeedback.get('category'),someFeedback.get('points'),
 								someFeedback.get('from_user'),someFeedback.get('student'),someFeedback.get('course_code'),
-								someFeedback.get('pre_defined_message'), someFeedback.get('optional_message'))
+								someFeedback.get('pre_defined_message'), someFeedback.get('optional_message'), True)
 
 	create_view_fb_cat()
 	create_view_fb_cat_mss()
@@ -491,7 +495,7 @@ def add_lecturer(name,lecturer_number,password,email,courses):
 	return lecturer_prof
 
 # Helper function to add feedback #needs categories, (pre defined) messages, courses, users in db
-def add_feedback(feedback_id,category,points,from_user,student,course_code,pre_defined_message,optional_message):
+def add_feedback(feedback_id,category,points,from_user,student,course_code,pre_defined_message,optional_message,random):
 	fb = Feedback.objects.get_or_create(feedback_id=feedback_id)[0]
 	fb.points = points
 	fb.optional_message = optional_message
@@ -505,7 +509,16 @@ def add_feedback(feedback_id,category,points,from_user,student,course_code,pre_d
 	fb.student = stud
 	stud.score += points
 	stud.save()
+
+	if random:
+		rand_date = date.today() - timedelta(random.randint(1,7))
+		rand_date_with_tzinfo = datetime(rand_date.year, rand_date.month,
+	 				rand_date.day, tzinfo=pytz.timezone('GMT'))
+
+		fb.datetime_given = rand_date_with_tzinfo
+
 	fb.save()
+
 	return fb
 
 def add_icon(name,url):

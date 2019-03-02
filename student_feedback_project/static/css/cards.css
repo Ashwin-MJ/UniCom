@@ -70,6 +70,7 @@
   font-family: 'Sanchez', serif;
   line-height: 1.5em;
   padding: 1em;
+  padding-bottom: 0!important;
 }
 .quote footer {
   font-family: 'Dosis', sans-serif;
@@ -113,9 +114,23 @@
   color: teal;
 }
 
-.border {
-  position: relative;
-  margin: 0.5em;
+.custom-border {
+  box-shadow: 0 0 0 0 !important;
+  padding-bottom: -5px;
+  margin-bottom: 10px!important;
+}
+
+.card .recent .custom-border{
+  background-color: teal;
+  color:white;
+}
+
+.card .recent .custom-border .quote footer{
+  color:white;
+}
+
+.card .recent .custom-border .quote{
+  color:white;
 }
 
 .custom-card {

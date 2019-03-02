@@ -133,7 +133,7 @@ Add Feedback
             <hr />
 
             <div class="card scroll-bg">
-              <h5 class="text-center custom-card-title">Recent Feedback for {{ student.student.username }}</h5>
+              <h5 class="text-center custom-card-title">Feedback for {{ student.student.username }}</h5>
               <hr />
               <div class="card-body give-fb-scroll">
                 <p class="card-text"></p>
@@ -149,7 +149,7 @@ Add Feedback
                   </b>
                   <div class="row" style="padding-bottom:1%">
                     <div class="column left">
-                      <div class="border">
+                      <div class="card custom-border">
                         <blockquote class="quote">
                           {{ fb.pre_defined_message.text }}<br />
                           {% if fb.optional_message %}
