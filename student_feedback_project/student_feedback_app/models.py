@@ -122,6 +122,13 @@ class StudentProfile(models.Model):
                 scores[fb.category] += fb.points
         return scores
 
+    def get_score_for_one_category(self, category):
+        score = 0
+        for fb in self.feedback_set.all():
+            if fb.category == category:
+                score += fb.points
+        return score
+
 class Achievement(models.Model):
     student = models.ForeignKey('StudentProfile', on_delete=models.CASCADE)
     category = models.ForeignKey("Category", on_delete=models.CASCADE)
@@ -175,7 +182,7 @@ class Course(models.Model):
         return temp_dict
 
     def get_leaderboard(self):
-        temp_dict = self.get_students_with_score()    
+        temp_dict = self.get_students_with_score()
         # The dictionary stored in the retrieved dictionary has
         # each student as key and their score for this course as value
         # To get leaderboard, simply sort this dictionary by value and reverse
@@ -274,8 +281,15 @@ class Category(models.Model):
     colour = models.CharField(max_length=7, default="#009999")
     # Can access messages associated with a given category using Category.message_set.all()
 
+    icon = models.ForeignKey('Icon',on_delete=models.CASCADE,null=True)
+
     def __str__(self):
         return self.name
+
+class Icon(models.Model):
+    name = models.CharField(max_length=30, default="Empty")
+    image = models.ImageField(upload_to='attribute_icons', max_length=50, default="attribute_icons/cooperation.png")
+
 
 class Message(models.Model):
     # This is a Message model for each pre defined message associate with a category

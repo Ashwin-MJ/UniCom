@@ -173,7 +173,6 @@ def student_home(request):
                 else:
                     fbCat[cat].append([feedback.points, feedback.datetime_given.strftime('%Y-%m-%d %H:%M')])
 
-            print(fbCat)
             stud.achievement_set.all().delete()
             scores = stud.get_score_for_category()
 
@@ -295,7 +294,6 @@ def student_course(request, subject_slug):
             top_students = students.order_by('-score')
             context_dict['course'] = course
             context_dict['lecturers'] = lecturers
-
             context_dict['students'] = students
             context_dict['sorted_students'] = course.get_leaderboard()
             fbTotal = course.get_total_for_course_attributes()
@@ -320,19 +318,30 @@ def student_course(request, subject_slug):
                                 fbCat[cat] = [[data[key], date_str]]
 
 
+            categories = request.user.category_set.all()
+            students_and_scores_for_cat = {}
+            for cat in categories:
+                all_stud_and_score = []
+                for stud in students:
+                    stud_and_score = [stud, stud.get_score_for_one_category(cat)]
+                    all_stud_and_score.append(stud_and_score)
+                all_stud_and_score = sorted(all_stud_and_score, key = lambda x: x[1], reverse = True)
+                students_and_scores_for_cat[cat] = all_stud_and_score
+
             fb_with_colour = {}
             for feedback in fb:
-                try:
-                    stud_cat = Category.objects.get(name=feedback.category.name,user=request.user)
-                    fb_with_colour[feedback] = stud_cat.colour
-                except:
-                    fb_with_colour[feedback] = feedback.category.colour
+                stud_cat = Category.objects.get(name=feedback.category.name,user=request.user)
+                fb_with_colour[feedback] = stud_cat.colour
 
             context_dict['score'] = stud.get_score_for_course(course.subject)
             context_dict['student'] = stud
+
+            context_dict['categories'] = categories
+            context_dict['cat_stud_and_score'] = students_and_scores_for_cat
             context_dict['feedback'] = fb_with_colour
             context_dict['feedbackData'] = json.dumps(fbCat)
             context_dict['catColours'] = json.dumps(catColours)
+
 
         except:
             context_dict['course'] = None
@@ -440,6 +449,16 @@ def lecturer_course(request,subject_slug):
         try:
             course = Course.objects.get(subject_slug=subject_slug)
             lect = LecturerProfile.objects.get(lecturer=request.user)
+            students = course.students.all()
+            categories = request.user.category_set.all()
+            students_and_scores_for_cat = {}
+            for cat in categories:
+                all_stud_and_score = []
+                for stud in students:
+                    stud_and_score = [stud, stud.get_score_for_one_category(cat)]
+                    all_stud_and_score.append(stud_and_score)
+                all_stud_and_score = sorted(all_stud_and_score, key = lambda x: x[1], reverse = True)
+                students_and_scores_for_cat[cat] = all_stud_and_score
             fbTotal = course.get_total_for_course_attributes()
             fb = course.feedback_set.all().order_by('-datetime_given')
             for feedback in fb:
@@ -467,7 +486,6 @@ def lecturer_course(request,subject_slug):
                     fb_with_colour[feedback] = lect_cat.colour
                 except:
                     fb_with_colour[feedback] = feedback.category.colour
-
             context_dict['course'] = course
             context_dict['lecturer'] = lect
             context_dict['students_with_score'] = {}
@@ -476,6 +494,9 @@ def lecturer_course(request,subject_slug):
             students = course.get_students_with_score()
             context_dict['students_with_score'] = [(k, students[k]) for k in sorted(students)]
             context_dict['sorted_students'] = course.get_leaderboard()
+            context_dict['feedback'] = fb
+            context_dict['cat_stud_and_score'] = students_and_scores_for_cat
+            context_dict['categories'] = categories
             context_dict['feedback'] = fb_with_colour
             context_dict['feedbackData'] = fbCat
             context_dict['catColours'] = json.dumps(catColours)
@@ -624,6 +645,14 @@ def customise_options(request):
 
         context_dict['messages'] = json.dumps(all_messages)
         context_dict['messages_qs'] = messages
+
+        all_icons = {}
+        for icon in Icon.objects.all():
+            all_icons[icon.id] = icon.image.url
+
+        context_dict['icons_json'] = json.dumps(all_icons)
+        context_dict['icons'] = Icon.objects.all()
+
         return render(request, 'student_feedback_app/general/customise_options.html', context_dict)
     except:
         context_dict['error'] = "error"
@@ -742,9 +771,11 @@ class CategoryDetail(APIView):
         return Response(serializer.data)
 
     def post(self, request,format=None):
+        icon = Icon.objects.get(name=request.data.get("icon"))
         cat = Category(name=request.data.get('name'),
                         colour=request.data.get('colour'),
-                        user=request.user)
+                        user=request.user,
+                        icon=icon)
         cat.save()
         return Response(status=status.HTTP_200_OK)
 

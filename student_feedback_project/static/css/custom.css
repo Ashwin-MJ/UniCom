@@ -246,3 +246,22 @@ body{
   font-family: 'Patrick Hand SC', cursive;
   font-size: 200%;
 }
+
+.icon {
+  max-width: 35px;
+}
+
+.all-icons {
+  max-width: 70px;
+  padding: 10px;
+  transition: transform .2s; /* Animation */
+}
+
+.all-icons:hover {
+  transform: scale(1.5);
+}
+
+.icon-highlighted {
+  background-color: teal!important;
+  border-radius: 35px;
+}

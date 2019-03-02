@@ -25,7 +25,10 @@ Feedback
           {% else %}
           <div class="card custom-card fb-border" style="border-color:{{colour}}">
           {% endif %}
-            <b class="card-sub-heading" style="color:{{colour}}">{{ fb.category }}</b>
+            <b class="card-sub-heading" style="color:{{fb.category.colour}}">
+              <img class="icon" src="{{fb.category.icon.image.url}}"/>
+              {{ fb.category }}
+            </b>
             <div class="row" style="padding-bottom:1%">
               <div class="column left">
                 <div class="card custom-border">

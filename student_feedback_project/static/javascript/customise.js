@@ -48,7 +48,7 @@ $('.delete-cat-icon').click(function(e) {
 $('.edit-cat-icon').click(function(e) {
   // This allows a category to be edited (text and colour)
   var cat_id = this.id;
-  var cat_name = $(this).parent().find("b").html();
+  var cat_name = $(this).parent().find("b").text();
   $('.modal-edit-cat-header').html("Edit \"" + cat_name + "\"");
   cat_name = cat_name.replace("&amp;", "&"); // Had to include this due to JSON issue
   document.getElementById("id_name").value = cat_name;
@@ -92,10 +92,25 @@ $('.create-cat-icon').click(function(e) {
   document.getElementById("new_cat_colour").value = "#009999";
   $('.submit-add-cat-form').on('click', function(){
     var new_name = $('#id_new_name').val();
-    var new_colour = $('#new_cat_colour').val()
+    var new_colour = $('#new_cat_colour').val();
+    var icon = $('.icon-highlighted').attr('id');
+
+    if(new_name == ""){
+      alert("You must type in a name for this category");
+      return;
+    }
+    else if (new_colour == "") {
+      alert("You must choose a colour");
+      return;
+    }
+    else if (icon == null){
+      alert("You must choose an icon");
+      return;
+    }
     var data = {
              "name": new_name,
-             "colour": new_colour
+             "colour": new_colour,
+             "icon": icon
            }
 
     var csrftoken = getCookie("csrftoken");
@@ -154,7 +169,7 @@ $('.category').on('click', function(){
 
 });
 
-function updateHtml(colour,message_set,cat_name,cat_id) {
+function updateHtml(colour,icon,message_set,cat_name,cat_id) {
   // Updates the cards shown in the message card. This allows the messages shown to change dependent
   // on which category is selected
   var cat_messages = "";
@@ -163,7 +178,7 @@ function updateHtml(colour,message_set,cat_name,cat_id) {
       if (message_set[retrieved_message] == message_id){
         cat_messages += `<div class="card custom-card fb-border" style="border-color:` + colour + `">`
                         + `<div class="card-body text-center">`
-                        + `<b class="card-sub-heading">` + all_messages[message_id] + `</b>`
+                        + `<b class="card-sub-heading"><img class="icon" src="` + icons[icon] + `"/> ` +  all_messages[message_id] + `</b>`
                         + `<i class="material-icons delete-mess-icon" id=` + message_id + `>delete</i>`
                         + `<i class="material-icons edit-mess-icon" data-toggle="modal" data-target="#editMessageModal" id=` + message_id +`>edit</i>`
                         + `</div></div><br />`
@@ -246,7 +261,7 @@ $('.create-mess-icon').on('click',function(e) {
 $('#all-messages').on('click','.edit-mess-icon', function() {
   // This allows a message to be edited (text)
   var mess_id = this.id;
-  var mess_text = $(this).parent().find("b").html();
+  var mess_text = $(this).parent().find("b").text();
   $('.modal-edit-mess-header').html("Edit \"" + mess_text + "\"");
   document.getElementById("id_text").value = mess_text;
 
@@ -278,4 +293,14 @@ $('#all-messages').on('click','.edit-mess-icon', function() {
     });
     location.reload() // Same issue as mentioned above
   });
+});
+
+$(".all-icons").click(function (e){
+  var highlight = "icon-highlighted";
+  $('.all-icons').each(function() {
+    if($(this).hasClass(highlight)){
+      $(this).toggleClass(highlight);
+    }
+  });
+  $(this).toggleClass(highlight);
 });
