@@ -133,7 +133,7 @@ function show(sorted_fb, footerType){
 		fb_text += '<b class="card-sub-heading" style="color:' + fb.categoryColour + '">' + fb.categoryName + `</b>
           <div class="row" style="padding-bottom:1%">
             <div class="column left">
-              <div class="border">
+              <div class="card custom-border">
                 <blockquote class="quote">`
                 +  fb.preDefMessageText +'<br />';
                   if (fb.optional_message){

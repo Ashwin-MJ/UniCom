@@ -47,6 +47,7 @@ body{
 
 .recent {
   background-color: teal!important;
+  color: teal!important;
 }
 
 .text-white b {
@@ -57,7 +58,7 @@ body{
   color: white;
 }
 .text-white blockquote footer {
-  color: white;
+  color: teal;
 }
 
 .text-white .quote:after {
@@ -71,7 +72,7 @@ body{
 }
 
 .text-white .quote {
-  color: white;
+  color: teal;
 }
 
 .text-white .right-number {
