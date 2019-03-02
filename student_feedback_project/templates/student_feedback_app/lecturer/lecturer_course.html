@@ -186,29 +186,73 @@ function toggleDataSeries(e) {
         </div>
       </div>
 
-      <div class="card scroll-bg">
-        <h3 class="text-center custom-card-title">Leaderboard</h3>
-        <hr />
-        <div class="card-body scroll">
-          {% for stud,score in sorted_students %}
-          <div class="card custom-card">
-            <div class="row">
-              <div class="column left">
-                <b class="card-sub-heading">{{ stud.student.username }}</b>
-                <div class="card-sub-heading">
-                  {{ score }}
-                  </div>
-                </div>
-              <div class="column right">
-                <a href="{% url 'view_profile' stud.student.id_number%}">
-                  <img class="picture" src="{{stud.student.profile_picture.url}}"/>
-                </a>
+          <div class="card scroll-bg">
+            <h3 class="text-center custom-card-title leaderboard">Leaderboard</h3>
+            <hr />
+
+
+            <div class="card-body scroll">
+              <div class="tab-content">
+                <div id="All" class="tab-pane active">
+                  {% for stud,score in sorted_students %}
+                    <div class="card custom-card leaderboard-stud" id="{{stud.student.id_number}}">
+                      <div class="row">
+                        <div class="column left">
+                          <b class="card-sub-heading">{{ stud.student.username }}</b>
+                          <div class="card-sub-heading">
+                            {{ score }}
+                            </div>
+                          </div>
+                        <div class="column right">
+                          <a href="{% url 'view_profile' stud.student.id_number%}">
+                            <img class="picture" src="{{stud.student.profile_picture.url}}"/>
+                          </a>
+                          </div>
+                        </div>
+                      </div>
+                      <br />
+                    {% endfor %}
                 </div>
 
+                {% for cat,list in cat_stud_and_score.items %}
+                <div id="{{cat.id}}" class="tab-pane">
+                  {%for stud in list %}
+                  <div class="card custom-card leaderboard-stud" id="{{stud.0.student.id_number}}">
+                    <div class="row">
+                      <div class="column left">
+                        <b class="card-sub-heading">{{ stud.0.student.username }}</b>
+                        <div class="card-sub-heading">
+                          {{ stud.1 }}
+                          </div>
+                        </div>
+                      <div class="column right">
+                        <a href="{% url 'view_profile' stud.0.student.id_number%}">
+                          <img class="picture" src="{{stud.0.student.profile_picture.url}}"/>
+                        </a>
+                        </div>
+                      </div>
+                    </div>
+                    <br />
+                  {% endfor %}
+                </div>
+                {% endfor %}
               </div>
             </div>
-            <br />
-            {% endfor %}
+          </div>
+
+          <div class="card-header col-1">
+            <ul class="nav nav-tabs nav-pills card-header-tabs nav-stacked" id="title">
+              <li class="nav-item">
+                <a data-toggle="tab" class="nav-link active" style="color:black; font-size:20px" href="#All">All</a>
+              </li>
+              {% for category in categories %}
+              <li class="nav-item">
+                <a data-toggle="tab" class="nav-link" style="color:{{category.colour}}; font-size:20px" href="#{{category.id}}">{{ category }}</a>
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
+
         </div>
       </div>
     </div>
