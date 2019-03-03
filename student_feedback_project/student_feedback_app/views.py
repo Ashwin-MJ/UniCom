@@ -323,7 +323,7 @@ def student_course(request, subject_slug):
             for cat in categories:
                 all_stud_and_score = []
                 for stud in students:
-                    stud_and_score = [stud, stud.get_score_for_one_category(cat)]
+                    stud_and_score = [stud, stud.get_score_for_category_course(cat, course)]
                     all_stud_and_score.append(stud_and_score)
                 all_stud_and_score = sorted(all_stud_and_score, key = lambda x: x[1], reverse = True)
                 students_and_scores_for_cat[cat] = all_stud_and_score
@@ -455,7 +455,7 @@ def lecturer_course(request,subject_slug):
             for cat in categories:
                 all_stud_and_score = []
                 for stud in students:
-                    stud_and_score = [stud, stud.get_score_for_one_category(cat)]
+                    stud_and_score = [stud, stud.get_score_for_category_course(cat, course)]
                     all_stud_and_score.append(stud_and_score)
                 all_stud_and_score = sorted(all_stud_and_score, key = lambda x: x[1], reverse = True)
                 students_and_scores_for_cat[cat] = all_stud_and_score
