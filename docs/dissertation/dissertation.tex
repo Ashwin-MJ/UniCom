@@ -5,6 +5,7 @@
 % Modified
 
 \documentclass{l3proj}
+\usepackage{subfiles}
 
 \begin{document}
 
@@ -34,108 +35,54 @@ The abstract goes here
 %==============================================================================
 \section{Introduction}
 
-\textit{An introduction, explaining the purpose of the document, a very brief outline of the project and a summary of the structure of the rest of the document (approximately 1 pages).}
+\subfile{sections/introduction}
 
-
-Software engineering
-
-This paper presents a case study of...
-
-
-%% Final paragraph.
-The rest of the case study is structured as follows.  Section
- presents the background of the case study
-discussed, describing the customer and project context, aims and
-objectives and project state at the time of writing.  Sections
- through Section  discuss issues that
-arose during the project...
+\newpage
 
 %==============================================================================
 \section{Case Study Background}
 
-\textit{This should include a description of the project customer (what was the nature of the organisation you were working for), their objectives for the project, and a summary of what was actually achieved. Where appropriate, this section should also make reference to similar related projects in order to make the context clear (approximately 1-3 pages).}
+\subfile{sections/case_study}
 
-Include details of
-\begin{itemize}
-\item The customer organisation and background.
-\item The rationale and initial objectives for the project.
-\item The final software was delivered for the customer.
-\end{itemize}
-
-\subsection{The Customer}
-
-\subsection{Objectives}
-
-\subsection{Requirements}
-
-\subsection{The Product}
-
+\newpage
 
 %==============================================================================
 \section{Development}
 
-\subsection{The Plan}
+\subfile{sections/development}
 
-\textit{Several sections that reflect on your experiences during the team project. Each section should discuss one theme, characterised by incidents or events that occurred during the team course of the project from which you learned (approximately 8-10 pages).}
-
-Reflecting on your practice is the hardest part of writing the dissertation, so you are encouraged to talk to the course coordinators and demonstrators to find out what you could include in this section. A good source of examples of incidents for reflection is often the documentation from your retrospectives, because you used the retrospectives to identify areas of your process that could be changed or done better. You should also, try to relate your experiences to other studies available in the software engineering literature (the recommended reading is a good starting point for this). For example, if you found that you had to drop a feature during an iteration, discuss the reasons why the feature had to be dropped. Had you given yourselves too much work? Was the feature harder to implement than you realised? Had you got your priorities wrong? Then consider looking at the literature (see the recommended reading for PSD3) on project planning and estimation. Was your experience typical of a software project? What steps do other developers advocate for improving estimation? Alternatively, did you have to make some big design decisions or choice of software platforms early on in the project? What impact did these choices have? Were they the right ones? How might you have improved the decision making process to reduce uncertainty? Did you implement a prototype before proceeding to far with the main implementation? How much effort did this involve? What did you learn about the platform as a result?
-
-\subsection{Features}
-
-\subsection{Refining the Product}
-
-\subsection{The Final Product}
-
-\subsection{Deployment}
+\newpage
 
 %==============================================================================
-
 \section{Technologies}
 
-\subsection{Django}
+\subfile{sections/technologies}
 
-\subsection{Bootstrap}
-
-\subsection{Django REST Framework}
-
+\newpage
 
 %==============================================================================
-\section{Teamwork}
-
-
-%------------------------------------------------------------------------------
 \section{The Software Process}
 
-\subsection{GitLab}
+\subfile{sections/software_process}
 
-\subsubsection{Issues}
-
-\subsubsection{Commits}
-
-\subsubsection{Merge Requests}
-
-
-\subsection{Continuous Integration}
-
-\subsection{Iterations and Retrospectives}
-
-\subsection{Testing}
-
+\newpage
 
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-\section{Knots and Bundles}
+\section{Teamwork}
 
+\subfile{sections/teamwork}
+
+\newpage
+
+%------------------------------------------------------------------------------
+\section{Add something here}
+
+\newpage
 
 %------------------------------------------------------------------------------
 \section{Conclusions}
 
-\textit{A conclusion that draws general and wider lessons from the case study (approximately 1-2 pages).}
-
-Explain the wider lessons that you learned about software engineering,
-based on the specific issues discussed in previous sections.  Reflect
-on the extent to which these lessons could be generalised to other
-types of software project.  Relate the wider lessons to others
-reported in case studies in the software engineering literature.
+\subfile{sections/conclusions}
 
 %==============================================================================
 \bibliographystyle{plain}
