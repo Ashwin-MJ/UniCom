@@ -321,7 +321,7 @@ def student_course(request, subject_slug):
             for cat in categories:
                 all_stud_and_score = []
                 for stud in students:
-                    stud_and_score = [stud, stud.get_score_for_one_category(cat)]
+                    stud_and_score = [stud, stud.get_score_for_category_course(cat, course)]
                     all_stud_and_score.append(stud_and_score)
                 all_stud_and_score = sorted(all_stud_and_score, key = lambda x: x[1], reverse = True)
                 students_and_scores_for_cat[cat] = all_stud_and_score
@@ -453,7 +453,7 @@ def lecturer_course(request,subject_slug):
             for cat in categories:
                 all_stud_and_score = []
                 for stud in students:
-                    stud_and_score = [stud, stud.get_score_for_one_category(cat)]
+                    stud_and_score = [stud, stud.get_score_for_category_course(cat, course)]
                     all_stud_and_score.append(stud_and_score)
                 all_stud_and_score = sorted(all_stud_and_score, key = lambda x: x[1], reverse = True)
                 students_and_scores_for_cat[cat] = all_stud_and_score
@@ -901,7 +901,7 @@ def invites(request):
             msg.attach_alternative(html_content, "text/html")
             msg.send()
 
-            
+
     students_emails_string = request.COOKIES.get("emails")
     if is_json(students_emails_string):
         mode += 1
@@ -918,8 +918,8 @@ def invites(request):
         msg = EmailMultiAlternatives('You are invited to join a course!', text_content, 'lect.acc.unicom@gmail.com',emails)
         msg.attach_alternative(html_content, "text/html")
         msg.send()
-        
-        
+
+
     if mode == 0:
         lect = LecturerProfile.objects.get(lecturer=request.user)
         students = lect.get_my_students()

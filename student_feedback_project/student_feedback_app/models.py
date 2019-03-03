@@ -129,6 +129,14 @@ class StudentProfile(models.Model):
                 score += fb.points
         return score
 
+    def get_score_for_category_course(self, cat, course):
+        score = 0
+        for fb in self.feedback_set.all():
+            if fb.category.name == cat.name and fb.which_course.course_code == course.course_code :
+                score += fb.points
+        return score
+
+
 class Achievement(models.Model):
     student = models.ForeignKey('StudentProfile', on_delete=models.CASCADE)
     category = models.ForeignKey("Category", on_delete=models.CASCADE)
