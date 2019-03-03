@@ -125,7 +125,7 @@ class StudentProfile(models.Model):
     def get_score_for_one_category(self, category):
         score = 0
         for fb in self.feedback_set.all():
-            if fb.category == category:
+            if fb.category.name == category.name:
                 score += fb.points
         return score
 
