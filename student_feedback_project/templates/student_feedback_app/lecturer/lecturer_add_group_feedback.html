@@ -38,7 +38,10 @@ Add Feedback
             <h3 class="fb-form-heading">Select a Category:</h3>
             <div style="margin:10px">
               {% for cat in categories %}
-              <div class="btn btn-material btn-ripple cat-item" id="{{cat.id}}" style="background-color:{{cat.colour}}">{{cat.name}}</div>
+              <div class="btn btn-material btn-ripple cat-item" id="{{cat.id}}" style="background-color:{{cat.colour}}">
+                <img class="fb-icon" src="{{cat.icon.image.url}}"/>
+                {{cat.name}}
+              </div>
               {% endfor %}
               <a href="{%url 'customise_options' %}">
                 <div class="btn btn-material btn-ripple cat-item" id="{{cat.id}}" style="background-color:{{cat.colour}}">
@@ -133,7 +136,7 @@ Add Feedback
             <hr />
 
             <div class="card scroll-bg">
-              <h5 class="text-center custom-card-title">Recent Feedback for {{ student.student.username }}</h5>
+              <h5 class="text-center custom-card-title">Feedback for {{ student.student.username }}</h5>
               <hr />
               <div class="card-body give-fb-scroll">
                 <p class="card-text"></p>
@@ -143,10 +146,13 @@ Add Feedback
                 {% else %}
                 <div class="card custom-card fb-border" style="border-color:{{fb.category.colour}}">
                 {% endif %}
-                  <b class="card-sub-heading" style="color:{{fb.category.colour}}">{{ fb.category }}</b>
+                  <b class="card-sub-heading" style="color:{{fb.category.colour}}">
+                    <img class="icon" src="{{fb.category.icon.image.url}}"/>
+                    {{ fb.category }}
+                  </b>
                   <div class="row" style="padding-bottom:1%">
                     <div class="column left">
-                      <div class="border">
+                      <div class="card custom-border">
                         <blockquote class="quote">
                           {{ fb.pre_defined_message.text }}<br />
                           {% if fb.optional_message %}

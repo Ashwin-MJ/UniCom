@@ -45,7 +45,7 @@ class FeedbackTestCase(TestCase):
         add_student("Bob", "3015244", "Bob@bob.bob", "Bob", 0, ["SP3"])
         add_category("writing", "#008080")
         add_message("writing", ["wrote well"])
-        add_feedback(1, "writing", 4, "00001", "3015244", "SP3", "wrote well", "good explanation of pointers")
+        add_feedback(1, "writing", 4, "00001", "3015244", "SP3", "wrote well", "good explanation of pointers",False)
 
     def test_fb_correct_optional_message(self):
         fb = Feedback.objects.get(feedback_id=1)

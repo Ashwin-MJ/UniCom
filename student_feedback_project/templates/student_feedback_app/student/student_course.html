@@ -113,10 +113,13 @@ function toggleDataSeries(e) {
         {% else %}
         <div class="card custom-card fb-border" style="border-color:{{colour}}">
         {% endif %}
-          <b class="card-sub-heading" style="color:{{colour}}">{{ fb.category }}</b>
+          <b class="card-sub-heading" style="color:{{fb.category.colour}}">
+            <img class="icon" src="{{fb.category.icon.image.url}}"/>
+            {{ fb.category }}
+          </b>
           <div class="row" style="padding-bottom:1%">
             <div class="column left">
-              <div class="border">
+              <div class="card custom-border">
                 <blockquote class="quote">
                   {{ fb.pre_defined_message.text }}<br />
                   {% if fb.optional_message %}
@@ -155,7 +158,22 @@ function toggleDataSeries(e) {
 
     <div class="card scroll-bg">
       <h3 class="text-center custom-card-title leaderboard">Leaderboard</h3>
-      <hr />
+      <hr style="margin-bottom:0"/>
+
+      <div class="card-header">
+        <ul class="nav nav-tabs card-header-tabs" id="title">
+          <li class="nav-item">
+            <a data-toggle="tab" class="nav-link active" style="color:black; font-size:20px" href="#All">All</a>
+          </li>
+          {% for category in categories %}
+          <li class="nav-item">
+            <a data-toggle="tab" class="nav-link" style="color:{{category.colour}}" href="#{{category.id}}" title="{{category.name}}">
+              <img class="leaderboard-icon" src="{{category.icon.image.url}}"/>
+            </a>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
 
 
       <div class="card-body scroll">
@@ -205,19 +223,6 @@ function toggleDataSeries(e) {
           {% endfor %}
         </div>
       </div>
-    </div>
-
-    <div class="card-header col-1">
-      <ul class="nav nav-tabs nav-pills card-header-tabs nav-stacked" id="title">
-        <li class="nav-item">
-          <a data-toggle="tab" class="nav-link active" style="color:black; font-size:20px" href="#All">All</a>
-        </li>
-        {% for category in categories %}
-        <li class="nav-item">
-          <a data-toggle="tab" class="nav-link" style="color:{{category.colour}}; font-size:20px" href="#{{category.id}}">{{ category }}</a>
-        </li>
-        {% endfor %}
-      </ul>
     </div>
 
   </div>

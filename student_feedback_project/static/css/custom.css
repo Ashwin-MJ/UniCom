@@ -47,6 +47,7 @@ body{
 
 .recent {
   background-color: teal!important;
+  color: teal!important;
 }
 
 .text-white b {
@@ -57,7 +58,7 @@ body{
   color: white;
 }
 .text-white blockquote footer {
-  color: white;
+  color: teal;
 }
 
 .text-white .quote:after {
@@ -71,7 +72,7 @@ body{
 }
 
 .text-white .quote {
-  color: white;
+  color: teal;
 }
 
 .text-white .right-number {
@@ -244,4 +245,38 @@ body{
 #form-title {
   font-family: 'Patrick Hand SC', cursive;
   font-size: 200%;
+}
+
+.icon {
+  max-width: 35px;
+}
+
+.all-icons {
+  max-width: 70px;
+  padding: 10px;
+  transition: transform .2s; /* Animation */
+}
+
+.all-icons:hover {
+  transform: scale(1.5);
+}
+
+.icon-highlighted {
+  background-color: teal!important;
+  border-radius: 35px;
+}
+
+.leaderboard-icon{
+  max-width: 25px;
+}
+
+.nav-link {
+  padding-top:0px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+.fb-icon {
+  max-width: 20px;
 }

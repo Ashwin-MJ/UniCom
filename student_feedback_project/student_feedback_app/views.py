@@ -5,6 +5,7 @@ from django.urls import reverse
 from django.template import RequestContext
 from django.contrib.auth import login
 from django.core import serializers
+from django.utils import timezone
 
 from student_feedback_app.forms import *
 from student_feedback_app.models import *
@@ -13,6 +14,7 @@ from student_feedback_app.serializers import *
 from rest_framework import generics
 from dal import autocomplete
 import datetime
+from datetime import timedelta
 import json
 
 from ast import literal_eval
@@ -37,7 +39,7 @@ def my_profile(request):
         if request.user.is_student:
             try:
                 stud = StudentProfile.objects.get(student=request.user)
-                fb = stud.feedback_set.all().order_by('-datetime_given')
+                fb = stud.feedback_set.all().filter(datetime_given__gte=datetime.now()-timedelta(days=7)).order_by('-datetime_given')
                 context_dict['student'] = stud
                 context_dict['courses'] = stud.get_courses_with_score()
                 context_dict['feedback'] = fb
@@ -47,7 +49,7 @@ def my_profile(request):
         elif request.user.is_lecturer:
             try:
                 lect = LecturerProfile.objects.get(lecturer=request.user)
-                fb = request.user.feedback_set.all().order_by('-datetime_given')
+                fb = request.user.feedback_set.all().filter(datetime_given__gte=datetime.now()-timedelta(days=7)).order_by('-datetime_given')
                 context_dict['lecturer'] = lect
                 context_dict['courses'] = lect.get_courses_with_students()
                 context_dict['feedback'] = fb
@@ -157,7 +159,7 @@ def student_home(request):
     if request.user.is_authenticated and request.user.is_student:
         try:
             stud = StudentProfile.objects.get(student=request.user)
-            fb = stud.feedback_set.all().order_by('-datetime_given')
+            fb = stud.feedback_set.all().filter(datetime_given__gte=datetime.now()-timedelta(days=7)).order_by('-datetime_given')
             courses = stud.courses.all()
             for feedback in fb:
                 cat = feedback.category.name
@@ -171,7 +173,6 @@ def student_home(request):
                 else:
                     fbCat[cat].append([feedback.points, feedback.datetime_given.strftime('%Y-%m-%d %H:%M')])
 
-            print(fbCat)
             stud.achievement_set.all().delete()
             scores = stud.get_score_for_category()
 
@@ -184,10 +185,11 @@ def student_home(request):
                     ## TODO: Figure out how to handle this error
                     print("Doesn't exit")
 
+            stud.achievement_set.all()
             for achvm in stud.achievement_set.all():
                 achvm.achiev = literal_eval(achvm.achiev)
                 for val in achvm.achiev:
-                    if achvm.category.name in achievs:
+                    if achvm.category in achievs:
                         achievs[achvm.category].append(val)
                     else:
                         achievs[achvm.category] = [val]
@@ -223,7 +225,7 @@ def student_all_feedback(request):
     context_dict = {}
     if request.user.is_authenticated and request.user.is_student:
         stud= StudentProfile.objects.get(student=request.user)
-        fb = stud.feedback_set.all().order_by('-datetime_given')
+        fb = stud.feedback_set.all().filter(datetime_given__gte=datetime.now()-timedelta(days=7)).order_by('-datetime_given')
         context_dict['student'] = stud
 
         fb_with_colour = {}
@@ -424,7 +426,7 @@ def lecturer_home(request):
     if request.user.is_authenticated and request.user.is_lecturer:
         try:
             lect = LecturerProfile.objects.get(lecturer=request.user)
-            fb = request.user.feedback_set.all().order_by('-datetime_given')
+            fb = request.user.feedback_set.all().filter(datetime_given__gte=datetime.now()-timedelta(days=7)).order_by('-datetime_given')
             courses = lect.course_set.all()
             context_dict['lecturer'] = lect
             context_dict['courses'] = courses
@@ -487,6 +489,8 @@ def lecturer_course(request,subject_slug):
             context_dict['course'] = course
             context_dict['lecturer'] = lect
             context_dict['students_with_score'] = {}
+            # Add top students for each course. This requires editing models to store course in feedback
+            fb = course.feedback_set.all().filter(datetime_given__gte=datetime.now()-timedelta(days=7)).order_by('-datetime_given')
             students = course.get_students_with_score()
             context_dict['students_with_score'] = [(k, students[k]) for k in sorted(students)]
             context_dict['sorted_students'] = course.get_leaderboard()
@@ -523,7 +527,6 @@ def lecturer_add_individual_feedback(request,subject_slug,student_number):
         context_dict['course'] = course
 
         context_dict['new_mess_form'] = NewMessageForm()
-
         context_dict['categories'] = request.user.category_set.all()
 
         messages = request.user.message_set.all()
@@ -587,11 +590,9 @@ def lecturer_courses(request):
     if request.user.is_authenticated and request.user.is_lecturer:
         lect = LecturerProfile.objects.get(lecturer=request.user)
         courses = lect.courses.all()
-        fb = request.user.feedback_set.all().order_by('-datetime_given')
         top_students = lect.get_my_students().order_by('-score')[:5]
         context_dict['lecturer'] = lect
         context_dict['courses'] = courses
-        context_dict['feedback'] = fb
         context_dict['top_students'] = top_students
         if(request.method == 'POST'):
             form = AddCourseForm(request.POST)
@@ -644,6 +645,14 @@ def customise_options(request):
 
         context_dict['messages'] = json.dumps(all_messages)
         context_dict['messages_qs'] = messages
+
+        all_icons = {}
+        for icon in Icon.objects.all():
+            all_icons[icon.id] = icon.image.url
+
+        context_dict['icons_json'] = json.dumps(all_icons)
+        context_dict['icons'] = Icon.objects.all()
+
         return render(request, 'student_feedback_app/general/customise_options.html', context_dict)
     except:
         context_dict['error'] = "error"
@@ -762,9 +771,11 @@ class CategoryDetail(APIView):
         return Response(serializer.data)
 
     def post(self, request,format=None):
+        icon = Icon.objects.get(name=request.data.get("icon"))
         cat = Category(name=request.data.get('name'),
                         colour=request.data.get('colour'),
-                        user=request.user)
+                        user=request.user,
+                        icon=icon)
         cat.save()
         return Response(status=status.HTTP_200_OK)
 
@@ -901,7 +912,7 @@ def invites(request):
             msg.attach_alternative(html_content, "text/html")
             msg.send()
 
-            
+
     students_emails_string = request.COOKIES.get("emails")
     if is_json(students_emails_string):
         mode += 1
@@ -918,8 +929,8 @@ def invites(request):
         msg = EmailMultiAlternatives('You are invited to join a course!', text_content, 'lect.acc.unicom@gmail.com',emails)
         msg.attach_alternative(html_content, "text/html")
         msg.send()
-        
-        
+
+
     if mode == 0:
         lect = LecturerProfile.objects.get(lecturer=request.user)
         students = lect.get_my_students()

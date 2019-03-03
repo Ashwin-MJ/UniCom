@@ -74,11 +74,19 @@ My Profile
 
                 <div class="row" style="padding-bottom:1%">
                   <div class="column left">
-                    <div class="border">
+                    <div class="card custom-border">
                       <div class="course-info">
                         {{ course.course_description }}<br />
                         <footer>
-                          {{course.lecturer.lecturer.username}}
+                          <footer>
+                            {% if user.is_student %}
+                              {% for lect in course.lecturers.all %}
+                                {{lect.lecturer.username}}<br />
+                              {% endfor %}
+                            {% else %}
+                              Code - {{ course.course_code }}
+                            {% endif %}
+                            </footer>
                           </footer>
                           <br />
                         </div>
@@ -94,8 +102,20 @@ My Profile
                       {% endif %}
                       </div>
                     </div>
+                </div>
+              </div>
+              <div class="column right-number">
+                <div style="text-align:center">
+                  {{ value }}<br />
+                  {% if user.is_student %}
+                    <h6>TOTAL SCORE</h6>
+                  {% elif user.is_lecturer %}
+                    <h6>STUDENTS</h6>
+                  {% endif %}
                   </div>
                 </div>
+              </div>
+            </div>
 
           {% endfor %}
       </div>
@@ -113,10 +133,13 @@ My Profile
         {% else %}
         <div class="card custom-card fb-border" style="border-color:{{fb.category.colour}}">
         {% endif %}
-          <b class="card-sub-heading" style="color:{{fb.category.colour}}">{{ fb.category }}</b>
+          <b class="card-sub-heading" style="color:{{fb.category.colour}}">
+            <img class="icon" src="{{fb.category.icon.image.url}}"/>
+            {{ fb.category }}
+          </b>
           <div class="row" style="padding-bottom:1%">
             <div class="column left">
-              <div class="border">
+              <div class="card custom-border">
                 <blockquote class="quote">
                   {{ fb.pre_defined_message.text }}<br />
                   {% if fb.optional_message %}
