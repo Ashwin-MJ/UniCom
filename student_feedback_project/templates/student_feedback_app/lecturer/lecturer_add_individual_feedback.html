@@ -194,6 +194,69 @@ Add Feedback
     </div>
   </div>
 
+  <!-- Help Info -->
+  <div class="modal" id="helpModal" tabindex="-1" role="dialog" aria-labelledby="helpModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document" style="max-width:1000px">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title modal-help" id="helpModal">Help - Course Page</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+          <div class="modal-body">
+
+            <p>
+            Here you can add a single feedback for the selected student
+            </p>
+
+            <img class="help-image" src="{% static 'help_screenshots/lecturer_indiv_fb1.png'%}">
+            <img class="help-image" src="{% static 'help_screenshots/lecturer_indiv_fb2.png'%}">
+
+            <br />
+
+            <p>
+              <li>
+                First, select a category from the list available. If you want to add a new category then click the
+                plus icon.
+              </li>
+              <li>
+                After selecting a category, a list of messages relevant to that category will be displayed. Select one
+                of these or create a new message by clicking the relevant button.
+              </li>
+              <li>
+                You have the option of entering an optional message, however this can be kept blank.
+              </li>
+              <li>
+                Finally, select a score from 1-5 for this feedback and click "Submit & Finish"
+              </li>
+              <li>
+                If you want to immediately give this student another feedback then click "Submit & Add Another Feedback".
+              </li>
+              <li>
+                On the right you will see that students total score (across all courses) as well as recent
+                feedback they have received. This allows you to view what other lecturers/students are giving to that
+                student and determine what you wish to tell them accordingly.
+              </li>
+              <li>
+                Note that on "Courses" page, if you selected more than one student and chose to give Individual Feedback,
+                then upon clicking "Submit & Finish" the page will be reloaded for the next student in the list.
+                When all students have been given feedback you are redirected to a page which shows all feedback you
+                have given.
+              </li>
+            </p>
+
+          </div>
+
+          <div class="modal-footer">
+            <button class="btn btn-material" data-dismiss="modal">Close</button>
+          </div>
+
+      </div>
+    </div>
+  </div>
+
 </div>
 {% endblock %}
 

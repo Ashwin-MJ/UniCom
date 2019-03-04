@@ -263,6 +263,64 @@ function toggleDataSeries(e) {
 
       </div>
     </div>
+
+    <!-- Help Info -->
+    <div class="modal" id="helpModal" tabindex="-1" role="dialog" aria-labelledby="helpModal" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document" style="max-width:1000px">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title modal-help" id="helpModal">Help - Course Page</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+
+            <div class="modal-body">
+
+              <p>
+              Welcome to the page for one of your courses.
+              </p>
+
+              <img class="help-image" src="{% static 'help_screenshots/lecturer_course1.png'%}">
+              <img class="help-image" src="{% static 'help_screenshots/lecturer_course2.png'%}">
+
+              <br />
+
+              <p>
+                <li>
+                  At the top a "Course Token" is displayed - this is a unique code which is used to allow another
+                  student/lecturer to join this course. The functionality to send a token directly
+                  from the website is available if you click "Send Token".
+                </li>
+                <li>
+                  On the left is a list of all students in the course. You may select multiple students to provide
+                  "group feedback" or one or more students to provide "individual feedback". Here you can also remove
+                  a student from the course by clicking the bin icon.
+                </li>
+                <li>
+                  In the middle, is a list of the feedback that has been recently given for this course.
+                </li>
+                <li>
+                  On the right is a leaderboard which shows the top performing students in this course. This can be
+                  filtered by any of the categories you have given feedback for by clicking the relevant icon.
+                </li>
+                <li>
+                  Finally, on the bottom is an attribute graph which shows the feedback you have given for different
+                  categories over time. Use this to identify categories you have not been providing feedback for.
+                </li>
+              </p>
+
+            </div>
+
+            <div class="modal-footer">
+              <button class="btn btn-material" data-dismiss="modal">Close</button>
+            </div>
+
+        </div>
+      </div>
+    </div>
+
+
 </div>
 
 {% endblock %}
