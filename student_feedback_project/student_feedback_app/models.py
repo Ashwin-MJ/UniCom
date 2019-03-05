@@ -74,10 +74,9 @@ class StudentProfile(models.Model):
         return self.student.username == other.student.username
 
     def get_score_for_course(self,course):
-        score = 0
-        for fb in self.feedback_set.all():
-            if fb.which_course.subject == course:
-                score += fb.points
+        score = 0        
+        for fb in self.get_fb_for_course(course):
+            score += fb.points
         return score
 
     def get_top_attributes(self):
