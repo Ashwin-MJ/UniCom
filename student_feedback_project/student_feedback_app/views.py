@@ -175,6 +175,7 @@ def student_home(request):
 
             stud.achievement_set.all().delete()
             scores = stud.get_score_for_category()
+            print("scores: ", scores)
 
             for attribute in scores:
                 achievM = Achievement(student=stud)
@@ -211,6 +212,7 @@ def student_home(request):
             context_dict['feedback'] = fb_with_colour
             context_dict['feedbackData'] = json.dumps(fbCat)
             context_dict['achievements'] = achievs
+            print("achievs: ", achievs)
             context_dict['catColours'] = json.dumps(catColours)
 
         except:
