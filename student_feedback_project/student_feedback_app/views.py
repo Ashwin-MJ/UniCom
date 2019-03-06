@@ -175,7 +175,6 @@ def student_home(request):
 
             stud.achievement_set.all().delete()
             scores = stud.get_score_for_category()
-            print("scores: ", scores)
 
             for attribute in scores:
                 achievM = Achievement(student=stud)
@@ -186,10 +185,7 @@ def student_home(request):
                     ## TODO: Figure out how to handle this error
                     print("Doesn't exit")
 
-            i = 0
             for achvm in stud.achievement_set.all():
-                print(achvm.category)
-                print("iteration %d", acheivs)
                 achvm.achiev = literal_eval(achvm.achiev)
                 for val in achvm.achiev:
                     if achvm.category in achievs:
@@ -197,7 +193,6 @@ def student_home(request):
                     else:
                         achievs[achvm.category] = [val]
                 achievs[achvm.category].sort()
-                i+=1
 
 
             # The follow dictionary is required to ensure the colour displayed for a given feedback
@@ -215,7 +210,6 @@ def student_home(request):
             context_dict['feedback'] = fb_with_colour
             context_dict['feedbackData'] = json.dumps(fbCat)
             context_dict['achievements'] = achievs
-            print("achievs: ", achievs)
             context_dict['catColours'] = json.dumps(catColours)
 
         except:
