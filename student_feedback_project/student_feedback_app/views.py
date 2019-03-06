@@ -431,7 +431,7 @@ def my_provided_feedback(request):
             courses_with_feedback = {}
             for course in courses:
                 courses_with_feedback[course] = course.get_feedback_list_from_lecturer(lect)
-            print(courses_with_feedback)
+
             context_dict['courses_with_feedback'] = courses_with_feedback
             context_dict['courses'] = courses
             context_dict['lecturer'] = lect

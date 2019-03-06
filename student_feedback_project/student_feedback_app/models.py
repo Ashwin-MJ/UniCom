@@ -174,16 +174,10 @@ class Course(models.Model):
         self.course_token = self.token_gen()
         super(Course, self).save(*args, **kwargs)
 
-    def get_feedback_list(self):
-        feedback_list = []
-        for student in self.students.all():
-            feedback_list.extend(student.get_fb_for_course(self))
-        return feedback_list
-
     def get_feedback_list_from_lecturer(self, lecturer):
         feedback_list = []
-        for feedback in self.get_feedback_list():
-            if(feedback.from_user.username == lecturer.lecturer.username):
+        for feedback in self.feedback_set.all():
+            if feedback.from_user.username == lecturer.lecturer.username:
                 feedback_list.append(feedback)
         return feedback_list
 
