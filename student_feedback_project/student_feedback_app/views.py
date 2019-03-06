@@ -74,7 +74,7 @@ def my_profile(request):
         else:
             form = EditBioForm()
 
-        context_dict["form"] = form        
+        context_dict["form"] = form
 
     else:
         # User not authenticated error
@@ -142,34 +142,6 @@ def view_profile(request,student_number):
         context_dict['error'] = "auth"
         return render(request, 'student_feedback_app/general/error_page.html', context_dict)
     return render(request, 'student_feedback_app/general/view_profile.html', context_dict)
-
-
-def edit_bio(request):
-    context_dict={}
-    if request.user.is_authenticated:
-        try:
-            if request.method == 'POST':
-                user = request.user
-                form = EditBioForm(request.POST)
-                if form.is_valid():
-                    new_bio=form.cleaned_data["bio"]
-                    new_degree=form.cleaned_data["degree"]
-                    user.degree=new_degree
-                    user.bio= new_bio
-                    user.save()
-                    return my_profile(request)
-                else:
-                    print(form.errors)
-            else:
-                form = EditBioForm()
-            context_dict["form"] = form
-            return render(request, 'student_feedback_app/general/edit_bio.html', context_dict)
-        except:
-            context_dict['error'] = "error"
-            return render(request, 'student_feedback_app/general/error_page.html', context_dict)
-    else:
-        context_dict['error'] = "auth"
-        return render(request, 'student_feedback_app/general/error_page.html', context_dict, )
 
 def student_home(request):
     context_dict={}
