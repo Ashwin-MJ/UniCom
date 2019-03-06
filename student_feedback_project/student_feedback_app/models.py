@@ -152,6 +152,14 @@ class Course(models.Model):
             feedback_list.extend(student.get_fb_for_course(self))
         return feedback_list
 
+    def get_feedback_list_from_lecturer(self, lecturer):
+        feedback_list = []
+        for feedback in self.get_feedback_list():
+            if(feedback.from_user.username == lecturer.lecturer.username):
+                feedback_list.append(feedback)
+        return feedback_list
+
+
     def token_gen(self):
         size = 4
         chars = string.ascii_uppercase + string.digits
