@@ -14,7 +14,6 @@ Provided Feedback
 {% block body_block %}
 
 <div class="container">
-  <div class="card scroll-bg">
     <h3 class="text-center custom-card-title">My Feedback</h3>
     <hr />
 <!-- Headers for course tabs-->
@@ -32,9 +31,8 @@ Provided Feedback
       </div>
 <!-- Content of tabs -->
       <div class="tab-content">
-        <div class="card-body">
           <div id="All" class="tab-pane active">
-            <div class="card-body scroll" id="fb-list">
+              <div class="card-body scroll" id="fb-list">
               {% for fb in feedback %}
               {% if fb.is_recent %}
             <div class="card recent custom-card text-white fb-border" style="border-color:{{fb.category.colour}}">
@@ -72,11 +70,11 @@ Provided Feedback
                   <button onclick="sort('{{ lecturer.lecturer.username }}', 'date', 'from_user')" type="button" class="btn btn-material btn-ripple">Sort by date</button>
                   <button onclick="sort('{{ lecturer.lecturer.username }}', 'course', 'from_user')" type="button" class="btn btn-material btn-ripple">Sort by course</button>
             </div>
-            </div>
+              </div>
           </div>
           {% for course, feedback_list in courses_with_feedback.items %}
           <div id="{{course.subject}}" class="tab-pane">
-            <div class="card-body scroll" id="fb-list">
+              <div class="card-body scroll" id="fb-list">
               {% for fb in feedback_list %}
               {% if fb.is_recent %}
             <div class="card recent custom-card text-white fb-border" style="border-color:{{fb.category.colour}}">
@@ -114,11 +112,10 @@ Provided Feedback
                   <button onclick="sort('{{ lecturer.lecturer.username }}', 'date', 'from_user')" type="button" class="btn btn-material btn-ripple">Sort by date</button>
                   <button onclick="sort('{{ lecturer.lecturer.username }}', 'course', 'from_user')" type="button" class="btn btn-material btn-ripple">Sort by course</button>
             </div>
+              </div>
           </div>
           {% endfor %}
-        </div>
       </div>
-  </div>
 </div>
 
 {% endblock %}
