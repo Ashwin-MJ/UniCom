@@ -520,7 +520,7 @@ def add_feedback(feedback_id,category,points,from_user,student,course_code,pre_d
 	stud.save()
 
 	if random_bool:
-		rand_date = date.today() - timedelta(random.randint(1,7))
+		rand_date = date.today() - timedelta(random.randint(5,12))
 		rand_date_with_tzinfo = datetime(rand_date.year, rand_date.month,
 	 				rand_date.day, tzinfo=pytz.timezone('GMT'))
 

@@ -11,6 +11,7 @@ from django.core.mail import EmailMultiAlternatives
 from django.template.loader import get_template
 
 import datetime
+from datetime import timedelta
 import random, string
 
 class User(AbstractUser):
@@ -99,7 +100,7 @@ class StudentProfile(models.Model):
 
     def get_fb_for_course(self,course):
         fb_for_course = []
-        for fb in self.feedback_set.all():
+        for fb in self.feedback_set.all().filter(datetime_given__gte=timezone.now()-timedelta(days=7)):
             if fb.which_course.subject == course:
                 fb_for_course += [fb]
         return fb_for_course

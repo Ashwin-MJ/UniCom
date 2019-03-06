@@ -96,8 +96,9 @@ def view_profile(request,student_number):
             ## The lecturer should be able to see all feedback given to the student
             try:
                 lect = LecturerProfile.objects.get(lecturer=request.user)
-                fb = stud.feedback_set.all().order_by('-datetime_given')
-                for feedback in fb:
+                fb_all = stud.feedback_set.all().order_by('-datetime_given')
+                fb_last_week = stud.feedback_set.all().filter(datetime_given__gte=timezone.now()-timedelta(days=7)).order_by('-datetime_given')
+                for feedback in fb_all:
                     cat = feedback.category.name
                     if cat not in fbCat:
                         fbCat[cat] = [[feedback.points, feedback.datetime_given.strftime('%Y-%m-%d %H:%M')]]
@@ -111,7 +112,7 @@ def view_profile(request,student_number):
 
                 context_dict['student'] = stud
                 context_dict['courses'] = stud.get_courses_with_score()
-                context_dict['feedback'] = fb
+                context_dict['feedback'] = fb_last_week
                 context_dict['feedbackData'] = json.dumps(fbCat)
                 context_dict['catColours'] = json.dumps(catColours)
             except:
@@ -158,9 +159,10 @@ def student_home(request):
     if request.user.is_authenticated and request.user.is_student:
         try:
             stud = StudentProfile.objects.get(student=request.user)
-            fb = stud.feedback_set.all().filter(datetime_given__gte=timezone.now()-timedelta(days=7)).order_by('-datetime_given')
+            fb_last_week = stud.feedback_set.all().filter(datetime_given__gte=timezone.now()-timedelta(days=7)).order_by('-datetime_given')
+            fb_all = stud.feedback_set.all()
             courses = stud.courses.all()
-            for feedback in fb:
+            for feedback in fb_all:
                 cat = feedback.category.name
                 if cat not in fbCat:
                     fbCat[cat] = [[feedback.points, feedback.datetime_given.strftime('%Y-%m-%d %H:%M')]]
@@ -193,12 +195,10 @@ def student_home(request):
                         achievs[achvm.category] = [val]
                 achievs[achvm.category].sort()
 
-
-
             # The follow dictionary is required to ensure the colour displayed for a given feedback
             # corresponds to the student's colour of that category and NOT the lecturers
             fb_with_colour = {}
-            for feedback in fb:
+            for feedback in fb_last_week:
                 try:
                     stud_cat = Category.objects.get(name=feedback.category.name,user=request.user)
                     fb_with_colour[feedback] = stud_cat.colour
@@ -211,7 +211,6 @@ def student_home(request):
             context_dict['feedbackData'] = json.dumps(fbCat)
             context_dict['achievements'] = achievs
             context_dict['catColours'] = json.dumps(catColours)
-
         except:
             context_dict['error'] = "error"
             return  render(request, 'student_feedback_app/general/error_page.html', context_dict)
@@ -224,7 +223,7 @@ def student_all_feedback(request):
     context_dict = {}
     if request.user.is_authenticated and request.user.is_student:
         stud= StudentProfile.objects.get(student=request.user)
-        fb = stud.feedback_set.all().filter(datetime_given__gte=timezone.now()-timedelta(days=7)).order_by('-datetime_given')
+        fb = stud.feedback_set.all().order_by('-datetime_given')
         context_dict['student'] = stud
 
         fb_with_colour = {}
@@ -877,15 +876,15 @@ class StudentCourseRelDestroy(APIView):
 
 
 class FeedbackSortedByPoints(generics.ListAPIView):
-    queryset = Feedback_full.objects.all().order_by('-points')
+    queryset = Feedback_full.objects.all().filter(datetime_given__gte=timezone.now()-timedelta(days=7)).order_by('-points')
     serializer_class = Feedback_fullSerializer
 
 class FeedbackSortedByDate(generics.ListAPIView):
-    queryset = Feedback_full.objects.all().order_by('-datetime_given')
+    queryset = Feedback_full.objects.all().filter(datetime_given__gte=timezone.now()-timedelta(days=7)).order_by('-datetime_given')
     serializer_class = Feedback_fullSerializer
 
 class FeedbackSortedByCourse(generics.ListAPIView):
-    queryset = Feedback_full.objects.all().order_by('courseName')
+    queryset = Feedback_full.objects.all().filter(datetime_given__gte=timezone.now()-timedelta(days=7)).order_by('courseName')
     serializer_class = Feedback_fullSerializer
 
 class Feedback_full(generics.ListAPIView):
