@@ -288,7 +288,7 @@ def student_course(request, subject_slug):
             course = Course.objects.get(subject_slug=subject_slug)
             stud = StudentProfile.objects.get(student=request.user)
 
-            if student not in course.students.all():
+            if stud not in course.students.all():
                 # If the student tries to access a course they are not enrolled in then
                 # then deny this
                 context_dict['error'] = 'not_enrolled'
@@ -303,7 +303,7 @@ def student_course(request, subject_slug):
             context_dict['students'] = students
             context_dict['sorted_students'] = course.get_leaderboard()
             fbTotal = course.get_total_for_course_attributes()
-            fb = student.get_fb_for_course(course.subject)
+            fb = stud.get_fb_for_course(course.subject)
             for feedback in fb:
                 cat = feedback.category.name
                 for data in fbTotal[cat]:
@@ -340,8 +340,8 @@ def student_course(request, subject_slug):
                 except:
                     fb_with_colour[feedback] = feedback.category.colour
 
-            context_dict['score'] = student.get_score_for_course(course.subject)
-            context_dict['student'] = student
+            context_dict['score'] = stud.get_score_for_course(course.subject)
+            context_dict['student'] = stud
             context_dict['categories'] = categories
             context_dict['cat_stud_and_score'] = students_and_scores_for_cat
             context_dict['feedback'] = fb_with_colour
