@@ -34,6 +34,7 @@ urlpatterns = [
     re_path(r'^lecturer/(?P<subject_slug>[\w\-]+)/(?P<student_number>[\w\-]+)/add-individual-feedback/$', views.lecturer_add_individual_feedback,
             name='lect_add_individual_feedback'),
     re_path(r'^accounts/register/$', views.register, name='register'),
+    re_path(r'^unapproved/$', views.unapproved, name="unapproved"),
     re_path(r'^accounts/', include('registration.backends.simple.urls')),
     re_path(r'^FeedbackSortedByPoints/$', views.FeedbackSortedByPoints.as_view()),
     re_path(r'^FeedbackSortedByDate/$', views.FeedbackSortedByDate.as_view()),
