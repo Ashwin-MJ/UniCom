@@ -98,11 +98,10 @@ class StudentProfile(models.Model):
         return scores
 
     def get_fb_for_course(self,course):
-        fb_for_course = []
+        fb_for_course = []        
         for fb in self.feedback_set.all():
             if fb.which_course.subject == course:
                 fb_for_course += [fb]
-
         return fb_for_course
 
     def get_courses_with_score(self):
@@ -142,7 +141,11 @@ class Achievement(models.Model):
     achiev = models.CharField(validators=[int_list_validator], max_length=100, default=0)
 
     def gen_achievement(self, attribute, score, user):
-        self.category = Category.objects.get(name=attribute,user=user)
+        try:
+            self.category = Category.objects.get(name=attribute,user=user)
+        except:
+            ## Needed to include this for if the user does not have the category
+            self.category = Category.objects.get(name=attribute)
         if score >= 100:
             self.achiev = [100,50,25,10,5]
         elif score >= 50:
