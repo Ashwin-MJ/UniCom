@@ -245,6 +245,64 @@ Edit Categories and Pre-Defined Messages
       </div>
     </div>
   </div>
+
+  <!-- Help Info -->
+  <div class="modal" id="helpModal" tabindex="-1" role="dialog" aria-labelledby="helpModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document" style="max-width:1000px">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title modal-help" id="helpModal">Help - Customise Options Page</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+          <div class="modal-body">
+
+            <p>
+            Here you can edit the categories and messages you have saved.
+            </p>
+
+            <img class="help-image" src="{% static 'help_screenshots/customise.png'%}">
+
+            <br />
+
+            <p>
+              <li>
+                A new category can be created by clicking the icon in the blue circle.
+                Simply choose a name, select a colour and select an icon for your new category and click save.
+              </li>
+              <li>
+                A category can be edited by clicking the edit icon for that category, or deleted by
+                clicking the bin icon.
+              </li>
+              <li>
+                Similarly with messages, a new message can be created by selecting a category and then clicking
+                the plus icon that appears.
+              </li>
+              <li>
+                Choose the text for this message and click save.
+              </li>
+              <li>
+                Messages can be deleted by clicking the bin icon.
+              </li>
+              <li>
+                Note that if a category or message is deleted, then ALL feedback you have given
+                using this category/message will be deleted. Therefore it is recommended to avoid
+                deleting these.
+              </li>              
+            </p>
+
+          </div>
+
+          <div class="modal-footer">
+            <button class="btn btn-material" data-dismiss="modal">Close</button>
+          </div>
+
+      </div>
+    </div>
+  </div>
+
 </div>
 {% endblock %}
 

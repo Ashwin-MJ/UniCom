@@ -93,7 +93,7 @@ def populate():
 		"lecturer_number": "00001",
 		"password": "password",
 		"email": "scott_roy@glasgow.ac.uk",
-		"courses":["ARH01", "POL01"]
+		"courses":["ARH01", "POL01", "MAT1Q"]
 		},
 		{"name": "Dr. Cossar",
 		"lecturer_number": "00002",
@@ -287,6 +287,7 @@ def populate():
 	create_view_fb_cat_mss_stud()
 	create_view_fb_cat_mss_stud_course()
 	create_view_fb_full()
+	create_view_fb_full_icon()
 
 categories = [
 	{"name": "Active Participation", "colour" : "#F7D969"},
@@ -438,6 +439,14 @@ def create_view_fb_full():
         cursor.execute("CREATE VIEW student_feedback_app_feedback_full \
                         as select fbcmsc.*, usr.username fromUserName from student_feedback_app_feedback_with_cat_mss_stud_course fbcmsc \
                         INNER JOIN student_feedback_app_user usr ON fbcmsc.from_user_id = usr.id;")
+
+def create_view_fb_full_icon():
+    with connection.cursor() as cursor:
+        cursor.execute("create view student_feedback_app_feedback_full_icon \
+						as select ico.image, fb.* \
+						from student_feedback_app_feedback_full fb \
+						INNER JOIN student_feedback_app_category cat ON fb.category_id = cat.id \
+						INNER JOIN student_feedback_app_icon ico ON ico.id = cat.icon_id;")
 
 #to add new view: make function and execute line, add model in models.py, test in DB browser SQLite
 
