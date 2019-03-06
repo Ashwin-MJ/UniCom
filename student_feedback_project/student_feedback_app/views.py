@@ -184,7 +184,6 @@ def student_home(request):
                     ## TODO: Figure out how to handle this error
                     print("Doesn't exit")
 
-            stud.achievement_set.all()
             for achvm in stud.achievement_set.all():
                 achvm.achiev = literal_eval(achvm.achiev)
                 for val in achvm.achiev:

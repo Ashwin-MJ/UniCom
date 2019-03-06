@@ -74,7 +74,7 @@ class StudentProfile(models.Model):
         return self.student.username == other.student.username
 
     def get_score_for_course(self,course):
-        score = 0        
+        score = 0
         for fb in self.get_fb_for_course(course):
             score += fb.points
         return score
@@ -115,10 +115,10 @@ class StudentProfile(models.Model):
     def get_score_for_category(self):
         scores = {}
         for fb in self.feedback_set.all():
-            if fb.category not in scores:
-                scores[fb.category] = fb.points
+            if fb.category.name not in scores:
+                scores[fb.category.name] = fb.points
             else:
-                scores[fb.category] += fb.points        
+                scores[fb.category.name] += fb.points
         return scores
 
     def get_score_for_one_category(self, category):
