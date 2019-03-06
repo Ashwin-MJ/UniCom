@@ -98,7 +98,7 @@ class StudentProfile(models.Model):
         return scores
 
     def get_fb_for_course(self,course):
-        fb_for_course = []        
+        fb_for_course = []
         for fb in self.feedback_set.all():
             if fb.which_course.subject == course:
                 fb_for_course += [fb]
@@ -129,8 +129,8 @@ class StudentProfile(models.Model):
 
     def get_score_for_category_course(self, cat, course):
         score = 0
-        for fb in self.feedback_set.all():
-            if fb.category.name == cat.name and fb.which_course.course_code == course.course_code :
+        for fb in self.get_fb_for_course(course.subject):
+            if fb.category.name == cat.name:
                 score += fb.points
         return score
 
@@ -242,6 +242,15 @@ class Course(models.Model):
         for each_lect in self.lecturers.all():
             emails.append(each_lect.lecturer.email)
         return emails
+
+    def get_categories(self):
+        cat_names = []
+        categories = []
+        for fb in self.feedback_set.all():
+            if fb.category.name not in cat_names:
+                cat_names.append(fb.category.name)
+                categories.append(fb.category)
+        return categories
 
 class LecturerProfile(models.Model):
     lecturer = models.OneToOneField(User, on_delete=models.CASCADE,primary_key=True)

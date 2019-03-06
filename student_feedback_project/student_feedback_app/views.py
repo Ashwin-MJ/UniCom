@@ -323,7 +323,7 @@ def student_course(request, subject_slug):
                             else:
                                 fbCat[cat] = [[data[key], date_str]]
 
-            categories = request.user.category_set.all()
+            categories = course.get_categories()
             students_and_scores_for_cat = {}
             for cat in categories:
                 all_stud_and_score = []
@@ -332,7 +332,7 @@ def student_course(request, subject_slug):
                     all_stud_and_score.append(stud_and_score)
                 all_stud_and_score = sorted(all_stud_and_score, key = lambda x: x[1], reverse = True)
                 students_and_scores_for_cat[cat] = all_stud_and_score
-            
+
             fb_with_colour = {}
             for feedback in fb:
                 try:
@@ -343,13 +343,11 @@ def student_course(request, subject_slug):
 
             context_dict['score'] = student.get_score_for_course(course.subject)
             context_dict['student'] = student
-
             context_dict['categories'] = categories
             context_dict['cat_stud_and_score'] = students_and_scores_for_cat
             context_dict['feedback'] = fb_with_colour
             context_dict['feedbackData'] = json.dumps(fbCat)
             context_dict['catColours'] = json.dumps(catColours)
-
 
         except:
             context_dict['course'] = None
@@ -472,7 +470,7 @@ def lecturer_course(request,subject_slug):
                 return render(request,'student_feedback_app/general/error_page.html', context_dict)
 
             students = course.students.all()
-            categories = request.user.category_set.all()
+            categories = course.get_categories()
             students_and_scores_for_cat = {}
             for cat in categories:
                 all_stud_and_score = []
