@@ -1,4 +1,5 @@
 {% extends 'student_feedback_app/general/base.html' %}
+{% load static %}
 
 {% block title%}
 My Feedback
@@ -6,7 +7,7 @@ My Feedback
 
 {% block current_page %}
 {{ student.student.username }}'s<br />
-Feedback
+Recieved Feedback
 {% endblock%}
 
 
@@ -111,6 +112,56 @@ Feedback
         Click here to view feedback you have given to others
       </a>
     </div>
+
+    <!-- Help Info -->
+    <div class="modal" id="helpModal" tabindex="-1" role="dialog" aria-labelledby="helpModal" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document" style="max-width:1000px">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title modal-help" id="helpModal">Help - Received Feedback Page</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+
+            <div class="modal-body">
+
+              <p>
+                This is the "Received Feedback" page. It shows all of the feedback that you have received, and also outlines areas in which you can improve
+                as well as areas you are doing well in.
+              </p>
+
+              <img class="help-image" src="{% static 'help_screenshots/student_fb1.png'%}">
+              <img class="help-image" src="{% static 'help_screenshots/student_fb2.png'%}">
+
+              <br />
+
+              <p>
+                <li>
+                  On the left is feedback you have received recently. This can be sorted by points, course, and category
+                </li>
+                <li>
+                  "My Top Attributes" shows the student which attributes they are performing best in, and similarly "Areas to Improve" displays attributes
+                  in which they are not performing as well.
+                </li>
+                <li>
+                  You can view these stats and identify what you need to work on accordingly.
+                </li>
+                <li>
+                  At the bottom is a button which allows a student to view the feedback they have given to other students.
+                </li>
+              </p>
+
+            </div>
+
+            <div class="modal-footer">
+              <button class="btn btn-material" data-dismiss="modal">Close</button>
+            </div>
+
+        </div>
+      </div>
+    </div>
+
 </div>
 
 
