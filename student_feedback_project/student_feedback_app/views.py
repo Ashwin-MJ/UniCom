@@ -39,7 +39,7 @@ def my_profile(request):
         if request.user.is_student:
             try:
                 stud = StudentProfile.objects.get(student=request.user)
-                fb = stud.feedback_set.all().filter(datetime_given__gte=datetime.now()-timedelta(days=7)).order_by('-datetime_given')
+                fb = stud.feedback_set.all().filter(datetime_given__gte=timezone.now()-timedelta(days=7)).order_by('-datetime_given')
                 context_dict['student'] = stud
                 context_dict['courses'] = stud.get_courses_with_score()
                 context_dict['feedback'] = fb
@@ -49,7 +49,7 @@ def my_profile(request):
         elif request.user.is_lecturer:
             try:
                 lect = LecturerProfile.objects.get(lecturer=request.user)
-                fb = request.user.feedback_set.all().filter(datetime_given__gte=datetime.now()-timedelta(days=7)).order_by('-datetime_given')
+                fb = request.user.feedback_set.all().filter(datetime_given__gte=timezone.now()-timedelta(days=7)).order_by('-datetime_given')
                 context_dict['lecturer'] = lect
                 context_dict['courses'] = lect.get_courses_with_students()
                 context_dict['feedback'] = fb
@@ -67,12 +67,23 @@ def view_profile(request,student_number):
     fbCat = {}
     catColours = {}
     if request.user.is_authenticated:
+
+        # Redirect to my_profile if user tries to access their own view_profile page
+        if request.user.id_number == student_number:
+            return redirect(my_profile)
+
+        stud_user = User.objects.get(id_number=student_number)
+        stud = StudentProfile.objects.get(student=stud_user)
+
+        if not stud_user.is_student:
+            context_dict['error'] = "no_student"
+            return render(request,'student_feedback_app/general/error_page.html', context_dict)
+
         if request.user.is_student:
+
             # Case 1 - Student view another Student
             ## The student should only see feedback given by themself
             try:
-                stud_user = User.objects.get(id_number=student_number)
-                stud = StudentProfile.objects.get(student=stud_user)
                 fb = stud.feedback_set.all().filter(from_user=request.user).order_by('-datetime_given')
                 context_dict['student'] = stud
                 context_dict['courses'] = stud.get_courses_with_score()
@@ -85,8 +96,6 @@ def view_profile(request,student_number):
             ## The lecturer should be able to see all feedback given to the student
             try:
                 lect = LecturerProfile.objects.get(lecturer=request.user)
-                stud_user = User.objects.get(id_number=student_number)
-                stud = StudentProfile.objects.get(student=stud_user)
                 fb = stud.feedback_set.all().order_by('-datetime_given')
                 for feedback in fb:
                     cat = feedback.category.name
@@ -100,19 +109,9 @@ def view_profile(request,student_number):
                     else:
                         fbCat[cat].append([feedback.points, feedback.datetime_given.strftime('%Y-%m-%d %H:%M')])
 
-                fb_with_colour = {}
-                for feedback in fb:
-                    try:
-                        stud_cat = Category.objects.get(name=feedback.category.name, user=request.user)
-                        fb_with_colour[feedback] = stud_cat.colour
-                    except:
-                        fb_with_colour[feedback] = feedback.category.colour
-
-
                 context_dict['student'] = stud
                 context_dict['courses'] = stud.get_courses_with_score()
                 context_dict['feedback'] = fb
-                context_dict['feedback'] = fb_with_colour
                 context_dict['feedbackData'] = json.dumps(fbCat)
                 context_dict['catColours'] = json.dumps(catColours)
             except:
@@ -159,7 +158,7 @@ def student_home(request):
     if request.user.is_authenticated and request.user.is_student:
         try:
             stud = StudentProfile.objects.get(student=request.user)
-            fb = stud.feedback_set.all().filter(datetime_given__gte=datetime.now()-timedelta(days=7)).order_by('-datetime_given')
+            fb = stud.feedback_set.all().filter(datetime_given__gte=timezone.now()-timedelta(days=7)).order_by('-datetime_given')
             courses = stud.courses.all()
             for feedback in fb:
                 cat = feedback.category.name
@@ -225,7 +224,7 @@ def student_all_feedback(request):
     context_dict = {}
     if request.user.is_authenticated and request.user.is_student:
         stud= StudentProfile.objects.get(student=request.user)
-        fb = stud.feedback_set.all().filter(datetime_given__gte=datetime.now()-timedelta(days=7)).order_by('-datetime_given')
+        fb = stud.feedback_set.all().filter(datetime_given__gte=timezone.now()-timedelta(days=7)).order_by('-datetime_given')
         context_dict['student'] = stud
 
         fb_with_colour = {}
@@ -289,6 +288,14 @@ def student_course(request, subject_slug):
         try:
             course = Course.objects.get(subject_slug=subject_slug)
             stud = StudentProfile.objects.get(student=request.user)
+
+            if stud not in course.students.all():
+                # If the student tries to access a course they are not enrolled in then
+                # then deny this
+                context_dict['error'] = 'not_enrolled'
+                context_dict['emails'] = course.get_lect_emails()
+                return render(request,'student_feedback_app/general/error_page.html', context_dict)
+
             lecturers = course.lecturers.all()
             students = course.students.all()
             top_students = students.order_by('-score')
@@ -365,9 +372,18 @@ def student_add_individual_feedback(request,subject_slug,student_number):
     try:
         from_stud = StudentProfile.objects.get(student=request.user)
         stud_user = User.objects.get(id_number=student_number)
+        course = Course.objects.get(subject_slug=subject_slug)
 
         if student_number == request.user.id_number:
+            # If the student tries to give themself feedback then deny this
             context_dict['error'] = "auth"
+            return render(request,'student_feedback_app/general/error_page.html', context_dict)
+
+        if from_stud not in course.students.all():
+            # If the student tries to give feedback for a course they are not enrolled in
+            # then deny this
+            context_dict['error'] = 'not_enrolled'
+            context_dict['emails'] = course.get_lect_emails()
             return render(request,'student_feedback_app/general/error_page.html', context_dict)
 
         stud = StudentProfile.objects.get(student=stud_user)
@@ -376,7 +392,6 @@ def student_add_individual_feedback(request,subject_slug,student_number):
         context_dict['from_student'] = from_stud
         context_dict['student'] = stud
         context_dict['feedback'] = fb
-        course = Course.objects.get(subject_slug=subject_slug)
         context_dict['course'] = course
 
         context_dict['categories'] = request.user.category_set.all()
@@ -426,7 +441,7 @@ def lecturer_home(request):
     if request.user.is_authenticated and request.user.is_lecturer:
         try:
             lect = LecturerProfile.objects.get(lecturer=request.user)
-            fb = request.user.feedback_set.all().filter(datetime_given__gte=datetime.now()-timedelta(days=7)).order_by('-datetime_given')
+            fb = request.user.feedback_set.all().filter(datetime_given__gte=timezone.now()-timedelta(days=7)).order_by('-datetime_given')
             courses = lect.course_set.all()
             context_dict['lecturer'] = lect
             context_dict['courses'] = courses
@@ -449,6 +464,12 @@ def lecturer_course(request,subject_slug):
         try:
             course = Course.objects.get(subject_slug=subject_slug)
             lect = LecturerProfile.objects.get(lecturer=request.user)
+
+            if lect not in course.lecturers.all():
+                context_dict['error'] = 'not_enrolled'
+                context_dict['emails'] = course.get_lect_emails()
+                return render(request,'student_feedback_app/general/error_page.html', context_dict)
+
             students = course.students.all()
             categories = request.user.category_set.all()
             students_and_scores_for_cat = {}
@@ -490,7 +511,7 @@ def lecturer_course(request,subject_slug):
             context_dict['lecturer'] = lect
             context_dict['students_with_score'] = {}
             # Add top students for each course. This requires editing models to store course in feedback
-            fb = course.feedback_set.all().filter(datetime_given__gte=datetime.now()-timedelta(days=7)).order_by('-datetime_given')
+            fb = course.feedback_set.all().filter(datetime_given__gte=timezone.now()-timedelta(days=7)).order_by('-datetime_given')
             students = course.get_students_with_score()
             context_dict['students_with_score'] = [(k, students[k]) for k in sorted(students)]
             context_dict['sorted_students'] = course.get_leaderboard()
@@ -516,6 +537,13 @@ def lecturer_add_individual_feedback(request,subject_slug,student_number):
 
     try:
         lect = LecturerProfile.objects.get(lecturer=request.user)
+        course = Course.objects.get(subject_slug=subject_slug)
+
+        if lect not in course.lecturers.all():
+            context_dict['error'] = 'not_enrolled'
+            context_dict['emails'] = course.get_lect_emails()
+            return render(request,'student_feedback_app/general/error_page.html', context_dict)
+
         stud_user = User.objects.get(id_number=student_number)
         stud = StudentProfile.objects.get(student=stud_user)
 
@@ -523,7 +551,6 @@ def lecturer_add_individual_feedback(request,subject_slug,student_number):
         context_dict['lecturer'] = lect
         context_dict['student'] = stud
         context_dict['feedback'] = fb
-        course = Course.objects.get(subject_slug=subject_slug)
         context_dict['course'] = course
 
         context_dict['new_mess_form'] = NewMessageForm()
@@ -552,6 +579,15 @@ def add_group_feedback(request,subject_slug):
         context_dict['error'] = "auth"
         return render(request,'student_feedback_app/general/error_page.html', context_dict)
     try:
+
+        lect = LecturerProfile.objects.get(lecturer=request.user)
+        course = Course.objects.get(subject_slug=subject_slug)
+
+        if lect not in course.lecturers.all():
+            context_dict['error'] = 'not_enrolled'
+            context_dict['emails'] = course.get_lect_emails()
+            return render(request,'student_feedback_app/general/error_page.html', context_dict)
+
         students_string = request.COOKIES.get("students")
         students_list = json.loads(students_string)
         stud_profiles = []
@@ -559,9 +595,7 @@ def add_group_feedback(request,subject_slug):
             stud_user = User.objects.get(id_number=student_id)
             stud_profiles.append(StudentProfile.objects.get(student=stud_user))
         context_dict['students'] = stud_profiles
-        lect = LecturerProfile.objects.get(lecturer=request.user)
         context_dict['lecturer'] = lect
-        course = Course.objects.get(subject_slug=subject_slug)
         context_dict['subject'] = course
 
         context_dict['categories'] = request.user.category_set.all()

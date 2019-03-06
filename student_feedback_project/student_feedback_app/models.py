@@ -119,7 +119,7 @@ class StudentProfile(models.Model):
             if fb.category not in scores:
                 scores[fb.category] = fb.points
             else:
-                scores[fb.category] += fb.points
+                scores[fb.category] += fb.points        
         return scores
 
     def get_score_for_one_category(self, category):
@@ -235,6 +235,11 @@ class Course(models.Model):
                 fbTotals[feedback.category.name] = [{feedback.date_only: feedback.points}]
         return fbTotals
 
+    def get_lect_emails(self):
+        emails = []
+        for each_lect in self.lecturers.all():
+            emails.append(each_lect.lecturer.email)
+        return emails
 
 class LecturerProfile(models.Model):
     lecturer = models.OneToOneField(User, on_delete=models.CASCADE,primary_key=True)
@@ -252,9 +257,6 @@ class LecturerProfile(models.Model):
         for course in self.courses.all():
             courses_with_students[course] = len(course.students.all())
         return courses_with_students
-
-
-
 
 class Feedback(models.Model):
     date_only = models.DateField(default=timezone.now)
