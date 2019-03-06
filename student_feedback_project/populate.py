@@ -93,7 +93,7 @@ def populate():
 		"lecturer_number": "00001",
 		"password": "password",
 		"email": "scott_roy@glasgow.ac.uk",
-		"courses":["ARH01", "POL01"]
+		"courses":["ARH01", "POL01", "MAT1Q"]
 		},
 		{"name": "Dr. Cossar",
 		"lecturer_number": "00002",
