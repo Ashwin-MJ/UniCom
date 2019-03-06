@@ -2,6 +2,7 @@ from django.test import TestCase
 from django.urls import reverse
 
 import json
+from datetime import timedelta 
 
 from rest_framework.test import APIRequestFactory
 
@@ -74,7 +75,7 @@ class ViewProfileViewTest(TestCase):
         # When logged in as a lecturer, they should be able to see all feedback
         stud_user = User.objects.get(id_number=1402781)
         stud = StudentProfile.objects.get(student=stud_user)
-        stud_all_fb = stud.feedback_set.all()
+        stud_all_fb = stud.feedback_set.all().filter(datetime_given__gte=timezone.now()-timedelta(days=7))
 
         for fb in stud_all_fb:
             self.assertIn(fb, response.context['feedback'])

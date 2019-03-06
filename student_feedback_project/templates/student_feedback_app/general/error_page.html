@@ -1,4 +1,5 @@
 {% extends 'student_feedback_app/general/base.html' %}
+{% load static %}
 
 {% block title%}
 Error
@@ -10,51 +11,48 @@ Error Page
 
 {% block body_block %}
 <div class="container">
+
 {% if error == "auth" %}
-	{% if not user.is_authenticated %}
 	<div class="card" style="margin-top:25px;">
-    <h3 class="text-center custom-card-title">You Are Not Logged In</h3>
+    <h3 class="text-center custom-card-title">
+			{% if not user.is_authenticated %}
+				You Are Not Logged In
+			{% else %}
+				Access Denied
+			{% endif %}
+		</h3>
 		<hr />
 		<h5 class="card-body text-left" id="title">
-			Please log in or register:
-			</h5>
+			{% if not user.is_authenticated %}
+				Please log in or register:
+				{% else %}
+					{% if user.is_student %}
+						As a student you are not allowed to access this page
+					{% else %}
+						As a lecturer you are not allowed to access this page
+					{% endif %}
+				{% endif %}
+		</h5>
 		<div class="card-body" style="align-self:center">
-			<a class="nav-link" href="{% url 'auth_login' %}">
-        <button class="btn btn-material btn-ripple" style="width:200px">Login</button>
-			</a>
-			<a class="nav-link" href="{% url 'registration_register' %}">
-      	<button class="btn btn-material btn-ripple" style="width:200px">Register</button>
-			</a>
+			{% if not user.is_authenticated %}
+				<a class="nav-link" href="{% url 'auth_login' %}">
+					<button class="btn btn-material btn-ripple" style="width:200px">Login</button>
+				</a>
+				<a class="nav-link" href="{% url 'registration_register' %}">
+					<button class="btn btn-material btn-ripple" style="width:200px">Register</button>
+				</a>
+				{% else %}
+					{% if user.is_student %}
+						<a class="nav-link" href="{% url 'student_home' %}">
+							<button class="btn btn-material btn-ripple" style="width:200px">Return to Home Page</button>
+						</a>
+					{% else %}
+					<a class="nav-link" href="{% url 'lecturer_home' %}">
+						<button class="btn btn-material btn-ripple" style="width:200px">Return to Home Page</button>
+					</a>
+					{% endif %}
+				{% endif %}
     </div>
-		{% endif %}
-		{% if user.is_student %}
-		<div class="card" style="margin-top:25px;">
-			<h3 class="text-center custom-card-title">Access Denied</h3>
-			<hr />
-			<h5 class="card-body text-left" id="title">
-				As a student you are not allowed to access this page
-			</h5>
-			<div class="card-body" style="align-self:center">
-				<a class="nav-link" href="{% url 'student_home' %}">
-					<button class="btn btn-material btn-ripple" style="width:200px">Return to Home Page</button>
-				</a>
-			</div>
-		</div>
-		{% endif %}
-		{% if user.is_lecturer %}
-		<div class="card" style="margin-top:25px;">
-			<h3 class="text-center custom-card-title">Access Denied</h3>
-			<hr />
-			<h5 class="card-body text-left" id="title">
-				As a lecturer you are not allowed to access this page
-			</h5>
-			<div class="card-body" style="align-self:center">
-				<a class="nav-link" href="{% url 'lecturer_home' %}">
-					<button class="btn btn-material btn-ripple" style="width:200px">Return to Home Page</button>
-				</a>
-			</div>
-		</div>
-		{% endif %}
 	</div>
 {% endif %}
 
@@ -129,4 +127,37 @@ Error Page
 </div>
 {% endif %}
 
+{% if error == "not_enrolled" %}
+<div class="container">
+	<div class="card" style="margin-top:25px;">
+		<h3 class="text-center custom-card-title">You are not enrolled in this course</h3>
+		<hr />
+		<h5 class="card-body text-left" id="title">
+			Please contact the lecturer in charge to join this course:
+		</h5>
+		<h6 class="card-body text-center" id="title">
+			{% for email in emails %}
+				<li>
+					{{ email }}
+				</li>
+			{% endfor %}
+		</h6>
+		<div class="card-body" style="align-self:center">
+			<a class="nav-link"
+				{% if user.is_lecturer %}
+					href="{% url 'lecturer_home' %}"
+				{% else %}
+					href="{% url 'student_home' %}"
+				{% endif %}>
+				<button class="btn btn-material btn-ripple" style="width:200px">Return to Home Page</button>
+			</a>
+		</div>
+	</div>
+</div>
+{% endif %}
+
+{% endblock %}
+
+{% block footer %}
+<script type="text/javascript" src="{% static 'javascript/remove_help.js' %}"></script>
 {% endblock %}

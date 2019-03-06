@@ -20,7 +20,7 @@ class LeaderboardTestCase(TestCase):
         actual_points_list = list()
         for student in student_list:
             actual_points_list.append(student[1])
-        expected_points_list = [5,5,0,0,0]
+        expected_points_list = [5,0,0,0,0]
         self.assertListEqual(actual_points_list, expected_points_list)
 
     def test_student_course_html_dict_length_is_five(self):
@@ -37,5 +37,5 @@ class LeaderboardTestCase(TestCase):
         actual_points_list = list()
         for student in student_list:
             actual_points_list.append(student[1])
-        expected_points_list = [5,5,0,0,0]
+        expected_points_list = [5,0,0,0,0]
         self.assertListEqual(actual_points_list, expected_points_list)

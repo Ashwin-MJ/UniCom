@@ -141,13 +141,13 @@ function toggleDataSeries(e) {
 
   <div class="card scroll-bg">
     <h3 class="text-center custom-card-title">Achievements</h3>
-    <hr />
+    <hr style="margin-bottom:0"/>
 
 <!-- Headers for acheivement categories tabs-->
     <div class="card-header">
       <ul class="nav nav-tabs card-header-tabs" id="title">
         <li class="nav-item">
-          <a data-toggle="tab" class="nav-link active" style="color:black" href="#AllCats">All acheivements</a>
+          <a data-toggle="tab" class="nav-link active" style="color:black; padding-bottom:11px" href="#AllCats">All acheivements</a>
         </li>
         {% for category in achievements.keys %}
         <li class="nav-item">
@@ -273,6 +273,57 @@ function toggleDataSeries(e) {
           {% endfor %}
         </div>
         </section>
+      </div>
+    </div>
+  </div>
+
+  <!-- Help Info -->
+  <div class="modal" id="helpModal" tabindex="-1" role="dialog" aria-labelledby="helpModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document" style="max-width:1000px">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title modal-help" id="helpModal">Help - Home Page</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+          <div class="modal-body">
+
+            <p>
+              This is your Home Page.
+            </p>
+
+            <img class="help-image" src="{% static 'help_screenshots/student_home1.png'%}">
+            <img class="help-image" src="{% static 'help_screenshots/student_home2.png'%}">
+
+            <br />
+
+            <p>
+              <li>
+                Here you can view the recent feedback you have received on the left.
+              </li>
+              <li>
+                On the right is an attribute graph which displays your progress in
+                different attributes over time. The graph automatically resizes.
+                You can click on a category at the bottom to remove/add it from the graph.
+              </li>
+              <li>
+                At the bottom there is an "Achievements" section. This is intended to
+                motivate you by showing you what you are doing well in, and
+                which areas you are yet to receive an achievement for.
+              </li>
+              <li>
+                You can filter to see achievements for different categories by clicking the
+                relevant icons.
+              </li>
+            </p>
+          </div>
+
+          <div class="modal-footer">
+            <button class="btn btn-material" data-dismiss="modal">Close</button>
+          </div>
+
       </div>
     </div>
   </div>

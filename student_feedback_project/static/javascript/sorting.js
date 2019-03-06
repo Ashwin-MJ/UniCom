@@ -130,7 +130,7 @@ function show(sorted_fb, footerType){
 		if(footerType == "student")
 			var footer = 'Given to ' + fb.studentName;
 		else
-			var footer = 'From' + fb.fromUserName;
+			var footer = 'From ' + fb.fromUserName;
 		if(fb.is_recent){
 			fb_text += '<div class="card recent custom-card text-white fb-border" style="border-color:' + fb.categoryColour + '">';
 		}
@@ -139,7 +139,9 @@ function show(sorted_fb, footerType){
 		}
 		if( window.location.href.includes('my-provided-feedback'))
 			fb_text += '<i class="material-icons delete-icon" id="' + fb.feedback_id + '">delete</i>';
-		fb_text += '<b class="card-sub-heading" style="color:' + fb.categoryColour + '">' + fb.categoryName + `</b>
+		fb_text += '<b class="card-sub-heading" style="color:' + fb.categoryColour + '">'
+						+ '<img class="icon" src="/media/' + fb.image + '"/> '
+						+ fb.categoryName + `</b>
           <div class="row" style="padding-bottom:1%">
             <div class="column left">
               <div class="card custom-border">
