@@ -14,7 +14,7 @@ function getCookie(cname) {
   return "";
 }
 
-$('#fb-list').on('click', '.delete-icon', function(e) {
+$('.fb-list').on('click', '.delete-icon', function(e) {
   var result = confirm("Want to delete?");
   if(result){
     var fb_id = this.id;

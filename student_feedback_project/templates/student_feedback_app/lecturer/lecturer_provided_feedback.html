@@ -14,8 +14,10 @@ Provided Feedback
 {% block body_block %}
 
 <div class="container">
+  <div class="card scroll-bg">
+
     <h3 class="text-center custom-card-title">My Feedback</h3>
-    <hr />
+    <hr style="margin-bottom:0"/>
 
     <div class="card-header">
       <ul class="nav nav-tabs card-header-tabs" id="title">
@@ -37,7 +39,7 @@ Provided Feedback
                 <button onclick="sort_smart('points', 'student', 'fb-list-{{course.course_code}}', {%for fb in feedback_list%} {{fb.feedback_id}}, {%endfor%})" type="button" class="btn btn-material btn-ripple">Sort by points</button>
                 <button onclick="sort_smart('date', 'student', 'fb-list-{{course.course_code}}', {%for fb in feedback_list%} {{fb.feedback_id}}, {%endfor%})" type="button" class="btn btn-material btn-ripple">Sort by date</button>
           </div>
-          <div class="card-body scroll" id="fb-list-{{course.course_code}}">
+          <div class="card-body scroll-lect-fb fb-list" id="fb-list-{{course.course_code}}">
             {% for fb in feedback_list %}
             {% if fb.is_recent %}
             <div class="card recent custom-card text-white fb-border" style="border-color:{{fb.category.colour}}">
@@ -45,10 +47,13 @@ Provided Feedback
             <div class="card custom-card fb-border" style="border-color:{{fb.category.colour}}">
             {% endif %}
             <i class="material-icons delete-icon" id="{{ fb.feedback_id }}">delete</i>
-              <b class="card-sub-heading" style="color:{{fb.category.colour}}">{{ fb.category }}</b>
+            <b class="card-sub-heading" style="color:{{fb.category.colour}}">
+              <img class="icon" src="{{fb.category.icon.image.url}}"/>
+              {{ fb.category }}
+            </b>
               <div class="row" style="padding-bottom:1%">
                 <div class="column left">
-                  <div class="border">
+                  <div class="card custom-border">
                     <blockquote class="quote">
                       {{ fb.pre_defined_message.text }}<br />
                       {% if fb.optional_message %}
@@ -78,7 +83,7 @@ Provided Feedback
                 <button onclick="sort('{{ lecturer.lecturer.username }}', 'date', 'from_user')" type="button" class="btn btn-material btn-ripple">Sort by date</button>
                 <button onclick="sort('{{ lecturer.lecturer.username }}', 'course', 'from_user')" type="button" class="btn btn-material btn-ripple">Sort by course</button>
           </div>
-            <div class="card-body scroll" id="fb-list">
+            <div class="card-body scroll-lect-fb fb-list" id="fb-list">
             {% for fb in feedback %}
             {% if fb.is_recent %}
               <div class="card recent custom-card text-white fb-border" style="border-color:{{fb.category.colour}}">
@@ -86,10 +91,13 @@ Provided Feedback
             <div class="card custom-card fb-border" style="border-color:{{fb.category.colour}}">
             {% endif %}
             <i class="material-icons delete-icon" id="{{ fb.feedback_id }}">delete</i>
-              <b class="card-sub-heading" style="color:{{fb.category.colour}}">{{ fb.category }}</b>
+            <b class="card-sub-heading" style="color:{{fb.category.colour}}">
+              <img class="icon" src="{{fb.category.icon.image.url}}"/>
+              {{ fb.category }}
+            </b>
               <div class="row" style="padding-bottom:1%">
                 <div class="column left">
-                  <div class="border">
+                  <div class="card custom-border">
                     <blockquote class="quote">
                       {{ fb.pre_defined_message.text }}<br />
                       {% if fb.optional_message %}
@@ -115,10 +123,11 @@ Provided Feedback
         </div>
         </div>
     </div>
+
+  </div>
 </div>
 {% endblock %}
 
-
 {% block footer %}
 <script type="text/javascript" src="{% static 'javascript/delete_feedback.js' %}" ></script>
-{%  endblock%}
+{% endblock%}fromUserNamerun

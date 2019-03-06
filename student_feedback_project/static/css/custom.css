@@ -41,6 +41,12 @@ body{
   max-height:80vh;
 }
 
+.scroll-lect-fb {
+  max-height: 45vh;
+  overflow-y: scroll;
+  padding-top:0px;
+}
+
 .from_stud {
   background-color: red!important;
 }
