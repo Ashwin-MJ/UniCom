@@ -289,6 +289,7 @@ def student_course(request, subject_slug):
         try:
             course = Course.objects.get(subject_slug=subject_slug)
             stud = StudentProfile.objects.get(student=request.user)
+            print(stud.student.username)
             lecturers = course.lecturers.all()
             students = course.students.all()
             top_students = students.order_by('-score')
@@ -322,8 +323,8 @@ def student_course(request, subject_slug):
             students_and_scores_for_cat = {}
             for cat in categories:
                 all_stud_and_score = []
-                for stud in students:
-                    stud_and_score = [stud, stud.get_score_for_category_course(cat, course)]
+                for student in students:
+                    stud_and_score = [student, student.get_score_for_category_course(cat, course)]
                     all_stud_and_score.append(stud_and_score)
                 all_stud_and_score = sorted(all_stud_and_score, key = lambda x: x[1], reverse = True)
                 students_and_scores_for_cat[cat] = all_stud_and_score
