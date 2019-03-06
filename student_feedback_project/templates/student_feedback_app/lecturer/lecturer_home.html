@@ -12,7 +12,6 @@ My Homepage
 Home Page
 {% endblock%}
 
-
 {% block body_block %}
 <div class="container">
   <div class="card-deck">
@@ -28,11 +27,11 @@ Home Page
 
                 <div class="row">
                   <div class="column left">
-                    <div class="border">
+                    <div class="card custom-border">
                       <div class="course-info">
                         {{ course.course_description }}<br />
                         <footer>
-                          Add a footer here?
+                          Code - {{ course.course_code }}
                           </footer>
                           <br />
                         </div>
@@ -61,10 +60,14 @@ Home Page
         {% else %}
         <div class="card custom-card fb-border" style="border-color:{{fb.category.colour}}">
         {% endif %}
-          <b class="card-sub-heading" style="color:{{fb.category.colour}}">{{ fb.category }}</b>
+        <b class="card-sub-heading" style="color:{{fb.category.colour}}">
+          <img class="icon" src="{{fb.category.icon.image.url}}"/>
+          {{fb.category.icon.image.url}}
+          {{ fb.category }}
+        </b>
           <div class="row" style="padding-bottom:1%">
             <div class="column left">
-              <div class="border">
+              <div class="card custom-border">
                 <blockquote class="quote">
                   {{ fb.pre_defined_message.text }}<br />
                   {% if fb.optional_message %}
@@ -89,14 +92,62 @@ Home Page
 
         </div>
 
-        <div class="button" style="padding-bottom:0px; padding-top:10px;">
-          <button onclick="sort('{{ lecturer.lecturer.username }}', 'points', 'from_user')" type="button" class="btn btn-material btn-ripple">Sort by points</button>
-          <button onclick="sort('{{ lecturer.lecturer.username }}', 'date', 'from_user' )" type="button" class="btn btn-material btn-ripple">Sort by date</button>
-          <button onclick="sort('{{ lecturer.lecturer.username }}', 'course', 'from_user')" type="button" class="btn btn-material btn-ripple">Sort by course</button>
+        <br/>
+        <div class="btn-group dropright button">
+            <button class="btn btn-material dropdown-toggle" type="button"data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Sort by
+            </button>
+            <div class="dropdown-menu custom-dd-menu">
+              <button onclick="sort('{{ lecturer.lecturer.username }}', 'points', 'from_user')" type="button" class="btn btn-material btn-ripple">Points</button>
+              <button onclick="sort('{{ lecturer.lecturer.username }}', 'date', 'from_user')" type="button" class="btn btn-material btn-ripple">Date</button>
+              <button onclick="sort('{{ lecturer.lecturer.username }}', 'course', 'from_user')" type="button" class="btn btn-material btn-ripple">Course</button>
+            </div>
         </div>
        </div>
 
     </div>
   </div>
+
+  <!-- Help Info -->
+  <div class="modal" id="helpModal" tabindex="-1" role="dialog" aria-labelledby="helpModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document" style="max-width:1000px">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title modal-help" id="helpModal">Help - My Home Page</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+          <div class="modal-body">
+            <p>
+            Welcome to your home page.
+            </p>
+
+            <img class="help-image" src="{% static 'help_screenshots/lecturer_home.png'%}">
+
+            <br />
+
+            <p>
+              <li>
+              Here you can view the different courses you are part of, and recent feedback you
+              have given to different students.
+              </li>
+              <li>
+                You can either directly click on a course to view details about it,
+                or click "Courses" in the navbar to be directed to another page.
+              </li>
+            </p>
+
+          </div>
+
+          <div class="modal-footer">
+            <button class="btn btn-material" data-dismiss="modal">Close</button>
+          </div>
+
+      </div>
+    </div>
+  </div>
+
 </div>
 {% endblock %}

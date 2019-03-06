@@ -5,6 +5,7 @@ from django.urls import reverse
 from django.template import RequestContext
 from django.contrib.auth import login
 from django.core import serializers
+from django.utils import timezone
 
 from student_feedback_app.forms import *
 from student_feedback_app.models import *
@@ -13,6 +14,7 @@ from student_feedback_app.serializers import *
 from rest_framework import generics
 from dal import autocomplete
 import datetime
+from datetime import timedelta
 import json
 
 from ast import literal_eval
@@ -23,7 +25,10 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
 
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import get_template
 import re
+
 
 def index(request):
     return HttpResponseRedirect('/accounts/login/')
@@ -34,7 +39,7 @@ def my_profile(request):
         if request.user.is_student:
             try:
                 stud = StudentProfile.objects.get(student=request.user)
-                fb = stud.feedback_set.all().order_by('-datetime_given')
+                fb = stud.feedback_set.all().filter(datetime_given__gte=datetime.now()-timedelta(days=7)).order_by('-datetime_given')
                 context_dict['student'] = stud
                 context_dict['courses'] = stud.get_courses_with_score()
                 context_dict['feedback'] = fb
@@ -44,7 +49,7 @@ def my_profile(request):
         elif request.user.is_lecturer:
             try:
                 lect = LecturerProfile.objects.get(lecturer=request.user)
-                fb = request.user.feedback_set.all().order_by('-datetime_given')
+                fb = request.user.feedback_set.all().filter(datetime_given__gte=datetime.now()-timedelta(days=7)).order_by('-datetime_given')
                 context_dict['lecturer'] = lect
                 context_dict['courses'] = lect.get_courses_with_students()
                 context_dict['feedback'] = fb
@@ -154,7 +159,7 @@ def student_home(request):
     if request.user.is_authenticated and request.user.is_student:
         try:
             stud = StudentProfile.objects.get(student=request.user)
-            fb = stud.feedback_set.all().order_by('-datetime_given')
+            fb = stud.feedback_set.all().filter(datetime_given__gte=datetime.now()-timedelta(days=7)).order_by('-datetime_given')
             courses = stud.courses.all()
             for feedback in fb:
                 cat = feedback.category.name
@@ -168,7 +173,6 @@ def student_home(request):
                 else:
                     fbCat[cat].append([feedback.points, feedback.datetime_given.strftime('%Y-%m-%d %H:%M')])
 
-            print(fbCat)
             stud.achievement_set.all().delete()
             scores = stud.get_score_for_category()
 
@@ -184,7 +188,7 @@ def student_home(request):
             for achvm in stud.achievement_set.all():
                 achvm.achiev = literal_eval(achvm.achiev)
                 for val in achvm.achiev:
-                    if achvm.category.name in achievs:
+                    if achvm.category in achievs:
                         achievs[achvm.category].append(val)
                     else:
                         achievs[achvm.category] = [val]
@@ -220,7 +224,7 @@ def student_all_feedback(request):
     context_dict = {}
     if request.user.is_authenticated and request.user.is_student:
         stud= StudentProfile.objects.get(student=request.user)
-        fb = stud.feedback_set.all().order_by('-datetime_given')
+        fb = stud.feedback_set.all().filter(datetime_given__gte=datetime.now()-timedelta(days=7)).order_by('-datetime_given')
         context_dict['student'] = stud
 
         fb_with_colour = {}
@@ -283,18 +287,16 @@ def student_course(request, subject_slug):
     if request.user.is_authenticated and request.user.is_student:
         try:
             course = Course.objects.get(subject_slug=subject_slug)
-            stud = StudentProfile.objects.get(student=request.user)
+            student = StudentProfile.objects.get(student=request.user)
             lecturers = course.lecturers.all()
             students = course.students.all()
             top_students = students.order_by('-score')
             context_dict['course'] = course
             context_dict['lecturers'] = lecturers
-
             context_dict['students'] = students
             context_dict['sorted_students'] = course.get_leaderboard()
             fbTotal = course.get_total_for_course_attributes()
-
-            fb = stud.get_fb_for_course(course.subject)
+            fb = student.get_fb_for_course(course.subject)
             for feedback in fb:
                 cat = feedback.category.name
                 for data in fbTotal[cat]:
@@ -313,20 +315,29 @@ def student_course(request, subject_slug):
                             else:
                                 fbCat[cat] = [[data[key], date_str]]
 
+            categories = request.user.category_set.all()
+            students_and_scores_for_cat = {}
+            for cat in categories:
+                all_stud_and_score = []
+                for stud in students:
+                    stud_and_score = [stud, stud.get_score_for_category_course(cat, course)]
+                    all_stud_and_score.append(stud_and_score)
+                all_stud_and_score = sorted(all_stud_and_score, key = lambda x: x[1], reverse = True)
+                students_and_scores_for_cat[cat] = all_stud_and_score
 
             fb_with_colour = {}
             for feedback in fb:
-                try:
-                    stud_cat = Category.objects.get(name=feedback.category.name,user=request.user)
-                    fb_with_colour[feedback] = stud_cat.colour
-                except:
-                    fb_with_colour[feedback] = feedback.category.colour
+                stud_cat = Category.objects.get(name=feedback.category.name,user=request.user)
+                fb_with_colour[feedback] = stud_cat.colour
+            context_dict['score'] = student.get_score_for_course(course.subject)
+            context_dict['student'] = student
 
-            context_dict['score'] = stud.get_score_for_course(course.subject)
-            context_dict['student'] = stud
+            context_dict['categories'] = categories
+            context_dict['cat_stud_and_score'] = students_and_scores_for_cat
             context_dict['feedback'] = fb_with_colour
             context_dict['feedbackData'] = json.dumps(fbCat)
             context_dict['catColours'] = json.dumps(catColours)
+
 
         except:
             context_dict['course'] = None
@@ -418,7 +429,7 @@ def lecturer_home(request):
     if request.user.is_authenticated and request.user.is_lecturer:
         try:
             lect = LecturerProfile.objects.get(lecturer=request.user)
-            fb = request.user.feedback_set.all().order_by('-datetime_given')
+            fb = request.user.feedback_set.all().filter(datetime_given__gte=datetime.now()-timedelta(days=7)).order_by('-datetime_given')
             courses = lect.course_set.all()
             context_dict['lecturer'] = lect
             context_dict['courses'] = courses
@@ -441,6 +452,16 @@ def lecturer_course(request,subject_slug):
         try:
             course = Course.objects.get(subject_slug=subject_slug)
             lect = LecturerProfile.objects.get(lecturer=request.user)
+            students = course.students.all()
+            categories = request.user.category_set.all()
+            students_and_scores_for_cat = {}
+            for cat in categories:
+                all_stud_and_score = []
+                for stud in students:
+                    stud_and_score = [stud, stud.get_score_for_category_course(cat, course)]
+                    all_stud_and_score.append(stud_and_score)
+                all_stud_and_score = sorted(all_stud_and_score, key = lambda x: x[1], reverse = True)
+                students_and_scores_for_cat[cat] = all_stud_and_score
             fbTotal = course.get_total_for_course_attributes()
             fb = course.feedback_set.all().order_by('-datetime_given')
             for feedback in fb:
@@ -468,13 +489,17 @@ def lecturer_course(request,subject_slug):
                     fb_with_colour[feedback] = lect_cat.colour
                 except:
                     fb_with_colour[feedback] = feedback.category.colour
-
             context_dict['course'] = course
             context_dict['lecturer'] = lect
             context_dict['students_with_score'] = {}
+            # Add top students for each course. This requires editing models to store course in feedback
+            fb = course.feedback_set.all().filter(datetime_given__gte=datetime.now()-timedelta(days=7)).order_by('-datetime_given')
             students = course.get_students_with_score()
             context_dict['students_with_score'] = [(k, students[k]) for k in sorted(students)]
             context_dict['sorted_students'] = course.get_leaderboard()
+            context_dict['feedback'] = fb
+            context_dict['cat_stud_and_score'] = students_and_scores_for_cat
+            context_dict['categories'] = categories
             context_dict['feedback'] = fb_with_colour
             context_dict['feedbackData'] = fbCat
             context_dict['catColours'] = json.dumps(catColours)
@@ -505,7 +530,6 @@ def lecturer_add_individual_feedback(request,subject_slug,student_number):
         context_dict['course'] = course
 
         context_dict['new_mess_form'] = NewMessageForm()
-
         context_dict['categories'] = request.user.category_set.all()
 
         messages = request.user.message_set.all()
@@ -569,11 +593,9 @@ def lecturer_courses(request):
     if request.user.is_authenticated and request.user.is_lecturer:
         lect = LecturerProfile.objects.get(lecturer=request.user)
         courses = lect.courses.all()
-        fb = request.user.feedback_set.all().order_by('-datetime_given')
         top_students = lect.get_my_students().order_by('-score')[:5]
         context_dict['lecturer'] = lect
         context_dict['courses'] = courses
-        context_dict['feedback'] = fb
         context_dict['top_students'] = top_students
         if(request.method == 'POST'):
             form = AddCourseForm(request.POST)
@@ -626,6 +648,14 @@ def customise_options(request):
 
         context_dict['messages'] = json.dumps(all_messages)
         context_dict['messages_qs'] = messages
+
+        all_icons = {}
+        for icon in Icon.objects.all():
+            all_icons[icon.id] = icon.image.url
+
+        context_dict['icons_json'] = json.dumps(all_icons)
+        context_dict['icons'] = Icon.objects.all()
+
         return render(request, 'student_feedback_app/general/customise_options.html', context_dict)
     except:
         context_dict['error'] = "error"
@@ -744,9 +774,11 @@ class CategoryDetail(APIView):
         return Response(serializer.data)
 
     def post(self, request,format=None):
+        icon = Icon.objects.get(name=request.data.get("icon"))
         cat = Category(name=request.data.get('name'),
                         colour=request.data.get('colour'),
-                        user=request.user)
+                        user=request.user,
+                        icon=icon)
         cat.save()
         return Response(status=status.HTTP_200_OK)
 
@@ -864,7 +896,6 @@ def invites(request):
 
 
     mode = 0
-    message =  ' lecturer ' + request.user.username + ' has invited you to join ' + course.subject + ' (' + course.course_code + '). To join this course use this token: ' + course.course_token
     students_string = request.COOKIES.get("students")
     if is_json(students_string):
         mode += 1
@@ -875,9 +906,16 @@ def invites(request):
             students.append(stud_user)
 
         for student in students:
-            personal_message = 'Dear ' + student.username + message
-            send_mail('You are invited to join a course!',personal_message,'lect.acc.unicom@gmail.com',[student.email])
-    message =  ' Lecturer ' + request.user.username + ' has invited you to join ' + course.subject + ' (' + course.course_code + '). To join this course use this token: ' + course.course_token
+            plaintext = get_template('emails/invite_registered.txt')
+            htmly     = get_template('emails/invite_registered.html')
+            d = { 'lecturer': request.user.username, 'subject':  course.subject, 'course_code': course.course_code, 'token': course.course_token, 'student': student.username }
+            text_content = plaintext.render(d)
+            html_content = htmly.render(d)
+            msg = EmailMultiAlternatives('You are invited to join a course!', text_content, 'lect.acc.unicom@gmail.com',[student.email])
+            msg.attach_alternative(html_content, "text/html")
+            msg.send()
+
+
     students_emails_string = request.COOKIES.get("emails")
     if is_json(students_emails_string):
         mode += 1
@@ -886,8 +924,16 @@ def invites(request):
         for email in emails_list:
             if email != "example@university.com":
                 emails.append(email)
-        message = message + "; Register online to joint UniCom."
-        send_mail('You are invited to join a course!',message,'lect.acc.unicom@gmail.com',emails)
+        plaintext = get_template('emails/invite_unregistered.txt')
+        htmly     = get_template('emails/invite_unregistered.html')
+        d = { 'lecturer': request.user.username, 'subject':  course.subject, 'course_code': course.course_code, 'token': course.course_token }
+        text_content = plaintext.render(d)
+        html_content = htmly.render(d)
+        msg = EmailMultiAlternatives('You are invited to join a course!', text_content, 'lect.acc.unicom@gmail.com',emails)
+        msg.attach_alternative(html_content, "text/html")
+        msg.send()
+
+
     if mode == 0:
         lect = LecturerProfile.objects.get(lecturer=request.user)
         students = lect.get_my_students()

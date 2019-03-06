@@ -1,4 +1,6 @@
 {% extends 'student_feedback_app/general/base.html' %}
+{% load static %}
+
 {% block title%}
 My Profile
 {% endblock %}
@@ -13,7 +15,6 @@ My Profile
 
 <div class="container">
 
-
   <div class="profile-top">
 
     <div class="card card-profile column left-profile">
@@ -23,7 +24,6 @@ My Profile
         {% if user.is_student %}
           <p class="custom-card-title">Score: {{student.score}}</p>
         {% endif %}
-
         <a href="{% url 'edit_bio' %}">
           <div class="button" style="margin-bottom:0">
             <button class="btn btn-material btn-ripple">
@@ -68,40 +68,41 @@ My Profile
       <hr />
       <div class="card-body scroll">
         {% for course,value in courses.items %}
-
-              <div class="card custom-card">
-                <b class="card-sub-heading">{{ course.subject }}</b>
-
-                <div class="row" style="padding-bottom:1%">
-                  <div class="column left">
-                    <div class="border">
-                      <div class="course-info">
-                        {{ course.course_description }}<br />
-                        <footer>
-                          {{course.lecturer.lecturer.username}}
-                          </footer>
-                          <br />
-                        </div>
-                    </div>
-                  </div>
-                  <div class="column right-number">
-                    <div style="text-align:center">
-                      {{ value }}<br />
-                      {% if user.is_student %}
-                        <h6>TOTAL SCORE</h6>
-                      {% elif user.is_lecturer %}
-                        <h6>STUDENTS</h6>
-                      {% endif %}
-                      </div>
-                    </div>
-                  </div>
+        <div class="card custom-card">
+          <b class="card-sub-heading">{{ course.subject }}</b>
+          <div class="row" style="padding-bottom:1%">
+            <div class="column left">
+              <div class="card custom-border">
+                <div class="course-info">
+                  {{ course.course_description }}<br />
+                  <footer>
+                    {% if user.is_student %}
+                      {% for lect in course.lecturers.all %}
+                        {{lect.lecturer.username}}<br />
+                      {% endfor %}
+                    {% else %}
+                      Code - {{ course.course_code }}
+                    {% endif %}
+                  </footer>
+                  <br />
                 </div>
-
-          {% endfor %}
+              </div>
+            </div>
+            <div class="column right-number">
+              <div style="text-align:center">
+                {{ value }}<br />
+                {% if user.is_student %}
+                  <h6>TOTAL SCORE</h6>
+                {% elif user.is_lecturer %}
+                  <h6>STUDENTS</h6>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
       </div>
     </div>
-
-
 
     <div class="card scroll-bg">
       <h3 class="text-center custom-card-title">Recent Feedback</h3>
@@ -113,10 +114,13 @@ My Profile
         {% else %}
         <div class="card custom-card fb-border" style="border-color:{{fb.category.colour}}">
         {% endif %}
-          <b class="card-sub-heading" style="color:{{fb.category.colour}}">{{ fb.category }}</b>
+          <b class="card-sub-heading" style="color:{{fb.category.colour}}">
+            <img class="icon" src="{{fb.category.icon.image.url}}"/>
+            {{ fb.category }}
+          </b>
           <div class="row" style="padding-bottom:1%">
             <div class="column left">
-              <div class="border">
+              <div class="card custom-border">
                 <blockquote class="quote">
                   {{ fb.pre_defined_message.text }}<br />
                   {% if fb.optional_message %}
@@ -138,15 +142,52 @@ My Profile
               <div style="text-align:center; color:{{fb.category.colour}}">
                 {{ fb.points }}<br />
                 <h6>POINTS</h6>
-                </div>
               </div>
             </div>
           </div>
-          {% endfor %}
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Help Info -->
+    <div class="modal" id="helpModal" tabindex="-1" role="dialog" aria-labelledby="helpModal" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document" style="max-width:1000px">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title modal-help" id="helpModal">Help - My Profile Page</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+
+            <div class="modal-body">
+
+              <p>
+              This is your profile page.
+              </p>
+
+              <img class="help-image" src="{% static 'help_screenshots/my_profile1.png'%}">
+              <img class="help-image" src="{% static 'help_screenshots/my_profile2.png'%}">
+
+              <br />
+
+              <p>
+                <li>
+                  The main feature available on this page is the option to edit the biography and degree
+                  displayed to other users by clicking the "Edit Bio" button
+                </li>
+              </p>
+
+            </div>
+
+            <div class="modal-footer">
+              <button class="btn btn-material" data-dismiss="modal">Close</button>
+            </div>
 
         </div>
-
-  </div>
+      </div>
+    </div>
 
 </div>
 

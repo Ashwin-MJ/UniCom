@@ -1,4 +1,5 @@
 {% extends 'student_feedback_app/general/base.html' %}
+{% load static %}
 
 {% block title%}
 My Courses
@@ -23,11 +24,14 @@ Courses
 
                 <div class="row" style="padding-bottom:1%">
                   <div class="column left">
-                    <div class="border">
+                    <div class="card custom-border">
                       <div class="course-info">
                         {{ course.course_description }}<br />
                         <footer>
-                          {{course.lecturer.lecturer.username}}
+                          {% for lect in course.lecturers.all %}
+                            {{lect.lecturer.username}}
+                            <br />
+                          {% endfor %}
                           </footer>
                           <br />
                         </div>
@@ -48,6 +52,7 @@ Courses
 
     <div class="card" style="height: 300px; margin-top:25px;">
       <h3 class="text-center custom-card-title">Add a Course</h3>
+      <hr />
       <div class="card-body">
         <form id="" method="post" action="">
           {% csrf_token %}
@@ -67,6 +72,52 @@ Courses
             <input class="btn btn-material btn-ripple" type="submit" name="submit" value="Join Course" />
           </div>
       </form>
+    </div>
+  </div>
+
+  <!-- Help Info -->
+  <div class="modal" id="helpModal" tabindex="-1" role="dialog" aria-labelledby="helpModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document" style="max-width:1000px">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title modal-help" id="helpModal">Help - My Courses Page</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+          <div class="modal-body">
+
+            <p>
+              This is your "My Courses" Page.
+            </p>
+
+            <img class="help-image" src="{% static 'help_screenshots/student_courses.png'%}">            
+
+            <br />
+
+            <p>
+              <li>
+                On the left you can view the courses you are currently enrolled in.
+                You can click on one of these courses to view that course.
+              </li>
+              <li>
+                On the right you have the option of joining a new course.
+                A lecturer may have emailed you a "Course Token" - simply copy
+                that token and paste it in this box and click "Join Course".
+              </li>
+              <li>
+                You will then be enrolled in this course, and can begin to receive
+                feedback for that course.
+              </li>
+            </p>
+          </div>
+
+          <div class="modal-footer">
+            <button class="btn btn-material" data-dismiss="modal">Close</button>
+          </div>
+
+      </div>
     </div>
   </div>
 

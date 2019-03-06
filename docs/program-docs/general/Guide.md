@@ -7,9 +7,9 @@ See [README.md](http://stgit.dcs.gla.ac.uk/tp3-2018-ese1/dissertation/blob/maste
 The application allows a lecturer to provide students in their course with feedback to suggest areas of improvement or to acknowledge impressive performance.
 
 View the following guides before proceeding in:
-*  [Lecturer Guide](http://stgit.dcs.gla.ac.uk/tp3-2018-ese1/dissertation/blob/131-improve-program-documentation/docs/program-docs/general/Lecturer-Guide.md)
+*  [Lecturer Guide](docs/program-docs/general/Lecturer-Guide.md)
 
-*  [Student Guide](http://stgit.dcs.gla.ac.uk/tp3-2018-ese1/dissertation/blob/131-improve-program-documentation/docs/program-docs/general/Student-Guide.md)
+*  [Student Guide](docs/program-docs/general/Student-Guide.md)
 
 
 ## General

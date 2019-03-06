@@ -7,6 +7,9 @@ from django.dispatch import receiver
 from django.core.mail import send_mail
 from django.core.validators import int_list_validator
 
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import get_template
+
 import datetime
 import random, string
 
@@ -40,8 +43,14 @@ def update_user_profile(sender, instance, created, **kwargs):
             superusers = User.objects.filter(is_superuser=True)
             for superuser in superusers:
                 emails.append(superuser.email)
-            message = 'Lecturer ' + instance.username + ' has registered and needs approval. Approve profiles @ feedbackapp.pythonanywhere.com/admin'
-            send_mail('Lecturer needs approval',message,'lect.acc.unicom@gmail.com',emails)
+            plaintext = get_template('emails/approve.txt')
+            htmly = get_template('emails/approve.html')
+            d = { 'lecturer': instance.username }
+            text_content = plaintext.render(d)
+            html_content = htmly.render(d)
+            msg = EmailMultiAlternatives('Lecturer pending approval!', text_content, 'lect.acc.unicom@gmail.com',emails)
+            msg.attach_alternative(html_content, "text/html")
+            msg.send()
         else :
             instance.is_active = True
             instance.is_student = True
@@ -66,9 +75,8 @@ class StudentProfile(models.Model):
 
     def get_score_for_course(self,course):
         score = 0
-        for fb in self.feedback_set.all():
-            if fb.which_course.subject == course:
-                score += fb.points
+        for fb in self.get_fb_for_course(course):
+            score += fb.points
         return score
 
     def get_top_attributes(self):
@@ -106,11 +114,26 @@ class StudentProfile(models.Model):
     def get_score_for_category(self):
         scores = {}
         for fb in self.feedback_set.all():
-            if fb.category not in scores:
-                scores[fb.category] = fb.points
+            if fb.category.name not in scores:
+                scores[fb.category.name] = fb.points
             else:
-                scores[fb.category] += fb.points
+                scores[fb.category.name] += fb.points
         return scores
+
+    def get_score_for_one_category(self, category):
+        score = 0
+        for fb in self.feedback_set.all():
+            if fb.category.name == category.name:
+                score += fb.points
+        return score
+
+    def get_score_for_category_course(self, cat, course):
+        score = 0
+        for fb in self.feedback_set.all():
+            if fb.category.name == cat.name and fb.which_course.course_code == course.course_code :
+                score += fb.points
+        return score
+
 
 class Achievement(models.Model):
     student = models.ForeignKey('StudentProfile', on_delete=models.CASCADE)
@@ -278,8 +301,15 @@ class Category(models.Model):
     colour = models.CharField(max_length=7, default="#009999")
     # Can access messages associated with a given category using Category.message_set.all()
 
+    icon = models.ForeignKey('Icon',on_delete=models.CASCADE,null=True)
+
     def __str__(self):
         return self.name
+
+class Icon(models.Model):
+    name = models.CharField(max_length=30, default="Empty")
+    image = models.ImageField(upload_to='attribute_icons', max_length=50, default="attribute_icons/cooperation.png")
+
 
 class Message(models.Model):
     # This is a Message model for each pre defined message associate with a category
@@ -293,6 +323,7 @@ class Message(models.Model):
         return self.text
 
 class Feedback_full(models.Model):
+    image = models.CharField(max_length = 300, default = "attribute_icons/cooperation.png")
     feedback_id = models.IntegerField(primary_key=True, default=0)
     points = models.IntegerField(default=0)
     datetime_given = models.DateTimeField(default=timezone.now, blank=False)
@@ -305,4 +336,4 @@ class Feedback_full(models.Model):
     fromUserName = models.CharField(max_length=200,default="No from user")
     class Meta:
         managed = False
-        db_table = "student_feedback_app_feedback_full"
+        db_table = "student_feedback_app_feedback_full_icon"

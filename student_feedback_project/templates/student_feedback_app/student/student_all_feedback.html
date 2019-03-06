@@ -1,4 +1,5 @@
 {% extends 'student_feedback_app/general/base.html' %}
+{% load static %}
 
 {% block title%}
 My Feedback
@@ -6,7 +7,7 @@ My Feedback
 
 {% block current_page %}
 {{ student.student.username }}'s<br />
-Feedback
+Recieved Feedback
 {% endblock%}
 
 
@@ -25,10 +26,13 @@ Feedback
           {% else %}
           <div class="card custom-card fb-border" style="border-color:{{colour}}">
           {% endif %}
-            <b class="card-sub-heading" style="color:{{colour}}">{{ fb.category }}</b>
+            <b class="card-sub-heading" style="color:{{fb.category.colour}}">
+              <img class="icon" src="{{fb.category.icon.image.url}}"/>
+              {{ fb.category }}
+            </b>
             <div class="row" style="padding-bottom:1%">
               <div class="column left">
-                <div class="border">
+                <div class="card custom-border">
                   <blockquote class="quote">
                     {{ fb.pre_defined_message.text }}<br />
                     {% if fb.optional_message %}
@@ -51,10 +55,16 @@ Feedback
 
             {% endfor %}
         </div>
-		<div class="button" style="padding-bottom:0px; padding-top:10px;">
-          <button onclick="sort('{{ student.student.username }}', 'points', 'student')" type="button" class="btn btn-material btn-ripple">Sort by points</button>
-          <button onclick="sort('{{ student.student.username }}', 'date', 'student')" type="button" class="btn btn-material btn-ripple">Sort by date</button>
-          <button onclick="sort('{{ student.student.username }}', 'course', 'student')" type="button" class="btn btn-material btn-ripple">Sort by course</button>
+        <br/>
+        <div class="btn-group dropright button">
+            <button class="btn btn-material dropdown-toggle" type="button"data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Sort by
+            </button>
+            <div class="dropdown-menu custom-dd-menu">
+              <button onclick="sort('{{ student.student.username }}', 'points', 'student')" type="button" class="btn btn-material btn-ripple">Points</button>
+              <button onclick="sort('{{ student.student.username }}', 'date', 'student')" type="button" class="btn btn-material btn-ripple">Date</button>
+              <button onclick="sort('{{ student.student.username }}', 'course', 'student')" type="button" class="btn btn-material btn-ripple">Course</button>
+            </div>
         </div>
       </div>
 
@@ -102,6 +112,56 @@ Feedback
         Click here to view feedback you have given to others
       </a>
     </div>
+
+    <!-- Help Info -->
+    <div class="modal" id="helpModal" tabindex="-1" role="dialog" aria-labelledby="helpModal" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document" style="max-width:1000px">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title modal-help" id="helpModal">Help - Received Feedback Page</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+
+            <div class="modal-body">
+
+              <p>
+                This is the "Received Feedback" page. It shows all of the feedback that you have received, and also outlines areas in which you can improve
+                as well as areas you are doing well in.
+              </p>
+
+              <img class="help-image" src="{% static 'help_screenshots/student_fb1.png'%}">
+              <img class="help-image" src="{% static 'help_screenshots/student_fb2.png'%}">
+
+              <br />
+
+              <p>
+                <li>
+                  On the left is feedback you have received recently. This can be sorted by points, course, and category
+                </li>
+                <li>
+                  "My Top Attributes" shows the student which attributes they are performing best in, and similarly "Areas to Improve" displays attributes
+                  in which they are not performing as well.
+                </li>
+                <li>
+                  You can view these stats and identify what you need to work on accordingly.
+                </li>
+                <li>
+                  At the bottom is a button which allows a student to view the feedback they have given to other students.
+                </li>
+              </p>
+
+            </div>
+
+            <div class="modal-footer">
+              <button class="btn btn-material" data-dismiss="modal">Close</button>
+            </div>
+
+        </div>
+      </div>
+    </div>
+
 </div>
 
 

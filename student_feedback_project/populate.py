@@ -3,10 +3,14 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE',
 			'student_feedback_project.settings')
 import django
 django.setup()
-from student_feedback_app.models import StudentProfile, Course, LecturerProfile, Feedback, Category, Message
+from student_feedback_app.models import *
 from django.template.defaultfilters import slugify
 from django.contrib.auth import get_user_model
 from django.db import connection
+
+from datetime import date, timedelta,datetime
+import pytz
+import random
 
 User = get_user_model()
 
@@ -89,7 +93,7 @@ def populate():
 		"lecturer_number": "00001",
 		"password": "password",
 		"email": "scott_roy@glasgow.ac.uk",
-		"courses":["ARH01", "POL01"]
+		"courses":["ARH01", "POL01", "MAT1Q"]
 		},
 		{"name": "Dr. Cossar",
 		"lecturer_number": "00002",
@@ -264,8 +268,11 @@ def populate():
 		lect = add_lecturer(lecturer.get('name'),lecturer.get('lecturer_number'),
 							lecturer.get('password'),lecturer.get('email'),lecturer.get('courses'))
 
+	for icon in icons:
+		icon = add_icon(icon.get("name"),icon.get("url"))
+
 	for category in categories:
-		cat = add_category(category.get("name"), category.get("colour"))
+		cat = add_category_with_icon(category.get("name"), category.get("colour"))
 
 	for message in saved_messages:
 		mess = add_message(message.get('category'),message.get('messages'))
@@ -273,13 +280,14 @@ def populate():
 	for someFeedback in feedback:
 		feedback = add_feedback(someFeedback.get('feedback_id'),someFeedback.get('category'),someFeedback.get('points'),
 								someFeedback.get('from_user'),someFeedback.get('student'),someFeedback.get('course_code'),
-								someFeedback.get('pre_defined_message'), someFeedback.get('optional_message'))
+								someFeedback.get('pre_defined_message'), someFeedback.get('optional_message'), True)
 
 	create_view_fb_cat()
 	create_view_fb_cat_mss()
 	create_view_fb_cat_mss_stud()
 	create_view_fb_cat_mss_stud_course()
 	create_view_fb_full()
+	create_view_fb_full_icon()
 
 categories = [
 	{"name": "Active Participation", "colour" : "#F7D969"},
@@ -290,6 +298,29 @@ categories = [
 	{"name": "Hard Work", "colour": "#F8B195"},
 	{"name": "Intellectual Curiosity", "colour": "#F05053"},
 	{"name": "General", "colour": "#F9CDAE"}
+]
+
+icons = [
+	{"name": "Active Participation", 'url': "attribute_icons/participation.png"},
+	{"name": "Quality of Contribution", 'url': "attribute_icons/quality.png"},
+	{"name": "Co-operation & Communication", 'url': "attribute_icons/cooperation.png"},
+	{"name": "Critical Thinking & Analysis", 'url': "attribute_icons/critical_thinking.png"},
+	{"name": "Understanding & Competence", 'url': "attribute_icons/understanding.png"},
+	{"name": "Hard Work", 'url': "attribute_icons/hardwork.png"},
+	{"name": "Intellectual Curiosity", 'url': "attribute_icons/curiosity.png"},
+	{"name": "General",'url': "attribute_icons/general.png"},
+	{"name": "Graduation",'url': "attribute_icons/graduation.png"},
+	{"name": "Badge",'url': "attribute_icons/badge.png"},
+	{"name": "Trophy",'url': "attribute_icons/trophy.png"},
+	{"name": "Calculation",'url': "attribute_icons/calculation.png"},
+	{"name": "Conference",'url': "attribute_icons/conference.png"},
+	{"name": "Studying",'url': "attribute_icons/studying.png"},
+	{"name": "Lecture",'url': "attribute_icons/lecture.png"},
+	{"name": "Presentation",'url': "attribute_icons/presentation.png"},
+	{"name": "Certificate",'url': "attribute_icons/certificate.png"},
+	{"name": "Hourglass",'url': "attribute_icons/hourglass.png"},
+	{"name": "Target",'url': "attribute_icons/target.png"},
+	{"name": "Notebook",'url': "attribute_icons/notebook.png"}
 ]
 
 saved_messages = [
@@ -409,6 +440,14 @@ def create_view_fb_full():
                         as select fbcmsc.*, usr.username fromUserName from student_feedback_app_feedback_with_cat_mss_stud_course fbcmsc \
                         INNER JOIN student_feedback_app_user usr ON fbcmsc.from_user_id = usr.id;")
 
+def create_view_fb_full_icon():
+    with connection.cursor() as cursor:
+        cursor.execute("create view student_feedback_app_feedback_full_icon \
+						as select ico.image, fb.* \
+						from student_feedback_app_feedback_full fb \
+						INNER JOIN student_feedback_app_category cat ON fb.category_id = cat.id \
+						INNER JOIN student_feedback_app_icon ico ON ico.id = cat.icon_id;")
+
 #to add new view: make function and execute line, add model in models.py, test in DB browser SQLite
 
 #for now you have to run populate.py after deleting the database so the views only generate once
@@ -465,7 +504,7 @@ def add_lecturer(name,lecturer_number,password,email,courses):
 	return lecturer_prof
 
 # Helper function to add feedback #needs categories, (pre defined) messages, courses, users in db
-def add_feedback(feedback_id,category,points,from_user,student,course_code,pre_defined_message,optional_message):
+def add_feedback(feedback_id,category,points,from_user,student,course_code,pre_defined_message,optional_message,random_bool):
 	fb = Feedback.objects.get_or_create(feedback_id=feedback_id)[0]
 	fb.points = points
 	fb.optional_message = optional_message
@@ -479,8 +518,22 @@ def add_feedback(feedback_id,category,points,from_user,student,course_code,pre_d
 	fb.student = stud
 	stud.score += points
 	stud.save()
+
+	if random_bool:
+		rand_date = date.today() - timedelta(random.randint(1,7))
+		rand_date_with_tzinfo = datetime(rand_date.year, rand_date.month,
+	 				rand_date.day, tzinfo=pytz.timezone('GMT'))
+
+		fb.datetime_given = rand_date_with_tzinfo
+
 	fb.save()
+
 	return fb
+
+def add_icon(name,url):
+	icon = Icon.objects.get_or_create(name=name,image=url)[0]
+	icon.save()
+	return icon
 
 # Helper function to add Category
 def add_category(name,colour):
@@ -489,6 +542,18 @@ def add_category(name,colour):
 	users = User.objects.all()
 	for user in users:
 		cat = Category(user=user,colour=colour,name=name)
+		cat.save()
+
+# Helper function to add Category
+def add_category_with_icon(name,colour):
+	# Since the the category needs to be associated uniquely for each lecturer
+	# (To allow them to customise) this needs to be saved as follows
+	users = User.objects.all()
+	for user in users:
+		cat = Category(user=user,colour=colour,name=name)
+		icon = Icon.objects.get(name=name)
+		cat.icon = icon
+		icon.save()
 		cat.save()
 
 def add_categories_for_user(user):

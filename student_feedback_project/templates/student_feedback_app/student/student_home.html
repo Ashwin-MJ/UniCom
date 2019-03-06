@@ -82,10 +82,13 @@ function toggleDataSeries(e) {
         {% else %}
         <div class="card custom-card fb-border" style="border-color:{{colour}}">
         {% endif %}
-          <b class="card-sub-heading" style="color:{{colour}}">{{ fb.category }}</b>
+          <b class="card-sub-heading" style="color:{{fb.category.colour}}">
+            <img class="icon" src="{{fb.category.icon.image.url}}"/>
+            {{ fb.category }}
+          </b>
           <div class="row" style="padding-bottom:1%">
             <div class="column left">
-              <div class="border">
+              <div class="card custom-border">
                 <blockquote class="quote">
                   {{ fb.pre_defined_message.text }}<br />
                   {% if fb.optional_message %}
@@ -108,10 +111,16 @@ function toggleDataSeries(e) {
           {% endfor %}
       </div>
 
-	  <div class="button" style="padding-bottom:0px; padding-top:10px;">
-          <button onclick="sort('{{ student.student.username }}', 'points', 'student')" type="button" class="btn btn-material btn-ripple">Sort by points</button>
-          <button onclick="sort('{{ student.student.username }}', 'date', 'student')" type="button" class="btn btn-material btn-ripple">Sort by date</button>
-          <button onclick="sort('{{ student.student.username }}', 'course', 'student')" type="button" class="btn btn-material btn-ripple">Sort by course</button>
+      <br/>
+      <div class="btn-group dropright button">
+          <button class="btn btn-material dropdown-toggle" type="button"data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Sort by
+          </button>
+          <div class="dropdown-menu custom-dd-menu">
+            <button onclick="sort('{{ student.student.username }}', 'points', 'student')" type="button" class="btn btn-material btn-ripple">Points</button>
+            <button onclick="sort('{{ student.student.username }}', 'date', 'student')" type="button" class="btn btn-material btn-ripple">Date</button>
+            <button onclick="sort('{{ student.student.username }}', 'course', 'student')" type="button" class="btn btn-material btn-ripple">Course</button>
+          </div>
       </div>
     </div>
 
@@ -138,11 +147,13 @@ function toggleDataSeries(e) {
     <div class="card-header">
       <ul class="nav nav-tabs card-header-tabs" id="title">
         <li class="nav-item">
-          <a data-toggle="tab" class="nav-link active" style="color:black" id="defaultOpen" href="#AllCats">All acheivements</a>
+          <a data-toggle="tab" class="nav-link active" style="color:black; padding-bottom:11px" href="#AllCats">All acheivements</a>
         </li>
         {% for category in achievements.keys %}
         <li class="nav-item">
-          <a data-toggle="tab" class="nav-link" style="color:{{category.colour}}" href="#{{category.id}}">{{ category }}</a>
+          <a data-toggle="tab" class="nav-link" style="color:{{category.colour}}" href="#{{category.id}}" title="{{category.name}}">
+            <img class="icon" src="{{category.icon.image.url}}"/>
+          </a>
         </li>
         {% endfor %}
       </ul>
@@ -262,6 +273,57 @@ function toggleDataSeries(e) {
           {% endfor %}
         </div>
         </section>
+      </div>
+    </div>
+  </div>
+
+  <!-- Help Info -->
+  <div class="modal" id="helpModal" tabindex="-1" role="dialog" aria-labelledby="helpModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document" style="max-width:1000px">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title modal-help" id="helpModal">Help - Home Page</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+          <div class="modal-body">
+
+            <p>
+              This is your Home Page.
+            </p>
+
+            <img class="help-image" src="{% static 'help_screenshots/student_home1.png'%}">
+            <img class="help-image" src="{% static 'help_screenshots/student_home2.png'%}">
+
+            <br />
+
+            <p>
+              <li>
+                Here you can view the recent feedback you have received on the left.
+              </li>
+              <li>
+                On the right is an attribute graph which displays your progress in
+                different attributes over time. The graph automatically resizes.
+                You can click on a category at the bottom to remove/add it from the graph.
+              </li>
+              <li>
+                At the bottom there is an "Achievements" section. This is intended to
+                motivate you by showing you what you are doing well in, and
+                which areas you are yet to receive an achievement for.
+              </li>
+              <li>
+                You can filter to see achievements for different categories by clicking the
+                relevant icons.
+              </li>
+            </p>
+          </div>
+
+          <div class="modal-footer">
+            <button class="btn btn-material" data-dismiss="modal">Close</button>
+          </div>
+
       </div>
     </div>
   </div>
