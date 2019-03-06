@@ -52,6 +52,13 @@ Log in
 
         </div>
       {% endfor %}
+      {% for field, errors in form.errors.items %}
+        {% for error in errors %}
+            <div style="align-self:center; align-items:center">
+            {{ error }}
+            </div>
+        {% endfor %}
+      {% endfor %}
 
       <div style="align-self:center; align-items:center">
 
