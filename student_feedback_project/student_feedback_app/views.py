@@ -53,9 +53,29 @@ def my_profile(request):
                 context_dict['lecturer'] = lect
                 context_dict['courses'] = lect.get_courses_with_students()
                 context_dict['feedback'] = fb
+
+
             except:
                 context_dict['error'] = "error"
                 return render(request, 'student_feedback_app/general/error_page.html', context_dict)
+
+        if request.method == 'POST':
+            user = request.user
+            form = EditBioForm(request.POST)
+            if form.is_valid():
+                new_bio=form.cleaned_data["bio"]
+                new_degree=form.cleaned_data["degree"]
+                user.degree=new_degree
+                user.bio= new_bio
+                user.save()
+            else:
+                print(form.errors)
+
+        else:
+            form = EditBioForm()
+
+        context_dict["form"] = form        
+
     else:
         # User not authenticated error
         context_dict['error'] = "auth"
