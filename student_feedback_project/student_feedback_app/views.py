@@ -898,7 +898,6 @@ def invites(request):
         return render(request,'student_feedback_app/general/error_page.html', context_dict)
 
     try:
-
         mode = 0
         students_string = request.COOKIES.get("students")
         if is_json(students_string):
@@ -970,3 +969,5 @@ def populate_categories_and_messages(user):
     # every user gets the list of categories and messages upon registration
     add_categories_for_user(user)
     add_messages_for_user(user)
+
+    ### ADD ICONS FOR USER

@@ -76,6 +76,18 @@ function toggleDataSeries(e) {
       <h3 class="text-center custom-card-title">Recent Feedback</h3>
       <hr />
       <div class="card-body scroll" id="fb-list">
+        {% if feedback|length == 0 %}
+        <div class="card custom-card fb-border">
+          <b class="card-sub-heading">
+            No Feedback Yet
+          </b>
+          <div class="card custom-border">
+            <blockquote class="quote">
+              You have not received any feedback yet<br />
+            </blockquote>
+          </div>
+        </div>
+        {% endif %}
         {% for fb,colour in feedback.items %}
         {% if fb.is_recent %}
         <div class="card recent custom-card text-white fb-border" style="border-color:{{colour}}">
@@ -111,6 +123,7 @@ function toggleDataSeries(e) {
           {% endfor %}
       </div>
 
+      {% if not feedback|length == 0 %}
       <br/>
       <div class="btn-group dropright button">
           <button class="btn btn-material dropdown-toggle" type="button"data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -122,6 +135,7 @@ function toggleDataSeries(e) {
             <button onclick="sort('{{ student.student.username }}', 'course', 'student', 'recent')" type="button" class="btn btn-material btn-ripple">Course</button>
           </div>
       </div>
+      {% endif %}
     </div>
 
 
@@ -131,8 +145,14 @@ function toggleDataSeries(e) {
 
       <div class="card-body" style="padding-top:0px">
         <div class="card custom-card">
+          {% if feedback|length == 0%}
+          <h3 class="text-center" id="title">
+            An attribute graph will appear here as you start to receive feedback
+          </h3>
+          {% else %}
           <div id="chartContainer" style="height: 400px"></div>
-            <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+          <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+          {% endif %}
         </div>
       </div>
 
@@ -161,6 +181,12 @@ function toggleDataSeries(e) {
   <!-- Content of tabs -->
     <div class="card-body">
       <div class="tab-content">
+        {% if achievements|length == 0%}
+        <h3 class="text-center" id="title">
+          You will unlock various achievements as you receive feedback.
+          As of now you have no achievements.
+        </h3>
+        {% endif %}
         {% for category, values in achievements.items %}
         <div id="{{category.id}}" class="tab-pane">
           <section class="horizontal-scroll">
