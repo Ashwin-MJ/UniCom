@@ -872,7 +872,7 @@ def register(request):
 
 def unapproved(request):
     return render(request, 'student_feedback_app/general/unapproved.html')
-    
+
 def invites(request):
     context_dict = {}
     if not request.user.is_authenticated or not request.user.is_lecturer:
@@ -890,7 +890,7 @@ def invites(request):
         return render(request,'student_feedback_app/general/error_page.html', context_dict)
 
     try:
-    
+
         mode = 0
         students_string = request.COOKIES.get("students")
         if is_json(students_string):
@@ -900,7 +900,7 @@ def invites(request):
             for student_id in students_list:
                 stud_user = User.objects.get(id_number=student_id)
                 students.append(stud_user)
-    
+
             for student in students:
                 plaintext = get_template('emails/invite_registered.txt')
                 htmly     = get_template('emails/invite_registered.html')
@@ -910,8 +910,8 @@ def invites(request):
                 msg = EmailMultiAlternatives('You are invited to join a course!', text_content, 'lect.acc.unicom@gmail.com',[student.email])
                 msg.attach_alternative(html_content, "text/html")
                 msg.send()
-    
-    
+
+
         students_emails_string = request.COOKIES.get("emails")
         if is_json(students_emails_string):
             mode += 1
@@ -928,23 +928,23 @@ def invites(request):
             msg = EmailMultiAlternatives('You are invited to join a course!', text_content, 'lect.acc.unicom@gmail.com',emails)
             msg.attach_alternative(html_content, "text/html")
             msg.send()
-    
-    
+
+
         if mode == 0:
             lect = LecturerProfile.objects.get(lecturer=request.user)
             students = lect.get_my_students()
             added_students = course.students.distinct()
             context_dict['students'] = set(students).difference(set(added_students))
             return render(request, 'student_feedback_app/lecturer/invites.html', context_dict)
-            
+
     except:
-    
+
         lect = LecturerProfile.objects.get(lecturer=request.user)
         students = lect.get_my_students()
         added_students = course.students.distinct()
         context_dict['students'] = set(students).difference(set(added_students))
         return render(request, 'student_feedback_app/lecturer/invites.html', context_dict)
-        
+
     response = lecturer_course(request, course.subject_slug)
     response.set_cookie('students', '', path="/lecturer/invites/")
     response.set_cookie('emails', '', path="/lecturer/invites/")
