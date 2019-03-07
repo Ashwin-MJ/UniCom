@@ -240,7 +240,7 @@ class LecturerProfile(models.Model):
     courses = models.ManyToManyField('Course')
 
     def get_my_students(self):
-        students = Course.objects.none()
+        students = StudentProfile.objects.none()
         for course in self.courses.all():
             students = students | course.students.all()
         return students.distinct()
