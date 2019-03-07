@@ -51,10 +51,9 @@ class AddCourseForm(forms.ModelForm):
 class EditBioForm(forms.ModelForm):
     degree = forms.CharField(max_length=60, help_text="Degree", required=True)
     bio = forms.CharField(max_length=250, help_text= 'Bio', required=True)
-
     class Meta:
         model = User
-        fields = ('degree', 'bio',)
+        fields = ('degree', 'bio','profile_picture')
 
 class EditCategoryForm(forms.ModelForm):
     name = forms.CharField(max_length=30, help_text="What would you like to change the name of this category to?")

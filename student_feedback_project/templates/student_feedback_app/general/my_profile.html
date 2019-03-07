@@ -200,7 +200,7 @@ My Profile
 		</div>
 
 		  <div class="modal-body">
-              <form id="" method="post" action="">
+              <form id="" method="post" action="" enctype="multipart/form-data">
                 {% csrf_token %}
                 {% for hidden in form.hidden_fields %}
                     {{ hidden }}
