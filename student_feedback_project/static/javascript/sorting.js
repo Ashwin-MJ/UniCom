@@ -1,5 +1,47 @@
 "use strict";
 
+function sort_smart(sort_param, footerType, insert_into_id, ...args){
+	//get sorted fb according to sort_param
+	var host = location.protocol + "//" + window.location.host;
+	switch(sort_param){
+		case "points":
+			var Url = host + "/FeedbackSortedByPoints";
+			break;
+		case "date":
+			var Url = host + "/FeedbackSortedByDate";
+			break;
+		case "course":
+			var Url = host + "/FeedbackSortedByCourse";
+			break;
+		default:
+	}
+	var httpRequest = new XMLHttpRequest();
+	httpRequest.onreadystatechange = function(){
+		if (this.readyState == 4 && this.status == 200) {
+			var allSortedFb = JSON.parse(this.responseText);
+			var sortedFb = [];
+			//for every feedback see if feedback is recent (5mins) and if it's in the list we want
+			for(var fb of allSortedFb){
+				if(args.includes(fb.feedback_id)){
+					sortedFb.push(fb)
+					var fb_date= new Date(fb['datetime_given']);
+					var now_date = new Date();
+					var five_mins = new Date(5*60000);
+					if((now_date - fb_date) < five_mins){
+						fb.is_recent = true;
+					}
+					else{
+						fb.is_recent = false;
+					}
+				}
+			}
+			show(sortedFb, footerType, insert_into_id);
+		}
+	};
+	httpRequest.open("GET", Url, true);
+	httpRequest.send();
+}
+
 function sort(fb_keep, sort_param, keep_param){
 	var host = location.protocol + "//" + window.location.host;
 	switch(sort_param){
@@ -29,7 +71,6 @@ function sort(fb_keep, sort_param, keep_param){
 				else{
 					fb.is_recent = false;
 				}
-
 			}
 
 			switch(keep_param){
@@ -93,14 +134,14 @@ function sort(fb_keep, sort_param, keep_param){
 }
 
 
-function show(sorted_fb, footerType){
+function show(sorted_fb, footerType, optional_id){
 	var fb_text = '';
 	for (var fb of sorted_fb){
 		var myDate = new Date(fb.datetime_given);
 		 var month=new Array();
 		  month[0]="Jan";
 		  month[1]="Feb";
-		  month[2]="Mar";
+		  month[2]="March";
 		  month[3]="Apr";
 		  month[4]="May";
 		  month[5]="Jun";
@@ -117,11 +158,13 @@ function show(sorted_fb, footerType){
 		  hours = hours ? hours : 12;
 		  minutes = minutes < 10 ? '0'+minutes : minutes;
 		  var strTime = hours + ':' + minutes + ' '+ ampm;
-		var showDate = ' ' + month[myDate.getMonth()] + '. ' + myDate.getDate() + ', ' + myDate.getFullYear() + ', ' + strTime;
+			strTime = '12:00 p.m.' ? 'midday' : strTime;
+			strTime = '12:00 a.m.' ? 'midnight' : strTime;
+		var showDate = ' ' + month[myDate.getMonth()] + ' ' + myDate.getDate() + ', ' + myDate.getFullYear() + ', ' + strTime;
 		if(footerType == "student")
 			var footer = 'Given to ' + fb.studentName;
 		else
-			var footer = 'From' + fb.fromUserName;
+			var footer = 'From ' + fb.fromUserName;
 		if(fb.is_recent){
 			fb_text += '<div class="card recent custom-card text-white fb-border" style="border-color:' + fb.categoryColour + '">';
 		}
@@ -131,7 +174,7 @@ function show(sorted_fb, footerType){
 		if( window.location.href.includes('my-provided-feedback'))
 			fb_text += '<i class="material-icons delete-icon" id="' + fb.feedback_id + '">delete</i>';
 		fb_text += '<b class="card-sub-heading" style="color:' + fb.categoryColour + '">'
-						+ '<img class="icon" src="/media/' + fb.image + '"/>'
+						+ '<img class="icon" src="/media/' + fb.image + '"/> '
 						+ fb.categoryName + `</b>
           <div class="row" style="padding-bottom:1%">
             <div class="column left">
@@ -156,5 +199,10 @@ function show(sorted_fb, footerType){
             </div>
           </div>`;
 	}
-	document.getElementById("fb-list").innerHTML = fb_text;
+	if(optional_id == undefined){
+		document.getElementById("fb-list").innerHTML = fb_text;
+	}
+	else {
+		document.getElementById(optional_id).innerHTML = fb_text;
+	}
 }
