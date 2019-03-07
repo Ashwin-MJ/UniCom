@@ -4,7 +4,11 @@ function sort(fb_keep, sort_param, keep_param, recent){
 	var host = location.protocol + "//" + window.location.host;
 	switch(sort_param){
 		case "points":
+<<<<<<< Updated upstream
 			var Url = host + "/FeedbackSortedByPoints";
+=======
+		var Url = host + "/FeedbackSortedByPoints";
+>>>>>>> Stashed changes
 			break;
 		case "date":
 			var Url = host + "/FeedbackSortedByDate";
@@ -15,6 +19,10 @@ function sort(fb_keep, sort_param, keep_param, recent){
 		default:
 	}
 	var httpRequest = new XMLHttpRequest();
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
 	httpRequest.onreadystatechange = function(){
 		if (this.readyState == 4 && this.status == 200) {
 			var sortedFb = JSON.parse(this.responseText);
@@ -40,6 +48,7 @@ function sort(fb_keep, sort_param, keep_param, recent){
 				}
 
 			}
+
 
 			switch(keep_param){
 				case "from_user":
@@ -130,7 +139,7 @@ function show(sorted_fb, footerType){
 		if(footerType == "student")
 			var footer = 'Given to ' + fb.studentName;
 		else
-			var footer = 'From ' + fb.fromUserName;
+			var footer = 'From' + fb.fromUserName;
 		if(fb.is_recent){
 			fb_text += '<div class="card recent custom-card text-white fb-border" style="border-color:' + fb.categoryColour + '">';
 		}
@@ -140,7 +149,7 @@ function show(sorted_fb, footerType){
 		if( window.location.href.includes('my-provided-feedback'))
 			fb_text += '<i class="material-icons delete-icon" id="' + fb.feedback_id + '">delete</i>';
 		fb_text += '<b class="card-sub-heading" style="color:' + fb.categoryColour + '">'
-						+ '<img class="icon" src="/media/' + fb.image + '"/> '
+						+ '<img class="icon" src="/media/' + fb.image + '"/>'
 						+ fb.categoryName + `</b>
           <div class="row" style="padding-bottom:1%">
             <div class="column left">
