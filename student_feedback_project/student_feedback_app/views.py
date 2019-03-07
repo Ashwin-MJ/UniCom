@@ -160,7 +160,7 @@ def student_home(request):
         try:
             stud = StudentProfile.objects.get(student=request.user)
             fb_last_week = stud.feedback_set.all().filter(datetime_given__gte=timezone.now()-timedelta(days=7)).order_by('-datetime_given')
-            fb_all = stud.feedback_set.all()
+            fb_all = stud.feedback_set.all().order_by('-datetime_given')
             courses = stud.courses.all()
             for feedback in fb_all:
                 cat = feedback.category.name
@@ -566,8 +566,6 @@ def lecturer_add_individual_feedback(request,subject_slug,student_number):
         context_dict['form'] = form
         return render(request,'student_feedback_app/lecturer/lecturer_add_individual_feedback.html',context_dict)
     except:
-        context_dict['student'] = None
-        context_dict['feedback'] = None
         context_dict['error'] = "no_student"
         return render(request,'student_feedback_app/general/error_page.html', context_dict)
 
@@ -595,9 +593,7 @@ def add_group_feedback(request,subject_slug):
         context_dict['students'] = stud_profiles
         context_dict['lecturer'] = lect
         context_dict['subject'] = course
-
         context_dict['categories'] = request.user.category_set.all()
-
         context_dict['new_mess_form'] = NewMessageForm()
 
         messages = request.user.message_set.all()
@@ -612,7 +608,6 @@ def add_group_feedback(request,subject_slug):
         context_dict['form'] = form
 
         return render(request,'student_feedback_app/lecturer/lecturer_add_group_feedback.html',context_dict)
-
     except:
         context_dict['error'] = "error"
         return render(request,'student_feedback_app/general/error_page.html', context_dict)
@@ -626,10 +621,10 @@ def lecturer_courses(request):
         context_dict['lecturer'] = lect
         context_dict['courses'] = courses
         context_dict['top_students'] = top_students
-        if(request.method == 'POST'):
+        if request.method == 'POST':
             form = AddCourseForm(request.POST)
             lect = LecturerProfile.objects.get(lecturer = request.user)
-            if(form.is_valid()):
+            if form.is_valid():
                 try:
                     course = Course.objects.get(course_token=form.cleaned_data["course_token"] )
                     lect.courses.add(course)

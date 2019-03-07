@@ -20,7 +20,7 @@ My Profile
     <div class="card card-profile column left-profile">
       <img class="card-img-top picture-my-account" src="{{user.profile_picture.url}}" alt="Profile Picture">
       <div class="card-body">
-        <h4 class="custom-card-title">{{user.username}}</h4><br />
+        <h4 class="custom-card-title" style="padding:0">{{user.username}}</h4>
         {% if user.is_student %}
           <p class="custom-card-title">Score: {{student.score}}</p>
         {% endif %}
@@ -39,19 +39,19 @@ My Profile
       <div class="card-body">
         <div class="card bg-primary text-white card-padding custom-card">
           <b class="custom-card-title" style="padding-top:0">Email: </b>
-            <p>
+            <p class="profile-text text-center">
                 {{user.email}}
             </p>
         </div>
         <div class="card bg-success text-white card-padding custom-card">
           <b class="custom-card-title" style="padding-top:0">Degree: </b>
-            <p>
+            <p class="profile-text text-center">
                 {{user.degree}}
             </p>
         </div>
         <div class="card bg-info text-white card-padding custom-card">
           <b class="custom-card-title" style="padding-top:0">Bio:</b>
-            <p>
+            <p class="profile-text text-center">
                  {{user.bio}}
             </p>
         </div>

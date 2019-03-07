@@ -96,6 +96,7 @@ body{
   max-width: 300px;
   border: 1px solid teal;
   margin: 10px;
+  margin-bottom: 0;
 }
 
 .achievements{
@@ -288,4 +289,9 @@ body{
 .help-image {
   width:100%;
   height: auto;
+}
+
+.profile-text {
+  font-size: 150%;
+  font-family: 'Sanchez', serif;
 }
