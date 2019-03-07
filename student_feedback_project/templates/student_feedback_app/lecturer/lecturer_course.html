@@ -89,8 +89,17 @@ function toggleDataSeries(e) {
         <h3 class="text-center custom-card-title">Students</h3>
         <hr />
         <div id="all_students" class="card-body scroll">
+          {% if sorted_students|length == 0%}
+          <div class="card custom-card">
+            <b class="card-sub-heading">No Students Yet</b>
+            <div class="card custom-border">
+              <div class="course-info">
+                Have students join the course by sending them the course token above.
+                </div>
+            </div>
+          </div>
+          {% endif %}
           {% for stud,score in students_with_score %}
-
           <div class="card students custom-card" id="{{ stud.student.id_number }}">
             <div class="row">
               <div class="column left">
@@ -110,6 +119,8 @@ function toggleDataSeries(e) {
             <br />
             {% endfor %}
         </div>
+
+        {% if not sorted_students|length == 0%}
         <hr />
 
         <div class="button">
@@ -129,6 +140,7 @@ function toggleDataSeries(e) {
               </form>
               </div>
         </div>
+        {% endif %}
 
       </div>
 
@@ -136,6 +148,19 @@ function toggleDataSeries(e) {
         <h3 class="text-center custom-card-title">Recent Feedback</h3>
         <hr />
         <div class="card-body scroll" id="fb-list">
+          {% if feedback|length == 0 %}
+          <div class="card custom-card fb-border">
+            <b class="card-sub-heading">
+              No Feedback Yet
+            </b>
+            <div class="card custom-border">
+              <blockquote class="quote">
+                You have not given any feedback yet<br />
+                See "Help" in the top right for more information
+              </blockquote>
+            </div>
+          </div>
+          {% endif %}
           {% for fb in feedback %}
           {% if fb.is_recent %}
           <div class="card recent custom-card text-white fb-border" style="border-color:{{fb.category.colour}}">
@@ -171,6 +196,7 @@ function toggleDataSeries(e) {
 
             {% endfor %}
         </div>
+        {% if not feedback|length == 0%}
         <hr />
         <br/>
         <div class="btn-group dropright button">
@@ -182,6 +208,7 @@ function toggleDataSeries(e) {
               <button onclick="sort('{{ course.subject }}', 'date', 'course', 'recent')" type="button" class="btn btn-material btn-ripple">Date</button>
             </div>
         </div>
+        {% endif %}
       </div>
 
           <div class="card scroll-bg">
@@ -206,6 +233,16 @@ function toggleDataSeries(e) {
             <div class="card-body scroll">
               <div class="tab-content">
                 <div id="All" class="tab-pane active">
+                  {% if sorted_students|length == 0%}
+                  <div class="card custom-card">
+                    <b class="card-sub-heading">No Leaderboard Yet</b>
+                    <div class="card custom-border">
+                      <div class="course-info">
+                        Have students join the course by sending them the course token above.
+                        </div>
+                    </div>
+                  </div>
+                  {% endif %}
                   {% for stud,score in sorted_students %}
                     <div class="card custom-card" id="{{stud.student.id_number}}">
                       <div class="row">
@@ -253,11 +290,19 @@ function toggleDataSeries(e) {
           </div>
         </div>
 
+        {% if feedbackData|length == 0%}
+        <div class="card custom-card" style="margin-bottom:25px;">
+          <h3 class="text-center" id="title">
+            A course graph will appear here as you start to give feedback
+          </h3>
+        </div>
+        {% else %}
         <div class="card custom-card" style="margin-bottom:25px;">
             <div id="chartContainer" style="height: 400px"></div>
               <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
             </div>
         </div>
+        {% endif %}
 
       </div>
     </div>

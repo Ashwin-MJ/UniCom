@@ -22,6 +22,16 @@ Courses
       <h3 class="text-center custom-card-title">My Courses</h3>
       <hr />
       <div class="card-body scroll">
+        {% if courses|length == 0 %}
+        <div class="card custom-card">
+          <b class="card-sub-heading">No Courses Yet</b>
+          <div class="card custom-border">
+            <div class="course-info">
+              Click on "Help" in the top right for more information
+              </div>
+          </div>
+        </div>
+        {% endif %}
         {% for course in courses %}
             <a style="text-decoration: none; color: black" href="{% url 'lecturer_course' course.subject_slug%}">
               <div class="card custom-card">
@@ -51,7 +61,7 @@ Courses
           {% endfor %}
       </div>
       <hr />
-      <div class="button" style="margin-bottom:0">
+      <div class="button">
         <button class="btn btn-material btn-ripple" data-toggle="modal" data-target="#CreateCourseModal" title="Create Course">
           Create Course
         </button>
@@ -62,24 +72,29 @@ Courses
       <h3 class="text-center custom-card-title">Students with <br />Highest Scores</h3>
 	    <hr />
       <div class="card-body scroll">
-          {% for stud in top_students %}
-          <div class="card custom-card">
-            <div class="row">
-              <div class="column left">
-                <b class="card-sub-heading">{{ stud.student.username }}</b>
-                <div class="card-sub-heading">
-                  {{ stud.score }}
-                  </div>
-                </div>
-              <div class="column right">
-                <a href="{% url 'view_profile' stud.student.id_number %}">
-                  <img class="picture" src="{{stud.student.profile_picture.url}}"/>
-                </a>
+        {% if top_students|length == 0%}
+        <div class="card custom-card">
+          <b class="card-sub-heading">No Top Students</b>
+        </div>
+        {% endif %}
+        {% for stud in top_students %}
+        <div class="card custom-card">
+          <div class="row">
+            <div class="column left">
+              <b class="card-sub-heading">{{ stud.student.username }}</b>
+              <div class="card-sub-heading">
+                {{ stud.score }}
                 </div>
               </div>
+            <div class="column right">
+              <a href="{% url 'view_profile' stud.student.id_number %}">
+                <img class="picture" src="{{stud.student.profile_picture.url}}"/>
+              </a>
+              </div>
             </div>
-            <br />
-            {% endfor %}
+          </div>
+          <br />
+          {% endfor %}
         </div>
       </div>
 
@@ -115,44 +130,36 @@ Courses
       <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title modal-create-course-header" id="createCourseModalTitle">Create Course</h5>
+            <h5 class="modal-title modal-create-course-header" id="createCourseModalTitle">Create a new Course</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
 
             <div class="modal-body">
-                  <form id="" method="post" action="">
-                    {% csrf_token %}
-                    {% for hidden in create_form.hidden_fields %}
-                        {{ hidden }}
-                    {% endfor %}
+              <form id="" method="post" action="">
+                {% csrf_token %}
+                {% for hidden in create_form.hidden_fields %}
+                    {{ hidden }}
+                {% endfor %}
 
-                    <h3 class="text-center custom-card-title">Create Course</h3>
-                    <hr />
-
-                    {% if create_form.non_field_errors %}
-                      <div class="alert alert-danger" role="alert">
-                        {% for error in create_form.non_field_errors %}
-                          {{ error }}
-                        {% endfor %}
-                      </div>
+                {% for field in create_form.visible_fields %}
+                  <div class="form-group" style="padding:10px">
+                    <h3 id="form-title">
+                      {{ field.label_tag }}
+                      </h3>
+                    {% if field.help_text %}
+                      <small class="form-text text-muted">{{ field.help_text }}</small>
                     {% endif %}
+                    {% render_field field class="form-control" %}
+                  </div>
+                {% endfor %}
 
-                    {% for field in create_form.visible_fields %}
-                      <div class="form-group card custom-card">
-                        <h3 class="custom-card-title" style="padding-top:0">
-                          {{ field.help_text }}:
-                        </h3>
-                          {% render_field field class="form-control" %}
-                      </div>
-                    {% endfor %}
+                <div class="button">
+                  <input class="btn btn-material btn-ripple" type="submit" name="submit" value="Submit" />
+                </div>
 
-                    <div class="button">
-                      <input class="btn btn-material btn-ripple" type="submit" name="submit" value="Submit" />
-                    </div>
-
-                  </form>
+              </form>
         </div>
       </div>
   </div>
