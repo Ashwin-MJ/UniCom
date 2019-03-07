@@ -13,6 +13,7 @@ Courses
 
 <link rel="stylesheet" type="text/css" href="custom.css" />
 
+{% load widget_tweaks %}
 {% block body_block %}
 <div class="container">
   <div class="card-deck">
@@ -50,11 +51,11 @@ Courses
           {% endfor %}
       </div>
       <hr />
-      <form id="create-course" action="{% url 'create_course'  %}">
-        <div class="button" style="padding-bottom:10px; padding-top:10px;">
-            <button class="btn btn-material btn-ripple" type="submit">Create Course</button>
-        </div>
-      </form>
+      <div class="button" style="margin-bottom:0">
+        <button class="btn btn-material btn-ripple" data-toggle="modal" data-target="#CreateCourseModal" title="Create Course">
+          Create Course
+        </button>
+      </div>
     </div>
 
   <div class="card scroll-bg">
@@ -88,11 +89,11 @@ Courses
         <div class="card-body">
           <form id="" method="post" action="">
             {% csrf_token %}
-            {% for hidden in form.hidden_fields %}
+            {% for hidden in join_form.hidden_fields %}
             {{ hidden }}
             {% endfor %}
 
-            {% for field in form.visible_fields %}
+            {% for field in join_form.visible_fields %}
               <div class="card custom-card">
                 {{ field.errors }}
                 <h3 class="text-left" id="title">{{ field.help_text }}:</h3>
@@ -108,6 +109,52 @@ Courses
     </div>
 
     </div>
+  </div>
+  <!-- Create Course Modal -->
+  <div class="modal" id="CreateCourseModal" tabindex="-1" role="dialog" aria-labelledby="CreateCourseModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title modal-create-course-header" id="createCourseModalTitle">Create Course</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+
+            <div class="modal-body">
+                  <form id="" method="post" action="">
+                    {% csrf_token %}
+                    {% for hidden in create_form.hidden_fields %}
+                        {{ hidden }}
+                    {% endfor %}
+
+                    <h3 class="text-center custom-card-title">Create Course</h3>
+                    <hr />
+
+                    {% if create_form.non_field_errors %}
+                      <div class="alert alert-danger" role="alert">
+                        {% for error in create_form.non_field_errors %}
+                          {{ error }}
+                        {% endfor %}
+                      </div>
+                    {% endif %}
+
+                    {% for field in create_form.visible_fields %}
+                      <div class="form-group card custom-card">
+                        <h3 class="custom-card-title" style="padding-top:0">
+                          {{ field.help_text }}:
+                        </h3>
+                          {% render_field field class="form-control" %}
+                      </div>
+                    {% endfor %}
+
+                    <div class="button">
+                      <input class="btn btn-material btn-ripple" type="submit" name="submit" value="Submit" />
+                    </div>
+
+                  </form>
+        </div>
+      </div>
   </div>
 </div>
 

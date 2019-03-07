@@ -581,30 +581,39 @@ def lecturer_courses(request):
     context_dict = {}
     if request.user.is_authenticated and request.user.is_lecturer:
         lect = LecturerProfile.objects.get(lecturer=request.user)
-        courses = lect.courses.all()
+        courses = lect.course_set.all()
         top_students = lect.get_my_students().order_by('-score')[:5]
         context_dict['lecturer'] = lect
         context_dict['courses'] = courses
         context_dict['top_students'] = top_students
-        if(request.method == 'POST'):
-            form = AddCourseForm(request.POST)
-            lect = LecturerProfile.objects.get(lecturer = request.user)
-            if(form.is_valid()):
+        if request.method == 'POST':
+            create_form = CourseForm(request.POST)
+            join_form = AddCourseForm(request.POST)
+            if create_form.is_valid():
                 try:
-                    course = Course.objects.get(course_token=form.cleaned_data["course_token"] )
-                    lect.courses.add(course)
-                    course.lecturers.add(lect)
-                    lect.save()
-                    course.save()
+                    newCourseForm = create_form.save(commit=False)
+                    new_course = Course.objects.create(subject=create_form.cleaned_data['subject'], course_description=create_form.cleaned_data['course_description'], course_code=create_form.cleaned_data['course_code'])
+                    new_course.lecturers.add(lect)
+                    new_course.save()
                     return lecturer_home(request)
                 except:
-                    context_dict['error'] = "no_course"
+                    context_dict['error'] = "error"
                     return render(request, 'student_feedback_app/general/error_page.html', context_dict)
+            elif join_form.is_valid:
+                joinCourseForm=join_form.save(commit=False)
+                course = Course.objects.get(course_token=joinCourseForm.course_token)
+                lect.courses.add(course)
+                course.lecturers.add(lect)
+                lect.save()
+                course.save()
+                return lecturer_home(request)
             else:
-                print(form.errors)
+                print(join_form.errors)
         else:
-            form = AddCourseForm()
-        context_dict["form"] = form
+            create_form = CourseForm()
+            join_form = AddCourseForm()
+        context_dict["create_form"] = create_form
+        context_dict["join_form"] = join_form
         return render(request, 'student_feedback_app/lecturer/lecturer_courses.html', context_dict)
     else:
         context_dict['error'] = "auth"
@@ -650,30 +659,6 @@ def customise_options(request):
         context_dict['error'] = "error"
         return render(request,'student_feedback_app/general/error_page.html', context_dict)
 
-def create_course(request):
-    context_dict = {}
-    if not request.user.is_authenticated or not request.user.is_lecturer:
-        context_dict['error'] = "auth"
-        return render(request,'student_feedback_app/general/error_page.html', context_dict)
-    try:
-        lect = LecturerProfile.objects.get(lecturer=request.user)
-        context_dict["lecturer"] = lect
-        if request.method == 'POST':
-            form = CourseForm(request.POST)
-            if form.is_valid():
-                newCourse = form.save(commit=False)
-                newCourse.lecturers.add(lect)
-                newCourse.save()
-                return lecturer_courses(request)
-            else:
-                print(form.errors)
-        else:
-            form = CourseForm()
-        context_dict["form"] = form
-        return render(request, 'student_feedback_app/lecturer/lecturer_create_course.html', context_dict)
-    except:
-        context_dict['error'] = "error"
-        return render(request,'student_feedback_app/general/error_page.html', context_dict)
 
 class FeedbackDetail(APIView):
     """

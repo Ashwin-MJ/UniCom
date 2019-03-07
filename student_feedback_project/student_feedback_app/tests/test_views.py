@@ -87,20 +87,6 @@ class ViewProfileViewTest(TestCase):
         for fb in response.context['feedback']:
             self.assertEqual(fb.from_user.id_number,"1402001")
 
-class EditBioViewTest(TestCase):
-    fixtures = ['student_feedback_app']
-
-    def test_error_if_not_logged_in(self):
-        response = self.client.get(reverse('edit_bio'))
-        self.assertTemplateUsed(response, 'student_feedback_app/general/error_page.html')
-        self.assertEqual(response.context['error'],"auth")
-
-    def test_stud_works(self):
-        login = login_student(self)
-        response = self.client.get(reverse('edit_bio'))
-        self.assertTemplateUsed(response, 'student_feedback_app/general/edit_bio.html')
-        self.assertEqual(response.status_code,200)
-
 
 class StudentHomeViewTest(TestCase):
     fixtures = ['student_feedback_app']
@@ -220,11 +206,10 @@ class LecturerCourseViewTest(TestCase):
         self.assertTemplateUsed(response, 'student_feedback_app/general/error_page.html')
         self.assertEqual(response.context['error'],"auth")
 
-    def test_course_does_not_exist(self):
+    def test_lecturer_works(self):
         login = login_lecturer(self)
-        response = self.client.get(reverse('lecturer_course',kwargs={'subject_slug': "random"}))
-        self.assertTemplateUsed(response, 'student_feedback_app/general/error_page.html')
-        self.assertEqual(response.context['error'],"no_course")
+        response = self.client.get(reverse('lecturer_course',kwargs={'subject_slug': "arh01"}))
+        self.assertTemplateUsed(response, 'student_feedback_app/lecturer/lecturer_course.html')
 
 class LecturerAddIndividualFeedbackViewTest(TestCase):
     fixtures = ['student_feedback_app']
@@ -281,19 +266,6 @@ class CustomiseOptionsViewTest(TestCase):
         self.assertTemplateUsed(response, 'student_feedback_app/general/customise_options.html')
         self.assertEqual(response.status_code,200)
 
-class CreateCourseViewTest(TestCase):
-    fixtures = ['student_feedback_app']
-
-    def test_works_if_logged_in(self):
-        login = login_lecturer(self)
-        response = self.client.get(reverse('create_course'))
-        self.assertTrue(response.status_code,200)
-
-    def test_error_if_student(self):
-        login = login_student(self)
-        response = self.client.get(reverse('create_course'))
-        self.assertTemplateUsed(response, 'student_feedback_app/general/error_page.html')
-        self.assertEqual(response.context['error'],"auth")
 
 class FeedbackDetailView(TestCase):
     fixtures = ['student_feedback_app']
