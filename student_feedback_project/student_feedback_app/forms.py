@@ -17,7 +17,7 @@ class CourseForm(forms.ModelForm):
 
 class FeedbackForm(autocomplete.FutureModelForm):
     optional_message = forms.CharField(max_length=200, required=False, help_text="Enter an optional message here if you like!")
-    points = forms.IntegerField(max_value=5,min_value=0, help_text="What score do you want to give for this feedback? (0-5)", required=True)
+    points = forms.IntegerField(max_value=5,min_value=0, help_text="What score do you want to give for this feedback? (1-5)", required=True)
 
     class Meta:
         model = Feedback

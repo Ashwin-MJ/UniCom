@@ -4,7 +4,7 @@ from student_feedback_app.models import *
 class Feedback_fullSerializer(serializers.ModelSerializer):
     class Meta:
         model = Feedback_full
-        fields = ('feedback_id', 'points', 'datetime_given', 'optional_message', 'categoryColour', 'categoryName',
+        fields = ('image', 'feedback_id', 'points', 'datetime_given', 'optional_message', 'categoryColour', 'categoryName',
                   'preDefMessageText', 'studentName', 'courseName', 'fromUserName')
 
 class FeedbackSerializer(serializers.ModelSerializer):

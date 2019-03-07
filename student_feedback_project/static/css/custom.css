@@ -280,3 +280,12 @@ body{
 .fb-icon {
   max-width: 20px;
 }
+
+.help-link {
+  cursor: pointer;
+}
+
+.help-image {
+  width:100%;
+  height: auto;
+}

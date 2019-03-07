@@ -39,4 +39,7 @@ static/autocomplete_light/
 *.fls
 *.log
 *.out
+
+##personal shell scripts
+delDB.sh
 *.synctex.gz

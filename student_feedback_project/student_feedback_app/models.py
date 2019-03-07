@@ -75,9 +75,8 @@ class StudentProfile(models.Model):
 
     def get_score_for_course(self,course):
         score = 0
-        for fb in self.feedback_set.all():
-            if fb.which_course.subject == course:
-                score += fb.points
+        for fb in self.get_fb_for_course(course):
+            score += fb.points
         return score
 
     def get_top_attributes(self):
@@ -116,10 +115,10 @@ class StudentProfile(models.Model):
     def get_score_for_category(self):
         scores = {}
         for fb in self.feedback_set.all():
-            if fb.category not in scores:
-                scores[fb.category] = fb.points
+            if fb.category.name not in scores:
+                scores[fb.category.name] = fb.points
             else:
-                scores[fb.category] += fb.points
+                scores[fb.category.name] += fb.points
         return scores
 
     def get_score_for_one_category(self, category):
@@ -311,6 +310,7 @@ class Message(models.Model):
         return self.text
 
 class Feedback_full(models.Model):
+    image = models.CharField(max_length = 300, default = "attribute_icons/cooperation.png")
     feedback_id = models.IntegerField(primary_key=True, default=0)
     points = models.IntegerField(default=0)
     datetime_given = models.DateTimeField(default=timezone.now, blank=False)
@@ -323,4 +323,4 @@ class Feedback_full(models.Model):
     fromUserName = models.CharField(max_length=200,default="No from user")
     class Meta:
         managed = False
-        db_table = "student_feedback_app_feedback_full"
+        db_table = "student_feedback_app_feedback_full_icon"
