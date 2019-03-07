@@ -860,15 +860,15 @@ class StudentCourseRelDestroy(APIView):
 
 
 class FeedbackSortedByPoints(generics.ListAPIView):
-    queryset = Feedback_full.objects.all().filter(datetime_given__gte=timezone.now()-timedelta(days=7)).order_by('-points')
+    queryset = Feedback_full.objects.all().order_by('-points')
     serializer_class = Feedback_fullSerializer
 
 class FeedbackSortedByDate(generics.ListAPIView):
-    queryset = Feedback_full.objects.all().filter(datetime_given__gte=timezone.now()-timedelta(days=7)).order_by('-datetime_given')
+    queryset = Feedback_full.objects.all().order_by('-datetime_given')
     serializer_class = Feedback_fullSerializer
 
 class FeedbackSortedByCourse(generics.ListAPIView):
-    queryset = Feedback_full.objects.all().filter(datetime_given__gte=timezone.now()-timedelta(days=7)).order_by('courseName')
+    queryset = Feedback_full.objects.all().order_by('courseName')
     serializer_class = Feedback_fullSerializer
 
 class Feedback_full(generics.ListAPIView):

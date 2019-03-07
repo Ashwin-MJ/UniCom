@@ -141,7 +141,7 @@ function show(sorted_fb, footerType, optional_id){
 		 var month=new Array();
 		  month[0]="Jan";
 		  month[1]="Feb";
-		  month[2]="Mar";
+		  month[2]="March";
 		  month[3]="Apr";
 		  month[4]="May";
 		  month[5]="Jun";
@@ -158,7 +158,9 @@ function show(sorted_fb, footerType, optional_id){
 		  hours = hours ? hours : 12;
 		  minutes = minutes < 10 ? '0'+minutes : minutes;
 		  var strTime = hours + ':' + minutes + ' '+ ampm;
-		var showDate = ' ' + month[myDate.getMonth()] + '. ' + myDate.getDate() + ', ' + myDate.getFullYear() + ', ' + strTime;
+			strTime = '12:00 p.m.' ? 'midday' : strTime;
+			strTime = '12:00 a.m.' ? 'midnight' : strTime;
+		var showDate = ' ' + month[myDate.getMonth()] + ' ' + myDate.getDate() + ', ' + myDate.getFullYear() + ', ' + strTime;
 		if(footerType == "student")
 			var footer = 'Given to ' + fb.studentName;
 		else
