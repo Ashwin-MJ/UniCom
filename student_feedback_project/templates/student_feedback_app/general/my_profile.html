@@ -9,7 +9,7 @@ My Profile
 My Profile
 {% endblock%}
 
-
+{% load widget_tweaks %}
 {% block body_block %}
 
 
@@ -24,13 +24,11 @@ My Profile
         {% if user.is_student %}
           <p class="custom-card-title text-center" id="title" style="padding-top:0">Score: {{student.score}}</p>
         {% endif %}
-        <a href="{% url 'edit_bio' %}">
-          <div class="button" style="margin-bottom:0">
-            <button class="btn btn-material btn-ripple">
-              Edit Bio
-            </button>
-          </div>
-        </a>
+		<div class="button" style="margin-bottom:0">
+		  <button class="btn btn-material btn-ripple" data-toggle="modal" data-target="#editBioModal" title="Edit your Bio">
+			Edit Bio
+		  </button>
+		</div>
       </div>
     </div>
 
@@ -189,6 +187,53 @@ My Profile
       </div>
     </div>
 
+
+  <!-- Edit Bio Modal -->
+  <div class="modal" id="editBioModal" tabindex="-1" role="dialog" aria-labelledby="editBioModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+	  <div class="modal-content">
+		<div class="modal-header">
+		  <h5 class="modal-title modal-edit-bio-header" id="editBioModalTitle">Edit Bio</h5>
+		  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			<span aria-hidden="true">&times;</span>
+		  </button>
+		</div>
+
+		  <div class="modal-body">
+              <form id="" method="post" action="">
+                {% csrf_token %}
+                {% for hidden in form.hidden_fields %}
+                    {{ hidden }}
+                {% endfor %}
+
+                <h3 class="text-center custom-card-title">Edit Degree/Biography</h3>
+                <hr />
+
+                {% if form.non_field_errors %}
+                  <div class="alert alert-danger" role="alert">
+                    {% for error in form.non_field_errors %}
+                      {{ error }}
+                    {% endfor %}
+                  </div>
+                {% endif %}
+
+                {% for field in form.visible_fields %}
+                  <div class="form-group card custom-card">
+                    <h3 class="custom-card-title" style="padding-top:0">
+                      {{ field.help_text }}:
+                    </h3>
+                      {% render_field field class="form-control" %}
+                  </div>
+                {% endfor %}
+
+                <div class="button">
+                  <input class="btn btn-material btn-ripple" type="submit" name="submit" value="Submit" />
+                </div>
+
+              </form>
+	  </div>
+	</div>
+  </div>
 </div>
 
 <script>
