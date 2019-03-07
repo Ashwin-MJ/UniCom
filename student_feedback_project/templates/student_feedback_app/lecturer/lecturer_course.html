@@ -7,9 +7,7 @@
 {% endblock %}
 
 {% block current_page %}
-{% for lect in lecturers %}
-{{ lect.lecturer.username }}<br />
-{% endfor %}
+{{ user.username }}<br />
 {{ course.subject }}<br />
 {% endblock%}
 
@@ -209,7 +207,7 @@ function toggleDataSeries(e) {
               <div class="tab-content">
                 <div id="All" class="tab-pane active">
                   {% for stud,score in sorted_students %}
-                    <div class="card custom-card leaderboard-stud" id="{{stud.student.id_number}}">
+                    <div class="card custom-card" id="{{stud.student.id_number}}">
                       <div class="row">
                         <div class="column left">
                           <b class="card-sub-heading">{{ stud.student.username }}</b>
@@ -231,7 +229,7 @@ function toggleDataSeries(e) {
                 {% for cat,list in cat_stud_and_score.items %}
                 <div id="{{cat.id}}" class="tab-pane">
                   {%for stud in list %}
-                  <div class="card custom-card leaderboard-stud" id="{{stud.0.student.id_number}}">
+                  <div class="card custom-card" id="{{stud.0.student.id_number}}">
                     <div class="row">
                       <div class="column left">
                         <b class="card-sub-heading">{{ stud.0.student.username }}</b>
