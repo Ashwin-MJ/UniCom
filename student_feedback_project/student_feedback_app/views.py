@@ -78,6 +78,11 @@ def my_profile(request):
             form = EditBioForm()
 
         context_dict["form"] = form
+        all_avatars={}
+        for avatar in Avatar.objects.all():
+            all_avatars[avatar.id] = avatar.image.url
+        context_dict['avatars_json'] = json.dumps(all_avatars)
+        context_dict['avatars'] = Avatar.objects.all()
 
     else:
         # User not authenticated error

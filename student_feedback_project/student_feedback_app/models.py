@@ -297,6 +297,10 @@ class Icon(models.Model):
     name = models.CharField(max_length=30, default="Empty")
     image = models.ImageField(upload_to='attribute_icons', max_length=50, default="attribute_icons/cooperation.png")
 
+class Avatar(models.Model):
+    name = models.CharField(max_length=30, default='Empty')
+    image = models.ImageField(upload_to='avatars', max_length=50, default="avatars/studying.png")
+
 
 class Message(models.Model):
     # This is a Message model for each pre defined message associate with a category

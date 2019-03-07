@@ -225,7 +225,13 @@ My Profile
                       {% render_field field class="form-control" %}
                   </div>
                 {% endfor %}
+                <div class="form-group" style="padding:10px">
+                  <small class="form-text text-muted">Or you can choose from our list of avatars:</small>
+                  {% for avatar in avatars %}
+                    <img class="all-icons" id="{{avatar.name}}"src="{{avatar.image.url}}" alt="{{avatar.name}}"/>
+                  {% endfor%}
 
+                </div>
                 <div class="button">
                   <input class="btn btn-material btn-ripple" type="submit" name="submit" value="Submit" />
                 </div>
