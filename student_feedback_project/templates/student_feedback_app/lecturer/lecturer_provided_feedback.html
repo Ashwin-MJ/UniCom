@@ -35,9 +35,14 @@ Provided Feedback
     <div class="tab-content">
         {% for course, feedback_list in courses_with_feedback.items %}
         <div id="{{course.course_code}}" class="tab-pane">
-          <div class="button" style="padding-bottom:0px; padding-top:10px;">
+          <div class="btn-group dropright button">
+              <button class="btn btn-material dropdown-toggle" type="button"data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Sort by
+              </button>
+              <div class="dropdown-menu custom-dd-menu">
                 <button onclick="sort_smart('points', 'student', 'fb-list-{{course.course_code}}', {%for fb in feedback_list%} {{fb.feedback_id}}, {%endfor%})" type="button" class="btn btn-material btn-ripple">Sort by points</button>
                 <button onclick="sort_smart('date', 'student', 'fb-list-{{course.course_code}}', {%for fb in feedback_list%} {{fb.feedback_id}}, {%endfor%})" type="button" class="btn btn-material btn-ripple">Sort by date</button>
+              </div>
           </div>
           <div class="card-body scroll-lect-fb fb-list" id="fb-list-{{course.course_code}}">
             {% for fb in feedback_list %}
@@ -78,10 +83,15 @@ Provided Feedback
           </div>
         {% endfor %}
         <div id="All" class="tab-pane active">
-          <div class="button" style="padding-bottom:0px; padding-top:10px;">
+          <div class="btn-group dropright button">
+              <button class="btn btn-material dropdown-toggle" type="button"data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Sort by
+              </button>
+              <div class="dropdown-menu custom-dd-menu">
                 <button onclick="sort('{{ lecturer.lecturer.username }}', 'points', 'from_user')" type="button" class="btn btn-material btn-ripple">Sort by points</button>
                 <button onclick="sort('{{ lecturer.lecturer.username }}', 'date', 'from_user')" type="button" class="btn btn-material btn-ripple">Sort by date</button>
                 <button onclick="sort('{{ lecturer.lecturer.username }}', 'course', 'from_user')" type="button" class="btn btn-material btn-ripple">Sort by course</button>
+              </div>
           </div>
             <div class="card-body scroll-lect-fb fb-list" id="fb-list">
             {% for fb in feedback %}
