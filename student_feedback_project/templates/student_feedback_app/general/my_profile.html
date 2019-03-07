@@ -22,7 +22,7 @@ My Profile
       <div class="card-body">
         <h4 class="custom-card-title" style="padding:0">{{user.username}}</h4>
         {% if user.is_student %}
-          <p class="custom-card-title">Score: {{student.score}}</p>
+          <p class="custom-card-title text-center" id="title" style="padding-top:0">Score: {{student.score}}</p>
         {% endif %}
         <a href="{% url 'edit_bio' %}">
           <div class="button" style="margin-bottom:0">
