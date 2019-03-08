@@ -247,3 +247,7 @@
 .course-info-sect{
   margin-bottom: 25px;
 }
+
+.card-header {
+  padding-bottom:0;
+}

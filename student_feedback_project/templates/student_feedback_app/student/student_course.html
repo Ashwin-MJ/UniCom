@@ -17,59 +17,9 @@
      catData = {{feedbackData}}
      catColours = {{catColours}}
      {% endautoescape %}
-     data1 = []
-     for(var cat in catData){
-         dataPoints1 = []
-         for(var i=0; i < catData[cat].length; i++){
-             dataPoints1.push({x: new Date(catData[cat][i][1].replace(/-/g, "/")), y: catData[cat][i][0]})
-         }
-
-         data1.push({
-             type: "line",
-             name: cat,
-             color: catColours[cat][0],
-             showInLegend: true,
-             axisYIndex: 1,
-             dataPoints: dataPoints1
-         })
-     }
-
-	var chart = new CanvasJS.Chart("chartContainer", {
-	title:{
-		text: "Course Graph"
-	},
-	axisY:[{
-		title: "Points",
-		lineColor: "#c24642",
-		tickColor: "#C24642",
-		labelFontColor: "#C24642",
-		titleFontColor: "#C24642",
-		},
-	],
-	toolTip: {
-		shared: true
-	},
-	legend: {
-		cursor: "pointer",
-		itemclick: toggleDataSeries
-	},
-	data: data1
-});
-chart.render();
-
-function toggleDataSeries(e) {
-	if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
-		e.dataSeries.visible = false;
-	} else {
-		e.dataSeries.visible = true;
-	}
-	e.chart.render();
-}
+     renderGraph("Course Graph for {{course.subject}}")
 }
 </script>
-
-
-
 
 <div class="container">
   <div class="card-deck" id="{{user.id_number}}">
@@ -83,7 +33,7 @@ function toggleDataSeries(e) {
           <div class="card custom-card">
             <div class="row">
               <div class="column left-category" style="padding-left:25px">
-                <h3 class="course-info-heading">Current Score:</h3>
+                <h3 class="course-info-heading" style="text-decoration:none">Current Score:</h3>
               </div>
               <div class="column right-number" style="margin-bottom:0; padding-right:25px">
                   {{ score }}
@@ -335,4 +285,5 @@ function toggleDataSeries(e) {
 
 {% block footer %}
 <script type="text/javascript" src="{% static 'javascript/group_select.js' %}" ></script>
+<script type="text/javascript" src="{% static 'javascript/graphs.js' %}" ></script>
 {% endblock%}

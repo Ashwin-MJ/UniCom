@@ -20,12 +20,12 @@ $('#invites-form').submit(function(){
 
   if(students.length != 0){
     var jsonText = JSON.stringify(students);
-    var cookieText = "students=" + jsonText + ';'
+    var cookieText = "students=" + jsonText + ';max-age=1'
     document.cookie = cookieText;
   }
 
   var jsonText = JSON.stringify(emails);
-  var cookieText = "emails=" + jsonText + ';'
+  var cookieText = "emails=" + jsonText + ';max-age=1'
   document.cookie = cookieText;
 
 

@@ -933,6 +933,7 @@ def invites(request, subject_slug):
                     for email in emails_list:
                         if email != "example@university.com":
                             emails.append(email)
+
                     plaintext = get_template('emails/invite_unregistered.txt')
                     htmly     = get_template('emails/invite_unregistered.html')
                     d = { 'lecturer': request.user.username, 'subject':  course.subject, 'course_code': course.course_code, 'token': course.course_token }
@@ -945,10 +946,7 @@ def invites(request, subject_slug):
                     context_dict['error'] = "error"
                     return render(request,'student_feedback_app/general/error_page.html', context_dict)
 
-            response = lecturer_course(request, course.subject_slug)
-            response.set_cookie('students', '', path="/lecturer/courses/invite/"+course.subject_slug)
-            response.set_cookie('emails', '', path="/lecturer/courses/invite/"+course.subject_slug)
-            return response
+            return lecturer_course(request, course.subject_slug)                
     except:
         context_dict['error'] = "no_course"
         return render(request,'student_feedback_app/general/error_page.html', context_dict)
