@@ -94,8 +94,6 @@ body{
 }
 .picture-my-account{
   max-width: 300px;
-  border: 1px solid teal;
-  margin: 10px;
   margin-bottom: 0;
 }
 
@@ -189,12 +187,6 @@ body{
   top:5px;
   font-size: 150%;
   cursor: pointer;
-}
-
-.info-icon {
-  position: absolute;
-  right:5px;
-  top:5px;
 }
 
 .cat-border {

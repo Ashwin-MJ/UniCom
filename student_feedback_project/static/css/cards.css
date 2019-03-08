@@ -151,7 +151,7 @@
 }
 
 .card-profile {
-  width:60%;
+  max-width:500px;
   align-self: center;
   align-items:center;
 

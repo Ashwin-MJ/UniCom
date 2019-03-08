@@ -71,9 +71,9 @@ function toggleDataSeries(e) {
 <div class="container">
 
 
-  <div class="profile-top">
+  <div class="card-deck" style="margin-top:25px">
 
-    <div class="card card-profile column left-profile">
+    <div class="card card-profile">
       <img class="card-img-top picture-my-account" src="{{student.student.profile_picture.url}}" alt="Profile Picture">
       <div class="card-body">
         <h4 class="custom-card-title view-stud-info">{{student.student.username}}</h4>
@@ -82,7 +82,7 @@ function toggleDataSeries(e) {
     </div>
 
 
-    <div class="right-profile">
+    <div class="card">
       <div class="card-body">
         <div class="card bg-success text-white card-padding custom-card">
           <b class="custom-card-title" style="padding-top:0">Email: </b>
@@ -125,7 +125,10 @@ function toggleDataSeries(e) {
                   <div class="course-info">
                     {{ course.course_description }}<br />
                     <footer>
-                      {{course.lecturer.lecturer.username}}
+                      {% for lect in course.lecturers.all %}
+                        {{lect.lecturer.username}}
+                        <br />
+                      {% endfor %}
                       </footer>
                       <br />
                     </div>
