@@ -7,13 +7,11 @@
 {% endblock %}
 
 {% block current_page %}
-{{ user.username }}<br />
-{{ course.subject }}<br />
+{{ course.subject }}
 {% endblock%}
 
 
 {% block body_block %}
-
 <script>
  window.onload = function () {
      {% autoescape off %}
