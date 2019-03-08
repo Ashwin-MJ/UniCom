@@ -76,7 +76,7 @@ function toggleDataSeries(e) {
 <div class="container" id="{{ course.subject_slug }}">
   <div class="card custom-card">
     <h3 class="card-body text-center custom-card-title token" style="padding:10px;">
-      Course Token: <b>{{ course.course_token }} </b><a href="{% url 'invites' %}?token={{course.course_token}}">
+      Course Token: <b>{{ course.course_token }} </b><a href="{% url 'invites' course.subject_slug%}">
         <div class="button" style="margin:0; padding-top:5px">
           <button class="btn btn-material btn-ripple">Send Token</button>
         </div>

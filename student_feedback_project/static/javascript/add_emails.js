@@ -1,45 +1,41 @@
 $('#invites-form').submit(function(){
-  var res=[];
+  var students=[];
   $('.students').each(function(){
     if($(this).hasClass('color')){
-      res.push($(this).attr('id'))
+      students.push($(this).attr('id'))
     }
   })
-  
-  if(res.length != 0){
-    var jsonText = JSON.stringify(res);
+
+  emails = []
+  $('.emails').each(function(){
+    if(this.value != ""){
+      emails.push(this.value);
+    }
+  })
+
+  if(students.length == 0 && emails.length == 0){
+    alert("You must either select students or type in an email address");
+    return false;
+  }
+
+  if(students.length != 0){
+    var jsonText = JSON.stringify(students);
     var cookieText = "students=" + jsonText + ';'
     document.cookie = cookieText;
   }
-  
-  res = []
-  $('.emails').each(function(){
-  //if($(this).attr('value') != "example@university.com"){
-  res.push(this.value);
-  //}
-  })
-  var jsonText = JSON.stringify(res);
+
+  var jsonText = JSON.stringify(emails);
   var cookieText = "emails=" + jsonText + ';'
   document.cookie = cookieText;
-  
+
+
   return true;
-  /*
-  var xhr = new XMLHttpRequest();
-  xhr.open("POST", window.location.href , true);
-  xhr.setRequestHeader('Content-Type', 'application/json');
-  xhr.send(
-    JSON.stringify({
-      value: value
-    })
-  );
-  */
 
 });
 
 function addEmail() {
   var text = document.createElement('div');
   text.setAttribute("class", "card custom-card");
-  text.innerHTML = '<input type="text" class="emails" value="example@university.com" style="width:100%;">'
+  text.innerHTML = '<input type="text" class="emails" placeholder="example@university.com" style="width:100%;">'
   document.getElementById("emails").appendChild(text);
 }
-

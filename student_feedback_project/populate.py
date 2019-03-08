@@ -559,6 +559,8 @@ def add_category_with_icon(name,colour):
 def add_categories_for_user(user):
 	for category in categories:
 		cat = Category(user=user,colour=category["colour"],name=category["name"])
+		icon = Icon.objects.get(name=category["name"])
+		cat.icon = icon
 		cat.save()
 		user.save()
 

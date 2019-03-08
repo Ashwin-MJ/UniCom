@@ -4,11 +4,7 @@ function sort(fb_keep, sort_param, keep_param, recent){
 	var host = location.protocol + "//" + window.location.host;
 	switch(sort_param){
 		case "points":
-<<<<<<< Updated upstream
 			var Url = host + "/FeedbackSortedByPoints";
-=======
-		var Url = host + "/FeedbackSortedByPoints";
->>>>>>> Stashed changes
 			break;
 		case "date":
 			var Url = host + "/FeedbackSortedByDate";
@@ -19,10 +15,6 @@ function sort(fb_keep, sort_param, keep_param, recent){
 		default:
 	}
 	var httpRequest = new XMLHttpRequest();
-<<<<<<< Updated upstream
-=======
-
->>>>>>> Stashed changes
 	httpRequest.onreadystatechange = function(){
 		if (this.readyState == 4 && this.status == 200) {
 			var sortedFb = JSON.parse(this.responseText);
