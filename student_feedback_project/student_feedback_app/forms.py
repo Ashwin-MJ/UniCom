@@ -5,9 +5,9 @@ from django.contrib.auth.forms import UserCreationForm
 
 
 class CourseForm(forms.ModelForm):
-    subject = forms.CharField(max_length=40, help_text="Course Name", required=True)
-    course_code = forms.CharField(max_length=20, help_text= 'Course Code', required=True)
-    course_description = forms.CharField(max_length=200, required=True, help_text="Course Description")
+    subject = forms.CharField(max_length=40, help_text="Enter the course subject", required=True)
+    course_code = forms.CharField(max_length=20, help_text= 'Enter the code used to identify this course', required=True)
+    course_description = forms.CharField(max_length=200, required=True, help_text="Enter a brief overview of the course")
     slug = forms.CharField(widget=forms.HiddenInput(), required=False)
 
     class Meta:
@@ -35,8 +35,7 @@ class RegisterForm(UserCreationForm):
         fields = ('id_number', 'username', 'email', 'password1', 'password2', 'is_lecturer', 'is_student')
 
     def __init__(self, *args, **kwargs):
-        super(RegisterForm, self).__init__(*args, **kwargs)
-        self.fields['id_number'].help_text = "This is your student number"
+        super(RegisterForm, self).__init__(*args, **kwargs)        
         self.fields['is_lecturer'].help_text = "You can either sign up as a student or a lecturer. If you choose to sign up as a lecturer, an administrator will need to accept your request before your account is activated"
 
 

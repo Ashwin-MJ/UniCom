@@ -84,21 +84,21 @@ function toggleDataSeries(e) {
 
     <div class="right-profile">
       <div class="card-body">
-        <div class="card bg-primary text-white card-padding custom-card">
+        <div class="card bg-success text-white card-padding custom-card">
           <b class="custom-card-title" style="padding-top:0">Email: </b>
-            <p>
-                {{student.student.email}}
+            <p class="profile-text text-center">
+                <a href="mailto:{{student.student.email}}">{{student.student.email}}</a>
             </p>
         </div>
-        <div class="card bg-success text-white card-padding custom-card">
+        <div class="card bg-primary text-white card-padding custom-card">
           <b class="custom-card-title" style="padding-top:0">Degree: </b>
-            <p>
+            <p class="profile-text text-center">
                 {{student.student.degree}}
             </p>
         </div>
         <div class="card bg-info text-white card-padding custom-card">
           <b class="custom-card-title" style="padding-top:0">Bio:</b>
-            <p>
+            <p class="profile-text text-center">
                  {{student.student.bio}}
             </p>
         </div>

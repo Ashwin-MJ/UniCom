@@ -20,13 +20,13 @@ My Profile
     <div class="card card-profile column left-profile">
       <img class="card-img-top picture-my-account" src="{{user.profile_picture.url}}" alt="Profile Picture">
       <div class="card-body">
-        <h4 class="custom-card-title">{{user.username}}</h4><br />
+        <h4 class="custom-card-title text-center" style="padding:0">{{user.username}}</h4>
         {% if user.is_student %}
-          <p class="custom-card-title">Score: {{student.score}}</p>
+          <p class="custom-card-title text-center" id="title" style="padding-top:0">Score: {{student.score}}</p>
         {% endif %}
 		<div class="button" style="margin-bottom:0">
 		  <button class="btn btn-material btn-ripple" data-toggle="modal" data-target="#editBioModal" title="Edit your Bio">
-			Edit Bio
+			Edit Degree/Bio
 		  </button>
 		</div>
       </div>
@@ -35,21 +35,21 @@ My Profile
 
     <div class="right-profile">
       <div class="card-body">
-        <div class="card bg-primary text-white card-padding custom-card">
+        <div class="card bg-success text-white card-padding custom-card">
           <b class="custom-card-title" style="padding-top:0">Email: </b>
-            <p>
+            <p class="profile-text text-center">
                 {{user.email}}
             </p>
         </div>
-        <div class="card bg-success text-white card-padding custom-card">
+        <div class="card bg-primary text-white card-padding custom-card">
           <b class="custom-card-title" style="padding-top:0">Degree: </b>
-            <p>
+            <p class="profile-text text-center">
                 {{user.degree}}
             </p>
         </div>
         <div class="card bg-info text-white card-padding custom-card">
           <b class="custom-card-title" style="padding-top:0">Bio:</b>
-            <p>
+            <p class="profile-text text-center">
                  {{user.bio}}
             </p>
         </div>
@@ -65,6 +65,16 @@ My Profile
       <h3 class="text-center custom-card-title">Courses</h3>
       <hr />
       <div class="card-body scroll">
+        {% if courses|length == 0 %}
+        <div class="card custom-card">
+          <b class="card-sub-heading">No Courses Yet</b>
+          <div class="card custom-border">
+            <div class="course-info">
+              Click on "Help" in the top right for more information
+              </div>
+          </div>
+        </div>
+        {% endif %}
         {% for course,value in courses.items %}
         <div class="card custom-card">
           <b class="card-sub-heading">{{ course.subject }}</b>
@@ -105,7 +115,19 @@ My Profile
     <div class="card scroll-bg">
       <h3 class="text-center custom-card-title">Recent Feedback</h3>
       <hr />
-      <div class="card-body scroll" id="fb-list" >
+      <div class="card-body scroll" id="fb-list">
+        {% if feedback|length == 0 %}
+        <div class="card custom-card fb-border">
+          <b class="card-sub-heading">
+            No Feedback Yet
+          </b>
+          <div class="card custom-border">
+            <blockquote class="quote">
+              You have not received any feedback yet<br />
+            </blockquote>
+          </div>
+        </div>
+        {% endif %}
         {% for fb in feedback %}
         {% if fb.is_recent %}
         <div class="card recent custom-card text-white fb-border" style="border-color:{{fb.category.colour}}">
@@ -193,44 +215,33 @@ My Profile
 	<div class="modal-dialog modal-dialog-centered" role="document">
 	  <div class="modal-content">
 		<div class="modal-header">
-		  <h5 class="modal-title modal-edit-bio-header" id="editBioModalTitle">Edit Bio</h5>
+		  <h5 class="modal-title modal-edit-bio-header" id="editBioModalTitle">Edit Degree/Bio</h5>
 		  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
 			<span aria-hidden="true">&times;</span>
 		  </button>
 		</div>
 
 		  <div class="modal-body">
-              <form id="" method="post" action="">
-                {% csrf_token %}
-                {% for hidden in form.hidden_fields %}
-                    {{ hidden }}
-                {% endfor %}
+        <form id="" method="post" action="">
+          {% csrf_token %}
+          {% for hidden in form.hidden_fields %}
+              {{ hidden }}
+          {% endfor %}
 
-                <h3 class="text-center custom-card-title">Edit Degree/Biography</h3>
-                <hr />
+          {% for field in form.visible_fields %}
+            <div class="form-group" style="padding:10px">
+              <h3 id="form-title">
+                {{ field.label_tag }}
+                </h3>
+              {% render_field field class="form-control" %}
+            </div>
+          {% endfor %}
 
-                {% if form.non_field_errors %}
-                  <div class="alert alert-danger" role="alert">
-                    {% for error in form.non_field_errors %}
-                      {{ error }}
-                    {% endfor %}
-                  </div>
-                {% endif %}
+          <div class="button">
+            <input class="btn btn-material btn-ripple" type="submit" name="submit" value="Submit" />
+          </div>
 
-                {% for field in form.visible_fields %}
-                  <div class="form-group card custom-card">
-                    <h3 class="custom-card-title" style="padding-top:0">
-                      {{ field.help_text }}:
-                    </h3>
-                      {% render_field field class="form-control" %}
-                  </div>
-                {% endfor %}
-
-                <div class="button">
-                  <input class="btn btn-material btn-ripple" type="submit" name="submit" value="Submit" />
-                </div>
-
-              </form>
+        </form>
 	  </div>
 	</div>
   </div>

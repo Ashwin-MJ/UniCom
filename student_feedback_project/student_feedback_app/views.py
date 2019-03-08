@@ -152,7 +152,7 @@ def student_home(request):
         try:
             stud = StudentProfile.objects.get(student=request.user)
             fb_last_week = stud.feedback_set.all().filter(datetime_given__gte=timezone.now()-timedelta(days=7)).order_by('-datetime_given')
-            fb_all = stud.feedback_set.all()
+            fb_all = stud.feedback_set.all().order_by('-datetime_given')
             courses = stud.courses.all()
             for feedback in fb_all:
                 cat = feedback.category.name
@@ -278,9 +278,9 @@ def student_course(request, subject_slug):
     if request.user.is_authenticated and request.user.is_student:
         try:
             course = Course.objects.get(subject_slug=subject_slug)
-            student = StudentProfile.objects.get(student=request.user)
+            stud = StudentProfile.objects.get(student=request.user)
 
-            if student not in course.students.all():
+            if stud not in course.students.all():
                 # If the student tries to access a course they are not enrolled in then
                 # then deny this
                 context_dict['error'] = 'not_enrolled'
@@ -295,7 +295,7 @@ def student_course(request, subject_slug):
             context_dict['students'] = students
             context_dict['sorted_students'] = course.get_leaderboard()
             fbTotal = course.get_total_for_course_attributes()
-            fb = student.get_fb_for_course(course.subject)
+            fb = stud.get_fb_for_course(course.subject)
             for feedback in fb:
                 cat = feedback.category.name
                 for data in fbTotal[cat]:
@@ -318,8 +318,8 @@ def student_course(request, subject_slug):
             students_and_scores_for_cat = {}
             for cat in categories:
                 all_stud_and_score = []
-                for stud in students:
-                    stud_and_score = [stud, stud.get_score_for_category_course(cat, course)]
+                for student in students:
+                    stud_and_score = [student, student.get_score_for_category_course(cat, course)]
                     all_stud_and_score.append(stud_and_score)
                 all_stud_and_score = sorted(all_stud_and_score, key = lambda x: x[1], reverse = True)
                 students_and_scores_for_cat[cat] = all_stud_and_score
@@ -332,8 +332,8 @@ def student_course(request, subject_slug):
                 except:
                     fb_with_colour[feedback] = feedback.category.colour
 
-            context_dict['score'] = student.get_score_for_course(course.subject)
-            context_dict['student'] = student
+            context_dict['score'] = stud.get_score_for_course(course.subject)
+            context_dict['student'] = stud
             context_dict['categories'] = categories
             context_dict['cat_stud_and_score'] = students_and_scores_for_cat
             context_dict['feedback'] = fb_with_colour
@@ -565,8 +565,6 @@ def lecturer_add_individual_feedback(request,subject_slug,student_number):
         context_dict['form'] = form
         return render(request,'student_feedback_app/lecturer/lecturer_add_individual_feedback.html',context_dict)
     except:
-        context_dict['student'] = None
-        context_dict['feedback'] = None
         context_dict['error'] = "no_student"
         return render(request,'student_feedback_app/general/error_page.html', context_dict)
 
@@ -594,9 +592,7 @@ def add_group_feedback(request,subject_slug):
         context_dict['students'] = stud_profiles
         context_dict['lecturer'] = lect
         context_dict['subject'] = course
-
         context_dict['categories'] = request.user.category_set.all()
-
         context_dict['new_mess_form'] = NewMessageForm()
 
         messages = request.user.message_set.all()
@@ -611,7 +607,6 @@ def add_group_feedback(request,subject_slug):
         context_dict['form'] = form
 
         return render(request,'student_feedback_app/lecturer/lecturer_add_group_feedback.html',context_dict)
-
     except:
         context_dict['error'] = "error"
         return render(request,'student_feedback_app/general/error_page.html', context_dict)
@@ -910,7 +905,6 @@ def invites(request):
         return render(request,'student_feedback_app/general/error_page.html', context_dict)
 
     try:
-
         mode = 0
         students_string = request.COOKIES.get("students")
         if is_json(students_string):
@@ -982,3 +976,5 @@ def populate_categories_and_messages(user):
     # every user gets the list of categories and messages upon registration
     add_categories_for_user(user)
     add_messages_for_user(user)
+
+    ### ADD ICONS FOR USER

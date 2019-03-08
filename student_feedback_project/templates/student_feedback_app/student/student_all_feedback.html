@@ -7,7 +7,7 @@ My Feedback
 
 {% block current_page %}
 {{ student.student.username }}'s<br />
-Recieved Feedback
+Received Feedback
 {% endblock%}
 
 
@@ -20,6 +20,18 @@ Recieved Feedback
         <h3 class="text-center custom-card-title">All Feedback</h3>
         <hr />
         <div class="card-body scroll" id="fb-list">
+          {% if feedback|length == 0 %}
+          <div class="card custom-card fb-border">
+            <b class="card-sub-heading">
+              No Feedback Yet
+            </b>
+            <div class="card custom-border">
+              <blockquote class="quote">
+                You have not received any feedback yet<br />
+              </blockquote>
+            </div>
+          </div>
+          {% endif %}
           {% for fb,colour in feedback.items %}
           {% if fb.is_recent %}
           <div class="card recent custom-card text-white fb-border" style="border-color:{{colour}}">
@@ -55,23 +67,34 @@ Recieved Feedback
 
             {% endfor %}
         </div>
+
+        {% if not feedback|length == 0%}
         <br/>
         <div class="btn-group dropright button">
             <button class="btn btn-material dropdown-toggle" type="button"data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               Sort by
             </button>
             <div class="dropdown-menu custom-dd-menu">
-              <button onclick="sort('{{ student.student.username }}', 'points', 'student')" type="button" class="btn btn-material btn-ripple">Points</button>
-              <button onclick="sort('{{ student.student.username }}', 'date', 'student')" type="button" class="btn btn-material btn-ripple">Date</button>
-              <button onclick="sort('{{ student.student.username }}', 'course', 'student')" type="button" class="btn btn-material btn-ripple">Course</button>
+              <button onclick="sort('{{ student.student.username }}', 'points', 'student', 'recent')" type="button" class="btn btn-material btn-ripple">Points</button>
+              <button onclick="sort('{{ student.student.username }}', 'date', 'student', 'recent')" type="button" class="btn btn-material btn-ripple">Date</button>
+              <button onclick="sort('{{ student.student.username }}', 'course', 'student', 'recent')" type="button" class="btn btn-material btn-ripple">Course</button>
             </div>
         </div>
+        {% endif %}
       </div>
 
       <div class="card scroll-bg">
         <h3 class="text-center custom-card-title">My Top Attributes</h3>
         <hr />
         <div class="card-body scroll" style="height:800px">
+          {% if top_attributes|length == 0 %}
+          <div class="card custom-card">
+            <h3 class="text-center" id="title">
+              You have no top attributes yet. This will appear as you start to
+              receive feedback.
+            </h3>
+            </div>
+          {% endif %}
           {% for category,score in top_attributes %}
           <div class="card custom-card" style="background-color:{{category.colour}}">
             <div class="row">
@@ -91,6 +114,14 @@ Recieved Feedback
         <h3 class="text-center custom-card-title">Areas to Improve</h3>
         <hr />
         <div class="card-body scroll" style="height:800px">
+          {% if to_improve|length == 0 %}
+          <div class="card custom-card">
+            <h3 class="text-center" id="title">
+              You have no areas to improve yet. This will appear as you start to
+              receive feedback.
+            </h3>
+            </div>
+          {% endif %}
           {% for category,score in to_improve %}
           <div class="card custom-card" style="background-color:{{category.colour}}">
             <div class="row">

@@ -138,7 +138,7 @@ Error Page
 		<h6 class="card-body text-center" id="title">
 			{% for email in emails %}
 				<li>
-					{{ email }}
+					<a href="mailto:{{email}}">{{email}}</a>					
 				</li>
 			{% endfor %}
 		</h6>
