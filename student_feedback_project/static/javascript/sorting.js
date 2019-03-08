@@ -106,6 +106,23 @@ function sort(fb_keep, sort_param, keep_param, recent){
 
 function show(sorted_fb, footerType){
 	var fb_text = '';
+	if (sorted_fb.length == 0) {
+		fb_text += `<div class="card custom-card fb-border">
+			<b class="card-sub-heading">
+				No Feedback Yet
+			</b>
+			<div class="card custom-border">
+				<blockquote class="quote">`;
+				if(footerType == 'from_user'){
+					fb_text += 'You have not received any feedback yet<br />';
+				}
+				else {
+					fb_text += 'You have not given any feedback yet<br />';
+				}
+				fb_text += `</blockquote>
+			</div>
+		</div>`;
+	}
 	for (var fb of sorted_fb){
 		var myDate = new Date(fb.datetime_given);
 		 var month=new Array();
