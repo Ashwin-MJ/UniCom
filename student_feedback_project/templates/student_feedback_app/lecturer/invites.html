@@ -25,6 +25,13 @@
         <h3 class="text-center custom-card-title">Students from other courses</h3>
         <hr />
         <div id="all_students" class="card-body scroll">
+          {% if students|length == 0 %}
+          <div class="card custom-card">
+            <h3 class="text-center" id="title">
+              No students available
+            </h3>
+          </div>
+          {% endif %}
           {% for stud in students %}
           <div class="card students custom-card" id="{{ stud.student.id_number }}">
             <div class="row">
@@ -38,7 +45,6 @@
                   <img class="picture" src="{{stud.student.profile_picture.url}}"/>
                 </a>
                 </div>
-
               </div>
             </div>
             <br />

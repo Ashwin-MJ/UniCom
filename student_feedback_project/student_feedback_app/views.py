@@ -31,7 +31,13 @@ import re
 
 
 def index(request):
-    return HttpResponseRedirect('/accounts/login/')
+    if request.user.is_authenticated:
+        if request.user.is_student:
+            return student_home(request)
+        elif request.user.is_lecturer:
+            return lecturer_home(request)
+    else:
+        return HttpResponseRedirect('/accounts/login/')
 
 def my_profile(request):
     context_dict = {}
