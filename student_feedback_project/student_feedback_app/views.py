@@ -138,7 +138,7 @@ def view_profile(request,student_number):
 
                 context_dict['student'] = stud
                 context_dict['courses'] = stud.get_courses_with_score()
-                context_dict['feedback'] = fb_last_week
+                context_dict['feedback'] = fb_all
                 context_dict['feedbackData'] = json.dumps(fbCat)
                 context_dict['catColours'] = json.dumps(catColours)
             except:
@@ -953,7 +953,7 @@ def invites(request, subject_slug):
                     context_dict['error'] = "error"
                     return render(request,'student_feedback_app/general/error_page.html', context_dict)
 
-            return lecturer_course(request, course.subject_slug)                
+            return lecturer_course(request, course.subject_slug)
     except:
         context_dict['error'] = "no_course"
         return render(request,'student_feedback_app/general/error_page.html', context_dict)

@@ -78,7 +78,12 @@ My Profile
         </div>
         {% endif %}
         {% for course,value in courses.items %}
-        <a style="text-decoration: none; color: black" href="{% url 'student_course' course.subject_slug%}">
+        <a style="text-decoration: none; color: black"
+        {% if user.is_student %}
+        href="{% url 'student_course' course.subject_slug%}"
+        {% else %}
+        href="{% url 'lecturer_course' course.subject_slug%}"
+        {% endif %}>
           <div class="card custom-card">
             <b class="card-sub-heading">{{ course.subject }}</b>
 
@@ -114,7 +119,7 @@ My Profile
 
 
     <div class="card scroll-bg">
-      <h3 class="text-center custom-card-title">Recent Feedback</h3>
+      <h3 class="text-center custom-card-title">All Feedback</h3>
       <hr />
       <div class="card-body scroll" id="fb-list" >
         {% if feedback|length == 0 %}
