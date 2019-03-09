@@ -301,8 +301,10 @@ def student_course(request, subject_slug):
             context_dict['students'] = students
             context_dict['sorted_students'] = course.get_leaderboard()
             fbTotal = course.get_total_for_course_attributes()
-            fb = stud.get_fb_for_course(course.subject)
-            for feedback in fb:
+            fb_all = stud.get_all_fb_for_course(course.subject)
+            fb_recent = stud.get_recent_fb_for_course(course.subject)
+
+            for feedback in fb_all:
                 cat = feedback.category.name
                 for data in fbTotal[cat]:
                     for key in data:
@@ -331,7 +333,7 @@ def student_course(request, subject_slug):
                 students_and_scores_for_cat[cat] = all_stud_and_score
 
             fb_with_colour = {}
-            for feedback in fb:
+            for feedback in fb_recent:
                 try:
                     stud_cat = Category.objects.get(name=feedback.category.name,user=request.user)
                     fb_with_colour[feedback] = stud_cat.colour
@@ -484,8 +486,10 @@ def lecturer_course(request,subject_slug):
                 all_stud_and_score = sorted(all_stud_and_score, key = lambda x: x[1], reverse = True)
                 students_and_scores_for_cat[cat] = all_stud_and_score
             fbTotal = course.get_total_for_course_attributes()
-            fb = course.feedback_set.all().order_by('-datetime_given')
-            for feedback in fb:
+
+            fb_all = course.feedback_set.all().order_by('-datetime_given')
+            fb_recent = course.feedback_set.all().filter(datetime_given__gte=timezone.now()-timedelta(days=7)).order_by('-datetime_given')
+            for feedback in fb_all:
                 cat = feedback.category.name
                 for data in fbTotal[cat]:
                     for key in data:
@@ -504,7 +508,7 @@ def lecturer_course(request,subject_slug):
                                 fbCat[cat] = [[data[key], date_str]]
 
             fb_with_colour={}
-            for feedback in fb:
+            for feedback in fb_recent:
                 try:
                     lect_cat = Category.objects.get(name=feedback.category.name,user=request.user)
                     fb_with_colour[feedback] = lect_cat.colour
@@ -512,13 +516,9 @@ def lecturer_course(request,subject_slug):
                     fb_with_colour[feedback] = feedback.category.colour
             context_dict['course'] = course
             context_dict['lecturer'] = lect
-            context_dict['students_with_score'] = {}
-            # Add top students for each course. This requires editing models to store course in feedback
-            fb = course.feedback_set.all().filter(datetime_given__gte=timezone.now()-timedelta(days=7)).order_by('-datetime_given')
             students = course.get_students_with_score()
             context_dict['students_with_score'] = [(k, students[k]) for k in sorted(students)]
             context_dict['sorted_students'] = course.get_leaderboard()
-            context_dict['feedback'] = fb
             context_dict['cat_stud_and_score'] = students_and_scores_for_cat
             context_dict['categories'] = categories
             context_dict['feedback'] = fb_with_colour

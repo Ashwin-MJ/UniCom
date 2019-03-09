@@ -32,17 +32,20 @@ Provided Feedback
     <div class="tab-content">
       {% for course, feedback_list in courses_with_feedback.items %}
       <div id="{{course.course_code}}" class="tab-pane">
-        <div class="btn-group dropright button">
-          <button class="btn btn-material dropdown-toggle" type="button"data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Sort by
-          </button>
-          <div class="dropdown-menu custom-dd-menu">
-            <button onclick="sort_smart('points', 'student', 'fb-list-{{course.course_code}}', {%for fb in feedback_list%} {{fb.feedback_id}}, {%endfor%})" type="button" class="btn btn-material btn-ripple">Sort by points</button>
-            <button onclick="sort_smart('date', 'student', 'fb-list-{{course.course_code}}', {%for fb in feedback_list%} {{fb.feedback_id}}, {%endfor%})" type="button" class="btn btn-material btn-ripple">Sort by date</button>
-          </div>
-        </div>
 
         <div class="card-body scroll-lect-fb fb-list" id="fb-list-{{course.course_code}}">
+          {% if feedback_list|length == 0 %}
+          <div class="card custom-card fb-border">
+            <b class="card-sub-heading">
+              No Feedback Yet
+            </b>
+            <div class="card custom-border">
+              <blockquote class="quote">
+                No feedback available for this course<br />
+              </blockquote>
+            </div>
+          </div>
+          {% endif %}
           {% for fb in feedback_list %}
           {% if fb.is_recent %}
           <div class="card recent custom-card text-white fb-border" style="border-color:{{fb.category.colour}}">
@@ -78,21 +81,33 @@ Provided Feedback
           </div>
           {% endfor %}
         </div>
-      </div>
-      {% endfor  %}
-      <div id="All" class="tab-pane active">
+        <hr />
         <div class="btn-group dropright button">
           <button class="btn btn-material dropdown-toggle" type="button"data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             Sort by
           </button>
           <div class="dropdown-menu custom-dd-menu">
-            <button onclick="sort('{{ lecturer.lecturer.username }}', 'points', 'from_user')" type="button" class="btn btn-material btn-ripple">Sort by points</button>
-            <button onclick="sort('{{ lecturer.lecturer.username }}', 'date', 'from_user')" type="button" class="btn btn-material btn-ripple">Sort by date</button>
-            <button onclick="sort('{{ lecturer.lecturer.username }}', 'course', 'from_user')" type="button" class="btn btn-material btn-ripple">Sort by course</button>
+            <button onclick="sort_smart('points', 'student', 'fb-list-{{course.course_code}}', {%for fb in feedback_list%} {{fb.feedback_id}}, {%endfor%})" type="button" class="btn btn-material btn-ripple">Sort by points</button>
+            <button onclick="sort_smart('date', 'student', 'fb-list-{{course.course_code}}', {%for fb in feedback_list%} {{fb.feedback_id}}, {%endfor%})" type="button" class="btn btn-material btn-ripple">Sort by date</button>
           </div>
         </div>
 
+      </div>
+      {% endfor  %}
+      <div id="All" class="tab-pane active">
         <div class="card-body scroll-lect-fb fb-list" id="fb-list">
+          {% if feedback|length == 0 %}
+          <div class="card custom-card fb-border">
+            <b class="card-sub-heading">
+              No Feedback Yet
+            </b>
+            <div class="card custom-border">
+              <blockquote class="quote">
+                No feedback available for this course<br />
+              </blockquote>
+            </div>
+          </div>
+          {% endif %}
           {% for fb in feedback %}
           {% if fb.is_recent %}
           <div class="card recent custom-card text-white fb-border" style="border-color:{{fb.category.colour}}">
@@ -127,6 +142,19 @@ Provided Feedback
             </div>
           </div>
           {% endfor %}
+        </div>
+
+        <hr />
+
+        <div class="btn-group dropright button">
+          <button class="btn btn-material dropdown-toggle" type="button"data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Sort by
+          </button>
+          <div class="dropdown-menu custom-dd-menu">
+            <button onclick="sort('{{ lecturer.lecturer.username }}', 'points', 'from_user')" type="button" class="btn btn-material btn-ripple">Sort by points</button>
+            <button onclick="sort('{{ lecturer.lecturer.username }}', 'date', 'from_user')" type="button" class="btn btn-material btn-ripple">Sort by date</button>
+            <button onclick="sort('{{ lecturer.lecturer.username }}', 'course', 'from_user')" type="button" class="btn btn-material btn-ripple">Sort by course</button>
+          </div>
         </div>
 
       </div>

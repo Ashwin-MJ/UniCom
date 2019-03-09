@@ -72,6 +72,12 @@ Home Page
             </blockquote>
           </div>
         </div>
+
+        <div class="button" style="margin-top:25px;">
+          <a class="btn btn-material btn-ripple" style="color:white" href="{% url 'lecturer_provided_feedback' %}">
+            Click here to view all feedback
+          </a>
+        </div>
         {% endif %}
         {% for fb in feedback %}
         {% if fb.is_recent %}

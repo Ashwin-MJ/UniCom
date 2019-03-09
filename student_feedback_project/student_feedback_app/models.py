@@ -76,7 +76,7 @@ class StudentProfile(models.Model):
 
     def get_score_for_course(self,course):
         score = 0
-        for fb in self.get_fb_for_course(course):
+        for fb in self.get_all_fb_for_course(course):
             score += fb.points
         return score
 
@@ -98,9 +98,16 @@ class StudentProfile(models.Model):
             scores = scores[:4]
         return scores
 
-    def get_fb_for_course(self,course):
+    def get_all_fb_for_course(self,course):
         fb_for_course = []
-        for fb in self.feedback_set.all():
+        for fb in self.feedback_set.all().order_by('-datetime_given'):
+            if fb.which_course.subject == course:
+                fb_for_course += [fb]
+        return fb_for_course
+
+    def get_recent_fb_for_course(self,course):
+        fb_for_course = []
+        for fb in self.feedback_set.all().filter(datetime_given__gte=timezone.now()-timedelta(days=7)).order_by('-datetime_given'):
             if fb.which_course.subject == course:
                 fb_for_course += [fb]
         return fb_for_course
@@ -130,7 +137,7 @@ class StudentProfile(models.Model):
 
     def get_score_for_category_course(self, cat, course):
         score = 0
-        for fb in self.get_fb_for_course(course.subject):
+        for fb in self.get_all_fb_for_course(course.subject):
             if fb.category.name == cat.name:
                 score += fb.points
         return score

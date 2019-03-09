@@ -206,7 +206,7 @@
     </div>
 
   </div>
-  {% if feedback|length == 0%}
+  {% if feedbackData|length == 0 or score == 0 %}
   <div class="card custom-card" style="margin-bottom:25px;">
     <h3 class="text-center" id="title">
       A course graph will appear here as you start to receive feedback
