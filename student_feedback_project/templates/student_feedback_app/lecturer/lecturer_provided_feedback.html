@@ -42,7 +42,7 @@ Provided Feedback
           </div>
         </div>
 
-        <div class="card-body scroll-lect-fb fb-list" id="fb-list">
+        <div class="card-body scroll-lect-fb fb-list" id="fb-list-{{course.course_code}}">
           {% for fb in feedback_list %}
           {% if fb.is_recent %}
           <div class="card recent custom-card text-white fb-border" style="border-color:{{fb.category.colour}}">

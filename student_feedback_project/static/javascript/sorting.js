@@ -137,7 +137,7 @@ function sort(fb_keep, sort_param, keep_param, recent){
 			}
 
 			//place this parsed data into the page
-			show(sortedFb, footerType);
+			show(sortedFb, footerType, 'fb-list');
 		}
 	};
 	httpRequest.open("GET", Url, true);
@@ -145,7 +145,7 @@ function sort(fb_keep, sort_param, keep_param, recent){
 }
 
 
-function show(sorted_fb, footerType){
+function show(sorted_fb, footerType, insert_into_id){
 	var fb_text = '';
 	if (sorted_fb.length == 0) {
 		fb_text += `<div class="card custom-card fb-border">
@@ -225,5 +225,5 @@ function show(sorted_fb, footerType){
             </div>
           </div>`;
 	}
-	document.getElementById("fb-list").innerHTML = fb_text;
+	document.getElementById(insert_into_id).innerHTML = fb_text;
 }
