@@ -42,7 +42,7 @@ function sort_smart(sort_param, footerType, insert_into_id, ...args){
 	httpRequest.send();
 }
 
-function sort(fb_keep, sort_param, keep_param){
+function sort(fb_keep, sort_param, keep_param, recent){
 	var host = location.protocol + "//" + window.location.host;
 	switch(sort_param){
 		case "points":
