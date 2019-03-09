@@ -183,9 +183,13 @@ My Profile
               This is your profile page.
               </p>
 
-              <img class="help-image" src="{% static 'help_screenshots/my_profile1.png'%}">
-              <img class="help-image" src="{% static 'help_screenshots/my_profile2.png'%}">
-
+              {% if user.is_student %}
+              <img class="help-image" src="{% static 'help_screenshots/student_my_profile1.png'%}">
+              <img class="help-image" src="{% static 'help_screenshots/student_my_profile2.png'%}">
+              {% else %}
+              <img class="help-image" src="{% static 'help_screenshots/lecturer_my_profile1.png'%}">
+              <img class="help-image" src="{% static 'help_screenshots/lecturer_my_profile2.png'%}">
+              {% endif %}
               <br />
 
               <p>

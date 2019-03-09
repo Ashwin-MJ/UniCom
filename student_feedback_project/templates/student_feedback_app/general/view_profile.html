@@ -78,7 +78,7 @@ My Profile
         </div>
         {% endif %}
         {% for course,value in courses.items %}
-
+        <a style="text-decoration: none; color: black" href="{% url 'student_course' course.subject_slug%}">
           <div class="card custom-card">
             <b class="card-sub-heading">{{ course.subject }}</b>
 
@@ -106,7 +106,7 @@ My Profile
                 </div>
               </div>
             </div>
-
+          </a>
           {% endfor %}
       </div>
     </div>
@@ -186,6 +186,64 @@ My Profile
       </div>
     </div>
   {% endif %}
+
+  <!-- Help Info -->
+  <div class="modal" id="helpModal" tabindex="-1" role="dialog" aria-labelledby="helpModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document" style="max-width:1000px">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title modal-help" id="helpModal">Help - My Profile Page</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+          <div class="modal-body">
+
+            <p>
+            This is the view profile page.
+            </p>
+
+            {% if user.is_student %}
+            <img class="help-image" src="{% static 'help_screenshots/student_view_profile1.png'%}">
+            <img class="help-image" src="{% static 'help_screenshots/student_view_profile2.png'%}">
+            {% else %}
+            <img class="help-image" src="{% static 'help_screenshots/lecturer_view_profile1.png'%}">
+            <img class="help-image" src="{% static 'help_screenshots/lecturer_view_profile2.png'%}">
+            <img class="help-image" src="{% static 'help_screenshots/lecturer_view_profile3.png'%}">
+            {% endif %}
+            <br />
+
+            <p>
+              <li>
+                Here you can view the profile of another student to find out their email address,
+                what they are studying, and read a short biography they have written
+              </li>
+              {% if user.is_student %}
+              <li>
+                Note that as a student you will only be able to see feedback you have given this
+                student to allow confidentiality
+              </li>
+              {% else %}
+              <li>
+                As a lecturer you can view all feedback this student has received
+              </li>
+              <li>
+                You can also view the attribute graph for the student to analyse their progress
+              </li>
+              {% endif %}
+            </p>
+
+          </div>
+
+          <div class="modal-footer">
+            <button class="btn btn-material" data-dismiss="modal">Close</button>
+          </div>
+
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <script>
