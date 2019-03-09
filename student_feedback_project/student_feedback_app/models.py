@@ -100,7 +100,7 @@ class StudentProfile(models.Model):
 
     def get_fb_for_course(self,course):
         fb_for_course = []
-        for fb in self.feedback_set.all().filter(datetime_given__gte=timezone.now()-timedelta(days=7)):
+        for fb in self.feedback_set.all():
             if fb.which_course.subject == course:
                 fb_for_course += [fb]
         return fb_for_course

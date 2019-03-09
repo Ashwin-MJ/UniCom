@@ -1,72 +1,24 @@
 {% extends 'student_feedback_app/general/base.html' %}
 {% load staticfiles %}}
+
 {% block title%}
 My Homepage
 {% endblock %}
 
 {% block current_page %}
-{{ student.student.username }}'s <br />
 Home Page
 {% endblock%}
 
 
 {% block body_block %}
-
 <script>
  window.onload = function () {
      {% autoescape off %}
-     catData = {{feedbackData}}
-     catColours = {{catColours}}
+     catData = {{feedbackData}};
+     catColours = {{catColours}};
      {% endautoescape %}
-     data1 = []
-     for(var cat in catData){
-         dataPoints1 = []
-         for(var i=0; i < catData[cat].length; i++){
-             dataPoints1.push({x: new Date(catData[cat][i][1].replace(/-/g, "/")), y: catData[cat][i][0]})
-         }
-
-         data1.push({
-             type: "line",
-             name: cat,
-             color: catColours[cat][0],
-             showInLegend: true,
-             axisYIndex: 1,
-             dataPoints: dataPoints1
-         })
-     }
-
-	var chart = new CanvasJS.Chart("chartContainer", {
-	title:{
-		text: "Attribute Graph"
-	},
-	axisY:[{
-		title: "Points",
-		lineColor: "#c24642",
-		tickColor: "#C24642",
-		labelFontColor: "#C24642",
-		titleFontColor: "#C24642",
-		},
-	],
-	toolTip: {
-		shared: true
-	},
-	legend: {
-		cursor: "pointer",
-		itemclick: toggleDataSeries
-	},
-	data: data1
-});
-chart.render();
-
-function toggleDataSeries(e) {
-	if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
-		e.dataSeries.visible = false;
-	} else {
-		e.dataSeries.visible = true;
-	}
-	e.chart.render();
-}
-}
+     renderGraph("Attribute Graph");
+   }
 </script>
 
 <div class="container">
@@ -83,7 +35,7 @@ function toggleDataSeries(e) {
           </b>
           <div class="card custom-border">
             <blockquote class="quote">
-              You have not received any feedback yet<br />
+              You have not received any feedback this week<br />
             </blockquote>
           </div>
         </div>
@@ -327,7 +279,8 @@ function toggleDataSeries(e) {
 
             <p>
               <li>
-                Here you can view the recent feedback you have received on the left.
+                Here you can view the recent feedback you have received on the left. Note that
+                "Recent Feedback" means feedback received within the past week.
               </li>
               <li>
                 On the right is an attribute graph which displays your progress in
@@ -341,7 +294,7 @@ function toggleDataSeries(e) {
               </li>
               <li>
                 You can filter to see achievements for different categories by clicking the
-                relevant icons.
+                relevant icons. Hover over the icon to see which category it is.
               </li>
             </p>
           </div>
@@ -355,5 +308,8 @@ function toggleDataSeries(e) {
   </div>
 
 </div>
+{% endblock %}
 
+{% block footer %}
+<script type="text/javascript" src="{% static 'javascript/graphs.js' %}" ></script>
 {% endblock %}

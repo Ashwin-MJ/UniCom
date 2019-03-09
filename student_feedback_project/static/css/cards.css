@@ -151,7 +151,7 @@
 }
 
 .card-profile {
-  width:60%;
+  max-width:500px;
   align-self: center;
   align-items:center;
 
@@ -224,4 +224,30 @@
 
 .leaderboard-stud{
   cursor: pointer;
+}
+
+.lect-email {
+  font-size: 90%!important;
+  text-transform: none!important;
+}
+
+.course-desc {
+  text-transform: none!important;
+}
+
+.course-info-heading{
+  font-family: 'Patrick Hand SC', cursive;
+  font-size: 200%;
+  margin-bottom: 0;
+  padding-bottom: 0;
+  padding-left: 10px;
+  text-decoration: underline;
+}
+
+.course-info-sect{
+  margin-bottom: 25px;
+}
+
+.card-header {
+  padding-bottom:0;
 }

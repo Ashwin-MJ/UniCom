@@ -31,7 +31,13 @@ import re
 
 
 def index(request):
-    return HttpResponseRedirect('/accounts/login/')
+    if request.user.is_authenticated:
+        if request.user.is_student:
+            return student_home(request)
+        elif request.user.is_lecturer:
+            return lecturer_home(request)
+    else:
+        return HttpResponseRedirect('/accounts/login/')
 
 def my_profile(request):
     context_dict = {}
@@ -888,81 +894,69 @@ def register(request):
 def unapproved(request):
     return render(request, 'student_feedback_app/general/unapproved.html')
 
-def invites(request):
+def invites(request, subject_slug):
     context_dict = {}
     if not request.user.is_authenticated or not request.user.is_lecturer:
         context_dict['error'] = "auth"
         return render(request,'student_feedback_app/general/error_page.html', context_dict)
     try:
+        course = Course.objects.get(subject_slug=subject_slug)
+        context_dict['course'] = course
         if request.method == 'GET':
-            token = request.GET.get('token', '')
-            context_dict['token'] = token
-            if token == '' or Course.objects.filter(course_token=token).count() == 0:
-                return redirect('lecturer_courses')
-            course = Course.objects.get(course_token=token)
-    except:
-        context_dict['error'] = "error"
-        return render(request,'student_feedback_app/general/error_page.html', context_dict)
-
-    try:
-        mode = 0
-        students_string = request.COOKIES.get("students")
-        if is_json(students_string):
-            mode += 1
-            students_list = json.loads(students_string)
-            students = []
-            for student_id in students_list:
-                stud_user = User.objects.get(id_number=student_id)
-                students.append(stud_user)
-
-            for student in students:
-                plaintext = get_template('emails/invite_registered.txt')
-                htmly     = get_template('emails/invite_registered.html')
-                d = { 'lecturer': request.user.username, 'subject':  course.subject, 'course_code': course.course_code, 'token': course.course_token, 'student': student.username }
-                text_content = plaintext.render(d)
-                html_content = htmly.render(d)
-                msg = EmailMultiAlternatives('You are invited to join a course!', text_content, 'lect.acc.unicom@gmail.com',[student.email])
-                msg.attach_alternative(html_content, "text/html")
-                msg.send()
-
-
-        students_emails_string = request.COOKIES.get("emails")
-        if is_json(students_emails_string):
-            mode += 1
-            emails_list = json.loads(students_emails_string)
-            emails = []
-            for email in emails_list:
-                if email != "example@university.com":
-                    emails.append(email)
-            plaintext = get_template('emails/invite_unregistered.txt')
-            htmly     = get_template('emails/invite_unregistered.html')
-            d = { 'lecturer': request.user.username, 'subject':  course.subject, 'course_code': course.course_code, 'token': course.course_token }
-            text_content = plaintext.render(d)
-            html_content = htmly.render(d)
-            msg = EmailMultiAlternatives('You are invited to join a course!', text_content, 'lect.acc.unicom@gmail.com',emails)
-            msg.attach_alternative(html_content, "text/html")
-            msg.send()
-
-
-        if mode == 0:
             lect = LecturerProfile.objects.get(lecturer=request.user)
             students = lect.get_my_students()
             added_students = course.students.distinct()
             context_dict['students'] = set(students).difference(set(added_students))
             return render(request, 'student_feedback_app/lecturer/invites.html', context_dict)
 
+        elif request.method == 'POST':
+            students_cookie = request.COOKIES.get("students")
+            if not students_cookie is None:
+                if is_json(students_cookie):
+                    students_list = json.loads(students_cookie)
+                    student_users = []
+                    for student_id in students_list:
+                        stud_user = User.objects.get(id_number=student_id)
+                        student_users.append(stud_user)
+
+                    for student in student_users:
+                        plaintext = get_template('emails/invite_registered.txt')
+                        htmly     = get_template('emails/invite_registered.html')
+                        d = { 'lecturer': request.user.username, 'subject':  course.subject, 'course_code': course.course_code, 'token': course.course_token, 'student': student.username }
+                        text_content = plaintext.render(d)
+                        html_content = htmly.render(d)
+                        msg = EmailMultiAlternatives('You are invited to join a course!', text_content, 'lect.acc.unicom@gmail.com',[student.email])
+                        msg.attach_alternative(html_content, "text/html")
+                        msg.send()
+                else:
+                    context_dict['error'] = "error"
+                    return render(request,'student_feedback_app/general/error_page.html', context_dict)
+
+            emails_cookie = request.COOKIES.get("emails")
+            if not emails_cookie is None:
+                if is_json(emails_cookie):
+                    emails_list = json.loads(emails_cookie)
+                    emails = []
+                    for email in emails_list:
+                        if email != "example@university.com":
+                            emails.append(email)
+
+                    plaintext = get_template('emails/invite_unregistered.txt')
+                    htmly     = get_template('emails/invite_unregistered.html')
+                    d = { 'lecturer': request.user.username, 'subject':  course.subject, 'course_code': course.course_code, 'token': course.course_token }
+                    text_content = plaintext.render(d)
+                    html_content = htmly.render(d)
+                    msg = EmailMultiAlternatives('You are invited to join a course!', text_content, 'lect.acc.unicom@gmail.com',emails)
+                    msg.attach_alternative(html_content, "text/html")
+                    msg.send()
+                else:
+                    context_dict['error'] = "error"
+                    return render(request,'student_feedback_app/general/error_page.html', context_dict)
+
+            return lecturer_course(request, course.subject_slug)                
     except:
-
-        lect = LecturerProfile.objects.get(lecturer=request.user)
-        students = lect.get_my_students()
-        added_students = course.students.distinct()
-        context_dict['students'] = set(students).difference(set(added_students))
-        return render(request, 'student_feedback_app/lecturer/invites.html', context_dict)
-
-    response = lecturer_course(request, course.subject_slug)
-    response.set_cookie('students', '', path="/lecturer/invites/")
-    response.set_cookie('emails', '', path="/lecturer/invites/")
-    return response
+        context_dict['error'] = "no_course"
+        return render(request,'student_feedback_app/general/error_page.html', context_dict)
 
 def is_json(myjson):
     try:
@@ -976,5 +970,3 @@ def populate_categories_and_messages(user):
     # every user gets the list of categories and messages upon registration
     add_categories_for_user(user)
     add_messages_for_user(user)
-
-    ### ADD ICONS FOR USER

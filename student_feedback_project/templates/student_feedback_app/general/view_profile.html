@@ -1,4 +1,6 @@
 {% extends 'student_feedback_app/general/base.html' %}
+{% load staticfiles %}}
+
 {% block title%}
 My Profile
 {% endblock %}
@@ -15,65 +17,16 @@ My Profile
      catData = {{feedbackData}}
      catColours = {{catColours}}
      {% endautoescape %}
-     data1 = []
-     for(var cat in catData){
-         dataPoints1 = []
-         for(var i=0; i < catData[cat].length; i++){
-             console.log(catData[cat]);
-             dataPoints1.push({x: new Date(catData[cat][i][1].replace(/-/g, "/")), y: catData[cat][i][0]})
-         }
-
-         data1.push({
-             type: "line",
-             name: cat,
-             color: catColours[cat][0],
-             showInLegend: true,
-             axisYIndex: 1,
-             dataPoints: dataPoints1
-         })
-     }
-
-	var chart = new CanvasJS.Chart("chartContainer", {
-	title:{
-		text: "Attribute Graph"
-	},
-	axisY:[{
-		title: "Points",
-		lineColor: "#c24642",
-		tickColor: "#C24642",
-		labelFontColor: "#C24642",
-		titleFontColor: "#C24642",
-		},
-	],
-	toolTip: {
-		shared: true
-	},
-	legend: {
-		cursor: "pointer",
-		itemclick: toggleDataSeries
-	},
-	data: data1
-});
-chart.render();
-
-function toggleDataSeries(e) {
-	if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
-		e.dataSeries.visible = false;
-	} else {
-		e.dataSeries.visible = true;
-	}
-	e.chart.render();
-}
+     renderGraph("Attribute Graph for {{student.student.username}}")
 }
 </script>
 
 
 <div class="container">
 
+  <div class="card-deck" style="margin-top:25px">
 
-  <div class="profile-top">
-
-    <div class="card card-profile column left-profile">
+    <div class="card card-profile">
       <img class="card-img-top picture-my-account" src="{{student.student.profile_picture.url}}" alt="Profile Picture">
       <div class="card-body">
         <h4 class="custom-card-title view-stud-info">{{student.student.username}}</h4>
@@ -82,7 +35,7 @@ function toggleDataSeries(e) {
     </div>
 
 
-    <div class="right-profile">
+    <div class="card">
       <div class="card-body">
         <div class="card bg-success text-white card-padding custom-card">
           <b class="custom-card-title" style="padding-top:0">Email: </b>
@@ -114,8 +67,18 @@ function toggleDataSeries(e) {
       <h3 class="text-center custom-card-title">Courses</h3>
       <hr />
       <div class="card-body scroll">
+        {% if courses|length == 0 %}
+        <div class="card custom-card">
+          <b class="card-sub-heading">No Courses Yet</b>
+          <div class="card custom-border">
+            <div class="course-info">
+              This student is not enrolled in any courses yet.
+              </div>
+          </div>
+        </div>
+        {% endif %}
         {% for course,value in courses.items %}
-
+        <a style="text-decoration: none; color: black" href="{% url 'student_course' course.subject_slug%}">
           <div class="card custom-card">
             <b class="card-sub-heading">{{ course.subject }}</b>
 
@@ -125,7 +88,10 @@ function toggleDataSeries(e) {
                   <div class="course-info">
                     {{ course.course_description }}<br />
                     <footer>
-                      {{course.lecturer.lecturer.username}}
+                      {% for lect in course.lecturers.all %}
+                        {{lect.lecturer.username}}
+                        <br />
+                      {% endfor %}
                       </footer>
                       <br />
                     </div>
@@ -140,7 +106,7 @@ function toggleDataSeries(e) {
                 </div>
               </div>
             </div>
-
+          </a>
           {% endfor %}
       </div>
     </div>
@@ -151,6 +117,18 @@ function toggleDataSeries(e) {
       <h3 class="text-center custom-card-title">Recent Feedback</h3>
       <hr />
       <div class="card-body scroll" id="fb-list" >
+        {% if feedback|length == 0 %}
+        <div class="card custom-card fb-border">
+          <b class="card-sub-heading">
+            No Feedback Yet
+          </b>
+          <div class="card custom-border">
+            <blockquote class="quote">
+              There is no feedback available for this student<br />
+            </blockquote>
+          </div>
+        </div>
+        {% endif %}
         {% for fb in feedback %}
         {% if fb.is_recent %}
         <div class="card recent custom-card text-white fb-border" style="border-color:{{fb.category.colour}}">
@@ -195,12 +173,77 @@ function toggleDataSeries(e) {
       </div>
   </div>
   {% if user.is_lecturer %}
-    <div class="card custom-card" style="margin-bottom:25px;">
-      <div id="chartContainer" style="height: 400px"></div>
+    <div class="card-body" style="padding-top:0px">
+      <div class="card custom-card">
+        {% if feedback|length == 0%}
+        <h3 class="text-center" id="title">
+          No graph available for this student
+        </h3>
+        {% else %}
+        <div id="chartContainer" style="height: 400px"></div>
         <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+        {% endif %}
       </div>
     </div>
   {% endif %}
+
+  <!-- Help Info -->
+  <div class="modal" id="helpModal" tabindex="-1" role="dialog" aria-labelledby="helpModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document" style="max-width:1000px">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title modal-help" id="helpModal">Help - My Profile Page</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+          <div class="modal-body">
+
+            <p>
+            This is the view profile page.
+            </p>
+
+            {% if user.is_student %}
+            <img class="help-image" src="{% static 'help_screenshots/student_view_profile1.png'%}">
+            <img class="help-image" src="{% static 'help_screenshots/student_view_profile2.png'%}">
+            {% else %}
+            <img class="help-image" src="{% static 'help_screenshots/lecturer_view_profile1.png'%}">
+            <img class="help-image" src="{% static 'help_screenshots/lecturer_view_profile2.png'%}">
+            <img class="help-image" src="{% static 'help_screenshots/lecturer_view_profile3.png'%}">
+            {% endif %}
+            <br />
+
+            <p>
+              <li>
+                Here you can view the profile of another student to find out their email address,
+                what they are studying, and read a short biography they have written
+              </li>
+              {% if user.is_student %}
+              <li>
+                Note that as a student you will only be able to see feedback you have given this
+                student to allow confidentiality
+              </li>
+              {% else %}
+              <li>
+                As a lecturer you can view all feedback this student has received
+              </li>
+              <li>
+                You can also view the attribute graph for the student to analyse their progress
+              </li>
+              {% endif %}
+            </p>
+
+          </div>
+
+          <div class="modal-footer">
+            <button class="btn btn-material" data-dismiss="modal">Close</button>
+          </div>
+
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <script>
@@ -213,3 +256,7 @@ function closeForm() {
 }
 </script>
 {% endblock %}
+
+{% block footer %}
+<script type="text/javascript" src="{% static 'javascript/graphs.js' %}" ></script>
+{% endblock%}

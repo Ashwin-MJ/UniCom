@@ -1,14 +1,11 @@
 {% extends 'student_feedback_app/general/base.html' %}
-
 {% load static %}
-
 
 {% block title%}
 My Homepage
 {% endblock %}
 
 {% block current_page %}
-{{ lecturer.lecturer.username }}'s <br />
 Home Page
 {% endblock%}
 
@@ -71,7 +68,7 @@ Home Page
           </b>
           <div class="card custom-border">
             <blockquote class="quote">
-              You have not given any feedback yet<br />
+              You have not given any feedback this week<br />
             </blockquote>
           </div>
         </div>
@@ -155,8 +152,11 @@ Home Page
               have given to different students.
               </li>
               <li>
-                You can either directly click on a course to view details about it,
-                or click "Courses" in the navbar to be directed to another page.
+              Note that "Recent Feedback" means feedback received within the past week.
+              </li>
+              <li>
+              You can either directly click on a course to view details about it,
+              or click "Courses" in the navbar to be directed to another page.
               </li>
             </p>
 

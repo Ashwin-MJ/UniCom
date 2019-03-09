@@ -557,8 +557,12 @@ def add_category_with_icon(name,colour):
 		cat.save()
 
 def add_categories_for_user(user):
+	for icon in icons:
+		icon = add_icon(icon.get("name"),icon.get("url"))
 	for category in categories:
 		cat = Category(user=user,colour=category["colour"],name=category["name"])
+		icon = Icon.objects.get(name=category["name"])
+		cat.icon = icon
 		cat.save()
 		user.save()
 

@@ -11,13 +11,10 @@ My Profile
 
 {% load widget_tweaks %}
 {% block body_block %}
-
-
 <div class="container">
 
-  <div class="profile-top">
-
-    <div class="card card-profile column left-profile">
+  <div class="card-deck" style="margin-top:25px">
+    <div class="card card-profile">
       <img class="card-img-top picture-my-account" src="{{user.profile_picture.url}}" alt="Profile Picture">
       <div class="card-body">
         <h4 class="custom-card-title text-center" style="padding:0">{{user.username}}</h4>
@@ -32,8 +29,7 @@ My Profile
       </div>
     </div>
 
-
-    <div class="right-profile">
+    <div class="card">
       <div class="card-body">
         <div class="card bg-success text-white card-padding custom-card">
           <b class="custom-card-title" style="padding-top:0">Email: </b>
@@ -187,9 +183,13 @@ My Profile
               This is your profile page.
               </p>
 
-              <img class="help-image" src="{% static 'help_screenshots/my_profile1.png'%}">
-              <img class="help-image" src="{% static 'help_screenshots/my_profile2.png'%}">
-
+              {% if user.is_student %}
+              <img class="help-image" src="{% static 'help_screenshots/student_my_profile1.png'%}">
+              <img class="help-image" src="{% static 'help_screenshots/student_my_profile2.png'%}">
+              {% else %}
+              <img class="help-image" src="{% static 'help_screenshots/lecturer_my_profile1.png'%}">
+              <img class="help-image" src="{% static 'help_screenshots/lecturer_my_profile2.png'%}">
+              {% endif %}
               <br />
 
               <p>

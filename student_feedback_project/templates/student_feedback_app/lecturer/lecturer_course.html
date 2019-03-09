@@ -7,68 +7,18 @@
 {% endblock %}
 
 {% block current_page %}
-{{ user.username }}<br />
-{{ course.subject }}<br />
+{{ course.subject }}
 {% endblock%}
 
 
 {% block body_block %}
-
 <script>
  window.onload = function () {
      {% autoescape off %}
      catData = {{feedbackData}}
      catColours = {{catColours}}
      {% endautoescape %}
-     data1 = []
-     for(var cat in catData){
-         dataPoints1 = []
-         for(var i=0; i < catData[cat].length; i++){
-             console.log(catData[cat]);
-             dataPoints1.push({x: new Date(catData[cat][i][1].replace(/-/g, "/")), y: catData[cat][i][0]})
-         }
-
-         data1.push({
-             type: "line",
-             name: cat,
-             color: catColours[cat][0],
-             showInLegend: true,
-             axisYIndex: 1,
-             dataPoints: dataPoints1
-         })
-     }
-
-	var chart = new CanvasJS.Chart("chartContainer", {
-	title:{
-		text: "Course Graph"
-	},
-	axisY:[{
-		title: "Points",
-		lineColor: "#c24642",
-		tickColor: "#C24642",
-		labelFontColor: "#C24642",
-		titleFontColor: "#C24642",
-		},
-	],
-	toolTip: {
-		shared: true
-	},
-	legend: {
-		cursor: "pointer",
-		itemclick: toggleDataSeries
-	},
-	data: data1
-});
-chart.render();
-
-function toggleDataSeries(e) {
-	if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
-		e.dataSeries.visible = false;
-	} else {
-		e.dataSeries.visible = true;
-	}
-	e.chart.render();
-}
+     renderGraph("Course Graph");
 }
 </script>
 
@@ -76,7 +26,7 @@ function toggleDataSeries(e) {
 <div class="container" id="{{ course.subject_slug }}">
   <div class="card custom-card">
     <h3 class="card-body text-center custom-card-title token" style="padding:10px;">
-      Course Token: <b>{{ course.course_token }} </b><a href="{% url 'invites' %}?token={{course.course_token}}">
+      Course Token: <b>{{ course.course_token }} </b><a href="{% url 'invites' course.subject_slug%}">
         <div class="button" style="margin:0; padding-top:5px">
           <button class="btn btn-material btn-ripple">Send Token</button>
         </div>
@@ -155,7 +105,7 @@ function toggleDataSeries(e) {
             </b>
             <div class="card custom-border">
               <blockquote class="quote">
-                You have not given any feedback yet<br />
+                You have not given any feedback this week<br />
                 See "Help" in the top right for more information
               </blockquote>
             </div>
@@ -341,7 +291,8 @@ function toggleDataSeries(e) {
                   a student from the course by clicking the bin icon.
                 </li>
                 <li>
-                  In the middle, is a list of the feedback that has been recently given for this course.
+                  In the middle, is a list of the feedback that has been recently given for this course (by you, other lecturers
+                  and also between students)
                 </li>
                 <li>
                   On the right is a leaderboard which shows the top performing students in this course. This can be
@@ -371,4 +322,5 @@ function toggleDataSeries(e) {
 {% block footer %}
 <script type="text/javascript" src="{% static 'javascript/group_select.js' %}" ></script>
 <script type="text/javascript" src="{% static 'javascript/delete_student_from_course.js' %}" ></script>
+<script type="text/javascript" src="{% static 'javascript/graphs.js' %}" ></script>
 {% endblock%}
