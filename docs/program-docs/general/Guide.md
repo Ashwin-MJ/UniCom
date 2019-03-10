@@ -1,5 +1,7 @@
 # Application Guide
 
+Version 1.0.0
+
 This includes an overview of how to actually use the application
 
 See [README.md](http://stgit.dcs.gla.ac.uk/tp3-2018-ese1/dissertation/blob/master/README.md) for an overview of the intended use of the application.
@@ -10,6 +12,8 @@ View the following guides before proceeding in:
 *  [Lecturer Guide](docs/program-docs/general/Lecturer-Guide.md)
 
 *  [Student Guide](docs/program-docs/general/Student-Guide.md)
+
+Note that the images used may be slightly outdated, however the general functionality will be up to date.
 
 
 ## General

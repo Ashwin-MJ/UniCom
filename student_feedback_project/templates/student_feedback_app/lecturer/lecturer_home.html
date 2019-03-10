@@ -1,14 +1,11 @@
 {% extends 'student_feedback_app/general/base.html' %}
-
 {% load static %}
-
 
 {% block title%}
 My Homepage
 {% endblock %}
 
 {% block current_page %}
-{{ lecturer.lecturer.username }}'s <br />
 Home Page
 {% endblock%}
 
@@ -20,6 +17,16 @@ Home Page
       <h3 class="text-center custom-card-title">My Courses</h3>
       <hr />
       <div class="card-body scroll">
+        {% if courses|length == 0 %}
+        <div class="card custom-card">
+          <b class="card-sub-heading">No Courses Yet</b>
+          <div class="card custom-border">
+            <div class="course-info">
+              Click on "Help" in the top right for more information
+              </div>
+          </div>
+        </div>
+        {% endif %}
         {% for course in courses %}
             <a style="text-decoration: none; color: black" href="{% url 'lecturer_course' course.subject_slug%}">
               <div class="card custom-card">
@@ -54,6 +61,24 @@ Home Page
       <h3 class="text-center custom-card-title">Recent Feedback</h3>
       <hr />
       <div class="card-body scroll" id="fb-list" >
+        {% if feedback|length == 0 %}
+        <div class="card custom-card fb-border">
+          <b class="card-sub-heading">
+            No Feedback Yet
+          </b>
+          <div class="card custom-border">
+            <blockquote class="quote">
+              You have not given any feedback this week<br />
+            </blockquote>
+          </div>
+        </div>
+
+        <div class="button" style="margin-top:25px;">
+          <a class="btn btn-material btn-ripple" style="color:white" href="{% url 'lecturer_provided_feedback' %}">
+            Click here to view all feedback
+          </a>
+        </div>
+        {% endif %}
         {% for fb in feedback %}
         {% if fb.is_recent %}
         <div class="card recent custom-card text-white fb-border" style="border-color:{{fb.category.colour}}">
@@ -86,22 +111,22 @@ Home Page
               </div>
             </div>
           </div>
-
-          {% endfor %}
-
+        {% endfor %}
         </div>
 
+        {% if not feedback|length == 0%}
         <br/>
         <div class="btn-group dropright button">
             <button class="btn btn-material dropdown-toggle" type="button"data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               Sort by
             </button>
             <div class="dropdown-menu custom-dd-menu">
-              <button onclick="sort('{{ lecturer.lecturer.username }}', 'points', 'from_user')" type="button" class="btn btn-material btn-ripple">Points</button>
-              <button onclick="sort('{{ lecturer.lecturer.username }}', 'date', 'from_user')" type="button" class="btn btn-material btn-ripple">Date</button>
-              <button onclick="sort('{{ lecturer.lecturer.username }}', 'course', 'from_user')" type="button" class="btn btn-material btn-ripple">Course</button>
+              <button onclick="sort('{{ lecturer.lecturer.username }}', 'points', 'from_user', 'recent')" type="button" class="btn btn-material btn-ripple">Points</button>
+              <button onclick="sort('{{ lecturer.lecturer.username }}', 'date', 'from_user', 'recent')" type="button" class="btn btn-material btn-ripple">Date</button>
+              <button onclick="sort('{{ lecturer.lecturer.username }}', 'course', 'from_user', 'recent')" type="button" class="btn btn-material btn-ripple">Course</button>
             </div>
         </div>
+        {% endif %}
        </div>
 
     </div>
@@ -133,8 +158,11 @@ Home Page
               have given to different students.
               </li>
               <li>
-                You can either directly click on a course to view details about it,
-                or click "Courses" in the navbar to be directed to another page.
+              Note that "Recent Feedback" means feedback received within the past week.
+              </li>
+              <li>
+              You can either directly click on a course to view details about it,
+              or click "Courses" in the navbar to be directed to another page.
               </li>
             </p>
 

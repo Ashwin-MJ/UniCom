@@ -76,17 +76,25 @@ class StudentProfile(models.Model):
 
     def get_score_for_course(self,course):
         score = 0
-        for fb in self.get_fb_for_course(course):
+        for fb in self.get_all_fb_for_course(course):
             score += fb.points
         return score
 
     def get_top_attributes(self):
         scores = {}
         for fb in self.feedback_set.all():
-            if fb.category not in scores:
-                scores[fb.category] = fb.points
-            else:
-                scores[fb.category] += fb.points
+            try:
+                my_cat = Category.objects.get(name=fb.category.name,user=self.student)
+                if my_cat not in scores:
+                    scores[my_cat] = fb.points
+                else:
+                    scores[my_cat] += fb.points
+            except:
+                # Student doesn't have this category, so add lecturer's
+                if fb.category not in scores:
+                    scores[fb.category] = fb.points
+                else:
+                    scores[fb.category] += fb.points
 
         scores = [(k, scores[k]) for k in sorted(scores, key=scores.get, reverse=True)]
         return scores
@@ -98,9 +106,16 @@ class StudentProfile(models.Model):
             scores = scores[:4]
         return scores
 
-    def get_fb_for_course(self,course):
+    def get_all_fb_for_course(self,course):
         fb_for_course = []
-        for fb in self.feedback_set.all().filter(datetime_given__gte=timezone.now()-timedelta(days=7)):
+        for fb in self.feedback_set.all().order_by('-datetime_given'):
+            if fb.which_course.subject == course:
+                fb_for_course += [fb]
+        return fb_for_course
+
+    def get_recent_fb_for_course(self,course):
+        fb_for_course = []
+        for fb in self.feedback_set.all().filter(datetime_given__gte=timezone.now()-timedelta(days=7)).order_by('-datetime_given'):
             if fb.which_course.subject == course:
                 fb_for_course += [fb]
         return fb_for_course
@@ -130,7 +145,7 @@ class StudentProfile(models.Model):
 
     def get_score_for_category_course(self, cat, course):
         score = 0
-        for fb in self.get_fb_for_course(course.subject):
+        for fb in self.get_all_fb_for_course(course.subject):
             if fb.category.name == cat.name:
                 score += fb.points
         return score
@@ -178,6 +193,13 @@ class Course(models.Model):
         feedback_list = []
         for feedback in self.feedback_set.all():
             if feedback.from_user.username == lecturer.lecturer.username:
+                feedback_list.append(feedback)
+        return feedback_list
+
+    def get_feedback_list_from_student(self, student):
+        feedback_list = []
+        for feedback in self.feedback_set.all():
+            if feedback.from_user.username == student.student.username:
                 feedback_list.append(feedback)
         return feedback_list
 

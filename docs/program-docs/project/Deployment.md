@@ -6,8 +6,13 @@ This project is has currently been deployed using PythonAnywhere:
 The details for the pythonanywhere account are below:
 
 ```
-Insert here
+login = "lect.acc.unicom@gmail.com"
+password = '1234567890poiuytrewq'
 ```
+
+Login at the following link:
+
+https://www.pythonanywhere.com/login/
 
 As the application has already been deployed using this, it can be accessed by navigating to:
 

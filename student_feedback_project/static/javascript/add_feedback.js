@@ -93,6 +93,10 @@ $('.submit-fb-form').click(function(e) {
     alert("You must add in some points");
     return;
   }
+  else if (points < 1 || points > 5){
+    alert("Points must be from 1-5");
+    return;
+  }
 
   var data = {
     "cat_id": cat_id,
@@ -161,6 +165,10 @@ $('.submit-group-fb-form').click(function(e) {
   }
   else if (points == ""){
     alert("You must add in some points");
+    return;
+  }
+  else if (points < 1 || points > 5){
+    alert("Points must be from 1-5");
     return;
   }
 
@@ -285,7 +293,7 @@ $('.submit-fb-form-stud').click(function(e) {
   if($(this).attr("id") == "add-another"){
     redirect_url = "/student/" + course + "/" + student_id + "/add-individual-feedback/"
   }else{
-    redirect_url = "/lecturer/my-provided-feedback/";    
+    redirect_url = "/lecturer/my-provided-feedback/";
   }
 
   if(cat_id == null){
@@ -298,6 +306,10 @@ $('.submit-fb-form-stud').click(function(e) {
   }
   else if (points == ""){
     alert("You must add in some points");
+    return;
+  }
+  else if (points < 1 || points > 5){
+    alert("Points must be from 1-5");
     return;
   }
 

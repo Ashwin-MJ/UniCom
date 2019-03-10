@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block current_page %}
-{{ course.subject }}
+{{ course.subject }} - {{ course.course_code }}
 {% endblock%}
 
 
@@ -17,59 +17,9 @@
      catData = {{feedbackData}}
      catColours = {{catColours}}
      {% endautoescape %}
-     data1 = []
-     for(var cat in catData){
-         dataPoints1 = []
-         for(var i=0; i < catData[cat].length; i++){
-             dataPoints1.push({x: new Date(catData[cat][i][1].replace(/-/g, "/")), y: catData[cat][i][0]})
-         }
-
-         data1.push({
-             type: "line",
-             name: cat,
-             color: catColours[cat][0],
-             showInLegend: true,
-             axisYIndex: 1,
-             dataPoints: dataPoints1
-         })
-     }
-
-	var chart = new CanvasJS.Chart("chartContainer", {
-	title:{
-		text: "Course Graph"
-	},
-	axisY:[{
-		title: "Points",
-		lineColor: "#c24642",
-		tickColor: "#C24642",
-		labelFontColor: "#C24642",
-		titleFontColor: "#C24642",
-		},
-	],
-	toolTip: {
-		shared: true
-	},
-	legend: {
-		cursor: "pointer",
-		itemclick: toggleDataSeries
-	},
-	data: data1
-});
-chart.render();
-
-function toggleDataSeries(e) {
-	if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
-		e.dataSeries.visible = false;
-	} else {
-		e.dataSeries.visible = true;
-	}
-	e.chart.render();
-}
+     renderGraph("Course Graph for {{course.subject}}")
 }
 </script>
-
-
-
 
 <div class="container">
   <div class="card-deck" id="{{user.id_number}}">
@@ -79,26 +29,45 @@ function toggleDataSeries(e) {
       <hr />
       <div class="card-body scroll">
 
-          <div class="card card-padding custom-card">
-              <b class="custom-card-title" style="padding-top:0">Lecturer(s):</b>
-              {% for lecturer in lecturers %}
-              <em>{{lecturer.lecturer.username }}</em>
-              {% endfor %}
-          </div>
-          <div class="card card-padding custom-card">
-              <b class="custom-card-title" style="padding-top:0">Course Description:</b>
-              <em>{{course.course_description }}</em>
-          </div>
+        <div class="course-info-sect">
           <div class="card custom-card">
             <div class="row">
-              <div class="column left-category">
-                <b class="custom-card-title" style="padding-top:0">Current Score:</b>
-                </div>
-              <div class="column right-number" style="margin-bottom:0">
+              <div class="column left-category" style="padding-left:25px">
+                <h3 class="course-info-heading" style="text-decoration:none">Current Score:</h3>
+              </div>
+              <div class="column right-number" style="margin-bottom:0; padding-right:25px">
                   {{ score }}
-                </div>
               </div>
             </div>
+          </div>
+        </div>
+
+        <div class="course-info-sect">
+          <h3 class="course-info-heading">Lecturer(s):</h3>
+          {% for lecturer in lecturers %}
+          <div class="card custom-card">
+            <div class="row">
+              <div class="column left">
+                <b class="card-sub-heading">{{lecturer.lecturer.username }}</b>
+                <div class="card-sub-heading lect-email">
+                  <a href="mailto:{{ lecturer.lecturer.email }}">{{ lecturer.lecturer.email }}</a>
+                  </div>
+                </div>
+              <div class="column right">
+                <img class="picture" src="{{lecturer.lecturer.profile_picture.url}}"/>
+                </div>
+              </div>
+          </div>
+          {% endfor %}
+        </div>
+
+        <div class="course-info-sect">
+          <h3 class="course-info-heading">Course Description:</h3>
+          <div class="card custom-card">
+            <em class="card-sub-heading course-desc"> "{{course.course_description }}" </em>
+          </div>
+        </div>
+
       </div>
     </div>
 
@@ -106,6 +75,24 @@ function toggleDataSeries(e) {
       <h3 class="text-center custom-card-title">Recent Feedback</h3>
       <hr />
       <div class="card-body scroll" id="fb-list">
+        {% if feedback|length == 0 %}
+        <div class="card custom-card fb-border">
+          <b class="card-sub-heading">
+            No Feedback Yet
+          </b>
+          <div class="card custom-border">
+            <blockquote class="quote">
+              You have not received any feedback this week<br />
+            </blockquote>
+          </div>
+        </div>
+
+        <div class="button" style="margin-top:25px;">
+          <a class="btn btn-material btn-ripple" style="color:white" href="{% url 'student_all_feedback' %}">
+            Click here to view all feedback
+          </a>
+        </div>
+        {% endif %}
         {% for fb,colour in feedback.items %}
         {% if fb.is_recent %}
         <div class="card recent custom-card text-white fb-border" style="border-color:{{colour}}">
@@ -141,16 +128,19 @@ function toggleDataSeries(e) {
 
           {% endfor %}
       </div>
+
+      {% if not feedback|length == 0%}
       <br/>
       <div class="btn-group dropright button">
           <button class="btn btn-material dropdown-toggle" type="button"data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             Sort by
           </button>
           <div class="dropdown-menu custom-dd-menu">
-            <button onclick="sort('{{ student.student.username }}', 'points', 'course-student')" type="button" class="btn btn-material btn-ripple">Points</button>
-            <button onclick="sort('{{ student.student.username }}', 'date', 'course-student')" type="button" class="btn btn-material btn-ripple">Date</button>
+            <button onclick="sort('{{course.subject}},{{ student.student.username }}', 'points', 'course-student', 'recent')" type="button" class="btn btn-material btn-ripple">Points</button>
+            <button onclick="sort('{{course.subject}},{{ student.student.username }}', 'date', 'course-student', 'recent')" type="button" class="btn btn-material btn-ripple">Date</button>
           </div>
       </div>
+      {% endif %}
     </div>
 
 
@@ -225,10 +215,19 @@ function toggleDataSeries(e) {
     </div>
 
   </div>
+  {% if feedbackData|length == 0 or score == 0 %}
   <div class="card custom-card" style="margin-bottom:25px;">
-    <div id="chartContainer" style="height: 400px"></div>
-      <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
-    </div>
+    <h3 class="text-center" id="title">
+      A course graph will appear here as you start to receive feedback
+    </h3>
+  </div>
+  {% else %}
+  <div class="card custom-card" style="margin-bottom:25px;">
+      <div id="chartContainer" style="height: 400px"></div>
+        <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+      </div>
+  </div>
+  {% endif %}
   </div>
 
   <!-- Help Info -->
@@ -295,4 +294,5 @@ function toggleDataSeries(e) {
 
 {% block footer %}
 <script type="text/javascript" src="{% static 'javascript/group_select.js' %}" ></script>
+<script type="text/javascript" src="{% static 'javascript/graphs.js' %}" ></script>
 {% endblock%}

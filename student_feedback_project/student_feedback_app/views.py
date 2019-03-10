@@ -31,7 +31,13 @@ import re
 
 
 def index(request):
-    return HttpResponseRedirect('/accounts/login/')
+    if request.user.is_authenticated:
+        if request.user.is_student:
+            return student_home(request)
+        elif request.user.is_lecturer:
+            return lecturer_home(request)
+    else:
+        return HttpResponseRedirect('/accounts/login/')
 
 def my_profile(request):
     context_dict = {}
@@ -132,7 +138,7 @@ def view_profile(request,student_number):
 
                 context_dict['student'] = stud
                 context_dict['courses'] = stud.get_courses_with_score()
-                context_dict['feedback'] = fb_last_week
+                context_dict['feedback'] = fb_all
                 context_dict['feedbackData'] = json.dumps(fbCat)
                 context_dict['catColours'] = json.dumps(catColours)
             except:
@@ -152,7 +158,7 @@ def student_home(request):
         try:
             stud = StudentProfile.objects.get(student=request.user)
             fb_last_week = stud.feedback_set.all().filter(datetime_given__gte=timezone.now()-timedelta(days=7)).order_by('-datetime_given')
-            fb_all = stud.feedback_set.all()
+            fb_all = stud.feedback_set.all().order_by('-datetime_given')
             courses = stud.courses.all()
             for feedback in fb_all:
                 cat = feedback.category.name
@@ -216,7 +222,10 @@ def student_all_feedback(request):
     if request.user.is_authenticated and request.user.is_student:
         stud= StudentProfile.objects.get(student=request.user)
         fb = stud.feedback_set.all().order_by('-datetime_given')
-        context_dict['student'] = stud
+        courses = stud.courses.all()
+        courses_with_feedback = {}
+        for course in courses:
+            courses_with_feedback[course] = stud.get_all_fb_for_course(course.subject)
 
         fb_with_colour = {}
         for feedback in fb:
@@ -226,10 +235,14 @@ def student_all_feedback(request):
             except:
                 fb_with_colour[feedback] = feedback.category.colour
 
-        context_dict['feedback'] = fb_with_colour
         top_attributes = stud.get_top_attributes()
         if len(top_attributes) > 4:
             top_attributes =  top_attributes[:4]
+
+        context_dict['courses'] = courses
+        context_dict['courses_with_feedback'] = courses_with_feedback
+        context_dict['feedback'] = fb_with_colour
+        context_dict['student'] = stud
         context_dict['top_attributes'] = top_attributes
         context_dict['to_improve'] = stud.get_weaknesses()
     else:
@@ -278,9 +291,9 @@ def student_course(request, subject_slug):
     if request.user.is_authenticated and request.user.is_student:
         try:
             course = Course.objects.get(subject_slug=subject_slug)
-            student = StudentProfile.objects.get(student=request.user)
+            stud = StudentProfile.objects.get(student=request.user)
 
-            if student not in course.students.all():
+            if stud not in course.students.all():
                 # If the student tries to access a course they are not enrolled in then
                 # then deny this
                 context_dict['error'] = 'not_enrolled'
@@ -295,8 +308,10 @@ def student_course(request, subject_slug):
             context_dict['students'] = students
             context_dict['sorted_students'] = course.get_leaderboard()
             fbTotal = course.get_total_for_course_attributes()
-            fb = student.get_fb_for_course(course.subject)
-            for feedback in fb:
+            fb_all = stud.get_all_fb_for_course(course.subject)
+            fb_recent = stud.get_recent_fb_for_course(course.subject)
+
+            for feedback in fb_all:
                 cat = feedback.category.name
                 for data in fbTotal[cat]:
                     for key in data:
@@ -318,22 +333,22 @@ def student_course(request, subject_slug):
             students_and_scores_for_cat = {}
             for cat in categories:
                 all_stud_and_score = []
-                for stud in students:
-                    stud_and_score = [stud, stud.get_score_for_category_course(cat, course)]
+                for student in students:
+                    stud_and_score = [student, student.get_score_for_category_course(cat, course)]
                     all_stud_and_score.append(stud_and_score)
                 all_stud_and_score = sorted(all_stud_and_score, key = lambda x: x[1], reverse = True)
                 students_and_scores_for_cat[cat] = all_stud_and_score
 
             fb_with_colour = {}
-            for feedback in fb:
+            for feedback in fb_recent:
                 try:
                     stud_cat = Category.objects.get(name=feedback.category.name,user=request.user)
                     fb_with_colour[feedback] = stud_cat.colour
                 except:
                     fb_with_colour[feedback] = feedback.category.colour
 
-            context_dict['score'] = student.get_score_for_course(course.subject)
-            context_dict['student'] = student
+            context_dict['score'] = stud.get_score_for_course(course.subject)
+            context_dict['student'] = stud
             context_dict['categories'] = categories
             context_dict['cat_stud_and_score'] = students_and_scores_for_cat
             context_dict['feedback'] = fb_with_colour
@@ -413,9 +428,17 @@ def my_provided_feedback(request):
         if request.user.is_student:
             stud = StudentProfile.objects.get(student=request.user)
             fb = request.user.feedback_set.all().order_by('-datetime_given')
+            courses = stud.courses.all()
+            courses_with_feedback = {}
+            for course in courses:
+                courses_with_feedback[course] = course.get_feedback_list_from_student(stud)
+
+            context_dict['courses'] = courses
+            context_dict['courses_with_feedback'] = courses_with_feedback
             context_dict['student'] = stud
             context_dict['feedback'] = fb
             return render(request,'student_feedback_app/student/student_provided_feedback.html',context_dict)
+
         if request.user.is_lecturer:
             lect = LecturerProfile.objects.get(lecturer=request.user)
             fb = request.user.feedback_set.all().order_by('-datetime_given')
@@ -478,8 +501,10 @@ def lecturer_course(request,subject_slug):
                 all_stud_and_score = sorted(all_stud_and_score, key = lambda x: x[1], reverse = True)
                 students_and_scores_for_cat[cat] = all_stud_and_score
             fbTotal = course.get_total_for_course_attributes()
-            fb = course.feedback_set.all().order_by('-datetime_given')
-            for feedback in fb:
+
+            fb_all = course.feedback_set.all().order_by('-datetime_given')
+            fb_recent = course.feedback_set.all().filter(datetime_given__gte=timezone.now()-timedelta(days=7)).order_by('-datetime_given')
+            for feedback in fb_all:
                 cat = feedback.category.name
                 for data in fbTotal[cat]:
                     for key in data:
@@ -498,7 +523,7 @@ def lecturer_course(request,subject_slug):
                                 fbCat[cat] = [[data[key], date_str]]
 
             fb_with_colour={}
-            for feedback in fb:
+            for feedback in fb_recent:
                 try:
                     lect_cat = Category.objects.get(name=feedback.category.name,user=request.user)
                     fb_with_colour[feedback] = lect_cat.colour
@@ -506,13 +531,9 @@ def lecturer_course(request,subject_slug):
                     fb_with_colour[feedback] = feedback.category.colour
             context_dict['course'] = course
             context_dict['lecturer'] = lect
-            context_dict['students_with_score'] = {}
-            # Add top students for each course. This requires editing models to store course in feedback
-            fb = course.feedback_set.all().filter(datetime_given__gte=timezone.now()-timedelta(days=7)).order_by('-datetime_given')
             students = course.get_students_with_score()
             context_dict['students_with_score'] = [(k, students[k]) for k in sorted(students)]
             context_dict['sorted_students'] = course.get_leaderboard()
-            context_dict['feedback'] = fb
             context_dict['cat_stud_and_score'] = students_and_scores_for_cat
             context_dict['categories'] = categories
             context_dict['feedback'] = fb_with_colour
@@ -565,8 +586,6 @@ def lecturer_add_individual_feedback(request,subject_slug,student_number):
         context_dict['form'] = form
         return render(request,'student_feedback_app/lecturer/lecturer_add_individual_feedback.html',context_dict)
     except:
-        context_dict['student'] = None
-        context_dict['feedback'] = None
         context_dict['error'] = "no_student"
         return render(request,'student_feedback_app/general/error_page.html', context_dict)
 
@@ -594,9 +613,7 @@ def add_group_feedback(request,subject_slug):
         context_dict['students'] = stud_profiles
         context_dict['lecturer'] = lect
         context_dict['subject'] = course
-
         context_dict['categories'] = request.user.category_set.all()
-
         context_dict['new_mess_form'] = NewMessageForm()
 
         messages = request.user.message_set.all()
@@ -611,7 +628,6 @@ def add_group_feedback(request,subject_slug):
         context_dict['form'] = form
 
         return render(request,'student_feedback_app/lecturer/lecturer_add_group_feedback.html',context_dict)
-
     except:
         context_dict['error'] = "error"
         return render(request,'student_feedback_app/general/error_page.html', context_dict)
@@ -893,82 +909,69 @@ def register(request):
 def unapproved(request):
     return render(request, 'student_feedback_app/general/unapproved.html')
 
-def invites(request):
+def invites(request, subject_slug):
     context_dict = {}
     if not request.user.is_authenticated or not request.user.is_lecturer:
         context_dict['error'] = "auth"
         return render(request,'student_feedback_app/general/error_page.html', context_dict)
     try:
+        course = Course.objects.get(subject_slug=subject_slug)
+        context_dict['course'] = course
         if request.method == 'GET':
-            token = request.GET.get('token', '')
-            context_dict['token'] = token
-            if token == '' or Course.objects.filter(course_token=token).count() == 0:
-                return redirect('lecturer_courses')
-            course = Course.objects.get(course_token=token)
-    except:
-        context_dict['error'] = "error"
-        return render(request,'student_feedback_app/general/error_page.html', context_dict)
-
-    try:
-
-        mode = 0
-        students_string = request.COOKIES.get("students")
-        if is_json(students_string):
-            mode += 1
-            students_list = json.loads(students_string)
-            students = []
-            for student_id in students_list:
-                stud_user = User.objects.get(id_number=student_id)
-                students.append(stud_user)
-
-            for student in students:
-                plaintext = get_template('emails/invite_registered.txt')
-                htmly     = get_template('emails/invite_registered.html')
-                d = { 'lecturer': request.user.username, 'subject':  course.subject, 'course_code': course.course_code, 'token': course.course_token, 'student': student.username }
-                text_content = plaintext.render(d)
-                html_content = htmly.render(d)
-                msg = EmailMultiAlternatives('You are invited to join a course!', text_content, 'lect.acc.unicom@gmail.com',[student.email])
-                msg.attach_alternative(html_content, "text/html")
-                msg.send()
-
-
-        students_emails_string = request.COOKIES.get("emails")
-        if is_json(students_emails_string):
-            mode += 1
-            emails_list = json.loads(students_emails_string)
-            emails = []
-            for email in emails_list:
-                if email != "example@university.com":
-                    emails.append(email)
-            plaintext = get_template('emails/invite_unregistered.txt')
-            htmly     = get_template('emails/invite_unregistered.html')
-            d = { 'lecturer': request.user.username, 'subject':  course.subject, 'course_code': course.course_code, 'token': course.course_token }
-            text_content = plaintext.render(d)
-            html_content = htmly.render(d)
-            msg = EmailMultiAlternatives('You are invited to join a course!', text_content, 'lect.acc.unicom@gmail.com',emails)
-            msg.attach_alternative(html_content, "text/html")
-            msg.send()
-
-
-        if mode == 0:
             lect = LecturerProfile.objects.get(lecturer=request.user)
             students = lect.get_my_students()
             added_students = course.students.distinct()
             context_dict['students'] = set(students).difference(set(added_students))
             return render(request, 'student_feedback_app/lecturer/invites.html', context_dict)
 
+        elif request.method == 'POST':
+            students_cookie = request.COOKIES.get("students")
+            if not students_cookie is None:
+                if is_json(students_cookie):
+                    students_list = json.loads(students_cookie)
+                    student_users = []
+                    for student_id in students_list:
+                        stud_user = User.objects.get(id_number=student_id)
+                        student_users.append(stud_user)
+
+                    for student in student_users:
+                        plaintext = get_template('emails/invite_registered.txt')
+                        htmly     = get_template('emails/invite_registered.html')
+                        d = { 'lecturer': request.user.username, 'subject':  course.subject, 'course_code': course.course_code, 'token': course.course_token, 'student': student.username }
+                        text_content = plaintext.render(d)
+                        html_content = htmly.render(d)
+                        msg = EmailMultiAlternatives('You are invited to join a course!', text_content, 'lect.acc.unicom@gmail.com',[student.email])
+                        msg.attach_alternative(html_content, "text/html")
+                        msg.send()
+                else:
+                    context_dict['error'] = "error"
+                    return render(request,'student_feedback_app/general/error_page.html', context_dict)
+
+            emails_cookie = request.COOKIES.get("emails")
+            if not emails_cookie is None:
+                if is_json(emails_cookie):
+                    emails_list = json.loads(emails_cookie)
+                    emails = []
+                    for email in emails_list:
+                        if email != "example@university.com":
+                            emails.append(email)
+
+                    plaintext = get_template('emails/invite_unregistered.txt')
+                    htmly     = get_template('emails/invite_unregistered.html')
+                    d = { 'lecturer': request.user.username, 'subject':  course.subject, 'course_code': course.course_code, 'token': course.course_token }
+                    text_content = plaintext.render(d)
+                    html_content = htmly.render(d)
+                    msg = EmailMultiAlternatives('You are invited to join a course!', text_content, 'lect.acc.unicom@gmail.com',emails)
+                    msg.attach_alternative(html_content, "text/html")
+                    msg.send()
+                else:
+                    context_dict['error'] = "error"
+                    return render(request,'student_feedback_app/general/error_page.html', context_dict)
+
+            return lecturer_course(request, course.subject_slug)
     except:
-
-        lect = LecturerProfile.objects.get(lecturer=request.user)
-        students = lect.get_my_students()
-        added_students = course.students.distinct()
-        context_dict['students'] = set(students).difference(set(added_students))
-        return render(request, 'student_feedback_app/lecturer/invites.html', context_dict)
-
-    response = lecturer_course(request, course.subject_slug)
-    response.set_cookie('students', '', path="/lecturer/invites/")
-    response.set_cookie('emails', '', path="/lecturer/invites/")
-    return response
+        context_dict['error'] = "no_course"
+        return render(request,'student_feedback_app/general/error_page.html', context_dict)
 
 def is_json(myjson):
     try:

@@ -42,7 +42,7 @@ function sort_smart(sort_param, footerType, insert_into_id, ...args){
 	httpRequest.send();
 }
 
-function sort(fb_keep, sort_param, keep_param){
+function sort(fb_keep, sort_param, keep_param, recent){
 	var host = location.protocol + "//" + window.location.host;
 	switch(sort_param){
 		case "points":
@@ -60,18 +60,29 @@ function sort(fb_keep, sort_param, keep_param){
 	httpRequest.onreadystatechange = function(){
 		if (this.readyState == 4 && this.status == 200) {
 			var sortedFb = JSON.parse(this.responseText);
+
 			//for every feedback see if feedback is recent (5mins)
-			for(var fb of sortedFb){
-				var fb_date= new Date(fb['datetime_given']);
+			for(var i=0; i<sortedFb.length; i++){
+				var fb_date= new Date(sortedFb[i].datetime_given);
 				var now_date = new Date();
+				//if in recent feedback card (given by param) then delete all feedback older than a week
+				if(recent != undefined){
+					var one_week = new Date(7*24*60*60*1000)
+					 if((now_date - fb_date) > one_week){
+						 sortedFb.splice(i,1);
+						 i-=1;
+					 }
+				}
 				var five_mins = new Date(5*60000);
 				if((now_date - fb_date) < five_mins){
-					fb.is_recent = true;
+					sortedFb[i].is_recent = true;
 				}
 				else{
-					fb.is_recent = false;
+					sortedFb[i].is_recent = false;
 				}
+
 			}
+
 
 			switch(keep_param){
 				case "from_user":
@@ -126,7 +137,7 @@ function sort(fb_keep, sort_param, keep_param){
 			}
 
 			//place this parsed data into the page
-			show(sortedFb, footerType);
+			show(sortedFb, footerType, 'fb-list');
 		}
 	};
 	httpRequest.open("GET", Url, true);
@@ -134,14 +145,31 @@ function sort(fb_keep, sort_param, keep_param){
 }
 
 
-function show(sorted_fb, footerType, optional_id){
+function show(sorted_fb, footerType, insert_into_id){
 	var fb_text = '';
+	if (sorted_fb.length == 0) {
+		fb_text += `<div class="card custom-card fb-border">
+			<b class="card-sub-heading">
+				No Feedback Yet
+			</b>
+			<div class="card custom-border">
+				<blockquote class="quote">`;
+				if(footerType == 'from_user'){
+					fb_text += 'You have not received any feedback yet<br />';
+				}
+				else {
+					fb_text += 'You have not given any feedback yet<br />';
+				}
+				fb_text += `</blockquote>
+			</div>
+		</div>`;
+	}
 	for (var fb of sorted_fb){
 		var myDate = new Date(fb.datetime_given);
 		 var month=new Array();
 		  month[0]="Jan";
 		  month[1]="Feb";
-		  month[2]="March";
+		  month[2]="Mar";
 		  month[3]="Apr";
 		  month[4]="May";
 		  month[5]="Jun";
@@ -158,9 +186,7 @@ function show(sorted_fb, footerType, optional_id){
 		  hours = hours ? hours : 12;
 		  minutes = minutes < 10 ? '0'+minutes : minutes;
 		  var strTime = hours + ':' + minutes + ' '+ ampm;
-			strTime = '12:00 p.m.' ? 'midday' : strTime;
-			strTime = '12:00 a.m.' ? 'midnight' : strTime;
-		var showDate = ' ' + month[myDate.getMonth()] + ' ' + myDate.getDate() + ', ' + myDate.getFullYear() + ', ' + strTime;
+		var showDate = ' ' + month[myDate.getMonth()] + '. ' + myDate.getDate() + ', ' + myDate.getFullYear() + ', ' + strTime;
 		if(footerType == "student")
 			var footer = 'Given to ' + fb.studentName;
 		else
@@ -174,8 +200,8 @@ function show(sorted_fb, footerType, optional_id){
 		if( window.location.href.includes('my-provided-feedback'))
 			fb_text += '<i class="material-icons delete-icon" id="' + fb.feedback_id + '">delete</i>';
 		fb_text += '<b class="card-sub-heading" style="color:' + fb.categoryColour + '">'
-						+ '<img class="icon" src="/media/' + fb.image + '"/> '
-						+ fb.categoryName + `</b>
+						+ '<img class="icon" src="/media/' + fb.image + '"/>'
+						+ ' ' + fb.categoryName + `</b>
           <div class="row" style="padding-bottom:1%">
             <div class="column left">
               <div class="card custom-border">
@@ -199,10 +225,5 @@ function show(sorted_fb, footerType, optional_id){
             </div>
           </div>`;
 	}
-	if(optional_id == undefined){
-		document.getElementById("fb-list").innerHTML = fb_text;
-	}
-	else {
-		document.getElementById(optional_id).innerHTML = fb_text;
-	}
+	document.getElementById(insert_into_id).innerHTML = fb_text;
 }

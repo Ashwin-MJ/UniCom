@@ -61,25 +61,32 @@
       <div class="container">
 
 
-        <a class="navbar-brand" id="title" href="#">
+        <a class="navbar-brand" href="{% url 'index' %}">
           <img id="logo" src="{% static 'unicom_logo.png' %}" alt="UniCom">
         </a>
 
-          <p class='navbar-brand' id="title">
-            {% block current_page%}{% endblock %}
-          </p>
+        {% if user.is_authenticated %}
+        <div class="navbar-profile">
+          <div style="text-align: center;">
+            <a href="{% url 'my_profile' %}">
+              <img class="navbar-profile-pic" src="{{user.profile_picture.url }}" alt="Profile Picture">
+            </a>
+          </div>
+          <div id="title" class="navbar-name">
+            {{user.username}}
+          </div>
+        </div>
+        {% endif %}
+
+        <p class='navbar-brand' id="title">
+          {% block current_page%}{% endblock %}
+        </p>
 
         <div id="navbarResponsive" class="navbar-collapse collapse">
 
           <ul class="nav navbar-nav ml-auto">
             <li class="nav-item">
-              <a class="nav-link"
-                {% if user.is_lecturer %}
-                  href="{% url 'lecturer_home' %}"
-                {% else %}
-                  href="{% url 'student_home' %}"
-                {% endif %}
-                id="title">Home</a>
+              <a class="nav-link" href="{% url 'index' %}"id="title">Home</a>
             </li>
             <li class="nav-item">
               <a class="nav-link"

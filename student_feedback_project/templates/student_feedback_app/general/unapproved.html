@@ -2,29 +2,28 @@
 {% load static %}
 
 {% block title%}
-Wait to be approved by admin
+Waiting for Approval
 {% endblock %}
 
 {% block current_page %}
-Wait to be approved by admin
+Waiting for Approval
 {% endblock%}
 
 {% block body_block %}
 <div class="container">
 		<div class="card" style="margin-top:25px;">
-			<h3 class="text-center custom-card-title">You are not approved</h3>
+			<h3 class="text-center custom-card-title">You have not been approved</h3>
 			<hr />
 			<h5 class="card-body text-center" id="title">
-				An administrator has been notified about your registration, please wait for approval to access the page.
+				An administrator has been notified about your registration, please wait for approval to use the application.
 			</h5>
 			<div class="card-body" style="align-self:center">
-				<a class="nav-link" href="{% url 'student_home' %}">
-					<button class="btn btn-material btn-ripple" style="width:200px">Return to Home Page</button>
+				<a class="nav-link" href="{% url 'auth_login' %}">
+					<button class="btn btn-material btn-ripple" style="width:200px">Return to Login</button>
 				</a>
 			</div>
 		</div>
 </div>
-
 {% endblock %}
 
 {% block footer %}
