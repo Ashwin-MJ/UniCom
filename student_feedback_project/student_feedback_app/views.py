@@ -421,9 +421,17 @@ def my_provided_feedback(request):
         if request.user.is_student:
             stud = StudentProfile.objects.get(student=request.user)
             fb = request.user.feedback_set.all().order_by('-datetime_given')
+            courses = stud.courses.all()
+            courses_with_feedback = {}
+            for course in courses:
+                courses_with_feedback[course] = course.get_feedback_list_from_student(stud)
+
+            context_dict['courses'] = courses
+            context_dict['courses_with_feedback'] = courses_with_feedback
             context_dict['student'] = stud
             context_dict['feedback'] = fb
             return render(request,'student_feedback_app/student/student_provided_feedback.html',context_dict)
+
         if request.user.is_lecturer:
             lect = LecturerProfile.objects.get(lecturer=request.user)
             fb = request.user.feedback_set.all().order_by('-datetime_given')

@@ -188,6 +188,13 @@ class Course(models.Model):
                 feedback_list.append(feedback)
         return feedback_list
 
+    def get_feedback_list_from_student(self, student):
+        feedback_list = []
+        for feedback in self.feedback_set.all():
+            if feedback.from_user.username == student.student.username:
+                feedback_list.append(feedback)
+        return feedback_list
+
 
     def token_gen(self):
         size = 4
