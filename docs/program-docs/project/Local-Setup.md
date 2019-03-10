@@ -72,5 +72,6 @@ In order to allow for approval of lecturer accounts and to send tokens to studen
 The details are below:
 
 ```
-Insert here
+login = "lect.acc.unicom@gmail.com"
+password = '1234567890poiuytrewq'
 ```

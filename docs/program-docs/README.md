@@ -16,3 +16,15 @@ The documentation for this project has been separated into two sections:
 
 * [Project documentation](docs/program-docs/project/README.md)
 * [General documentation](docs/program-docs/general/README.md)
+
+## Icons
+
+Please note that the icons used in this application are from:
+
+<em>
+Icons made by
+<a href="https://www.flaticon.com/authors/popcorns-arts" title="Icon Pond">Icon Pond</a>
+from
+<a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>
+is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a>
+</em>
