@@ -81,6 +81,7 @@ Provided Feedback
           </div>
           {% endfor %}
         </div>
+        {% if not feedback_list|length == 0%}
         <hr />
         <div class="btn-group dropright button">
           <button class="btn btn-material dropdown-toggle" type="button"data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -91,6 +92,7 @@ Provided Feedback
             <button onclick="sort_smart('date', 'student', 'fb-list-{{course.course_code}}', {%for fb in feedback_list%} {{fb.feedback_id}}, {%endfor%})" type="button" class="btn btn-material btn-ripple">Sort by date</button>
           </div>
         </div>
+        {% endif %}
 
       </div>
       {% endfor  %}

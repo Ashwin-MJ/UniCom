@@ -13,7 +13,7 @@ Provided Feedback
 {% block body_block %}
 
 <div class="container">
-  
+
   <div class="card scroll-bg">
     <h3 class="text-center custom-card-title">My Feedback</h3>
     <hr style="margin-bottom:0"/>
@@ -82,6 +82,8 @@ Provided Feedback
           </div>
           {% endfor %}
         </div>
+
+        {% if not feedback_list|length == 0 %}
         <hr />
         <div class="btn-group dropright button">
           <button class="btn btn-material dropdown-toggle" type="button"data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -92,6 +94,7 @@ Provided Feedback
             <button onclick="sort_smart('date', 'student', 'fb-list-{{course.course_code}}', {%for fb in feedback_list%} {{fb.feedback_id}}, {%endfor%})" type="button" class="btn btn-material btn-ripple">Sort by date</button>
           </div>
         </div>
+        {% endif %}
 
 
       </div>

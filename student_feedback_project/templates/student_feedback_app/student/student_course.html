@@ -86,6 +86,12 @@
             </blockquote>
           </div>
         </div>
+
+        <div class="button" style="margin-top:25px;">
+          <a class="btn btn-material btn-ripple" style="color:white" href="{% url 'student_all_feedback' %}">
+            Click here to view all feedback
+          </a>
+        </div>
         {% endif %}
         {% for fb,colour in feedback.items %}
         {% if fb.is_recent %}
@@ -122,6 +128,8 @@
 
           {% endfor %}
       </div>
+
+      {% if not feedback|length == 0%}
       <br/>
       <div class="btn-group dropright button">
           <button class="btn btn-material dropdown-toggle" type="button"data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -132,6 +140,7 @@
             <button onclick="sort('{{course.subject}},{{ student.student.username }}', 'date', 'course-student', 'recent')" type="button" class="btn btn-material btn-ripple">Date</button>
           </div>
       </div>
+      {% endif %}
     </div>
 
 

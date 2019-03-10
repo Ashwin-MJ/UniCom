@@ -222,7 +222,10 @@ def student_all_feedback(request):
     if request.user.is_authenticated and request.user.is_student:
         stud= StudentProfile.objects.get(student=request.user)
         fb = stud.feedback_set.all().order_by('-datetime_given')
-        context_dict['student'] = stud
+        courses = stud.courses.all()
+        courses_with_feedback = {}
+        for course in courses:
+            courses_with_feedback[course] = stud.get_all_fb_for_course(course.subject)
 
         fb_with_colour = {}
         for feedback in fb:
@@ -232,10 +235,14 @@ def student_all_feedback(request):
             except:
                 fb_with_colour[feedback] = feedback.category.colour
 
-        context_dict['feedback'] = fb_with_colour
         top_attributes = stud.get_top_attributes()
         if len(top_attributes) > 4:
             top_attributes =  top_attributes[:4]
+
+        context_dict['courses'] = courses
+        context_dict['courses_with_feedback'] = courses_with_feedback
+        context_dict['feedback'] = fb_with_colour
+        context_dict['student'] = stud
         context_dict['top_attributes'] = top_attributes
         context_dict['to_improve'] = stud.get_weaknesses()
     else:
