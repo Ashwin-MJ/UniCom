@@ -62,6 +62,7 @@ function sort(fb_keep, sort_param, keep_param, recent){
 			var sortedFb = JSON.parse(this.responseText);
 
 			//for every feedback see if feedback is recent (5mins)
+			var shouldReduce = false;
 			for(var i=0; i<sortedFb.length; i++){
 				var fb_date= new Date(sortedFb[i].datetime_given);
 				var now_date = new Date();
@@ -70,10 +71,9 @@ function sort(fb_keep, sort_param, keep_param, recent){
 					var one_week = new Date(7*24*60*60*1000)
 					 if((now_date - fb_date) > one_week){
 						 sortedFb.splice(i,1);
-						 i-=1;
+						 shouldReduce = true;
 					 }
 				}
-				if(i==-1) i=0;
 				var five_mins = new Date(5*60000);
 				if((now_date - fb_date) < five_mins){
 					sortedFb[i].is_recent = true;
@@ -81,7 +81,10 @@ function sort(fb_keep, sort_param, keep_param, recent){
 				else{
 					sortedFb[i].is_recent = false;
 				}
-
+				if(shouldReduce){
+					i-=1;
+					shouldReduce = false;
+				}
 			}
 
 
