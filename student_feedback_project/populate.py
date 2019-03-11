@@ -527,7 +527,7 @@ def add_feedback(feedback_id,category,points,from_user,student,course_code,pre_d
 	stud.save()
 
 	if random_bool:
-		rand_date = date.today() - timedelta(random.randint(1,7))
+		rand_date = date.today() - timedelta(random.randint(5,12))
 		rand_date_with_tzinfo = datetime(rand_date.year, rand_date.month,
 	 				rand_date.day, tzinfo=pytz.timezone('GMT'))
 
@@ -568,8 +568,12 @@ def add_category_with_icon(name,colour):
 		cat.save()
 
 def add_categories_for_user(user):
+	for icon in icons:
+		icon = add_icon(icon.get("name"),icon.get("url"))
 	for category in categories:
 		cat = Category(user=user,colour=category["colour"],name=category["name"])
+		icon = Icon.objects.get(name=category["name"])
+		cat.icon = icon
 		cat.save()
 		user.save()
 

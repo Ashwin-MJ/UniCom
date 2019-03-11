@@ -5,7 +5,9 @@ $('.students').click(function(e) {
 
 $('#select-all').click(function(e) {
   $('.students').each(function(e) {
-    $(this).toggleClass(addclass);
+    if(!$(this).hasClass('color')){
+      $(this).toggleClass(addclass);
+    }    
   });
 });
 

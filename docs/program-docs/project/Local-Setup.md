@@ -47,6 +47,8 @@ python3 populate.py
 
 The final instruction here makes use of a script we have written to populate the database with some initial data.
 
+It is highly recommended that you run this, even if you do not intend on using the data.
+
 ## 4. Running the Server
 To run the server simply execute:
 
@@ -63,3 +65,13 @@ Lecturer (Prof. Roy) - ID Number: 00001 Password: password
 Student (James Smith) - ID Number: 1402001 Password: password
 
 See [Application Guide](docs/program-docs/general/Guide.md) for more information about how to use the application.
+
+## Email Account
+In order to allow for approval of lecturer accounts and to send tokens to students, it was necessary to create an email account of the application.
+
+The details are below:
+
+```
+login = "lect.acc.unicom@gmail.com"
+password = '1234567890poiuytrewq'
+```

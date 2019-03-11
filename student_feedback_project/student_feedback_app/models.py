@@ -11,6 +11,7 @@ from django.core.mail import EmailMultiAlternatives
 from django.template.loader import get_template
 
 import datetime
+from datetime import timedelta
 import random, string
 
 class User(AbstractUser):
@@ -75,17 +76,25 @@ class StudentProfile(models.Model):
 
     def get_score_for_course(self,course):
         score = 0
-        for fb in self.get_fb_for_course(course):
+        for fb in self.get_all_fb_for_course(course):
             score += fb.points
         return score
 
     def get_top_attributes(self):
         scores = {}
         for fb in self.feedback_set.all():
-            if fb.category not in scores:
-                scores[fb.category] = fb.points
-            else:
-                scores[fb.category] += fb.points
+            try:
+                my_cat = Category.objects.get(name=fb.category.name,user=self.student)
+                if my_cat not in scores:
+                    scores[my_cat] = fb.points
+                else:
+                    scores[my_cat] += fb.points
+            except:
+                # Student doesn't have this category, so add lecturer's
+                if fb.category not in scores:
+                    scores[fb.category] = fb.points
+                else:
+                    scores[fb.category] += fb.points
 
         scores = [(k, scores[k]) for k in sorted(scores, key=scores.get, reverse=True)]
         return scores
@@ -97,12 +106,18 @@ class StudentProfile(models.Model):
             scores = scores[:4]
         return scores
 
-    def get_fb_for_course(self,course):
+    def get_all_fb_for_course(self,course):
         fb_for_course = []
-        for fb in self.feedback_set.all():
+        for fb in self.feedback_set.all().order_by('-datetime_given'):
             if fb.which_course.subject == course:
                 fb_for_course += [fb]
+        return fb_for_course
 
+    def get_recent_fb_for_course(self,course):
+        fb_for_course = []
+        for fb in self.feedback_set.all().filter(datetime_given__gte=timezone.now()-timedelta(days=7)).order_by('-datetime_given'):
+            if fb.which_course.subject == course:
+                fb_for_course += [fb]
         return fb_for_course
 
     def get_courses_with_score(self):
@@ -130,8 +145,8 @@ class StudentProfile(models.Model):
 
     def get_score_for_category_course(self, cat, course):
         score = 0
-        for fb in self.feedback_set.all():
-            if fb.category.name == cat.name and fb.which_course.course_code == course.course_code :
+        for fb in self.get_all_fb_for_course(course.subject):
+            if fb.category.name == cat.name:
                 score += fb.points
         return score
 
@@ -142,7 +157,11 @@ class Achievement(models.Model):
     achiev = models.CharField(validators=[int_list_validator], max_length=100, default=0)
 
     def gen_achievement(self, attribute, score, user):
-        self.category = Category.objects.get(name=attribute,user=user)
+        try:
+            self.category = Category.objects.get(name=attribute,user=user)
+        except:
+            ## Needed to include this for if the user does not have the category
+            self.category = Category.objects.get(name=attribute)
         if score >= 100:
             self.achiev = [100,50,25,10,5]
         elif score >= 50:
@@ -169,6 +188,21 @@ class Course(models.Model):
         self.subject_slug = slugify(self.course_code)
         self.course_token = self.token_gen()
         super(Course, self).save(*args, **kwargs)
+
+    def get_feedback_list_from_lecturer(self, lecturer):
+        feedback_list = []
+        for feedback in self.feedback_set.all():
+            if feedback.from_user.username == lecturer.lecturer.username:
+                feedback_list.append(feedback)
+        return feedback_list
+
+    def get_feedback_list_from_student(self, student):
+        feedback_list = []
+        for feedback in self.feedback_set.all():
+            if feedback.from_user.username == student.student.username:
+                feedback_list.append(feedback)
+        return feedback_list
+
 
     def token_gen(self):
         size = 4
@@ -234,6 +268,20 @@ class Course(models.Model):
                 fbTotals[feedback.category.name] = [{feedback.date_only: feedback.points}]
         return fbTotals
 
+    def get_lect_emails(self):
+        emails = []
+        for each_lect in self.lecturers.all():
+            emails.append(each_lect.lecturer.email)
+        return emails
+
+    def get_categories(self):
+        cat_names = []
+        categories = []
+        for fb in self.feedback_set.all():
+            if fb.category.name not in cat_names:
+                cat_names.append(fb.category.name)
+                categories.append(fb.category)
+        return categories
 
 class LecturerProfile(models.Model):
     lecturer = models.OneToOneField(User, on_delete=models.CASCADE,primary_key=True)
@@ -251,9 +299,6 @@ class LecturerProfile(models.Model):
         for course in self.courses.all():
             courses_with_students[course] = len(course.students.all())
         return courses_with_students
-
-
-
 
 class Feedback(models.Model):
     date_only = models.DateField(default=timezone.now)
