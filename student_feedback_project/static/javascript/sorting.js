@@ -216,9 +216,10 @@ function show(sorted_fb, footerType, insert_into_id){
                 + `</blockquote>
               </div>`;
 							if( window.location.href.includes('lecturer/courses/'))
-								fb_text += `From:<em>` + fb.fromUserName + `</em><br />`
-              fb_text += `Course: <em>` + fb.courseName + `</em><br />
-              <i class="material-icons" style="font-size:70%;">calendar_today</i>` + showDate
+								fb_text += `From: <em>` + fb.fromUserName + `</em><br />`
+							else
+              	fb_text += `Course: <em>` + fb.courseName + `</em><br />`;
+              fb_text += `<i class="material-icons" style="font-size:70%;">calendar_today</i>` + showDate
             + `</div>
             <div class="column right-number">`
 						+ '<div style="text-align:center; color:' + fb.categoryColour + '">'
