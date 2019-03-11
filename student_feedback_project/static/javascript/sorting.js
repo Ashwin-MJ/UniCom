@@ -205,7 +205,7 @@ function show(sorted_fb, footerType, insert_into_id){
 		if( window.location.href.includes('my-provided-feedback'))
 			fb_text += '<i class="material-icons delete-icon" id="' + fb.feedback_id + '">delete</i>';
 		if(window.location.href.includes('lecturer/courses/'))
-			fb_text += '<i class="material-icons delete-icon-course" id="' + fb.feedback_id + '">delete</i>';
+			fb_text += '<i class="material-icons delete-icon delete-icon-course" id="' + fb.feedback_id + '">delete</i>';
 
 		fb_text += '<b class="card-sub-heading" style="color:' + fb.categoryColour + '">'
 						+ '<img class="icon" src="/media/' + fb.image + '"/>'
