@@ -220,18 +220,15 @@ My Profile
                 {% for field in form.visible_fields %}
                   <div class="form-group card custom-card">
                     <h3 class="custom-card-title" style="padding-top:0">
-                      {{ field.help_text }}:
+                        {% if field.name == "profile_picture" %}
+                            Profile Picture:
+                        {% else %}
+                            {{ field.help_text }}:
+                        {% endif %}
                     </h3>
                       {% render_field field class="form-control" %}
                   </div>
                 {% endfor %}
-                <div class="form-group" style="padding:10px">
-                  <small class="form-text text-muted">Or you can choose from our list of avatars:</small>
-                  {% for avatar in avatars %}
-                    <img class="all-icons" id="{{avatar.name}}"src="{{avatar.image.url}}" alt="{{avatar.name}}"/>
-                  {% endfor%}
-
-                </div>
                 <div class="button">
                   <input class="btn btn-material btn-ripple" type="submit" name="submit" value="Submit" />
                 </div>

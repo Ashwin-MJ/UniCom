@@ -17,7 +17,7 @@ User = get_user_model()
 
 def populate():
 
-	courses = [
+    courses = [
 		{"subject": "Maths1Q",
 		"course_code": "MAT1Q",
 		"course_description":"A base look at mathematical functions in the real world"},
@@ -29,7 +29,7 @@ def populate():
 		"course_description":"An introductory class on the polish language"},
 		]
 
-	students = [
+    students = [
 		{"name": "Sarah Fields",
 		"student_number": "1402789",
 		"password": "password",
@@ -88,7 +88,7 @@ def populate():
 		}
         ]
 
-	lecturers = [
+    lecturers = [
 		{"name": "Prof. Roy",
 		"lecturer_number": "00001",
 		"password": "password",
@@ -102,7 +102,7 @@ def populate():
 		"courses":["MAT1Q"]
 		}]
 
-	feedback = [
+    feedback = [
 		{"feedback_id": 1,
 		"category": "Active Participation",
 		"points": 4,
@@ -257,37 +257,40 @@ def populate():
 		 "optional_message": ""},
 		]
 
-	for presentCourse in courses:
-		course = add_course(presentCourse.get('subject'),presentCourse.get('course_code'), presentCourse.get('course_description'))
+    for presentCourse in courses:
+        course = add_course(presentCourse.get('subject'),presentCourse.get('course_code'), presentCourse.get('course_description'))
 
-	for student in students:
-		stud = add_student(student.get('name'),student.get('student_number'),student.get('email'),
+    for student in students:
+        stud = add_student(student.get('name'),student.get('student_number'),student.get('email'),
 							student.get('password'),student.get('score'),student.get('courses'))
 
-	for lecturer in lecturers:
-		lect = add_lecturer(lecturer.get('name'),lecturer.get('lecturer_number'),
+    for lecturer in lecturers:
+        lect = add_lecturer(lecturer.get('name'),lecturer.get('lecturer_number'),
 							lecturer.get('password'),lecturer.get('email'),lecturer.get('courses'))
 
-	for icon in icons:
-		icon = add_icon(icon.get("name"),icon.get("url"))
+    for icon in icons:
+        icon = add_icon(icon.get("name"),icon.get("url"))
 
-	for category in categories:
-		cat = add_category_with_icon(category.get("name"), category.get("colour"))
+    for avatar in avatars:
+        avatar = add_avatar(avatar.get("name"), avatar.get("url"))
 
-	for message in saved_messages:
-		mess = add_message(message.get('category'),message.get('messages'))
+    for category in categories:
+	    cat = add_category_with_icon(category.get("name"), category.get("colour"))
 
-	for someFeedback in feedback:
-		feedback = add_feedback(someFeedback.get('feedback_id'),someFeedback.get('category'),someFeedback.get('points'),
+    for message in saved_messages:
+        mess = add_message(message.get('category'),message.get('messages'))
+
+    for someFeedback in feedback:
+        feedback = add_feedback(someFeedback.get('feedback_id'),someFeedback.get('category'),someFeedback.get('points'),
 								someFeedback.get('from_user'),someFeedback.get('student'),someFeedback.get('course_code'),
 								someFeedback.get('pre_defined_message'), someFeedback.get('optional_message'), True)
 
-	create_view_fb_cat()
-	create_view_fb_cat_mss()
-	create_view_fb_cat_mss_stud()
-	create_view_fb_cat_mss_stud_course()
-	create_view_fb_full()
-	create_view_fb_full_icon()
+    create_view_fb_cat()
+    create_view_fb_cat_mss()
+    create_view_fb_cat_mss_stud()
+    create_view_fb_cat_mss_stud_course()
+    create_view_fb_full()
+    create_view_fb_full_icon()
 
 categories = [
 	{"name": "Active Participation", "colour" : "#F7D969"},
@@ -321,6 +324,10 @@ icons = [
 	{"name": "Hourglass",'url': "attribute_icons/hourglass.png"},
 	{"name": "Target",'url': "attribute_icons/target.png"},
 	{"name": "Notebook",'url': "attribute_icons/notebook.png"}
+]
+
+avatars = [
+    {"name":"Icon1", 'url':"avatars/icon1.png"}
 ]
 
 saved_messages = [
@@ -535,6 +542,10 @@ def add_icon(name,url):
 	icon.save()
 	return icon
 
+def add_avatar(name,url):
+    avatar = Avatar.objects.get_or_create(name=name,image=url)[0]
+    avatar.save()
+    return avatar
 # Helper function to add Category
 def add_category(name,colour):
 	# Since the the category needs to be associated uniquely for each lecturer
