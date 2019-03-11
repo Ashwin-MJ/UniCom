@@ -73,15 +73,17 @@ def my_profile(request):
                 new_degree=form.cleaned_data["degree"]
                 user.degree=new_degree
                 user.bio= new_bio
+                if 'profile_picture' in request.FILES:
+                    user.profile_picture = request.FILES['profile_picture']
+
+
                 user.save()
             else:
                 print(form.errors)
 
         else:
             form = EditBioForm()
-
         context_dict["form"] = form
-
     else:
         # User not authenticated error
         context_dict['error'] = "auth"

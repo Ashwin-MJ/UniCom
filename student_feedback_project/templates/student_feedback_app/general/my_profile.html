@@ -222,24 +222,38 @@ My Profile
 		</div>
 
 		  <div class="modal-body">
-        <form id="" method="post" action="">
-          {% csrf_token %}
-          {% for hidden in form.hidden_fields %}
-              {{ hidden }}
-          {% endfor %}
+              <form id="" method="post" action="" enctype="multipart/form-data">
+                {% csrf_token %}
+                {% for hidden in form.hidden_fields %}
+                    {{ hidden }}
+                {% endfor %}
 
-          {% for field in form.visible_fields %}
-            <div class="form-group" style="padding:10px">
-              <h3 id="form-title">
-                {{ field.label_tag }}
-                </h3>
-              {% render_field field class="form-control" %}
-            </div>
-          {% endfor %}
+                <h3 class="text-center custom-card-title">Edit Degree/Biography</h3>
+                <hr />
 
-          <div class="button">
-            <input class="btn btn-material btn-ripple" type="submit" name="submit" value="Submit" />
-          </div>
+                {% if form.non_field_errors %}
+                  <div class="alert alert-danger" role="alert">
+                    {% for error in form.non_field_errors %}
+                      {{ error }}
+                    {% endfor %}
+                  </div>
+                {% endif %}
+
+                {% for field in form.visible_fields %}
+                  <div class="form-group card custom-card">
+                    <h3 class="custom-card-title" style="padding-top:0">
+                        {% if field.name == "profile_picture" %}
+                            Profile Picture:
+                        {% else %}
+                            {{ field.help_text }}:
+                        {% endif %}
+                    </h3>
+                      {% render_field field class="form-control" %}
+                  </div>
+                {% endfor %}
+                <div class="button">
+                  <input class="btn btn-material btn-ripple" type="submit" name="submit" value="Submit" />
+                </div>
 
         </form>
 	  </div>
