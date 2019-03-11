@@ -73,6 +73,7 @@ function sort(fb_keep, sort_param, keep_param, recent){
 						 i-=1;
 					 }
 				}
+				if(i==-1) i=0;
 				var five_mins = new Date(5*60000);
 				if((now_date - fb_date) < five_mins){
 					sortedFb[i].is_recent = true;
@@ -197,7 +198,7 @@ function show(sorted_fb, footerType, insert_into_id){
 		else{
 			fb_text += '<div class="card custom-card fb-border" style="border-color:' + fb.categoryColour + '">';
 		}
-		if( window.location.href.includes('my-provided-feedback'))
+		if( window.location.href.includes('my-provided-feedback') || window.location.href.includes('lecturer/courses/'))
 			fb_text += '<i class="material-icons delete-icon" id="' + fb.feedback_id + '">delete</i>';
 		fb_text += '<b class="card-sub-heading" style="color:' + fb.categoryColour + '">'
 						+ '<img class="icon" src="/media/' + fb.image + '"/>'
@@ -212,8 +213,10 @@ function show(sorted_fb, footerType, insert_into_id){
 				  				}
                   fb_text += '<footer>' + footer + '</footer>'
                 + `</blockquote>
-              </div>
-              Course: <em>` + fb.courseName + `</em><br />
+              </div>`;
+							if( window.location.href.includes('lecturer/courses/'))
+								fb_text += `From:<em>` + fb.fromUserName + `</em><br />`
+              fb_text += `Course: <em>` + fb.courseName + `</em><br />
               <i class="material-icons" style="font-size:70%;">calendar_today</i>` + showDate
             + `</div>
             <div class="column right-number">`
