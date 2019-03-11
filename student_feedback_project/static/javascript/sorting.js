@@ -74,6 +74,10 @@ function sort(fb_keep, sort_param, keep_param, recent){
 						 shouldReduce = true;
 					 }
 				}
+				if(i == sortedFb.length){
+					i-=1;
+					shouldReduce = false;
+				}
 				var five_mins = new Date(5*60000);
 				if((now_date - fb_date) < five_mins){
 					sortedFb[i].is_recent = true;
