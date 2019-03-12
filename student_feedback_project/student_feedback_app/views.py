@@ -12,7 +12,6 @@ from student_feedback_app.models import *
 from student_feedback_app.serializers import *
 
 from rest_framework import generics
-from dal import autocomplete
 import datetime
 from datetime import timedelta
 import json
