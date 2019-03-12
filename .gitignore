@@ -29,6 +29,7 @@ static/autocomplete_light/
 
 *.coverage
 **/htmlcov/
+**/profile_pictures/
 
 ## Ignore temporary latex files
 *.aux
