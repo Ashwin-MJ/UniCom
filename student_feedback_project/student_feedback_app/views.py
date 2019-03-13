@@ -309,7 +309,7 @@ def student_course(request, subject_slug):
             context_dict['students'] = students
             context_dict['sorted_students'] = course.get_leaderboard()
             fbTotal = course.get_total_for_course_attributes()
-            fb_all = stud.get_all_fb_for_course(course.subject)
+            fb_all = course.feedback_set.all().order_by('-datetime_given')
             fb_recent = stud.get_recent_fb_for_course(course.subject)
 
             for feedback in fb_all:
