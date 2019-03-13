@@ -90,6 +90,10 @@ body{
   color: teal;
 }
 
+.text-white i {
+  color: white!important;
+}
+
 .text-white .quote:after {
   content: '\201D';
   position: absolute;
@@ -160,6 +164,14 @@ body{
   right:20px;
   top:25px;
   font-size: 200%;
+  cursor: pointer;
+}
+
+.delete-icon-course {
+  position: absolute;
+  right:2px!important;
+  top:2px!important;
+  font-size: 150%!important;
   cursor: pointer;
 }
 

@@ -89,16 +89,16 @@ def populate():
         ]
 
     lecturers = [
-		{"name": "Prof. Roy",
+		{"name": "Prof. Smith",
 		"lecturer_number": "00001",
 		"password": "password",
-		"email": "scott_roy@glasgow.ac.uk",
+		"email": "smith@glasgow.ac.uk",
 		"courses":["ARH01", "POL01", "MAT1Q"]
 		},
-		{"name": "Dr. Cossar",
+		{"name": "Dr. Ritchie",
 		"lecturer_number": "00002",
 		"password": "password",
-		"email": "callum_cossar@glasgow.ac.uk",
+		"email": "ritchie@glasgow.ac.uk",
 		"courses":["MAT1Q"]
 		}]
 
@@ -271,9 +271,6 @@ def populate():
     for icon in icons:
         icon = add_icon(icon.get("name"),icon.get("url"))
 
-    for avatar in avatars:
-        avatar = add_avatar(avatar.get("name"), avatar.get("url"))
-
     for category in categories:
 	    cat = add_category_with_icon(category.get("name"), category.get("colour"))
 
@@ -324,10 +321,6 @@ icons = [
 	{"name": "Hourglass",'url': "attribute_icons/hourglass.png"},
 	{"name": "Target",'url': "attribute_icons/target.png"},
 	{"name": "Notebook",'url': "attribute_icons/notebook.png"}
-]
-
-avatars = [
-    {"name":"Icon1", 'url':"avatars/icon1.png"}
 ]
 
 saved_messages = [
@@ -542,10 +535,6 @@ def add_icon(name,url):
 	icon.save()
 	return icon
 
-def add_avatar(name,url):
-    avatar = Avatar.objects.get_or_create(name=name,image=url)[0]
-    avatar.save()
-    return avatar
 # Helper function to add Category
 def add_category(name,colour):
 	# Since the the category needs to be associated uniquely for each lecturer

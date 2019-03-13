@@ -62,6 +62,7 @@ function sort(fb_keep, sort_param, keep_param, recent){
 			var sortedFb = JSON.parse(this.responseText);
 
 			//for every feedback see if feedback is recent (5mins)
+			var shouldReduce = false;
 			for(var i=0; i<sortedFb.length; i++){
 				var fb_date= new Date(sortedFb[i].datetime_given);
 				var now_date = new Date();
@@ -70,8 +71,12 @@ function sort(fb_keep, sort_param, keep_param, recent){
 					var one_week = new Date(7*24*60*60*1000)
 					 if((now_date - fb_date) > one_week){
 						 sortedFb.splice(i,1);
-						 i-=1;
+						 shouldReduce = true;
 					 }
+				}
+				if(i == sortedFb.length){
+					i-=1;
+					shouldReduce = false;
 				}
 				var five_mins = new Date(5*60000);
 				if((now_date - fb_date) < five_mins){
@@ -80,7 +85,10 @@ function sort(fb_keep, sort_param, keep_param, recent){
 				else{
 					sortedFb[i].is_recent = false;
 				}
-
+				if(shouldReduce){
+					i-=1;
+					shouldReduce = false;
+				}
 			}
 
 
@@ -169,11 +177,11 @@ function show(sorted_fb, footerType, insert_into_id){
 		 var month=new Array();
 		  month[0]="Jan";
 		  month[1]="Feb";
-		  month[2]="Mar";
-		  month[3]="Apr";
+		  month[2]="March";
+		  month[3]="April";
 		  month[4]="May";
-		  month[5]="Jun";
-		  month[6]="Jul";
+		  month[5]="June";
+		  month[6]="July";
 		  month[7]="Aug";
 		  month[8]="Sep";
 		  month[9]="Oct";
@@ -186,7 +194,8 @@ function show(sorted_fb, footerType, insert_into_id){
 		  hours = hours ? hours : 12;
 		  minutes = minutes < 10 ? '0'+minutes : minutes;
 		  var strTime = hours + ':' + minutes + ' '+ ampm;
-		var showDate = ' ' + month[myDate.getMonth()] + '. ' + myDate.getDate() + ', ' + myDate.getFullYear() + ', ' + strTime;
+			if(strTime == '12:00 a.m.') strTime = 'midnight';
+		var showDate = ' ' + month[myDate.getMonth()] + ' ' + myDate.getDate() + ', ' + myDate.getFullYear() + ', ' + strTime;
 		if(footerType == "student")
 			var footer = 'Given to ' + fb.studentName;
 		else
@@ -199,6 +208,9 @@ function show(sorted_fb, footerType, insert_into_id){
 		}
 		if( window.location.href.includes('my-provided-feedback'))
 			fb_text += '<i class="material-icons delete-icon" id="' + fb.feedback_id + '">delete</i>';
+		if(window.location.href.includes('lecturer/courses/'))
+			fb_text += '<i class="material-icons delete-icon delete-icon-course" id="' + fb.feedback_id + '">delete</i>';
+
 		fb_text += '<b class="card-sub-heading" style="color:' + fb.categoryColour + '">'
 						+ '<img class="icon" src="/media/' + fb.image + '"/>'
 						+ ' ' + fb.categoryName + `</b>
@@ -212,9 +224,12 @@ function show(sorted_fb, footerType, insert_into_id){
 				  				}
                   fb_text += '<footer>' + footer + '</footer>'
                 + `</blockquote>
-              </div>
-              Course: <em>` + fb.courseName + `</em><br />
-              <i class="material-icons" style="font-size:70%;">calendar_today</i>` + showDate
+              </div>`;
+							if( window.location.href.includes('lecturer/courses/'))
+								fb_text += `From: <em>` + fb.fromUserName + `</em><br />`
+							else
+              	fb_text += `Course: <em>` + fb.courseName + `</em><br />`;
+              fb_text += `<i class="material-icons" style="font-size:70%;">calendar_today</i>` + showDate
             + `</div>
             <div class="column right-number">`
 						+ '<div style="text-align:center; color:' + fb.categoryColour + '">'
