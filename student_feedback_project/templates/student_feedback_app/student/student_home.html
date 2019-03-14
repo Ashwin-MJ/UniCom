@@ -46,7 +46,7 @@ Home Page
         {% else %}
         <div class="card custom-card fb-border" style="border-color:{{colour}}">
         {% endif %}
-          <b class="card-sub-heading" style="color:{{fb.category.colour}}">
+          <b class="card-sub-heading" style="color:{{colour}}">
             <img class="icon" src="{{fb.category.icon.image.url}}"/>
             {{ fb.category }}
           </b>
@@ -96,7 +96,7 @@ Home Page
       <hr />
 
       <div class="card-body" style="padding-top:0px">
-        <div class="card custom-card">          
+        <div class="card custom-card">
           {% if feedbackData|length == 2 %}
           <h3 class="text-center" id="title">
             An attribute graph will appear here as you start to receive feedback

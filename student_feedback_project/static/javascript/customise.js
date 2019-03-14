@@ -48,7 +48,7 @@ $('.delete-cat-icon').click(function(e) {
 $('.edit-cat-icon').click(function(e) {
   // This allows a category to be edited (text and colour)
   var cat_id = this.id;
-  var cat_name = $(this).parent().find("b").text();
+  var cat_name = $(this).parent().find("b").text().trim();
   $('.modal-edit-cat-header').html("Edit \"" + cat_name + "\"");
   cat_name = cat_name.replace("&amp;", "&"); // Had to include this due to JSON issue
   document.getElementById("id_name").value = cat_name;

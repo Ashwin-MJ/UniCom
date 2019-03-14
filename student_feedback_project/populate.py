@@ -525,6 +525,7 @@ def add_feedback(feedback_id,category,points,from_user,student,course_code,pre_d
 	 				rand_date.day, tzinfo=pytz.timezone('GMT'))
 
 		fb.datetime_given = rand_date_with_tzinfo
+		fb.date_only = rand_date_with_tzinfo
 
 	fb.save()
 

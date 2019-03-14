@@ -150,6 +150,36 @@ class StudentProfile(models.Model):
                 score += fb.points
         return score
 
+    # Used for the graph implementation, gives the total score for lecturers
+    # categories in a course
+    def get_total_for_attributes(self):
+        fbTotals={}
+
+        for feedback in self.feedback_set.all():
+            if feedback.category.name in fbTotals:
+                dates = []
+                for i in range(len(fbTotals[feedback.category.name])):
+                    # populate dates with all the dates saved in fbTotal for this feedback category.
+                    for data in fbTotals[feedback.category.name]:
+                        for key in data:
+                            if key not in dates:
+                                dates.append(key)
+
+                    # checking if we have already added the same date before
+                    if feedback.date_only in dates:
+                        # if we have added the same date, check that the one in the list that we're viewing
+                        # is the date that matches the one we want to add points too
+                        if feedback.date_only in fbTotals[feedback.category.name][i]:
+                            # increase points
+                            fbTotals[feedback.category.name][i][feedback.date_only] += feedback.points
+                    # if its not the same date, add a new dict entry
+                    else:
+                        fbTotals[feedback.category.name].append({feedback.date_only : feedback.points})
+            # create a new outer dict entry
+            else:
+                fbTotals[feedback.category.name] = [{feedback.date_only: feedback.points}]
+        return fbTotals
+
 
 class Achievement(models.Model):
     student = models.ForeignKey('StudentProfile', on_delete=models.CASCADE)
@@ -241,9 +271,7 @@ class Course(models.Model):
     def get_total_for_course_attributes(self):
         fbTotals={}
 
-
         for feedback in self.feedback_set.all():
-
             if feedback.category.name in fbTotals:
                 dates = []
                 for i in range(len(fbTotals[feedback.category.name])):

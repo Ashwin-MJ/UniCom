@@ -15,7 +15,7 @@ My Profile
 
   <div class="card-deck" style="margin-top:25px">
     <div class="card card-profile">
-      <img class="card-img-top picture-my-account" src="{{user.profile_picture.url}}" alt="Profile Picture">
+      <img class="card-img-top picture-my-account" style="margin:25px" src="{{user.profile_picture.url}}" alt="Profile Picture">
       <div class="card-body">
         <h4 class="custom-card-title text-center" style="padding:0">{{user.username}}</h4>
         {% if user.is_student %}

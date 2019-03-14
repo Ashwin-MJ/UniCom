@@ -125,17 +125,26 @@ def view_profile(request,student_number):
                 lect = LecturerProfile.objects.get(lecturer=request.user)
                 fb_all = stud.feedback_set.all().order_by('-datetime_given')
                 fb_last_week = stud.feedback_set.all().filter(datetime_given__gte=timezone.now()-timedelta(days=7)).order_by('-datetime_given')
+
+                fbTotal = stud.get_total_for_attributes()
+
                 for feedback in fb_all:
                     cat = feedback.category.name
-                    if cat not in fbCat:
-                        fbCat[cat] = [[feedback.points, feedback.datetime_given.strftime('%Y-%m-%d %H:%M')]]
-                        try:
-                            stud_cat = Category.objects.get(name=feedback.category.name, user=request.user)
-                            catColours[cat] = [stud_cat.colour]
-                        except:
-                            catColours[cat] = [feedback.category.colour]
-                    else:
-                        fbCat[cat].append([feedback.points, feedback.datetime_given.strftime('%Y-%m-%d %H:%M')])
+                    for data in fbTotal[cat]:
+                        for key in data:
+                            date_str = re.split('[()]', str(key))[0]
+                            if cat not in fbCat:
+                                fbCat[cat] = [[data[key], date_str]]
+                                try:
+                                    stud_cat = Category.objects.get(name=feedback.category.name, user=request.user)
+                                    catColours[cat] = [stud_cat.colour]
+                                except:
+                                    catColours[cat] = [feedback.category.colour]
+                            else:
+                                if feedback.date_only not in data:
+                                    fbCat[cat].append([data[key], date_str])
+                                else:
+                                    fbCat[cat] = [[data[key], date_str]]
 
                 context_dict['student'] = stud
                 context_dict['courses'] = stud.get_courses_with_score()
@@ -161,17 +170,26 @@ def student_home(request):
             fb_last_week = stud.feedback_set.all().filter(datetime_given__gte=timezone.now()-timedelta(days=7)).order_by('-datetime_given')
             fb_all = stud.feedback_set.all().order_by('-datetime_given')
             courses = stud.courses.all()
+
+            fbTotal = stud.get_total_for_attributes()
+
             for feedback in fb_all:
                 cat = feedback.category.name
-                if cat not in fbCat:
-                    fbCat[cat] = [[feedback.points, feedback.datetime_given.strftime('%Y-%m-%d %H:%M')]]
-                    try:
-                        stud_cat = Category.objects.get(name=feedback.category.name,user=request.user)
-                        catColours[cat] = [stud_cat.colour]
-                    except:
-                        catColours[cat] = [feedback.category.colour]
-                else:
-                    fbCat[cat].append([feedback.points, feedback.datetime_given.strftime('%Y-%m-%d %H:%M')])
+                for data in fbTotal[cat]:
+                    for key in data:
+                        date_str = re.split('[()]', str(key))[0]
+                        if cat not in fbCat:
+                            fbCat[cat] = [[data[key], date_str]]
+                            try:
+                                stud_cat = Category.objects.get(name=feedback.category.name, user=request.user)
+                                catColours[cat] = [stud_cat.colour]
+                            except:
+                                catColours[cat] = [feedback.category.colour]
+                        else:
+                            if feedback.date_only not in data:
+                                fbCat[cat].append([data[key], date_str])
+                            else:
+                                fbCat[cat] = [[data[key], date_str]]
 
             stud.achievement_set.all().delete()
             scores = stud.get_score_for_category()
