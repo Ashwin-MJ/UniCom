@@ -403,7 +403,7 @@ saved_messages = [
 
 	{"category" : "General",
 	 "messages" : ["Welcome to the class!",
-					"Remember to give feedback to other students and lecturers!",
+					"Remember to give feedback to other students!",
 					"Thank you for your feedback",
 					"Thank you for your help!"
 					]
@@ -550,6 +550,7 @@ def add_category(name,colour):
 	users = User.objects.all()
 	for user in users:
 		cat = Category(user=user,colour=colour,name=name)
+		cat.editable = False
 		cat.save()
 
 # Helper function to add Category
@@ -560,6 +561,7 @@ def add_category_with_icon(name,colour):
 	for user in users:
 		cat = Category(user=user,colour=colour,name=name)
 		icon = Icon.objects.get(name=name)
+		cat.editable = False
 		cat.icon = icon
 		icon.save()
 		cat.save()
@@ -571,6 +573,7 @@ def add_categories_for_user(user):
 		cat = Category(user=user,colour=category["colour"],name=category["name"])
 		icon = Icon.objects.get(name=category["name"])
 		cat.icon = icon
+		cat.editable = False
 		cat.save()
 		user.save()
 
@@ -579,6 +582,7 @@ def add_messages_for_user(user):
 		cat = Category.objects.get(user=user,name=message["category"])
 		for text in message["messages"]:
 			mess = Message(category=cat,text=text,user=user)
+			mess.editable = False
 			mess.save()
 			cat.save()
 		user.save()
@@ -590,6 +594,7 @@ def add_message(category,messages):
 		cat = Category.objects.get(name=category,user=user)
 		for text in messages:
 			mess = Message(category=cat,text=text,user=user)
+			mess.editable = False
 			mess.save()
 			cat.save()
 	return messages

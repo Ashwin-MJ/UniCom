@@ -716,7 +716,7 @@ def customise_options(request):
 
         all_messages = {}
         for message in messages:
-            all_messages[message.id] = message.text
+            all_messages[message.id] = [message.text,message.editable]
 
         context_dict['messages'] = json.dumps(all_messages)
         context_dict['messages_qs'] = messages
