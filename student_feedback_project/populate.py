@@ -288,6 +288,7 @@ def populate():
     create_view_fb_cat_mss_stud_course()
     create_view_fb_full()
     create_view_fb_full_icon()
+    create_view_fb_sorting()
 
 categories = [
 	{"name": "Active Participation", "colour" : "#F7D969"},
@@ -443,10 +444,16 @@ def create_view_fb_full():
 def create_view_fb_full_icon():
     with connection.cursor() as cursor:
         cursor.execute("create view student_feedback_app_feedback_full_icon \
-						as select ico.image, fb.* \
+						as select ico.image, ico.id iconId, fb.* \
 						from student_feedback_app_feedback_full fb \
 						INNER JOIN student_feedback_app_category cat ON fb.category_id = cat.id \
 						INNER JOIN student_feedback_app_icon ico ON ico.id = cat.icon_id;")
+
+def create_view_fb_sorting():
+    with connection.cursor() as cursor:
+    	cursor.execute("CREATE VIEW student_feedback_app_feedback_sorting \
+as select fb.*, ca.colour studentColour from student_feedback_app_feedback_full_icon fb \
+INNER JOIN student_feedback_app_category ca ON fb.iconId = ca.icon_id and fb.student_id = ca.user_id;")
 
 #to add new view: make function and execute line, add model in models.py, test in DB browser SQLite
 

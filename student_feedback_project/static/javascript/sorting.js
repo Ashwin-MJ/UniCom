@@ -198,8 +198,10 @@ function show(sorted_fb, footerType, insert_into_id){
 		var showDate = ' ' + month[myDate.getMonth()] + ' ' + myDate.getDate() + ', ' + myDate.getFullYear() + ', ' + strTime;
 		if(footerType == "student")
 			var footer = 'Given to ' + fb.studentName;
-		else
+		else{
 			var footer = 'From ' + fb.fromUserName;
+			fb.categoryColour = fb.studentColour;
+		}
 		if(fb.is_recent){
 			fb_text += '<div class="card recent custom-card text-white fb-border" style="border-color:' + fb.categoryColour + '">';
 		}
@@ -211,8 +213,8 @@ function show(sorted_fb, footerType, insert_into_id){
 		if(window.location.href.includes('lecturer/courses/'))
 			fb_text += '<i class="material-icons delete-icon delete-icon-course" id="' + fb.feedback_id + '">delete</i>';
 
-		fb_text += '<b class="card-sub-heading" style="color:' + fb.categoryColour + '">'
-						+ '<img class="icon" src="/media/' + fb.image + '"/>'
+		fb_text += '<b class="card-sub-heading" style="color:' + fb.categoryColour + '">';
+		fb_text += '<img class="icon" src="/media/' + fb.image + '"/>'
 						+ ' ' + fb.categoryName + `</b>
           <div class="row" style="padding-bottom:1%">
             <div class="column left">
