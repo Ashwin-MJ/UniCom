@@ -202,7 +202,8 @@ function show(sorted_fb, footerType, insert_into_id){
 			var footer = 'Given to ' + fb.studentName;
 		else{
 			var footer = 'From ' + fb.fromUserName;
-			fb.categoryColour = fb.studentColour;
+			if(fb.studentColour != null)
+				fb.categoryColour = fb.studentColour;
 		}
 		if(fb.is_recent){
 			fb_text += '<div class="card recent custom-card text-white fb-border" style="border-color:' + fb.categoryColour + '">';

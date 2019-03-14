@@ -289,6 +289,7 @@ def populate():
     create_view_fb_full()
     create_view_fb_full_icon()
     create_view_fb_sorting()
+    create_view_fb_max_sorting()
 
 categories = [
 	{"name": "Active Participation", "colour" : "#F7D969"},
@@ -452,8 +453,17 @@ def create_view_fb_full_icon():
 def create_view_fb_sorting():
     with connection.cursor() as cursor:
     	cursor.execute("CREATE VIEW student_feedback_app_feedback_sorting \
-as select fb.*, ca.colour studentColour from student_feedback_app_feedback_full_icon fb \
-INNER JOIN student_feedback_app_category ca ON fb.iconId = ca.icon_id and fb.student_id = ca.user_id;")
+						as select fb.*, ca.colour studentColour from student_feedback_app_feedback_full_icon fb \
+						INNER JOIN student_feedback_app_category ca ON fb.categoryName = ca.name and fb.student_id = ca.user_id;")
+
+def create_view_fb_max_sorting():
+    with connection.cursor() as cursor:
+    	cursor.execute("create view student_feedback_app_feedback_max_sorting \
+						as \
+						select * from student_feedback_app_feedback_sorting \
+						union \
+						select *, null as \"studentColour\" from student_feedback_app_feedback_full_icon \
+						where feedback_id not in (select feedback_id from student_feedback_app_feedback_sorting);")
 
 #to add new view: make function and execute line, add model in models.py, test in DB browser SQLite
 

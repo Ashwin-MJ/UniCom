@@ -398,4 +398,4 @@ class Feedback_full(models.Model):
     studentColour = models.CharField(max_length=200,default="#FFFFFF")
     class Meta:
         managed = False
-        db_table = "student_feedback_app_feedback_sorting"
+        db_table = "student_feedback_app_feedback_max_sorting"
