@@ -42,7 +42,7 @@ function sort_smart(sort_param, footerType, insert_into_id, ...args){
 	httpRequest.send();
 }
 
-function sort(fb_keep, sort_param, keep_param, recent){
+function sort(fb_keep, sort_param, keep_param, recent, catDict){
 	var host = location.protocol + "//" + window.location.host;
 	switch(sort_param){
 		case "points":
@@ -85,6 +85,8 @@ function sort(fb_keep, sort_param, keep_param, recent){
 				else{
 					sortedFb[i].is_recent = false;
 				}
+				if(catDict != null && catDict[sortedFb[i].categoryName] != null)
+					sortedFb[i].categoryColour = catDict[sortedFb[i].categoryName];
 				if(shouldReduce){
 					i-=1;
 					shouldReduce = false;
