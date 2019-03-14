@@ -265,7 +265,7 @@ $('.create-mess-icon').on('click',function(e) {
 $('#all-messages').on('click','.edit-mess-icon', function() {
   // This allows a message to be edited (text)
   var mess_id = this.id;
-  var mess_text = $(this).parent().find("b").text();
+  var mess_text = $(this).parent().find("b").text().trim();
   $('.modal-edit-mess-header').html("Edit \"" + mess_text + "\"");
   document.getElementById("id_text").value = mess_text;
 
