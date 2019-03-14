@@ -1,6 +1,6 @@
 # Project Structure
 
-This is the state of the project structure as of 24/02/2019:
+This is the state of the project structure as of 14/03/2019:
 
 ```
  ├── Contributing.md
@@ -46,6 +46,8 @@ This is the state of the project structure as of 24/02/2019:
  │  │    ├──── urls.py
  │  │    └──── wsgi.py
  │  └──── templates/
+ │       ├──── emails
+ │       │    └──── ... [This has the templates used in sending out emails]
  │       ├──── registration
  │       └──── student_feedback_app
  │            ├──── general/
@@ -56,4 +58,4 @@ This is the state of the project structure as of 24/02/2019:
  │                 └──── ... [Student templates]
 ```
 
-Note that where possible, separation has been implemented (tests, templates). It is acknowledged that the main logic of the application being in a single file [views.py](http://stgit.dcs.gla.ac.uk/tp3-2018-ese1/dissertation/blob/master/student_feedback_project/student_feedback_app/views.py) is not ideal, and it is recommended that this is separated into a few files if possible.
+Note that where possible, the team has attempted to maintain a separation of concerns (tests, templates). It is acknowledged that the main logic of the application being in a single file [views.py](http://stgit.dcs.gla.ac.uk/tp3-2018-ese1/dissertation/blob/master/student_feedback_project/student_feedback_app/views.py) is not ideal, and it is recommended that in future development, this is separated into a few files if possible.

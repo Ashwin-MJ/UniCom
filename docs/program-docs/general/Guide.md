@@ -13,8 +13,7 @@ View the following guides before proceeding in:
 
 *  [Student Guide](docs/program-docs/general/Student-Guide.md)
 
-Note that the images used may be slightly outdated, however the general functionality will be up to date.
-
+Note that the images used may be slightly outdated, however the general functionality will be up to date. For the most up to date images, click the 'Help' button when using the application. This will bring up a modal with information about the current page.
 
 ## General
 
@@ -30,6 +29,8 @@ Any user has access to a "My Profile" page:
 
 Here they can edit their bio and degree by clicking the required button, as well as see their own courses and feedback they have received.
 
+The option of uploading a profile picture has also been included.
+
 ### Customise Options
 
 Both lecturers and students have the option to customise their list of categories and messages which they use to give feedback. This can be customised on the following page:
@@ -40,7 +41,7 @@ A user can create a new category which brings up the following:
 
 <img src="docs/program-docs/general/screenshots/customise_options2.png">
 
-The user simply needs to enter a name for the new category, and choose a colour by using the provided colour picker.
+The user simply needs to enter a name for the new category, and choose a colour by using the provided colour picker. This has been further improved to allow a user to select from a list of icons for their new category.
 
 The user can also edit a given category by clicking the edit button:
 

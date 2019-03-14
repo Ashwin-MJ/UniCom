@@ -12,54 +12,6 @@ This file has details about the aims of the project, as well as installation ins
 
 ### Styleguides
 
-#### General Directory Structure
-
-This is the state of the directory structure as of 28/11/18. This is likely to change over the course of the project.
-
-```bash
- ├── Contributing.md
- ├── LICENSE
- ├── Procfile
- ├── README.md
- └── .gitlab/
- │  └──── issue_templates/
- │       └──── ...
- │  └──── merge_request_templates/
- │       └──── ...
- └── docs/
- │  └──── dissertation/
- │       └──── ...
- └── student_feedback_project/
- │  ├──── __init__.py
- │  ├──── db.sqlite3
- │  ├──── manage.py
- │  └──── media/
- │  │     └──── profile_pictures/
- │  │          └──── ...
- │  ├──── populate.py
- │  ├──── requirements.txt
- │  └──── static/
- │  │     └──── ...
- │  └──── student_feedback_app/
- │  │     ├──── additional.py
- │  │     ├──── admin.py
- │  │     ├──── apps.py
- │  │     ├──── forms.py
- │  │     ├──── migrations/
- │  │          └──── ...
- │  │     ├──── models.py
- │  │     └──── tests/
- │  │     │    └──── ...
- │  │     ├──── urls.py
- │  │     └──── views.py
- │  └──── student_feedback_project/
- │  │    ├──── __init__.py
- │  │    ├──── settings.py
- │  │    ├──── urls.py
- │  │    └──── wsgi.py
- │  └──── templates/
-         └──── ...
-```
 #### New issues
 
 Upon making a new issue, consider using one of the provided templates. If there is no template relevant to the issue you are making you can use the 'General' template.
