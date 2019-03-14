@@ -25,7 +25,9 @@ Customisation Page
             <div class="card-body text-center">
               <b class="card-sub-heading"><img class="icon" src="{{cat.icon.image.url}}"/> {{ cat.name }}</b>
               <i class="material-icons delete-cat-icon" id={{cat.id}}>delete</i>
-              <i class="material-icons edit-cat-icon" data-toggle="modal" data-target="#editCategoryModal" id={{cat.id}}>edit</i>
+              {% if cat.editable %}
+                <i class="material-icons edit-cat-icon" data-toggle="modal" data-target="#editCategoryModal" id={{cat.id}}>edit</i>
+              {% endif %}
             </div>
         </div>
         <br />
@@ -43,7 +45,9 @@ Customisation Page
             <div class="card-body text-center">
               <b class="card-sub-heading"><img class="icon" src="{{mess.category.icon.image.url}}"/> {{ mess.text }}</b>
               <i class="material-icons delete-mess-icon" id={{mess.id}}>delete</i>
+              {% if mess.editable %}
               <i class="material-icons edit-mess-icon" data-toggle="modal" data-target="#editMessageModal" id={{mess.id}}>edit</i>
+              {% endif %}
             </div>
         </div>
         <br />

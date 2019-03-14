@@ -355,6 +355,7 @@ class Feedback(models.Model):
 class Category(models.Model):
     name = models.CharField(max_length=30, default="Empty")
     user = models.ForeignKey('User',on_delete=models.CASCADE,null=True)
+    editable = models.BooleanField(default=True)
 
     # Store the hex code for the colour field as a CharField. This can then be retrieved and
     # used later as required
@@ -378,6 +379,7 @@ class Message(models.Model):
     category = models.ForeignKey('Category',on_delete=models.CASCADE,null=True,blank=True)
     text = models.CharField(max_length=200,default="No message")
     user = models.ForeignKey('User',on_delete=models.CASCADE,null=True)
+    editable = models.BooleanField(default=True)
 
     def __str__(self):
         return self.text

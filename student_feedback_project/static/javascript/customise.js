@@ -173,15 +173,19 @@ function updateHtml(colour,icon,message_set,cat_name,cat_id) {
   // Updates the cards shown in the message card. This allows the messages shown to change dependent
   // on which category is selected
   var cat_messages = "";
+  console.log(message_set);
   for (var retrieved_message in message_set){
     for (var message_id in all_messages){
       if (message_set[retrieved_message] == message_id){
         cat_messages += `<div class="card custom-card fb-border" style="border-color:` + colour + `">`
                         + `<div class="card-body text-center">`
-                        + `<b class="card-sub-heading"><img class="icon" src="` + icons[icon] + `"/> ` +  all_messages[message_id] + `</b>`
+                        + `<b class="card-sub-heading"><img class="icon" src="` + icons[icon] + `"/> ` +  all_messages[message_id][0] + `</b>`
                         + `<i class="material-icons delete-mess-icon" id=` + message_id + `>delete</i>`
-                        + `<i class="material-icons edit-mess-icon" data-toggle="modal" data-target="#editMessageModal" id=` + message_id +`>edit</i>`
-                        + `</div></div><br />`
+
+        if (all_messages[message_id][1]){
+          cat_messages += `<i class="material-icons edit-mess-icon" data-toggle="modal" data-target="#editMessageModal" id=` + message_id +`>edit</i>`
+        }
+        cat_messages += `</div></div><br />`
       }
     }
   }
