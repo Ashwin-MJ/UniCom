@@ -4,7 +4,7 @@ The project is hosted on a GitLab server hosted by the University of Glasgow.
 
 ## General Information
 
-To find out more about the aim of the project please see the [README.md](http://stgit.dcs.gla.ac.uk/tp3-2018-ese1/dissertation/blob/master/README.md).
+To find out more about the aim of the project please see the [README.md](README.md).
 
 This file has details about the aims of the project, as well as installation instructions and how to run tests.
 
