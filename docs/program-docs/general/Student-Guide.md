@@ -32,7 +32,7 @@ The recent feedback you have received in this course is displayed in the middle.
 
 And on the right is a leaderboard which is intended to motivate students to perform better.
 
-A student is also able to give feedback by clicking on another student in the leaderboard. This works in the same way as providing individual feedback as a lecturer (see [Lecturer Guide](docs/program-docs/general/Lecturer-Guide.md))
+A student is also able to give feedback by clicking on another student in the leaderboard. This works in the same way as providing individual feedback as a lecturer (see [Lecturer Guide](Lecturer-Guide.md))
 
 By clicking on another students profile picture, you can view that students profile. This displays:
 

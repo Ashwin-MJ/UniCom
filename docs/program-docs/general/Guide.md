@@ -4,14 +4,14 @@ Version 1.0.0
 
 This includes an overview of how to actually use the application
 
-See [README.md](http://stgit.dcs.gla.ac.uk/tp3-2018-ese1/dissertation/blob/master/README.md) for an overview of the intended use of the application.
+See [README.md](../../../README.md) for an overview of the intended use of the application.
 
 The application allows a lecturer to provide students in their course with feedback to suggest areas of improvement or to acknowledge impressive performance.
 
 View the following guides before proceeding in:
-*  [Lecturer Guide](docs/program-docs/general/Lecturer-Guide.md)
+*  [Lecturer Guide](Lecturer-Guide.md)
 
-*  [Student Guide](docs/program-docs/general/Student-Guide.md)
+*  [Student Guide](Student-Guide.md)
 
 Note that the images used may be slightly outdated, however the general functionality will be up to date. For the most up to date images, click the 'Help' button when using the application. This will bring up a modal with information about the current page.
 
