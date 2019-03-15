@@ -2,7 +2,7 @@
 
 Version 1.0.0
 
-See the main repository [README.md](http://stgit.dcs.gla.ac.uk/tp3-2018-ese1/dissertation/blob/master/README.md) file for more information about the project in general.
+See the main repository [README.md](../../README.md) file for more information about the project in general.
 
 This documentation has been included to allow another developer to take over the project if required.
 
