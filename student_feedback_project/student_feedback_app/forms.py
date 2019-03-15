@@ -5,7 +5,7 @@ from django.contrib.auth.forms import UserCreationForm
 
 class CourseForm(forms.ModelForm):
     subject = forms.CharField(max_length=40, help_text="Enter the course subject", required=True)
-    course_code = forms.CharField(max_length=20, help_text= 'Enter the code used to identify this course', required=True)
+    course_code = forms.CharField(max_length=8, help_text= 'Enter the code used to identify this course', required=True)
     course_description = forms.CharField(max_length=200, required=True, help_text="Enter a brief overview of the course")
     slug = forms.CharField(widget=forms.HiddenInput(), required=False)
 
@@ -39,7 +39,7 @@ class RegisterForm(UserCreationForm):
 
 
 class AddCourseForm(forms.ModelForm):
-    course_token = forms.CharField(max_length= 20, help_text="Provided Course Token", required=True)
+    course_token = forms.CharField(max_length=12, help_text="Provided Course Token", required=True)
 
     class Meta:
         model = Course

@@ -150,8 +150,8 @@ class StudentProfile(models.Model):
                 score += fb.points
         return score
 
-    # Used for the graph implementation, gives the total score for lecturers
-    # categories in a course
+    # Used for the graph implementation, gives the total score for each attribute for a student
+    # based on date
     def get_total_for_attributes(self):
         fbTotals={}
 
@@ -211,8 +211,8 @@ class Course(models.Model):
     subject_slug = models.SlugField(max_length=50, default='empty_slug')
     students = models.ManyToManyField('StudentProfile')
     lecturers = models.ManyToManyField('LecturerProfile')
-    course_code = models.CharField(max_length=20, primary_key=True)
-    course_token = models.CharField(max_length=20, default = "")
+    course_code = models.CharField(max_length=8, primary_key=True)
+    course_token = models.CharField(max_length=12, default = "")
 
     def save(self, *args, **kwargs):
         self.subject_slug = slugify(self.course_code)

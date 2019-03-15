@@ -135,6 +135,28 @@ Error Page
 </div>
 {% endif %}
 
+{% if error == "enrolled" %}
+<div class="container">
+	<div class="card" style="margin-top:25px;">
+		<h3 class="text-center custom-card-title">You are already enrolled in this course</h3>
+		<hr />
+		<h5 class="card-body text-left" id="title">
+			Click below to navigate to the course:
+		</h5>
+		<div class="card-body" style="align-self:center">
+			<a class="nav-link"
+			{% if user.is_lecturer %}
+			href="{% url 'lecturer_course' course.subject_slug %}"
+			{% else %}
+			href="{% url 'student_course' course.subject_slug %}"
+			{% endif %}>
+				<button class="btn btn-material btn-ripple" style="width:200px">{{course.subject}}</button>
+			</a>
+		</div>
+	</div>
+</div>
+{% endif %}
+
 {% endblock %}
 
 {% block footer %}

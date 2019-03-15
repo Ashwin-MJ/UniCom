@@ -284,7 +284,11 @@ def student_courses(request):
             stud = StudentProfile.objects.get(student = request.user)
             if(form.is_valid()):
                 try:
-                    course = Course.objects.get(course_token=form.cleaned_data["course_token"] )
+                    course = Course.objects.get(course_token=form.cleaned_data["course_token"])
+                    if stud in course.students.all():
+                        context_dict['error'] = "enrolled"
+                        context_dict['course'] = course
+                        return render(request,'student_feedback_app/general/error_page.html', context_dict)
                     stud.courses.add(course)
                     course.students.add(stud)
                     stud.save()
@@ -675,12 +679,20 @@ def lecturer_courses(request):
                     return render(request, 'student_feedback_app/general/error_page.html', context_dict)
             elif join_form.is_valid:
                 joinCourseForm=join_form.save(commit=False)
-                course = Course.objects.get(course_token=joinCourseForm.course_token)
-                lect.courses.add(course)
-                course.lecturers.add(lect)
-                lect.save()
-                course.save()
-                return lecturer_home(request)
+                try:
+                    course = Course.objects.get(course_token=joinCourseForm.course_token)
+                    if lect in course.lecturers.all():
+                        context_dict['error'] = "enrolled"
+                        context_dict['course'] = course
+                        return render(request,'student_feedback_app/general/error_page.html', context_dict)
+                    lect.courses.add(course)
+                    course.lecturers.add(lect)
+                    lect.save()
+                    course.save()
+                    return lecturer_home(request)
+                except:
+                    context_dict['error'] = "no_course"
+                    return render(request,'student_feedback_app/general/error_page.html', context_dict)
             else:
                 print(join_form.errors)
         else:
