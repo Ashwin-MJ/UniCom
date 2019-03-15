@@ -19,8 +19,8 @@ View the [design documentation](docs/program-docs/README.md) to find out more in
 
 ## Contributing
 
-Please read [CONTRIBUTING.md](http://stgit.dcs.gla.ac.uk/tp3-2018-ese1/dissertation/blob/master/Contributing.md) for details about members of the team and the separation of tasks.
+Please read [CONTRIBUTING.md](Contributing.md) for details about members of the team and the separation of tasks.
 
 ## License
 
-This project is licensed under the following license [LICENSE.md](http://stgit.dcs.gla.ac.uk/tp3-2018-ese1/dissertation/blob/master/LICENSE) file for details
+This project is licensed under the following license [LICENSE.md](LICENSE) file for details

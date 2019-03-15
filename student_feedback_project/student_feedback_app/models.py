@@ -150,6 +150,36 @@ class StudentProfile(models.Model):
                 score += fb.points
         return score
 
+    # Used for the graph implementation, gives the total score for each attribute for a student
+    # based on date
+    def get_total_for_attributes(self):
+        fbTotals={}
+
+        for feedback in self.feedback_set.all():
+            if feedback.category.name in fbTotals:
+                dates = []
+                for i in range(len(fbTotals[feedback.category.name])):
+                    # populate dates with all the dates saved in fbTotal for this feedback category.
+                    for data in fbTotals[feedback.category.name]:
+                        for key in data:
+                            if key not in dates:
+                                dates.append(key)
+
+                    # checking if we have already added the same date before
+                    if feedback.date_only in dates:
+                        # if we have added the same date, check that the one in the list that we're viewing
+                        # is the date that matches the one we want to add points too
+                        if feedback.date_only in fbTotals[feedback.category.name][i]:
+                            # increase points
+                            fbTotals[feedback.category.name][i][feedback.date_only] += feedback.points
+                    # if its not the same date, add a new dict entry
+                    else:
+                        fbTotals[feedback.category.name].append({feedback.date_only : feedback.points})
+            # create a new outer dict entry
+            else:
+                fbTotals[feedback.category.name] = [{feedback.date_only: feedback.points}]
+        return fbTotals
+
 
 class Achievement(models.Model):
     student = models.ForeignKey('StudentProfile', on_delete=models.CASCADE)
@@ -181,8 +211,8 @@ class Course(models.Model):
     subject_slug = models.SlugField(max_length=50, default='empty_slug')
     students = models.ManyToManyField('StudentProfile')
     lecturers = models.ManyToManyField('LecturerProfile')
-    course_code = models.CharField(max_length=20, primary_key=True)
-    course_token = models.CharField(max_length=20, default = "")
+    course_code = models.CharField(max_length=8, primary_key=True)
+    course_token = models.CharField(max_length=12, default = "")
 
     def save(self, *args, **kwargs):
         self.subject_slug = slugify(self.course_code)
@@ -241,9 +271,7 @@ class Course(models.Model):
     def get_total_for_course_attributes(self):
         fbTotals={}
 
-
         for feedback in self.feedback_set.all():
-
             if feedback.category.name in fbTotals:
                 dates = []
                 for i in range(len(fbTotals[feedback.category.name])):
@@ -327,6 +355,7 @@ class Feedback(models.Model):
 class Category(models.Model):
     name = models.CharField(max_length=30, default="Empty")
     user = models.ForeignKey('User',on_delete=models.CASCADE,null=True)
+    editable = models.BooleanField(default=True)
 
     # Store the hex code for the colour field as a CharField. This can then be retrieved and
     # used later as required
@@ -350,22 +379,25 @@ class Message(models.Model):
     category = models.ForeignKey('Category',on_delete=models.CASCADE,null=True,blank=True)
     text = models.CharField(max_length=200,default="No message")
     user = models.ForeignKey('User',on_delete=models.CASCADE,null=True)
+    editable = models.BooleanField(default=True)
 
     def __str__(self):
         return self.text
 
 class Feedback_full(models.Model):
     image = models.CharField(max_length = 300, default = "attribute_icons/cooperation.png")
+    iconId = models.IntegerField(default=0)
     feedback_id = models.IntegerField(primary_key=True, default=0)
     points = models.IntegerField(default=0)
     datetime_given = models.DateTimeField(default=timezone.now, blank=False)
     optional_message = models.CharField(max_length=200,default="")
-    categoryColour = models.CharField(max_length=200,default="No category colour")
+    categoryColour = models.CharField(max_length=200,default="#FFFFFF")
     categoryName = models.CharField(max_length=200, default="No category")
     preDefMessageText = models.CharField(max_length=200,default="No message")
     studentName = models.CharField(max_length=200,default="No student")
     courseName = models.CharField(max_length=200,default="No course")
     fromUserName = models.CharField(max_length=200,default="No from user")
+    studentColour = models.CharField(max_length=200,default="#FFFFFF")
     class Meta:
         managed = False
-        db_table = "student_feedback_app_feedback_full_icon"
+        db_table = "student_feedback_app_feedback_max_sorting"

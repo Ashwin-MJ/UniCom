@@ -117,14 +117,14 @@
           </div>
 
           {% endif %}
-          {% for fb in feedback %}
+          {% for fb,colour in feedback.items %}
           {% if fb.is_recent %}
-          <div class="card recent custom-card text-white fb-border" style="border-color:{{fb.category.colour}}">
+          <div class="card recent custom-card text-white fb-border" style="border-color:{{colour}}">
           {% else %}
-          <div class="card custom-card fb-border" style="border-color:{{fb.category.colour}}">
+          <div class="card custom-card fb-border" style="border-color:{{colour}}">
           {% endif %}
             <i class="material-icons delete-icon delete-icon-course" id="{{ fb.feedback_id }}">delete</i>
-            <b class="card-sub-heading" style="color:{{fb.category.colour}}">
+            <b class="card-sub-heading" style="color:{{colour}}">
               <img class="icon" src="{{fb.category.icon.image.url}}"/>
               {{ fb.category }}
             </b>
@@ -143,7 +143,7 @@
                 <i class="material-icons" style="font-size:70%;">calendar_today</i> {{ fb.datetime_given }}
               </div>
               <div class="column right-number">
-                <div style="text-align:center; color:{{fb.category.colour}}">
+                <div style="text-align:center; color:{{colour}}">
                   {{ fb.points }}<br />
                   <h6>POINTS</h6>
                   </div>
@@ -161,8 +161,8 @@
               Sort by
             </button>
             <div class="dropdown-menu custom-dd-menu">
-              <button onclick="sort('{{ course.subject }}', 'points', 'course', 'recent')" type="button" class="btn btn-material btn-ripple">Points</button>
-              <button onclick="sort('{{ course.subject }}', 'date', 'course', 'recent')" type="button" class="btn btn-material btn-ripple">Date</button>
+              <button onclick="sort('{{ course.subject }}', 'points', 'course', 'recent', {{catColours}})" type="button" class="btn btn-material btn-ripple">Points</button>
+              <button onclick="sort('{{ course.subject }}', 'date', 'course', 'recent', {{catColours}})" type="button" class="btn btn-material btn-ripple">Date</button>
             </div>
         </div>
         {% endif %}

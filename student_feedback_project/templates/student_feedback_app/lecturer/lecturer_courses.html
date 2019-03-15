@@ -100,7 +100,8 @@ Courses
         <h3 class="text-center custom-card-title">Join a Course</h3>
         <hr />
         <div class="card-body">
-          <form id="" method="post" action="">
+          <form id="join-course" method="post" action="">
+            <input type="hidden" name="which_form" value="join-course">
             {% csrf_token %}
             {% for hidden in join_form.hidden_fields %}
             {{ hidden }}
@@ -136,7 +137,9 @@ Courses
           </div>
 
             <div class="modal-body">
-              <form id="" method="post" action="">
+              <form id="create-course" method="post" action="">
+                <input type="hidden" name="which_form" value="create-course">
+
                 {% csrf_token %}
                 {% for hidden in create_form.hidden_fields %}
                     {{ hidden }}

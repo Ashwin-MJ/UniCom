@@ -288,6 +288,8 @@ def populate():
     create_view_fb_cat_mss_stud_course()
     create_view_fb_full()
     create_view_fb_full_icon()
+    create_view_fb_sorting()
+    create_view_fb_max_sorting()
 
 categories = [
 	{"name": "Active Participation", "colour" : "#F7D969"},
@@ -296,8 +298,8 @@ categories = [
 	{"name": "Critical Thinking & Analysis", "colour": "#A6206A"},
 	{"name": "Understanding & Competence", "colour": "#355C7D"},
 	{"name": "Hard Work", "colour": "#F8B195"},
-	{"name": "Intellectual Curiosity", "colour": "#F05053"},
-	{"name": "General", "colour": "#F9CDAE"}
+	{"name": "Intellectual Curiosity", "colour": "#008000"},
+	{"name": "General", "colour": "#808080"}
 ]
 
 icons = [
@@ -402,7 +404,7 @@ saved_messages = [
 
 	{"category" : "General",
 	 "messages" : ["Welcome to the class!",
-					"Remember to give feedback to other students and lecturers!",
+					"Remember to give feedback to other students!",
 					"Thank you for your feedback",
 					"Thank you for your help!"
 					]
@@ -443,10 +445,25 @@ def create_view_fb_full():
 def create_view_fb_full_icon():
     with connection.cursor() as cursor:
         cursor.execute("create view student_feedback_app_feedback_full_icon \
-						as select ico.image, fb.* \
+						as select ico.image, ico.id iconId, fb.* \
 						from student_feedback_app_feedback_full fb \
 						INNER JOIN student_feedback_app_category cat ON fb.category_id = cat.id \
 						INNER JOIN student_feedback_app_icon ico ON ico.id = cat.icon_id;")
+
+def create_view_fb_sorting():
+    with connection.cursor() as cursor:
+    	cursor.execute("CREATE VIEW student_feedback_app_feedback_sorting \
+						as select fb.*, ca.colour studentColour from student_feedback_app_feedback_full_icon fb \
+						INNER JOIN student_feedback_app_category ca ON fb.categoryName = ca.name and fb.student_id = ca.user_id;")
+
+def create_view_fb_max_sorting():
+    with connection.cursor() as cursor:
+    	cursor.execute("create view student_feedback_app_feedback_max_sorting \
+						as \
+						select * from student_feedback_app_feedback_sorting \
+						union \
+						select *, null as \"studentColour\" from student_feedback_app_feedback_full_icon \
+						where feedback_id not in (select feedback_id from student_feedback_app_feedback_sorting);")
 
 #to add new view: make function and execute line, add model in models.py, test in DB browser SQLite
 
@@ -525,6 +542,7 @@ def add_feedback(feedback_id,category,points,from_user,student,course_code,pre_d
 	 				rand_date.day, tzinfo=pytz.timezone('GMT'))
 
 		fb.datetime_given = rand_date_with_tzinfo
+		fb.date_only = rand_date_with_tzinfo
 
 	fb.save()
 
@@ -542,6 +560,7 @@ def add_category(name,colour):
 	users = User.objects.all()
 	for user in users:
 		cat = Category(user=user,colour=colour,name=name)
+		cat.editable = False
 		cat.save()
 
 # Helper function to add Category
@@ -552,6 +571,7 @@ def add_category_with_icon(name,colour):
 	for user in users:
 		cat = Category(user=user,colour=colour,name=name)
 		icon = Icon.objects.get(name=name)
+		cat.editable = False
 		cat.icon = icon
 		icon.save()
 		cat.save()
@@ -563,6 +583,7 @@ def add_categories_for_user(user):
 		cat = Category(user=user,colour=category["colour"],name=category["name"])
 		icon = Icon.objects.get(name=category["name"])
 		cat.icon = icon
+		cat.editable = False
 		cat.save()
 		user.save()
 
@@ -571,6 +592,7 @@ def add_messages_for_user(user):
 		cat = Category.objects.get(user=user,name=message["category"])
 		for text in message["messages"]:
 			mess = Message(category=cat,text=text,user=user)
+			mess.editable = False
 			mess.save()
 			cat.save()
 		user.save()
@@ -582,6 +604,7 @@ def add_message(category,messages):
 		cat = Category.objects.get(name=category,user=user)
 		for text in messages:
 			mess = Message(category=cat,text=text,user=user)
+			mess.editable = False
 			mess.save()
 			cat.save()
 	return messages

@@ -9,7 +9,7 @@ The only additional requirement to run the tests is:
 coverage==4.5.2
 ```
 
-Note that this will have been installed if the instructions [here](docs/program-docs/project/Local-Setup.md) have been executed.
+Note that this will have been installed if the instructions [here](Local-Setup.md) have been executed.
 
 ## Running the tests
 The main tests can easily be run using the command:

@@ -23,7 +23,7 @@ It is the presentation layer which handles exactly how each page of the web appl
 
 An example is any template such as student_home.html, which has the html presentation information about exactly what is shown on that page. It uses fields passed from a view which is explained further below.
 
-See the directory [templates](http://stgit.dcs.gla.ac.uk/tp3-2018-ese1/dissertation/tree/master/student_feedback_project/templates) to analyse the various templates used in this project.
+See the directory [templates](../../../student_feedback_project/templates) to analyse the various templates used in this project.
 
 
 ### 3. Views
@@ -36,7 +36,7 @@ For each template, there is a corresponding view which uses a context dictionary
 
 For example, in this project, the view 'student_home' retrieves various information from the database about the signed in student (including feedback, courses etc.) and passes it to the template which displays this.
 
-See [views.py](http://stgit.dcs.gla.ac.uk/tp3-2018-ese1/dissertation/blob/master/student_feedback_project/student_feedback_app/views.py) to analyse the views associated with the html templates mentioned above.
+See [views.py](../../../student_feedback_project/student_feedback_app/views.py) to analyse the views associated with the html templates mentioned above.
 
 ## Summary
 

@@ -138,7 +138,7 @@ Add Group Feedback
               <hr />
               <div class="card-body give-fb-scroll">
                 <p class="card-text"></p>
-                {% if feedback|length == 0 %}
+                {% if student.feedback_set.all|length == 0 %}
                 <div class="card custom-card fb-border">
                   <b class="card-sub-heading">
                     No Feedback Yet

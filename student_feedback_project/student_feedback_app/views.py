@@ -125,17 +125,26 @@ def view_profile(request,student_number):
                 lect = LecturerProfile.objects.get(lecturer=request.user)
                 fb_all = stud.feedback_set.all().order_by('-datetime_given')
                 fb_last_week = stud.feedback_set.all().filter(datetime_given__gte=timezone.now()-timedelta(days=7)).order_by('-datetime_given')
+
+                fbTotal = stud.get_total_for_attributes()
+
                 for feedback in fb_all:
                     cat = feedback.category.name
-                    if cat not in fbCat:
-                        fbCat[cat] = [[feedback.points, feedback.datetime_given.strftime('%Y-%m-%d %H:%M')]]
-                        try:
-                            stud_cat = Category.objects.get(name=feedback.category.name, user=request.user)
-                            catColours[cat] = [stud_cat.colour]
-                        except:
-                            catColours[cat] = [feedback.category.colour]
-                    else:
-                        fbCat[cat].append([feedback.points, feedback.datetime_given.strftime('%Y-%m-%d %H:%M')])
+                    for data in fbTotal[cat]:
+                        for key in data:
+                            date_str = re.split('[()]', str(key))[0]
+                            if cat not in fbCat:
+                                fbCat[cat] = [[data[key], date_str]]
+                                try:
+                                    stud_cat = Category.objects.get(name=feedback.category.name, user=request.user)
+                                    catColours[cat] = [stud_cat.colour]
+                                except:
+                                    catColours[cat] = [feedback.category.colour]
+                            else:
+                                if feedback.date_only not in data:
+                                    fbCat[cat].append([data[key], date_str])
+                                else:
+                                    fbCat[cat] = [[data[key], date_str]]
 
                 context_dict['student'] = stud
                 context_dict['courses'] = stud.get_courses_with_score()
@@ -161,17 +170,26 @@ def student_home(request):
             fb_last_week = stud.feedback_set.all().filter(datetime_given__gte=timezone.now()-timedelta(days=7)).order_by('-datetime_given')
             fb_all = stud.feedback_set.all().order_by('-datetime_given')
             courses = stud.courses.all()
+
+            fbTotal = stud.get_total_for_attributes()
+
             for feedback in fb_all:
                 cat = feedback.category.name
-                if cat not in fbCat:
-                    fbCat[cat] = [[feedback.points, feedback.datetime_given.strftime('%Y-%m-%d %H:%M')]]
-                    try:
-                        stud_cat = Category.objects.get(name=feedback.category.name,user=request.user)
-                        catColours[cat] = [stud_cat.colour]
-                    except:
-                        catColours[cat] = [feedback.category.colour]
-                else:
-                    fbCat[cat].append([feedback.points, feedback.datetime_given.strftime('%Y-%m-%d %H:%M')])
+                for data in fbTotal[cat]:
+                    for key in data:
+                        date_str = re.split('[()]', str(key))[0]
+                        if cat not in fbCat:
+                            fbCat[cat] = [[data[key], date_str]]
+                            try:
+                                stud_cat = Category.objects.get(name=feedback.category.name, user=request.user)
+                                catColours[cat] = [stud_cat.colour]
+                            except:
+                                catColours[cat] = [feedback.category.colour]
+                        else:
+                            if feedback.date_only not in data:
+                                fbCat[cat].append([data[key], date_str])
+                            else:
+                                fbCat[cat] = [[data[key], date_str]]
 
             stud.achievement_set.all().delete()
             scores = stud.get_score_for_category()
@@ -261,12 +279,16 @@ def student_courses(request):
         context_dict['stud'] = stud
         context_dict['courses'] = stud.get_courses_with_score()
 
-        if(request.method == 'POST'):
+        if request.method == 'POST':
             form = AddCourseForm(request.POST)
             stud = StudentProfile.objects.get(student = request.user)
-            if(form.is_valid()):
+            if form.is_valid():
                 try:
-                    course = Course.objects.get(course_token=form.cleaned_data["course_token"] )
+                    course = Course.objects.get(course_token=form.cleaned_data["course_token"])
+                    if stud in course.students.all():
+                        context_dict['error'] = "enrolled"
+                        context_dict['course'] = course
+                        return render(request,'student_feedback_app/general/error_page.html', context_dict)
                     stud.courses.add(course)
                     course.students.add(stud)
                     stud.save()
@@ -309,7 +331,7 @@ def student_course(request, subject_slug):
             context_dict['students'] = students
             context_dict['sorted_students'] = course.get_leaderboard()
             fbTotal = course.get_total_for_course_attributes()
-            fb_all = stud.get_all_fb_for_course(course.subject)
+            fb_all = course.feedback_set.all().order_by('-datetime_given')
             fb_recent = stud.get_recent_fb_for_course(course.subject)
 
             for feedback in fb_all:
@@ -643,28 +665,39 @@ def lecturer_courses(request):
         context_dict['courses'] = courses
         context_dict['top_students'] = top_students
         if request.method == 'POST':
-            create_form = CourseForm(request.POST)
             join_form = AddCourseForm(request.POST)
-            if create_form.is_valid():
-                try:
-                    newCourseForm = create_form.save(commit=False)
-                    new_course = Course.objects.create(subject=create_form.cleaned_data['subject'], course_description=create_form.cleaned_data['course_description'], course_code=create_form.cleaned_data['course_code'])
-                    new_course.lecturers.add(lect)
-                    new_course.save()
-                    return lecturer_home(request)
-                except:
-                    context_dict['error'] = "error"
-                    return render(request, 'student_feedback_app/general/error_page.html', context_dict)
-            elif join_form.is_valid:
-                joinCourseForm=join_form.save(commit=False)
-                course = Course.objects.get(course_token=joinCourseForm.course_token)
-                lect.courses.add(course)
-                course.lecturers.add(lect)
-                lect.save()
-                course.save()
-                return lecturer_home(request)
+            if request.POST.get("which_form") == "join-course":
+                if join_form.is_valid():
+                    try:
+                        course = Course.objects.get(course_token=join_form.cleaned_data['course_token'])
+                        if lect in course.lecturers.all():
+                            context_dict['error'] = "enrolled"
+                            context_dict['course'] = course
+                            return render(request,'student_feedback_app/general/error_page.html', context_dict)
+                        lect.courses.add(course)
+                        course.lecturers.add(lect)
+                        lect.save()
+                        course.save()
+                        return lecturer_home(request)
+                    except:
+                        context_dict['error'] = "no_course"
+                        return render(request,'student_feedback_app/general/error_page.html', context_dict)
+                else:
+                    print(join_form.errors)
+
             else:
-                print(join_form.errors)
+                create_form = CourseForm(request.POST)
+                if create_form.is_valid():
+                    try:
+                        new_course = Course.objects.create(subject=create_form.cleaned_data['subject'], course_description=create_form.cleaned_data['course_description'], course_code=create_form.cleaned_data['course_code'])
+                        new_course.lecturers.add(lect)
+                        new_course.save()
+                        return lecturer_home(request)
+                    except:
+                        context_dict['error'] = "error"
+                        return render(request, 'student_feedback_app/general/error_page.html', context_dict)
+                else:
+                    print(create_form.errors)
         else:
             create_form = CourseForm()
             join_form = AddCourseForm()
@@ -698,7 +731,7 @@ def customise_options(request):
 
         all_messages = {}
         for message in messages:
-            all_messages[message.id] = message.text
+            all_messages[message.id] = [message.text,message.editable]
 
         context_dict['messages'] = json.dumps(all_messages)
         context_dict['messages_qs'] = messages

@@ -80,11 +80,6 @@ Error Page
 			{% endif %}
 		</h5>
 		<div class="card-body" style="align-self:center; margin-top;0">
-			{% if user.is_lecturer %}
-			<a class="nav-link" href="{% url 'create_course' %}">
-				<button class="btn btn-material btn-ripple" style="width:200px">Create a Course</button>
-			</a>
-			{% endif %}
 			<a class="nav-link" href="{% url 'index' %}">
 				<button class="btn btn-material btn-ripple" style="width:200px">Return to Home Page</button>
 			</a>
@@ -129,6 +124,28 @@ Error Page
 		<div class="card-body" style="align-self:center">
 			<a class="nav-link" href="{% url 'index' %}">
 				<button class="btn btn-material btn-ripple" style="width:200px">Return to Home Page</button>
+			</a>
+		</div>
+	</div>
+</div>
+{% endif %}
+
+{% if error == "enrolled" %}
+<div class="container">
+	<div class="card" style="margin-top:25px;">
+		<h3 class="text-center custom-card-title">You are already enrolled in this course</h3>
+		<hr />
+		<h5 class="card-body text-left" id="title">
+			Click below to navigate to the course:
+		</h5>
+		<div class="card-body" style="align-self:center">
+			<a class="nav-link"
+			{% if user.is_lecturer %}
+			href="{% url 'lecturer_course' course.subject_slug %}"
+			{% else %}
+			href="{% url 'student_course' course.subject_slug %}"
+			{% endif %}>
+				<button class="btn btn-material btn-ripple" style="width:200px">{{course.subject}}</button>
 			</a>
 		</div>
 	</div>
