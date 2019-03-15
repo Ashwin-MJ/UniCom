@@ -4,9 +4,9 @@
 
 If you sign-up/login as a Student the first page you will see is the home page:
 
-<img src="docs/program-docs/general/screenshots/student_home1.png">
+<img src="screenshots/student_home1.png">
 
-<img src="docs/program-docs/general/screenshots/student_home2.png">
+<img src="screenshots/student_home2.png">
 
 Here you can view the recent feedback you have received on the left.
 
@@ -16,7 +16,7 @@ At the bottom there is an "Achievements" section. This is intended to motivate t
 
 ## Courses
 
-<img src="docs/program-docs/general/screenshots/student_courses.png">
+<img src="screenshots/student_courses.png">
 
 On the left you can view the courses you are currently enrolled in. You can click on one of these courses to find more information about it.
 
@@ -24,7 +24,7 @@ On the right you have the option of joining a new course. A lecturer may have em
 
 ## Course
 
-<img src="docs/program-docs/general/screenshots/student_course.png">
+<img src="screenshots/student_course.png">
 
 Here you can view information about a selected course. On the left you can see which lecturers are in charge of this course, a description, and your current score in this course.
 
@@ -36,17 +36,17 @@ A student is also able to give feedback by clicking on another student in the le
 
 By clicking on another students profile picture, you can view that students profile. This displays:
 
-<img src="docs/program-docs/general/screenshots/student_view_profile1.png">
+<img src="screenshots/student_view_profile1.png">
 
-<img src="docs/program-docs/general/screenshots/student_view_profile2.png">
+<img src="screenshots/student_view_profile2.png">
 
 Note that as a student, you can only see the feedback you have given this student. This is to ensure that feedback given by lecturers and other students remain private.
 
 ## Feedback
 
-<img src="docs/program-docs/general/screenshots/student_fb1.png">
+<img src="screenshots/student_fb1.png">
 
-<img src="docs/program-docs/general/screenshots/student_fb2.png">
+<img src="screenshots/student_fb2.png">
 
 This page allows a student to view their own progress.
 
@@ -58,6 +58,6 @@ The student can view these stats and identify what they need to work on accordin
 
 At the bottom is a button which allows a student to view the feedback they have given to other students. This redirects to the following page:
 
-<img src="docs/program-docs/general/screenshots/student_provided_fb.png">
+<img src="screenshots/student_provided_fb.png">
 
 Here a student can delete a feedback they have given if they want to, and they can also sort feedback.
