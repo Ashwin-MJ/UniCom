@@ -149,8 +149,8 @@ Provided Feedback
           {% endfor %}
         </div>
 
+        {% if not feedback|length == 0 %}
         <hr />
-
         <div class="btn-group dropright button">
             <button class="btn btn-material dropdown-toggle" type="button"data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               Sort by
@@ -161,6 +161,7 @@ Provided Feedback
               <button onclick="sort('{{ student.student.username }}', 'course', 'from_user')" type="button" class="btn btn-material btn-ripple">Course</button>
             </div>
         </div>
+        {% endif %}
       </div>
 
 
