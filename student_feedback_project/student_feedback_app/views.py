@@ -691,7 +691,9 @@ def lecturer_courses(request):
                     try:
                         new_course = Course.objects.create(subject=create_form.cleaned_data['subject'], course_description=create_form.cleaned_data['course_description'], course_code=create_form.cleaned_data['course_code'])
                         new_course.lecturers.add(lect)
+                        lect.courses.add(new_course)
                         new_course.save()
+                        lect.save()
                         return lecturer_home(request)
                     except:
                         context_dict['error'] = "error"
