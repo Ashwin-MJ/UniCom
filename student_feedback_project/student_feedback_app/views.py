@@ -279,10 +279,10 @@ def student_courses(request):
         context_dict['stud'] = stud
         context_dict['courses'] = stud.get_courses_with_score()
 
-        if(request.method == 'POST'):
+        if request.method == 'POST':
             form = AddCourseForm(request.POST)
             stud = StudentProfile.objects.get(student = request.user)
-            if(form.is_valid()):
+            if form.is_valid():
                 try:
                     course = Course.objects.get(course_token=form.cleaned_data["course_token"])
                     if stud in course.students.all():
@@ -665,36 +665,39 @@ def lecturer_courses(request):
         context_dict['courses'] = courses
         context_dict['top_students'] = top_students
         if request.method == 'POST':
-            create_form = CourseForm(request.POST)
             join_form = AddCourseForm(request.POST)
-            if create_form.is_valid():
-                try:
-                    newCourseForm = create_form.save(commit=False)
-                    new_course = Course.objects.create(subject=create_form.cleaned_data['subject'], course_description=create_form.cleaned_data['course_description'], course_code=create_form.cleaned_data['course_code'])
-                    new_course.lecturers.add(lect)
-                    new_course.save()
-                    return lecturer_home(request)
-                except:
-                    context_dict['error'] = "error"
-                    return render(request, 'student_feedback_app/general/error_page.html', context_dict)
-            elif join_form.is_valid:
-                joinCourseForm=join_form.save(commit=False)
-                try:
-                    course = Course.objects.get(course_token=joinCourseForm.course_token)
-                    if lect in course.lecturers.all():
-                        context_dict['error'] = "enrolled"
-                        context_dict['course'] = course
+            if request.POST.get("which_form") == "join-course":
+                if join_form.is_valid():
+                    try:
+                        course = Course.objects.get(course_token=join_form.cleaned_data['course_token'])
+                        if lect in course.lecturers.all():
+                            context_dict['error'] = "enrolled"
+                            context_dict['course'] = course
+                            return render(request,'student_feedback_app/general/error_page.html', context_dict)
+                        lect.courses.add(course)
+                        course.lecturers.add(lect)
+                        lect.save()
+                        course.save()
+                        return lecturer_home(request)
+                    except:
+                        context_dict['error'] = "no_course"
                         return render(request,'student_feedback_app/general/error_page.html', context_dict)
-                    lect.courses.add(course)
-                    course.lecturers.add(lect)
-                    lect.save()
-                    course.save()
-                    return lecturer_home(request)
-                except:
-                    context_dict['error'] = "no_course"
-                    return render(request,'student_feedback_app/general/error_page.html', context_dict)
+                else:
+                    print(join_form.errors)
+
             else:
-                print(join_form.errors)
+                create_form = CourseForm(request.POST)
+                if create_form.is_valid():
+                    try:
+                        new_course = Course.objects.create(subject=create_form.cleaned_data['subject'], course_description=create_form.cleaned_data['course_description'], course_code=create_form.cleaned_data['course_code'])
+                        new_course.lecturers.add(lect)
+                        new_course.save()
+                        return lecturer_home(request)
+                    except:
+                        context_dict['error'] = "error"
+                        return render(request, 'student_feedback_app/general/error_page.html', context_dict)
+                else:
+                    print(create_form.errors)
         else:
             create_form = CourseForm()
             join_form = AddCourseForm()

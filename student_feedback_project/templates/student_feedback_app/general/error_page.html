@@ -80,11 +80,6 @@ Error Page
 			{% endif %}
 		</h5>
 		<div class="card-body" style="align-self:center; margin-top;0">
-			{% if user.is_lecturer %}
-			<a class="nav-link" href="{% url 'create_course' %}">
-				<button class="btn btn-material btn-ripple" style="width:200px">Create a Course</button>
-			</a>
-			{% endif %}
 			<a class="nav-link" href="{% url 'index' %}">
 				<button class="btn btn-material btn-ripple" style="width:200px">Return to Home Page</button>
 			</a>

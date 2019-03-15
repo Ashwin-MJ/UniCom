@@ -298,8 +298,8 @@ categories = [
 	{"name": "Critical Thinking & Analysis", "colour": "#A6206A"},
 	{"name": "Understanding & Competence", "colour": "#355C7D"},
 	{"name": "Hard Work", "colour": "#F8B195"},
-	{"name": "Intellectual Curiosity", "colour": "#F05053"},
-	{"name": "General", "colour": "#F9CDAE"}
+	{"name": "Intellectual Curiosity", "colour": "#008000"},
+	{"name": "General", "colour": "#808080"}
 ]
 
 icons = [
