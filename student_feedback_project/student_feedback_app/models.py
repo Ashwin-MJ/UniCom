@@ -216,7 +216,8 @@ class Course(models.Model):
 
     def save(self, *args, **kwargs):
         self.subject_slug = slugify(self.course_code)
-        self.course_token = self.token_gen()
+        if self.course_token == "":
+            self.course_token = self.token_gen()
         super(Course, self).save(*args, **kwargs)
 
     def get_feedback_list_from_lecturer(self, lecturer):

@@ -117,14 +117,14 @@ function sort(fb_keep, sort_param, keep_param, recent, catDict){
 					var footerType = "student";
 					break;
 				case "course-student":
-					var course_name = fb_keep.split(",")[0];
+					var course_name = fb_keep.split("$")[0];
 					for(var i=0; i<sortedFb.length; i++){
 						if(sortedFb[i].courseName != course_name){
 							sortedFb.splice(i,1);
 							i=-1;
 						}
 					}
-					var student_name = fb_keep.split(",")[1];
+					var student_name = fb_keep.split("$")[1];
 					for(var i=0; i<sortedFb.length; i++){
 						if(sortedFb[i].studentName != student_name){
 							sortedFb.splice(i,1);

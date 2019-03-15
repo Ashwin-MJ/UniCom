@@ -4,14 +4,14 @@
 
 If you sign-up/login as a Lecturer the first page you will see is the home page:
 
-<img src="docs/program-docs/general/screenshots/lecturer_home.png">
+<img src="screenshots/lecturer_home.png">
 
 Here you can view the different courses you are part of, and recent feedback you have given to different students. You can either directly click on a course to view more information about it, or click "Courses" in the navbar to be directed to another page:
 
 ## Courses
 
 
-<img src="docs/program-docs/general/screenshots/lecturer_courses.png">
+<img src="screenshots/lecturer_courses.png">
 
 Here you can again click on one of the courses to find out more information about it (see below). You are also presented with a card which shows which of your students (across all courses) has the highest scores. Additionally you have the option of joining an existing course using the "Join a Course" panel on the left using a course token (explained below).
 
@@ -19,9 +19,9 @@ Also note that you have the option of creating a new course. To do this simply c
 
 ## Course
 
-<img src="docs/program-docs/general/screenshots/lecturer_course1.png">
+<img src="screenshots/lecturer_course1.png">
 
-<img src="docs/program-docs/general/screenshots/lecturer_course2.png">
+<img src="screenshots/lecturer_course2.png">
 
 This is the page you are presented with if you navigate to a given course.
 
@@ -36,9 +36,9 @@ In the middle, a list of the feedback that has been recently given for this cour
 
 ### Individual
 
-<img src="docs/program-docs/general/screenshots/lecturer_indiv_fb1.png">
+<img src="screenshots/lecturer_indiv_fb1.png">
 
-<img src="docs/program-docs/general/screenshots/lecturer_indiv_fb2.png">
+<img src="screenshots/lecturer_indiv_fb2.png">
 
 If you choose to give Individual Feedback to a student you are directed to this page.
 
@@ -54,9 +54,9 @@ Note that on "Courses" page, if you selected more than one student and gave Indi
 
 ### Group Feedback
 
-<img src="docs/program-docs/general/screenshots/lecturer_group_fb1.png">
+<img src="screenshots/lecturer_group_fb1.png">
 
-<img src="docs/program-docs/general/screenshots/lecturer_group_fb2.png">
+<img src="screenshots/lecturer_group_fb2.png">
 
 The process for giving Group Feedback is similar to that mentioned above. Note that on the right you can view the stats for the different students you selected.
 
@@ -65,6 +65,6 @@ Upon clicking "Submit Feedback", the same feedback is given to all selected stud
 
 ## All Feedback
 
-<img src="docs/program-docs/general/screenshots/lecturer_all_fb.png">
+<img src="screenshots/lecturer_all_fb.png">
 
 This page simply shows all the feedback you have given. Here you have the additional option of deleting a feedback, as well as the standard sorting options.

@@ -116,6 +116,18 @@ Add Feedback
         <hr />
         <div class="card-body give-fb-scroll">
           <p class="card-text"></p>
+          {% if feedback|length == 0 %}
+          <div class="card custom-card fb-border">
+            <b class="card-sub-heading">
+              No Feedback Yet
+            </b>
+            <div class="card custom-border">
+              <blockquote class="quote">
+                No feedback available for this course<br />
+              </blockquote>
+            </div>
+          </div>
+          {% endif %}
           {% for fb in feedback %}
           {% if fb.is_recent %}
           <div class="card recent custom-card text-white fb-border" style="border-color:{{fb.category.colour}}">

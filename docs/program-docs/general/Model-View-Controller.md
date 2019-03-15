@@ -13,7 +13,7 @@ This is where the database itself is created and handled. Different models can b
 
 In this project, models include StudentProfile, LecturerProfile, Course, Feedback etc.
 
-See [models.py](http://stgit.dcs.gla.ac.uk/tp3-2018-ese1/dissertation/blob/master/student_feedback_project/student_feedback_app/models.py) to view the various models used in this project.
+See [models.py](../../../student_feedback_project/student_feedback_app/models.py) to view the various models used in this project.
 
 ### 2. Templates
 
